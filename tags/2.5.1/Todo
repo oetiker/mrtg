@@ -1,0 +1,26 @@
+Things todo for mrtg
+********************
+
+Bugs to be fixed
+----------------
+* some times the sanity check does not work ... there were some
+  negative numbers in Richard Bullingtons log file ...
+
+* rateup is not really long int prove ... it has to be carefully checked
+  for potential overflows, as my goal is to make it run clean with
+  routers who pass up to 255*255*255*255/8 Bytes per second.
+
+* the max values returned by rateup seem to fluctuate slightly when they
+  have no reason to ... (judging from the graph they are describing)
+
+Immediate Enhancement
+---------------------
+
+* handle UNKNOWN transfer rates better. Currently rateup assumes that the
+  rate is stable if it does not know... I think it should tell it does now
+  know at least if the periode of uncertainty is longer than say 30 minutes.
+
+Future Directions for mrtg 3.x
+------------------------------
+
+* integrate with Daniel Wesemans ucsp ? Once it is finisched ?

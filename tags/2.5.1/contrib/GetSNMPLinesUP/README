@@ -1,0 +1,34 @@
+
+	          GetSNMPLinesUP.pl
+
+			for
+
+	MRTG - The Multi Router Traffic Grapher.
+
+
+Copyright (c) 1997 Carlos Canau <canau@EUnet.pt>.  All rights reserved.
+
+
+See the file COPYRIGHT in the distribution for the exact terms.
+
+See the file INSTALL for installation instructions.
+
+
+GetSNMPLinesUP.pl checks some SNMP  variables for a certain  value and
+returns their sum  in a format used to  feed values to MRTG.  This was
+written   in  RedHat Linux  3.0.3 with    a   2.0.29 kernel  with perl
+5.003. Other SO's may vary. Use at your own risk :>
+
+As usual no  time  to write  much  documentation.  As usual  read  the
+source,   send   me  questions,  comments,   changes, improvements and
+patches.
+
+
+I have to thank the following people:
+
+- Tobias Oetiker <oetiker@ee.ethz.ch> and Dave Rand <dlr@bungi.com>
+for MRTG.
+
+-  Peter   W. Osel <pwo@guug.de> from  whom    I've ripped the README,
+INSTALL and COPYRIGHT file  format from his wonderfull mrtg-ping-probe
+:>.

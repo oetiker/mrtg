@@ -1,0 +1,59 @@
+#!/bin/csh
+
+# run this script ever 5 minutes via cron with a crontab something like:
+# 1,6,11,16,21,26,31,36,41,46,51,56 * * * * /home/admin/pmgraph/bin/getstats
+# note that this script calls MRTG
+
+# set the names or IP's of your Portmasters
+set Portmaster1="sconset.nantucket.net"
+set Portmaster2="scallop.nantucket.net"
+set Portmaster3="surfside.nantucket.net"
+
+# set the SNMP read community of your Portmasters
+set P1comm="public"
+set P2comm="public"
+set P3comm="public"
+ 
+# Grab a user count for each Portmaster via the snmpwalk command
+# You may need to use "snmpwalk -v 1" depending on your version of snmpwalk
+# You may also need to grep for something other than "23"
+set PM1=`snmpwalk $Portmaster1 $P1comm
+interfaces.ifTable.ifEntry.ifType|grep 23 |wc -l`
+set PM2=`snmpwalk $Portmaster2 $P2comm
+interfaces.ifTable.ifEntry.ifType|grep 23 |wc -l`
+set PM3=`snmpwalk $Portmaster3 $P3comm
+interfaces.ifTable.ifEntry.ifType|grep 23 |wc -l`
+
+# Get a grand total of users online 
+@ TOTAL=$PM1 + $PM2 + $PM3
+
+# MRTG needs 4 lines of input to be happy, we're only interested in the 2nd 
+# line and possibly the first so we fill the others with junk
+
+# write out the various logs
+# grand total of all your Portmasters
+        echo "0"    >  /home/admin/pmgraph/bin/pmgrand
+        echo $TOTAL >> /home/admin/pmgraph/bin/pmgrand
+        echo "0"    >> /home/admin/pmgraph/bin/pmgrand
+        echo "0"    >> /home/admin/pmgraph/bin/pmgrand
+
+# Portmaster #1
+        echo "0"    >  /home/admin/pmgraph/bin/pm1-log
+        echo $PM1   >> /home/admin/pmgraph/bin/pm1-log
+        echo "time" >> /home/admin/pmgraph/bin/pm1-log
+        echo "pm1"  >> /home/admin/pmgraph/bin/pm1-log
+
+# Portmaster #2
+        echo "0"    >  /home/admin/pmgraph/bin/pm2-log
+        echo $PM2   >> /home/admin/pmgraph/bin/pm2-log
+        echo "time" >> /home/admin/pmgraph/bin/pm2-log
+        echo "pm2"  >> /home/admin/pmgraph/bin/pm2-log
+
+# Portmaster #3
+        echo "0"    >  /home/admin/pmgraph/bin/pm3-log
+        echo $PM3   >> /home/admin/pmgraph/bin/pm3-log
+        echo "time" >> /home/admin/pmgraph/bin/pm3-log
+        echo "pm3"  >> /home/admin/pmgraph/bin/pm3-log
+
+# and finally, run MRTG specifying our customized .cfg file
+eval `/home/admin/pmgraph/bin/mrtg /home/admin/pmgraph/bin/portmaster.cfg`

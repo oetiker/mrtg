@@ -1,0 +1,62 @@
+
+	mrtg-ping-probe - A Round Trip Time Probe
+
+			for
+
+	MRTG - The Multi Router Traffic Grapher.
+
+
+Copyright (c) 1997 Peter W. Osel <pwo@guug.de>.  All rights reserved.
+
+
+See the file COPYRIGHT in the distribution for the exact terms.
+
+See the file INSTALL for installation instructions.
+
+
+mrtg-ping-probe is a ping probe for MRTG 2.x.  It is used to monitor
+the round trip time to a network device.  MRTG uses its output to
+generates graphs visualizing minimum and maximum round trip times.
+
+mrtg-ping-cfg generates mrtg.cfg file entries.  Feel free to further
+personalize the created configuration statements.
+Also take a look at mrtg.cfg-ping for some additional comments.
+
+mrtg-ping-probe runs on AIX, BSD/OS 2.1, FreeBSD/2.2.1, IRIX/6.2,
+Linux, Solaris 1 (aka SunOS 4), Solaris 2 (aka SunOS 5), and HP-UX 9.
+We depend on an external ping program, which is located in different
+places on different operating systems.  The required arguments differ
+also.
+
+If you add support for a new operating system, please send me the
+output of the command "uname -a", and a context diff of your changes.
+Once we find a ping perl module that reports the min, avg, and max
+round trip time, we will change this.
+
+
+IMPORTANT!  Communicate any problem and suggested patches to me, Peter
+W. Osel <pwo@guug.de>, so we can keep this distribution in sync.  If
+you have a problem, there will be someone else who had it or will have
+it too...
+
+If possible, send me patches such that the patch program will apply
+them.  Context diffs are the best, then normal diffs.  Do not send ed
+scripts, I have probably changed my copy since the version you got.
+
+
+
+I have to thank the following people
+
+Tobias Oetiker <oetiker@ee.ethz.ch> and Dave Rand <dlr@bungi.com>
+for writing MRTG in the first place.
+
+Wee-Meng LEE <leewm@sgp.hp.com> for porting mrtg-ping-probe to HPUX 9.x
+and writing cfgpingmaker, which I renamed to mrtg-ping-cfg and plan to
+rewrite it in perl as soon as I find the time (tm;-)
+
+Simon Amor <simon@foobar.co.uk> for his perl script.  It was a big help
+and motivation to get mrtg-ping-probe started.
+
+Fabrizio Pivari <Fabrizio.Pivari@agip.it> for adding AIX support.
+
+Mick Ghazey <mick@lowdown.com> for triggering the port to Linux.

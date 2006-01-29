@@ -1,0 +1,81 @@
+#!/usr/bin/perl 
+#
+# rachel polanskis - 240297
+# this script relies on the sendmail.st file being activated.
+# the data is called via "mailstats" which comes with SunOS/Solaris.
+# mailstats is run out of inetd, on port 7256.
+# 
+require 5.002;
+use strict;
+use Socket;
+
+my ($remote, $port, $iaddr, $paddr, $proto, $line, $count, $oldfrm, $oldto, $curfrm, $curto, $msgsfrm, $msgsto, $a, $b, $c, $d);
+
+##
+# open the old stats file for reading - we use this to get the differences
+#
+# you might need to create this file first, starting it with a single '0'
+
+open (OLD,"</tmp/mailstat.old") or die "can't open file!\n";
+
+# read the old data 
+#
+while (<OLD>) {
+
+if ($. == "1") {
+   $count = $_;
+  }
+
+($oldfrm, $oldto) = split (' ',$count);
+}
+close (OLD);
+
+##
+# Straight out of the perl 5 Camel - pp. 349
+#
+# Adjust this to your own host.
+
+$remote = "juno";
+$port = "7256";
+
+if ($port =~ /\D/) {$port = getservbyname ($port, 'tcp')}
+die "No port" unless $port;
+
+$iaddr = inet_aton($remote) or die "no host: $remote";
+$paddr = sockaddr_in($port, $iaddr);
+
+$proto = getprotobyname ('tcp');
+
+socket (SOCK, PF_INET, SOCK_STREAM, $proto) or die "socket: $!";
+connect (SOCK, $paddr) or die "connect: $!";
+
+##
+# munge the output data
+#
+while (<SOCK>) {
+
+   if ($. == "5" ) {
+   $line = $_;
+   ($a, $curfrm, $b, $curto, $c, $d) = split(' ',$line);
+
+# do some sums
+$msgsfrm = $curfrm - $oldfrm;
+$msgsto = $curto - $oldto;
+chomp $msgsfrm;
+chomp $msgsto;
+
+# open the old file for overwrite
+open (OLD,">/tmp/mailstat.old") or die "can't open file!\n";
+
+# print the data for mrtg
+  print "$msgsfrm\n$msgsto\n1\n$remote\n";
+
+# print the data to the old file
+  print OLD "$curfrm $curto\n";
+
+    } #endif
+
+}
+
+close (SOCK) or die "close: $!";
+exit;
