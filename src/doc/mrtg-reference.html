@@ -130,7 +130,7 @@
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
-<p>mrtg-reference - MRTG 2.10.15 configuration reference</p>
+<p>mrtg-reference - MRTG 2.11.1 configuration reference</p>
 <p>
 </p>
 <hr />
@@ -1376,7 +1376,7 @@ options, a fifth colour-name colour-value pair is required there.
 <dd>
 There are some ISPs who use the average Peak values to bill their customers.
 Using this option MRTG displays these values for each graph. The value is
-built by averaging the max 5 minute traffic avarage for each 'step' shown in
+built by averaging the max 5 minute traffic average for each 'step' shown in
 the graph. For the Weekly graph this means that it builds the average of all
 2 hour intervals 5 minute peak values. (Confused? Thought so!)
 </dd>
@@ -1405,6 +1405,15 @@ read. This means that rateup does not have to build the difference between
 the current and the last value read from the data source. The value obtained is
 still divided by the elapsed time between the current and the last reading, which makes
 it different from the 'gauge' option. Useful for external data gatherers.
+</dd>
+<p></p>
+<dt><strong><a name="item_derive">derive</a></strong><br />
+</dt>
+<dd>
+If you are using rrdtool as logger/grapher you can use a third type of data
+source. Derive is like counter, except that it is not required to go UP all
+the time. It is useful for situations where the change of some value should be
+graphed.
 </dd>
 <p></p>
 <dt><strong><a name="item_unknaszero">unknaszero</a></strong><br />
@@ -1486,6 +1495,38 @@ PNGTitle if one is given
 When using rateup for graph generation, this option will print a
 timestamp in the graph it generates, including a timezone if one is specified
 by the 'Timezone' parameter.
+</dd>
+<p></p>
+<dt><strong><a name="item_logscale">logscale</a></strong><br />
+</dt>
+<dd>
+The <strong>logscale</strong> option causes rateup to display the data with the Y axis
+scaled logarithmically.  Doing so allows the normal traffic to occupy
+the majority of the vertical range, while still showing any spikes at
+their full height.
+</dd>
+<dd>
+<p><strong>logscale</strong> displays all the available data and will always produce
+well-behaved graphs.  People often consider a logarithmically scaled graph
+counterintuitive, however, and thus hard to interpret.</p>
+</dd>
+<p></p>
+<dt><strong><a name="item_secondmean">secondmean</a></strong><br />
+</dt>
+<dd>
+The <strong>secondmean</strong> option sets the maximum value on the graph to the mean
+of the data greater than the mean of all data.  This produces a graph
+that focuses more on the typical data, while clipping large peaks.
+</dd>
+<dd>
+<p>Using <strong>secondmean</strong> will give a more intutive linearly
+scaled graph, but can result in a uselessly high or low scale in some
+rare situations (specifically, when the data includes a large portion
+of values far from the actual mean)</p>
+</dd>
+<dd>
+<p>If a target includes both <strong>logscale</strong> and <strong>secondmean</strong> in the options, the
+<strong>secondmean</strong> takes precedence.</p>
 </dd>
 <p></p></dl>
 <p>Example:</p>
@@ -1620,22 +1661,25 @@ the selected timezone.</p>
 <p>Example:</p>
 <pre>
  Timezone[myrouter]: Japan</pre>
-<p>The Timezone is the standard Solaris timezone, ie Japan, Hongkong,
+<p>The Timezone is the standard timezone of your system, ie Japan, Hongkong,
 GMT, GMT+1 etc etc.</p>
 <p>
 </p>
 <h2><a name="weekformat">Weekformat</a></h2>
-<p>By default, mrtg (actually rateup) uses the <code>strftime(3)</code> '%W' option
-to format week numbers in the monthly graphs.  The exact semantics
-of this format option vary between systems.  If you find that the
-week numbers are wrong, and your system's <code>strftime(3)</code> routine
-supports it, you can try another format option.  The POSIX '%V'
-option seems to correspond to a widely used week numbering
-convention.  The week format character should be specified as a
-single letter; either W, V, or U.</p>
+<p>By default, mrtg (actually rateup) uses the <code>strftime(3)</code> '%V' option to
+format week numbers in the monthly graphs.  The exact semantics of this
+format option vary between systems.  If you find that the week numbers are
+wrong, and your system's <code>strftime(3)</code> routine supports it, you can try
+another format option.  The POSIX '%V' option correspond to the widely used
+ISO 8601 week numbering standard.  The week format character should be
+specified as a single letter; either W, V, or U.</p>
+<p>The UNIX version of rateup uses the libc implementation of strftime.
+On Windows, the native strftime implementation does not know about
+%V. So there we use a different implementation of strftime that does
+support %V.</p>
 <p>Example:</p>
 <pre>
- Weekformat[myrouter]: V</pre>
+ Weekformat[myrouter]: W</pre>
 <p>
 </p>
 <h2><a name="rrdrowcount">RRDRowCount</a></h2>
@@ -1846,10 +1890,11 @@ will go to <em>filename</em>. If you are running on Win32 you can specify <stron
 which will send all error to the windows event log.
 </dd>
 <dd>
-<p><strong>NOTE:</strong>Note, there is no Message DLL for mrtg. This has the side effect
-that the windows event logger will display a nice message with every entry
-in the event log, complaing about the fact that mrtg has no message dll. If
-any of the Windows folks want to contribute one, they are welcome.</p>
+<p><strong>NOTE:</strong> Note, there is no Message DLL for mrtg included with mrtg. This has
+the side effect that the windows event logger will display a nice message
+with every entry in the event log, complaing about the fact that mrtg has no
+message dll. If you go to the mrtg contrib download area (on the website)
+you will find the mrtg-message-dll.zip which does contain such a thing.</p>
 </dd>
 <p></p>
 <dt><strong><a name="item__2d_2ddaemon"><strong>--daemon</strong></a></strong><br />

@@ -3,15 +3,15 @@ CFGMAKER(1)                    mrtg                   CFGMAKER(1)
 
 
 NNAAMMEE
-       cfgmaker - Creates mrtg.cfg files (for mrtg-2.10.15)
+       cfgmaker - Creates mrtg.cfg files (for mrtg-2.11.1)
 
 SSYYNNOOPPSSIISS
        cfgmaker [options] [community@]router [[options] [commu-
        nity@]router ...]
 
 OOPPTTIIOONNSS
-        --ifref=nr        interface references by Interface Number (default)
-        --ifref=ip                         ... by Ip Address
+        --ifref=nr    interface references by Interface Number (default)
+        --ifref=ip                     ... by Ip Address
         --ifref=eth                        ... by Ethernet Number
         --ifref=descr                      ... by Interface Description
         --ifref=name                       ... by Interface Name
@@ -78,11 +78,11 @@ OOPPTTIIOONNSS
                           Specify default SNMP options to be appended to all
                           routers following.  Individual fields can be empty.
                           Routers following might override some or all of the
-                          options given to --snmp-options.
+                  options given to --snmp-options.
 
         --dns-domain=domain
-                          Specifies a domain to append to the name of all
-                          routers following.
+                  Specifies a domain to append to the name of all
+                  routers following.
 
         --nointerfaces    Don't do generate any configuration lines for interfaces,
                           skip the step of gathering interface information and
@@ -560,6 +560,10 @@ DDEETTAAIILLSS OONN FFIILLTTEERRSS
            IOS.  If it is not a vlan interface, will return
            undef.
 
+       $$iiff__MMTTUU
+           Returns the Maximum Transfer Unit associated with a
+           specific port.
+
        Besides that, you can also use the variables defined for
        templates below.  Further, all the variables available in
        cfgmaker is at the scripts disposal even if the use of
@@ -919,10 +923,6 @@ DDEETTAAIILLSS OONN TTEEMMPPLLAATTEESS
            and appended with a space character (newlines at the
            end of the string are not touched).
 
-
-
-
-
        EExxaammppllee TTeemmppllaattee FFiilleess
 
        _T_e_m_p_l_a_t_e _E_x_a_m_p_l_e _1_: _E_l_i_m_i_n_a_t_i_n_g _R_e_j_e_c_t_e_d _T_a_r_g_e_t_s _F_r_o_m
@@ -1130,4 +1130,4 @@ CCOOPPYYRRIIGGHHTT
 
 
 
-2.10.15                     2004-08-08                CFGMAKER(1)
+2.11.1                      2005-01-06                CFGMAKER(1)

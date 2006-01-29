@@ -1,6 +1,6 @@
 =head1 NAME
 
-mrtg-reference - MRTG 2.10.15 configuration reference
+mrtg-reference - MRTG 2.11.1 configuration reference
 
 =head1 OVERVIEW
 
@@ -1231,7 +1231,7 @@ options, a fifth colour-name colour-value pair is required there.
 
 There are some ISPs who use the average Peak values to bill their customers.
 Using this option MRTG displays these values for each graph. The value is
-built by averaging the max 5 minute traffic avarage for each 'step' shown in
+built by averaging the max 5 minute traffic average for each 'step' shown in
 the graph. For the Weekly graph this means that it builds the average of all
 2 hour intervals 5 minute peak values. (Confused? Thought so!)
 
@@ -1255,6 +1255,13 @@ read. This means that rateup does not have to build the difference between
 the current and the last value read from the data source. The value obtained is
 still divided by the elapsed time between the current and the last reading, which makes
 it different from the 'gauge' option. Useful for external data gatherers.
+
+=item derive
+
+If you are using rrdtool as logger/grapher you can use a third type of data
+source. Derive is like counter, except that it is not required to go UP all
+the time. It is useful for situations where the change of some value should be
+graphed. 
 
 =item unknaszero
 
@@ -1316,6 +1323,31 @@ PNGTitle if one is given
 When using rateup for graph generation, this option will print a
 timestamp in the graph it generates, including a timezone if one is specified
 by the 'Timezone' parameter.
+
+=item logscale
+
+The B<logscale> option causes rateup to display the data with the Y axis
+scaled logarithmically.  Doing so allows the normal traffic to occupy
+the majority of the vertical range, while still showing any spikes at
+their full height.
+
+B<logscale> displays all the available data and will always produce
+well-behaved graphs.  People often consider a logarithmically scaled graph
+counterintuitive, however, and thus hard to interpret.
+
+=item secondmean
+
+The B<secondmean> option sets the maximum value on the graph to the mean
+of the data greater than the mean of all data.  This produces a graph
+that focuses more on the typical data, while clipping large peaks.
+
+Using B<secondmean> will give a more intutive linearly
+scaled graph, but can result in a uselessly high or low scale in some
+rare situations (specifically, when the data includes a large portion
+of values far from the actual mean)
+
+If a target includes both B<logscale> and B<secondmean> in the options, the
+B<secondmean> takes precedence.
 
 =back
 
@@ -1455,23 +1487,27 @@ Example:
 
  Timezone[myrouter]: Japan
 
-The Timezone is the standard Solaris timezone, ie Japan, Hongkong,
+The Timezone is the standard timezone of your system, ie Japan, Hongkong,
 GMT, GMT+1 etc etc.
 
 =head2 Weekformat
 
-By default, mrtg (actually rateup) uses the strftime(3) '%W' option
-to format week numbers in the monthly graphs.  The exact semantics
-of this format option vary between systems.  If you find that the
-week numbers are wrong, and your system's strftime(3) routine
-supports it, you can try another format option.  The POSIX '%V'
-option seems to correspond to a widely used week numbering
-convention.  The week format character should be specified as a
-single letter; either W, V, or U.
+By default, mrtg (actually rateup) uses the strftime(3) '%V' option to
+format week numbers in the monthly graphs.  The exact semantics of this
+format option vary between systems.  If you find that the week numbers are
+wrong, and your system's strftime(3) routine supports it, you can try
+another format option.  The POSIX '%V' option correspond to the widely used
+ISO 8601 week numbering standard.  The week format character should be
+specified as a single letter; either W, V, or U.
+
+The UNIX version of rateup uses the libc implementation of strftime.
+On Windows, the native strftime implementation does not know about
+%V. So there we use a different implementation of strftime that does
+support %V.
 
 Example:
 
- Weekformat[myrouter]: V
+ Weekformat[myrouter]: W
 
 =head2 RRDRowCount
 
@@ -1688,10 +1724,11 @@ If this is set to writable filename, all output from mrtg (warnings, debug messa
 will go to I<filename>. If you are running on Win32 you can specify B<eventlog> instead of a filename
 which will send all error to the windows event log.
 
-B<NOTE:>Note, there is no Message DLL for mrtg. This has the side effect
-that the windows event logger will display a nice message with every entry
-in the event log, complaing about the fact that mrtg has no message dll. If
-any of the Windows folks want to contribute one, they are welcome.
+B<NOTE:> Note, there is no Message DLL for mrtg included with mrtg. This has
+the side effect that the windows event logger will display a nice message
+with every entry in the event log, complaing about the fact that mrtg has no
+message dll. If you go to the mrtg contrib download area (on the website)
+you will find the mrtg-message-dll.zip which does contain such a thing.
 
 =item B<--daemon>
 

@@ -29,6 +29,7 @@ lib/mrtg2/Pod/PlainText.pm
 lib/mrtg2/Pod/Select.pm
 lib/mrtg2/Pod/Usage.pm
 src/rateup.c
+src/strftime.c
 translate/
 contrib/
 doc/cfgmaker.1

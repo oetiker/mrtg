@@ -3,7 +3,7 @@ MRTG-REFERENCE(1)              mrtg             MRTG-REFERENCE(1)
 
 
 NNAAMMEE
-       mrtg-reference - MRTG 2.10.15 configuration reference
+       mrtg-reference - MRTG 2.11.1 configuration reference
 
 OOVVEERRVVIIEEWW
        The runtime behaviour of MRTG is governed by a configura-
@@ -1227,7 +1227,7 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
            There are some ISPs who use the average Peak values to
            bill their customers.  Using this option MRTG displays
            these values for each graph. The value is built by
-           averaging the max 5 minute traffic avarage for each
+           averaging the max 5 minute traffic average for each
            'step' shown in the graph. For the Weekly graph this
            means that it builds the average of all 2 hour inter-
            vals 5 minute peak values. (Confused? Thought so!)
@@ -1254,6 +1254,13 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
            between the current and the last reading, which makes
            it different from the 'gauge' option. Useful for
            external data gatherers.
+
+       derive
+           If you are using rrdtool as logger/grapher you can use
+           a third type of data source. Derive is like counter,
+           except that it is not required to go UP all the time.
+           It is useful for situations where the change of some
+           value should be graphed.
 
        unknaszero
            Log unknown data as zero instead of the default
@@ -1317,6 +1324,33 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
            including a timezone if one is specified by the 'Time-
            zone' parameter.
 
+       logscale
+           The llooggssccaallee option causes rateup to display the data
+           with the Y axis scaled logarithmically.  Doing so
+           allows the normal traffic to occupy the majority of
+           the vertical range, while still showing any spikes at
+           their full height.
+
+           llooggssccaallee displays all the available data and will
+           always produce well-behaved graphs.  People often con-
+           sider a logarithmically scaled graph counterintuitive,
+           however, and thus hard to interpret.
+
+       secondmean
+           The sseeccoonnddmmeeaann option sets the maximum value on the
+           graph to the mean of the data greater than the mean of
+           all data.  This produces a graph that focuses more on
+           the typical data, while clipping large peaks.
+
+           Using sseeccoonnddmmeeaann will give a more intutive linearly
+           scaled graph, but can result in a uselessly high or
+           low scale in some rare situations (specifically, when
+           the data includes a large portion of values far from
+           the actual mean)
+
+           If a target includes both llooggssccaallee and sseeccoonnddmmeeaann in
+           the options, the sseeccoonnddmmeeaann takes precedence.
+
        Example:
 
         Options[myrouter]: growright, bits
@@ -1346,6 +1380,10 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
         ShortLegend[myrouter]: m/h
         kMG[myrouter]: n,u,m,,k,M,G,T,P
         options[myrouter]: perhour
+
+
+
+
 
        CCoolloouurrss
 
@@ -1381,10 +1419,6 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
 
         Colours[myrouter]: GREEN#00eb0c,BLUE#1000ff,DARK GREEN#006600,VIOLET#ff00ff
 
-
-
-
-
        BBaacckkggrroouunndd
 
        With the _B_a_c_k_g_r_o_u_n_d tag you can configure the background
@@ -1413,6 +1447,8 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
            The strings for the colour legend.
 
        Example:
+
+
 
          YLegend[myrouter]: Bits per Second
          ShortLegend[myrouter]: b/s
@@ -1443,24 +1479,29 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
 
         Timezone[myrouter]: Japan
 
-       The Timezone is the standard Solaris timezone, ie Japan,
-       Hongkong, GMT, GMT+1 etc etc.
+       The Timezone is the standard timezone of your system, ie
+       Japan, Hongkong, GMT, GMT+1 etc etc.
 
        WWeeeekkffoorrmmaatt
 
        By default, mrtg (actually rateup) uses the _s_t_r_f_t_i_m_e(3)
-       '%W' option to format week numbers in the monthly graphs.
+       '%V' option to format week numbers in the monthly graphs.
        The exact semantics of this format option vary between
        systems.  If you find that the week numbers are wrong, and
        your system's _s_t_r_f_t_i_m_e(3) routine supports it, you can try
-       another format option.  The POSIX '%V' option seems to
-       correspond to a widely used week numbering convention.
-       The week format character should be specified as a single
-       letter; either W, V, or U.
+       another format option.  The POSIX '%V' option correspond
+       to the widely used ISO 8601 week numbering standard.  The
+       week format character should be specified as a single let-
+       ter; either W, V, or U.
+
+       The UNIX version of rateup uses the libc implementation of
+       strftime.  On Windows, the native strftime implementation
+       does not know about %V. So there we use a different imple-
+       mentation of strftime that does support %V.
 
        Example:
 
-        Weekformat[myrouter]: V
+        Weekformat[myrouter]: W
 
        RRRRDDRRoowwCCoouunntt
 
@@ -1690,12 +1731,13 @@ CCOOMMMMAANNDD LLIINNEE OOPPTTIIOONNSS
            eevveennttlloogg instead of a filename which will send all
            error to the windows event log.
 
-           NNOOTTEE::Note, there is no Message DLL for mrtg. This has
-           the side effect that the windows event logger will
-           display a nice message with every entry in the event
-           log, complaing about the fact that mrtg has no message
-           dll. If any of the Windows folks want to contribute
-           one, they are welcome.
+           NNOOTTEE:: Note, there is no Message DLL for mrtg included
+           with mrtg. This has the side effect that the windows
+           event logger will display a nice message with every
+           entry in the event log, complaing about the fact that
+           mrtg has no message dll. If you go to the mrtg contrib
+           download area (on the website) you will find the
+           mrtg-message-dll.zip which does contain such a thing.
 
        ----ddaaeemmoonn
            Put MRTG into the background, running as a daemon.
@@ -1735,6 +1777,9 @@ CCOOMMMMAANNDD LLIINNEE OOPPTTIIOONNSS
 EEXXAAMMPPLLEESS
        MMiinniimmaall mmrrttgg..ccffgg
 
+
+
+
         WorkDir: /usr/tardis/pub/www/stats/mrtg
         Target[r1]: 2:public@myrouter.somplace.edu
         MaxBytes[r1]: 8000
@@ -1773,4 +1818,4 @@ AAUUTTHHOORR
 
 
 
-2.10.15                     2004-08-08          MRTG-REFERENCE(1)
+2.11.1                      2005-01-06          MRTG-REFERENCE(1)

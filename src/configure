@@ -3526,7 +3526,7 @@ if test "${with_png_inc+set}" = set; then
 fi;
 
 
-LDFLAGS="${LDFLAGS} ${MATHLIBS}"
+LIBS="${LIBS} ${MATHLIBS}"
 
 GDEXTRALIB=""
 echo "$as_me:$LINENO: checking for gdImageGif in -lgd" >&5

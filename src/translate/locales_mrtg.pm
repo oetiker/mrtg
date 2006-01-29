@@ -34,6 +34,10 @@
 ###      => »Æ»ª¶° <webmaster@kingisme.com>
 ###	 => QQ:582955 »¶Ó­ÌÖÂÛFreeBSD
 ###	 => ÐÞÕýÁËÔ­À´µÄ´íÎó.·¢²¼ÐÂ°æ±¾.
+###      cn/ÖÐÎÄºº×Ö
+###      => Àî³¿¹â <zurkabsd@yahoo.com.cn>
+###	 => MSN:chenguang2001@hotmail.com FreeBSD Fan
+###	 => MRTGÍêÃÀºº»¯.
 ###      Croatian/Hrvatski
 ###      => Dinko Korunic <kreator@fly.srk.fer.hr>
 ###      Czech/Èesky
@@ -143,6 +147,7 @@ $VERSION = '0.07';
   &bulgarian
   &catalan
   &chinese
+  &cn
   &croatian
   &czech
   &danish
@@ -195,6 +200,8 @@ $VERSION = '0.07';
   'catalan'	 => \&catalan,
   'chinese'          => \&chinese,
   '¼òÌåÖÐÎÄ'         => \&chinese,
+  'cn'          => \&cn,
+  'ÖÐÎÄºº×Ö'         => \&cn,
   'croatian'	 => \&croatian,
   'hrvatski'       => \&croatian,
   'czech' 	 => \&czech,
@@ -315,6 +322,13 @@ $VERSION = '0.07';
     <NOBR><A HREF=\"http://www.kingisme.com\">»Æ»ª¶°</A>
   <A HREF=\"mailto:webmaster\@kingisme.com\">
   &lt;webmaster\@kingisme.com&gt;</A></NOBR>",
+# cn/ÖÐÎÄºº×Ö
+   'cn' =>
+   "  <HR NOSHADE>
+    MRTGÍêÃÀºº»¯£º
+    <NOBR><A HREF=\"http://horus.kingisme.com\">Àî³¿¹â</A>
+  <A HREF=\"mailto:zurkabsd\@yahoo.com.cn\">
+  &lt;zurkabsd\@yahoo.com.cn&gt;</A></NOBR>",
 # Croatian/hrvatski
    'croatian' =>
    "  <HR NOSHADE>
@@ -583,6 +597,7 @@ $credits::LOCALE{'brazil'}=$credits::LOCALE{'brazilian'};
 $credits::LOCALE{'áúëãàðñêè'}=$credits::LOCALE{'bulgarian'};
 $credits::LOCALE{'catalan'}=$credits::LOCALE{'catalan'};
 $credits::LOCALE{'¼òÌåÖÐÎÄ'}=$credits::LOCALE{'Chinese'};
+$credits::LOCALE{'ÖÐÎÄºº×Ö'}=$credits::LOCALE{'cn'};
 $credits::LOCALE{'hrvatski'}=$credits::LOCALE{'croatian'};
 $credits::LOCALE{'czech'}=$credits::LOCALE{'czech'};
 $credits::LOCALE{'dansk'}=$credits::LOCALE{'danish'};
@@ -1139,6 +1154,117 @@ foreach $i (keys %translations)
       'Apr'       => '£´ÔÂ',      'May'       => '£µÔÂ',        'Jun'       => '£¶ÔÂ',
       'Jul'       => '£·ÔÂ',      'Aug'       => '£¸ÔÂ',        'Sep'       => '£¹ÔÂ', 
       'Oct'       => '10ÔÂ',      'Nov'       => '11ÔÂ',        'Dec'       => '12ÔÂ' 
+
+	);
+
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+    {
+	  if($foo[3]=~(/(.*)at(.*)/))
+        { 
+          @quux=split(/at/,$foo[3]);
+	      $foo[3]=$quux[0];
+          $foo[4]=$quux[1]; 
+        };
+      return "$foo[3]Äê $month{$foo[2]} $foo[1] ÈÕ £¬$wday{$foo[0]} £¬$foo[4]"; 
+    };
+
+#
+# handle two different time/date formats:  
+# return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
+#
+
+# handle nontranslated strings which ought to be translated
+# print STDERR "$_\n" or print DEBUG "not translated $_";
+# but then again we might not want/need to translate all strings
+  
+  return $string;
+
+};
+# cn s-Chinese
+
+sub cn
+{
+  my $string = shift;
+return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+
+  %translations =
+  (  
+     'charset=iso-8859-1'                     => 'charset=gb2312',
+     'Maximal 5 Minute Incoming Traffic'      => '5·ÖÖÓ×î´óÁ÷ÈëÁ¿',
+     'Maximal 5 Minute Outgoing Traffic'      => '5·ÖÖÓ×î´óÁ÷³öÁ¿',
+     'the device'                             => 'Éè±¸',
+     'The statistics were last updated(.*)'   => 'Í³¼Æ×îºó¸üÐÂÊ±¼ä£º$1',
+     ' Average\)</B><BR>'                     => ' Æ½¾ù)</B><BR>',
+     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Æ½¾ù$1',
+     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>×î´ó$1',
+     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>µ±Ç°$1',
+     'version'                                => '°æ±¾',
+     '<B>`Daily\' Graph \((.*) Minute'        => '<B>"Ã¿ÈÕ" Í¼±í ($1 ·ÖÖÓ',
+     '<B>`Weekly\' Graph \(30 Minute'         => '<B>"Ã¿ÖÜ" Í¼±í (30 ·ÖÖÓ' ,
+     '<B>`Monthly\' Graph \(2 Hour'           => '<B>"Ã¿ÔÂ" Í¼±í (2 Ð¡Ê±',
+     '<B>`Yearly\' Graph \(1 Day'             => '<B>"Ã¿Äê" Í¼±í (1 Ìì', 
+     'Incoming Traffic in (\S+) per Second'   => 'Ã¿ÃëÁ÷Èë $1 Á¿',
+     'Outgoing Traffic in (\S+) per Second'   => 'Ã¿ÃëÁ÷³ö $1 Á¿',
+     'at which time (.*) had been up for(.*)' => '´ËÊ± $1 ÒÑÔË×÷ÁË£º $2 ',
+     '(.+)/s$'                                => '$1/Ãë',
+     '(.+)/min$'                              => '$1/·Ö',
+     '(.+)/h$'                                => '$1/Ê±',
+     # 'Bits'                                 => 'Bits',
+     # 'Bytes'                                => 'Bytes'
+     '&nbsp;In:</FONT>'                       => '&nbsp;Á÷Èë£º</FONT>',
+     '&nbsp;Out:</FONT>'                      => '&nbsp;Á÷³ö£º</FONT>',
+     '&nbsp;Percentage</FONT>'                => '&nbsp;°Ù·Ö±È£º</FONT>',
+     'Ported to OpenVMS Alpha by'             => 'ÒÆÖ²µ½ OpenVMS Õß', 
+     'Ported to WindowsNT by'                 => 'ÒÆÖ²µ½ WindowsNT Õß',
+     'and'                                    => 'ºÍ',
+     '^GREEN'                                 => 'ÂÌ',
+     'BLUE'                                   => 'À¶',
+     'DARK GREEN'                             => 'Ä«ÂÌ',
+     'MAGENTA'                                => '×Ï',
+     'AMBER'                                  => 'çúçêÉ«'
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => 'ÐÇÆÚÌì',    'Sun' => 'ÈÕ',
+      'Monday'    => 'ÐÇÆÚÒ»',    'Mon' => 'Ò»',
+      'Tuesday'   => 'ÐÇÆÚ¶þ',    'Tue' => '¶þ',
+      'Wednesday' => 'ÐÇÆÚÈý',    'Wed' => 'Èý',
+      'Thursday'  => 'ÐÇÆÚËÄ',    'Thu' => 'ËÄ',
+      'Friday'    => 'ÐÇÆÚÎå',    'Fri' => 'Îå',
+      'Saturday'  => 'ÐÇÆÚÁù',    'Sat' => 'Áù' 
+
+    );
+
+%month = 
+    (
+      'January'   => ' Ò» ÔÂ',    'February'  => ' ¶þ ÔÂ',      'March'     => ' Èý ÔÂ',
+      'April'     => ' ËÄ ÔÂ',    'May'       => ' Îå ÔÂ',      'June'      => ' Áù ÔÂ', 
+      'July'      => ' Æß ÔÂ',    'August'    => ' °Ë ÔÂ',      'September' => ' ¾Å ÔÂ', 
+      'October'   => ' Ê® ÔÂ',    'November'  => 'Ê®Ò»ÔÂ',      'December'  => 'Ê®¶þÔÂ', 
+      'Jan'       => '£±ÔÂ',      'Feb'       => '£²ÔÂ',        'Mar'       => '£³ÔÂ',
+      'Apr'       => '£´ÔÂ',      'May'       => '£µÔÂ',        'Jun'       => '£¶ÔÂ',
+      'Jul'       => '£·ÔÂ',      'Aug'       => '£¸ÔÂ',        'Sep'       => '£¹ÔÂ', 
+      'Oct'       => '£±£°ÔÂ',      'Nov'       => '£±£±ÔÂ',        'Dec'       => '£±£²ÔÂ' 
 
 	);
 
