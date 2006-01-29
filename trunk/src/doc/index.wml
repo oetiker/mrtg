@@ -1,0 +1,350 @@
+<define-tag LINK endtag=required>
+<preserve TITLE />
+<preserve HREF />
+<set-var %attributes />
+<P>
+<table border=0 cellpadding=0 cellspacing=0>
+<tr><td colspan=2>\
+   <if <get-var HREF /> <group <A HREF="<get-var HREF />">>
+   />\
+   <B><get-var TITLE /></B>\
+   <if <get-var HREF /> <group </A>>
+   />\
+   <hspace 10>
+   <if <match "<get-var HREF />" "^(ht|f)tp://" /> 
+     ""
+     "<!--#config timefmt=\"%e&nbsp;%b&nbsp;%Y\" -->(<!--#flastmod virtual=\"<get-var HREF />\"-->)"
+   />
+</TD>
+</TR>
+<TR><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+    <TD>%body</TD>
+</TR>
+</TABLE>
+</P>
+<restore HREF />
+<restore TITLE />
+</define-tag>
+
+<define-tag H2 endtag=required>
+<preserve NAME />
+<set-var %attributes />
+<TABLE WIDTH="100%" BORDER=0 CELLSPACING=0 CELLPADDING=4>
+<TR><TD>&nbsp;</TD></TR>
+<TR><TD BGCOLOR=silver>
+<A NAME="<get-var NAME />"></A>\
+<FONT SIZE="5"><B>%body</B></FONT></TD></TR></TABLE>
+<restore NAME />
+</define-tag>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>MRTG: The Multi Router Traffic Grapher</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#990200" VLINK="#006342" >
+<P ALIGN="CENTER">
+<IMG ALT="The Multi Router Traffic Grapher"
+     SRC="mrtg-ti.png"
+     HEIGHT=160 WIDTH=479></P>
+<!-- mirror-specific-text -->
+<P ALIGN="CENTER">Latest Release: MRTG 2.9.29</P>
+
+<H2 NAME="CRED">Credits</H2>
+
+<P>
+<TABLE CELLSPACING=0 CELLPADDING=1><TR>
+  <TD VALIGN=top>Programming:</TD>
+  <TD>
+      <A HREF="http://people.ee.ethz.ch/~oetiker">Tobias Oetiker</A>
+      <A HREF="mailto:oetiker@ee.ethz.ch">&lt;oetiker@ee.ethz.ch&gt;</A>,
+      <A HREF="http://www.bungi.com">Dave Rand</A>
+      <A HREF="mailto:dlr@bungi.com">&lt;dlr@bungi.com&gt;</A>
+      <BR>and many contributors from the global Village<BR>
+  </TD>
+</TR><TR>
+  <TD VALIGN=top>DNS Reflectors:</TD>
+  <TD><A HREF="http://www.mrtg.org">www.mrtg.org</A> (by <A HREF="mailto:tkennedy@yellowbrix.com">Tim Kennedy</A> of <A HREF="http://www.yellowbrix.com">YellowBrix</A>, Inc)<BR>
+      <A HREF="http://mrtg.eu.org">mrtg.eu.org</A> (by Michel Renfer of <A HREF="http://www.lan.ch/">LAN Services AG</A>)<BR>
+  </TD>
+</TR><TR>
+<TD VALIGN=top>WWW Mirrors:</TD>
+  <TD>
+      <A HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/">Swiss Original</A>,
+      <A HREF="http://mrtg.alverte.com.ar">AR</A><!-- "Alverte, Pablo" <pablo.alverte@comsat.com.ar> -->,
+      <A HREF="http://mrtg-fr.agarik.com">FR</A><!--Laurent SEROR seror@agarik.com-->,
+      <A HREF="http://mirrors.pmmf.hu/linux/mrtg/">HU</A><!--KOCZKA Barna <barna@siker.hu>-->,
+      <A HREF="http://mrtg.ca">mrtg.ca</A><!--Chris Phillips <chris@bchosting.com>-->,      
+#      <A HREF="http://mrtg.hdl.com/">USA</A><!--Steve Pierce Steve@HDL.com-->,
+      <A HREF="http://www.mirrors.wiretapped.net/security/network-monitoring/mrtg/">AU</A><!-- Grant Bayley <gbayley@ausmac.net>  -->,
+      <A HREF="http://mrtg.planetmirror.com">AU</A><!-- jason andrade <jason@dstc.edu.au> -->,
+      <A HREF="http://mrtg.qeta.net">AT</A><!--  karner@qeta.net  -->,
+      <A HREF="http://mrtg.keznet.co.uk/">UK</A><!--Graeme Fowler <graeme@graemef.net>-->,
+      <A HREF="http://www.mrtg.jp/en/">www.mrtg.jp</A><!-- Jun Kuriyama (kuriyama@imgsrc.co.jp)-->,
+      <A HREF="http://www.ayamura.org/mrtg/">JP</A><!--Ayamura Kikuchi ayamura@ayamura.org-->,
+      <A HREF="http://www.mrtg.cz">www.mrtg.cz</A><!--Martin Och martin.och@cs-compex.cz-->,
+      <A HREF="http://mrtg.matrix.com.br">BR</A><!--Roberto Gaiser gaiser@matrix.com.br-->,
+      <A HREF="http://mrtg.mirrors.ndsoftwarenet.com">FR</A><!--NDSoftware <ndsoftware@ndsoftware.net>-->,
+      <A HREF="http://mrtg.pop-mg.com.br/mrtg.html">BR</A><!-- Leandro de Faria Freitas freitas@dcc.ufmg.br -->,
+      <A HREF="http://mrtg.histeria.pl">PL</A><!-- Kowalski Pawel <argail@histeria.pl> -->,    
+      <A HREF="http://www.mrtg.it/">www.mrtg.it</A><!--Vicki Vinci root@power.it -->,
+      <A HREF="http://www.mrtg.biz/">www.mrtg.biz</A><!--Vicki Vinci root@power.it -->,
+      <A HREF="http://ftp.heanet.ie/mirrors/people.ee.ethz.ch/%257Eoetiker/webtools/">IE</A><!-- Colm MacCárthaigh <colm.maccarthaigh@heanet.ie> -->,
+      <A HREF="http://mirror.bezeqint.net/mrtg/">IL</A><!-- Yosi Zaharur <YosiZ@BEZEQINT.CO.IL> -->,
+      <A HREF="http://mirror.nucba.ac.jp/mrtgwww/">JP</A><!--  kurimotohiroyuki <hiroyuki@nucba.ac.jp> -->.
+      <A HREF="http://mrtg.openunion.org/">CN</A><!--  leechunxin <li@chunxin.org> -->.
+  </TD>
+</TR><TR>
+<TD VALIGN=top>FTP Mirrors:</TD>
+  <TD>
+      <A HREF="ftp://ftp.sunet.se/pub/network/monitoring/mrtg/">SE</A>,
+      <A HREF="ftp://ftp.chg.ru/pub/networking/management/mrtg/">RU</A><!-- Dima Sivachenko dima@Chg.RU-->,
+      <A HREF="ftp://ftp.mirrors.wiretapped.net/pub/mrtg/">AU</A><!-- Grant Bayley <gbayley@ausmac.net>  -->,
+      <A HREF="ftp://ftp.planetmirror.com/pub/oetiker/webtools/mrtg/">AU</A><!-- jason andrade <jason@dstc.edu.au> -->,
+      <A HREF="ftp://mrtg.pop-mg.com.br/pub/mrtg/pub">BR</A><!-- Leandro de Faria Freitas freitas@dcc.ufmg.br -->,
+      <A HREF="ftp://ftp.130th.net/pub/mirror/mrtg">US</A><!-- Miha <miha@130th.net>  -->,
+      <A HREF="ftp://ftp.exobit.org/pub/monitoring/mrtg/">US</A><!-- Jeffrey Meltzer meltzer@yankeebaseball.com -->,
+      <A HREF="ftp://ftp.ou.edu/mirrors/mrtg/">US</A><!-- Brian C. Burkhart brian@ou.edu -->,
+      <A HREF="ftp://ftp.azc.uam.mx/mirrors/mrtg">MX</A><!-- Juan Carlos Pedral  jpedral@correo.azc.uam.mx -->,
+      <A HREF="ftp://ftp2.cscnet.cz/pub/mirror/mrtg/">CZ</A><!--Martin Och martin.och@cs-compex.cz-->,
+      <A HREF="ftp://ftp.unipi.it/pub/mirror/mrtg">IT</A><!-- Stefano Suin <stefano@unipi.it> -->,
+      <A HREF="ftp://venom.ath.cx/mirror/mrtg/">IT</A><!-- Matteo <drummino@yahoo.com> -->,
+      <A HREF="ftp://ftp.heanet.ie/pub/oetiker/mrtg/">IE</A><!-- Colm MacCárthaigh <colm.maccarthaigh@heanet.ie> -->,
+      <A HREF="ftp://ftp.nctu.edu.tw/network/mrtg/">TW</A><!-- Gea-Suan Lin <gslin@ccca.nctu.edu.tw>  -->,
+      <A HREF="ftp://ftp.ayamura.org/pub/mrtg/">JP</A><!--Ayamura Kikuchi ayamura@ayamura.org-->,
+      <A HREF="ftp://mirror.nucba.ac.jp/mirror/mrtg/">JP</A><!-- kurimotohiroyuki <hiroyuki@nucba.ac.jp> -->,
+      <A HREF="ftp://sunsite.icm.edu.pl/pub/unix/net/mrtg/">PL</A><!--  Rafal Maszkowski <rzm@icm.edu.pl> -->,
+      <A HREF="ftp://net2b.co.pt/pub/mrtg/">PT</A><!--  Domingos Bruges < Domingos Bruges <domingos.bruges@iscte.pt> -->,
+(<small>Outdated:
+      <A HREF="ftp://ftp.ntnu.no/pub/network/monitoring/mrtg">NO</A><!--Trond.Kandal@itea.ntnu.no-->,
+      <A HREF="ftp://mirrors.bigfatpipe.net/pub/mrtg">US</A><!-- Christopher Allen [BigFatPipe.Net]" <cra@bigfatpipe.net> -->,
+      <A HREF="ftp://mirror.itcnet.ro/pub/mrtg">RO</A><!--Horia Moga horex@itcnet.ro-->,
+      <A HREF="ftp://ftp.onet.pl/pub/unix/network/mrtg/">Poland</A><!-- Zbigniew Zych zych@onet.pl-->,
+      <A HREF="ftp://ftp.gigabell.net/pub/mrtg">DE</A><!--Christian Kurz C.Kurz@Gigabell.Net-->,
+      <A HREF="ftp://mrtg.hdl.com/">US</A><!--Steve Pierce Steve@HDL.com-->
+</small>).
+  </TD>
+</TR><TR>
+<TD VALIGN=top>Translations:</TD>
+  <TD>
+<A HREF="http://www.mrtg.jp/doc/">Japanese by Team MTRG-JP e2j@mrtg.jp</A><!--rio  rio@tokyoalley.net-->,
+<A HREF="pt/">Portugese by Vicente Sloboda vicentesloboda@yahoo.com.br</A><!--Vicente Sloboda <vicentesloboda@yahoo.com.br> -->,
+<A HREF="es/">Espagnol by Luis Carlos Solano lsolano@racsa.co.cr</A><!-- Luis Carlos Solano <lsolano@racsa.co.cr> -->,
+# <A HREF="http://mrtg.mirrors.ndsoftware.net/fr/">French</A><!-- NDSoftware <ndsoftware@ndsoftware.net> -->.
+<a href="es_es/">Espa&ntilde;ol (ES) [2.9.21] by Daniel Palomo Ortega  dpalomo@zruspas.org</a>.   </td>
+  </TD></TR>
+</TABLE>
+
+
+<H2 NAME="WHAT">What is the Multi Router Traffic Grapher?</H2>
+
+<P>The Multi Router Traffic Grapher (MRTG) is a tool to monitor
+the traffic load on network-links.  MRTG generates HTML pages
+containing graphical images which provide a LIVE visual representation of
+this traffic. Check <A HREF="http://www.ee.ethz.ch/stats/mrtg/"
+>http://www.ee.ethz.ch/stats/mrtg/</A> for an example.  MRTG is based
+on Perl and C and works under UNIX and Windows NT. MRTG is being
+successfully used on <A HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/users.html">many sites
+around the net</A>.</P>
+
+<LINK TITLE="What is MRTG"
+      HREF="mrtg.html">
+A short overview on what MRTG is, with additional sections on history, and highlights.
+</LINK>
+
+
+<H2 NAME="LICE">License & MRTG Appreciators</H2>
+
+<P>MRTG is freely available under the terms of the <A
+HREF="http://www.gnu.org/copyleft/gpl.html">GNU&nbsp;General&nbsp;Public&nbsp;License</A></P>
+
+<LINK TITLE="MRTG Appreciators"
+      HREF="http://people.ee.ethz.ch/~oetiker/webtools/appreciators.txt">
+I spend a lot of my time maintaining MRTG, answering user requests
+and writing other open source software packages. I keep a list of people
+who have shown their appreciation for my work. For example by  <A HREF="http://people.ee.ethz.ch/~oetiker/wish">ordering CD or DVD media from my wish list</A>.
+</LINK>
+
+<H2 NAME="GET">Start Using MRTG</H2>
+
+<LINK TITLE="Download MRTG"
+      HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/pub/"> Get the
+latest Version of MRTG as <A
+SRC="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/pub/"> Unix source or as
+precompiled for Win32</A>.  (There are <A
+HREF="http://ftp.falsehope.com/home/gomez/">MRTG Linux RPMs</A>
+  by <A HREF="mailto:hgomez@users.sourceforge.net">Henri Gomez</A>)
+</LINK>
+
+<LINK TITLE="What is NEW"
+      HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/pub/CHANGES">
+The MRTG CHANGES file will give you all the details.
+</LINK>
+
+<LINK TITLE="UNIX MRTG Installation Guide"
+      HREF="unix-guide.html">
+If you plan to run mrtg on a unix machine (this is what I do). Then this guide will
+explain all the details about compiling and configuring the system.
+</LINK>
+
+<LINK TITLE="Win32 MRTG Installation Guide"
+      HREF="nt-guide.html">
+
+A fair number of people run MRTG successfully on Windows NT and 2k
+platforms. This guide shows you how this is done. If you insist on running
+MRTG on the Windows 95/98/ME spawns make friends with Jeff Liebermann or
+rather his <A HREF="http://www.cruzio.com/~jeffl/mrtg/docs/w95mrtg.htm">
+MRTG for Windows 95, 98, and ME</A> webpage.
+
+</LINK>
+
+
+<LINK TITLE="MRTG Compatibiliy Charts"
+      HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/compat.html">
+A list of devices and Operating-Systems known to work with mrtg.
+</LINK>
+
+<LINK TITLE="MRTG Companion Sites / Links"
+      HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/links.html">
+Many people have setup webpages telling about special configurations
+or applications of mrtg. Check out this huge list if you want to go further.
+</LINK>
+
+<LINK TITLE="MRTG User Pages"
+      HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/users.html">
+A large number of people are using MRTG all around the world. On this
+page you find a list of companies and individuals admitting to use mrtg.
+</LINK>
+
+
+<H2 NAME="START">MRTG Documentation Pack</H2>
+
+
+<LINK TITLE="CfgMaker Manual"
+      HREF="cfgmaker.html">
+MRTG configuration files can be generated automatically using the cfgmaker.
+</LINK>
+
+<LINK TITLE="IndexMaker Manual"
+      HREF="indexmaker.html">
+Index maker generates an overview page giving you the big picture on all the targets you are monitoring.
+</LINK>
+
+<LINK TITLE="MRTG Configuration Reference"
+      HREF="reference.html">
+The Installation guides above will give you a glimpse at what is
+possible with MRTG. But to get the full picture take a look at the
+configuration reference which explains all the configuration options
+available in MRTG.
+</LINK>
+
+<LINK TITLE="MRTG FAQ"
+      HREF="faq.html">
+Answers to Frequently Asked Questions regarding MRTG. And a pointer to the
+official 'Inofficial MRTG FAQ'
+</LINK>
+
+<LINK TITLE="MRTG Newsgroup and Mailinglist"
+      HREF="forum.html">
+Sometimes you just can't seem to find an answer to your MRTG problems even when spending a lot of time
+reading the documentation. Then it is best ask someone who can help.
+</LINK>
+
+<LINK TITLE="Somix MRTG Configuration Template Archive"
+      HREF="http://www.somix.com/support/mrtg_repository.php">
+Somix has a huge archive of custom templates to get information
+out of your SNMP manageable devices they probably didn't even know they had before your asked thenm :-).
+</LINK>
+
+<LINK TITLE="MRTG Implementation Manual by  florin.prunoiu@enterastream.com"
+      HREF="http://www.enterastream.com/whitepapers/mrtg/mrtg-manual.html">
+The manual covers all MRTG deployment topics, including the standard MRTG
+version and also the RRDTOOL/Database integration. This document is geared
+towards windows, but the configuration parts are not specific to windows.
+
+</LINK>
+
+
+<H2 NAME="MORE">Advanced User Information</H2>
+
+<LINK TITLE="Contribution Guidelines"
+      HREF="contrib.html">
+If you plan on contributing code to the MRTG project, please make sure you follow the guide lines
+listed in this document.
+</LINK>
+
+<LINK TITLE="RRDtool"
+      HREF="http://rrdtool.eu.org">
+Want to write your own monitoring application? Need more powerful graphing?
+Want to store non integer data? Need more speed? Make sure to check out
+my latest creation: RRDtool.
+</LINK>
+
+<LINK TITLE="RRDtool Integration"
+      HREF="mrtg-rrd.html">
+MRTG can be used together with RRDtool. Lifting it up to a new level of performance and flexibility.
+</LINK>
+
+<LINK TITLE="MRTG Logfile Format"
+      HREF="logfile.html">
+Some people want to use the data stored in the mrtg log files with programs of their own. Learn about the
+format of the MRTG log files.
+</LINK>
+
+<LINK TITLE="MRTG_lib Perl Module"
+      HREF="mrtglib.html">
+Parts of mrtg have been broken out into a Perl module called <CODE>MRTG_lib.pm</CODE>.
+Nothing beautiful, but at least there is some documentation for it. If you want
+to write something which parses the mrtg configuration file then this might be very useful.
+</LINK>
+
+<LINK TITLE="MIB Help"
+      HREF="mibhelp.html">
+Looking at Traffic rates is interesting, but your router can tell you much more. Use this
+document to get started.
+</LINK>
+
+<LINK TITLE="SQUID Monitoring"
+      HREF="squid.html">
+An Introduction on Using MRTG to monitor a SQUID web cache
+</LINK>
+
+<LINK TITLE="Webserver Configuration Hints"
+      HREF="webserver.html">
+Your web server is vital in making mrtg generated web pages and graphs available to your
+customers. This document gives some hints on how optimize your web server regarding mrtg.
+</LINK>
+
+
+<H2>Feedback</H2>
+
+<P>If you have any questions about this program,
+or have it up and running,<BR>
+we would like to hear from you: </P>
+
+<TABLE BORDER="0" CELLSPACING=0 CELLPADDING=0>
+  <TR>
+    <TD WIDTH=63><A
+    HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/mrtg.html"><IMG
+    ALT="" BORDER="0" SRC="mrtg-l.png"></A></TD>
+    <TD WIDTH=25><A
+    HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/mrtg.html"><IMG
+    ALT="MRTG" BORDER="0" SRC="mrtg-m.png"></A></TD>
+    <TD WIDTH=388><A
+    HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/mrtg.html"><IMG
+    ALT="" BORDER="0" SRC="mrtg-r.png"></A></TD>
+  </TR>
+</TABLE>
+<SPACER TYPE=VERTICAL SIZE=4>
+<TABLE BORDER="0" CELLSPACING=0 CELLPADDING=0>
+  <TR VALIGN=top>
+  <TD><FONT FACE="Arial,Helvetica" SIZE=2>
+  <A HREF="http://people.ee.ethz.ch/~oetiker">Tobias Oetiker</A>
+  <A HREF="mailto:oetiker@ee.ethz.ch">&lt;oetiker@ee.ethz.ch&gt;</A> 
+  and&nbsp;<A HREF="http://www.bungi.com">Dave&nbsp;Rand</A>&nbsp;<A HREF="mailto:dlr@bungi.com">&lt;dlr@bungi.com&gt;</A></FONT>
+  </TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>

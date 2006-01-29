@@ -1,0 +1,38 @@
+From: Butch Kemper <kemper@tstar.net>
+Date: Tue, 27 Apr 1999 12:11:55 -0500
+
+Tobias,
+
+I have included a new module "PMLines.pl" for the "contrib" directory which
+replaces "PM3Lines.pl" and the new module now supports both Livingston PM2
+and PM3 servers.
+
+Butch
+
+From: Carlos Canau <canau@dawn.EUnet.pt>
+
+	Dear Tobias,
+
+	Here's another script for contrib. It allows one to make a
+	graph of analog/ISDN lines on a Livingston Portmaster 3. No
+	docs, sorry... 
+
+	</canau
+
+From: Robert Boyle <robert@tellurian.com>
+Date: Tue, 19 Sep 2000 12:07:36 -0400
+
+Here is a new modified version of the PMlines.pl script. This one works 
+with the newest version of PortMaster 4 firmware and all other Portmaster 
+2/3/4 products.
+
+# 2000/9/19
+#
+# Modified again by Robert Boyle (robert@tellurian.net) to work with
+# all Lucent Portmaster 2/3/4 chassis. Now uses port speed to determine if
+# call is ISDN or analog. If speed is 56000 or 64000 then call is ISDN.
+# This may cause a false ISDN reading if someone has a perfect v.90 connection.
+#
+# Changed name back to PMlines.pl
+#
+
