@@ -1,0 +1,44 @@
+You need the following software installed on your system:
+
+	- perl 5.003
+		http://www.perl.com/perl/info/software.html
+	- MRTG 2.0.1
+		http://www.ee.ethz.ch/~oetiker/webtools/mrtg/mrtg.html
+	- a ping program
+
+(other versions might work, but have not been tested.)
+
+Check the script, and adapt the path to your perl if necessary.  Put
+the script mrtg-ping-probe into a place where MRTG can call it, e.g.
+the your MRTG binary directory.
+
+Edit your mrtg.cfg file to add statements for the devices you want to
+ping.  See mrtg.cfg-ping for an example.  If you need to add several
+targets for mrtg-ping-probe read mrtg.cfg-ping and customize
+mrtg-ping-cfg to generate entries suitable for your environment.
+
+Optionally create the documentation in the format you like best, e.g.
+	make html
+	make man
+	make tex
+
+
+There is currently no Perl module that supports pinging a host and
+retrieving the round trip time, so we have to use an external program.
+The script was written on Solaris 2.5/2.5.1 (SunOS 5.5/5.5.1).
+mrtg-ping-probe knows about ping programs on AIX, BSD/OS, FreeBSD,
+HP-UX, IRIX 6.2, Linux, Solaris 1 (aka SunOS 4), and Solaris 2.  You
+might have to adapt it to your particular version of ping.
+
+If you have to change the command line for ping and/or the regular
+expression to parse the output, please send me the changes, the output
+of "uname -a", and the pathname of the ping used, so I can include this
+information in the next release.  If you use a non-native version of
+ping, send me information about it, as well.
+
+If you do not have a ping, you can grab a nice one from
+ftp.nikhef.nl:/pub/network/.
+
+
+$Id: INSTALL,v 1.9 1997/08/23 01:33:23 pwo Exp $
+mrtg-ping-probe release $Name: Release_1_6_0 $

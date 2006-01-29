@@ -1,0 +1,24 @@
+The current relaese, mrtg-dynip-0.35x, appears to be stable, robust and free
+of major problems arising from misconfiguration and lack of response.  
+
+While it might seem rather trivial to introduce extra changes now, as
+indicated below, to make mrtg-dynip mnore suitable as a front end to MRTG,
+this in a sense is somewhat trivial in terms of the design goal of
+mrtg-dynip, namely to enable mrtg-dynip to work in environments with varying
+interface names.  This design goal has been achieved in a user convenient
+way.  The goal of having a convenient and efficient 'front end' to MRTG and
+mrtg-dynip is a different design goal in itself.
+
+It is planned to investigate and test use of the 'ifLastChange' snmp object.
+
+It is planned to introduce configuration to indicate if a host or router has
+unvarying interface names or not, and to indicate if individual interfaces
+are subject to varying interface names or not.  Suitable coding will reduce
+the amount of snmp traffic generated and reduce processing demands.  This
+may be trialed with tesing use of the 'ifLastChange' snmp object
+
+There is much scope for introducing a menu based configuration.
+
+
+
+

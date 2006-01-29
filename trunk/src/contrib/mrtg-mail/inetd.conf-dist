@@ -1,0 +1,5 @@
+# smtp stats for mrtg
+# you can add this simply by doing "cat inetd.conf-dist >>/etc/inetd.conf"
+
+smtp-stats      stream  tcp     nowait root /opt/local/bin/smtp-stats smtp-stats
+

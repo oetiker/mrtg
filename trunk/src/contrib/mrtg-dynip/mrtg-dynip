@@ -1,0 +1,558 @@
+#!/usr/local/bin/perl
+
+##################################################################
+# Multi Dynamic IP Traffic Grapher contibution to mrtg
+##################################################################
+#
+# Created by John Heenan <john@heenan.ironbark.id.au>
+#
+# Available from http://www.heenan.ironbark.id.au/mrtg-dynip
+#
+##################################################################
+#
+# Distributed under the GNU copyleft
+#
+# mrtg-dynip, v 0.35x 1997/10/12 
+# 
+# Copyright John Heenan, with exception of datestr subroutine
+# (copied from mrtg executable) and much of internal_walk
+# subroutine (manner of using snmp modules copied from an example
+# by Simon Lenine)
+#
+###################################################################
+
+#Mrtg-dynip is a contribution to mrtg, enabling mrtg to generate multi
+#interface traffic graphs for various hosts which do not provide a
+#consistent interface name for physical interfaces, such as in a dynamic IP
+#environment.  The hosts must run snmp agents.  For completeness,
+#information about interface devices with unvarying interface names, such as
+#ethernet cards, can be configured to be included.
+
+#Regenerates a named 'mrtg.cfg' file to ensure snmp data remains with a
+#consistent IP number of a real physical device in a dynamic IP environment,
+#rather than with an interface name which can get assinged to different real
+#physical devices, and runs mrtg on the generated file.
+
+#Generates a web index file of stats web pages. 
+
+#The public community should be used, however the public community on a
+#particular host does not need to be named 'public'.  This is catered for.
+
+#Not limited to dynamic IP interface devices.  
+
+#There is a large 'TODO' list for this contribution, including 
+#testing use of the 'ifLastChange' snmp object.
+
+#SET UP
+#Runs independently of an existing configured mrtg installation. There are
+#13 configuration items, 12 are simple scaler constant assingments and one
+#is a multiline or 'hereto' scaler constant assingment.  Three of the
+#constants must be set Following the commented example will make the set up
+#clear.
+ 
+#  1   $HTTP_Work_Dir         ** Must set
+#  2   $HTTP_index_file       Default index.html may be OK if unique
+#  3   $mrtg_Dir              ** Must set
+#  4   $mrtgcfg_Dir           Default may be OK, set to $mrtgDir
+#  5   $mrtgcfg_file          Default mrtg-dynip.cfg OK, if single copy running
+#  6   $update		      Default will work (five minutes)
+#  7   $community_default     Default for this default may be OK (public)
+#  8   $email		      Default setting is not to display
+#  9   $home_page	      Default setting is not to code
+# 10   $home_page_descr       Default setting is not to display
+# 11   $suicidal              Default will work, if everything else works!
+# 12   $firewall_masq_tran_if Default will work, except for some firewalls
+# 13   $interface             ** Must set
+
+#Ensure mrtg-dynip (and copies to use to use snmp information from more 
+#than one machine) have executable permission.  See paragraph below as 
+#to where mrtg-dynip (and copies) may need to be installed.
+
+#Place a crontab entry, consistent with update time, similar to
+#0,5,10,15,20,25,30,35,40,45,50,55 * * * *  <next line continued here> 
+#cd /usr/src/mrtg/mrtg-2.4.1/; date >>/var/log/mrtg-dynip.log;
+#<continues previous line> ./mrtg-dynip >>/var/log/mrtg-dynip.log 2>&1
+#
+#Redirecting standard output and error to a log file with an indication
+#of time from 'date' is valuable for sorting out errors and preventing
+#messages from being emailed to the root account.
+#
+#If Perl5 snmp modules are not installed in standard libraries and 
+#the internal 'walk' is being used, then it is necessary to ensure
+#mrtg-dynip in installed in, and run from, a directory where the modules
+#are, typically the same directory the mrtg executable is in.  If there
+#is more than one 'mrtg-dynip' executable, (for incostinent snmp community
+#names) they can be added to the crontab entry in an appropriate manner,
+#such as:
+#cd /path/; date >> /var/log/md1; ./mrtg-dynip1 >>/var/log/md1 2>&1; 
+#<line continued> date >>/var/log/md2; ./mrtg-dynip2 >>/var/log/md2 2>&1
+#or have entries placed in an executable script and have script file
+#executed from crontab
+
+#The most difficult part in a dynamic IP environment may be choosing the IP
+#addresses to use for the scaler constant $interfaces, as you must ensure
+#the IP address used will always correspond to the physical interface
+#device.
+
+#For Internet Service Providers running ppp dial in lines, the choice will
+#be clear.  The IP addressess to use will be the 'remote' IP part of the
+#command line options for the real physical device (:remote_ip in
+#/etc/ppp/options.ttyXY file).  For dial out lines that can get a variable
+#'remote' IP, you should be able to control what remote IP you get,
+#no matter who you dial into and what remote IP they may offer you, 
+#by configuring a remote IP as for a dial in line above.
+
+#If the final negotiated ppp address pair as seen by your machine,
+#local_ip:remote_ip, is equal to a_ip:b_ip, then the local_ip:remote_ip as
+#seen by the other machine is b_ip:a_ip. Since the remote IP seen by your
+#side of the line is the local IP as seen and negotiated by the machine on
+#the other side of the line, you can choose whatever remote IP address suits
+#your side of the connection.  Specifying a 'remote' IP other than 0.0.0.0
+#will, by default with pppd, result in an IP the other machine will have to
+#accept as their local to succesfully negotiate a connection.  However it is
+#two way: the other machine can do the same to you for its corresponding
+#'remote' IP.  Hence mrtg-dynip can work on both machines.
+
+#Please note: If you have interface devices which register ppp10 or 
+#above, your snmp daemon may not supply information.  This is not due 
+#to a bug in mrtg, the snmp modules or this mrtg-dynip.
+
+#Latest version of this software should be available from
+#http://www.heenan.ironbark.id.au/source/mrtg-dynip
+
+######## Start of configuration section, numbered 1 to 12.
+
+######## Set this, 1
+#Define $WorkDir to be the directory for web pages and data to be housed
+#Ensure each directory path ends with a seperator. If intending to run on 
+#an NT machine, then ensure the directory seperator is '\\' instead of '/'
+$HTTP_Work_Dir='/var/lib/httpd/htdocs/mrtg/';
+
+########  Set this, 2
+#Define name of index html file, only condition is that it not the same name
+#as a html that will be regenerated.  All names of generated files contain
+#an IP address.
+$HTTP_index_file='index.html';
+
+####### Set this, 3
+#Set to full directory path the mrtg executable is in.  Place this file
+#it if that is where the Perl 5 snmp modules are and $use_internal_walk
+#will not be set to 1 (see below).
+#Ensure each directory path ends with a seperator. If intending to run on
+#an NT machine, then ensure the directory seperator is '\\' instead of '/'
+$mrtg_Dir="/usr/src/mrtg/mrtg-2.4.1/";
+
+####### Set this, 4
+#Set to full directory path the 'mrtg.cfg' file below is to be placed in.
+#The default choice is to choose same directory as for $mrtg_Dir above
+#Ensure each directory path ends with a seperator. If intending to run on
+#an NT machine, then ensure the directory seperator is '\\' instead of '/'
+###$mrtgcfg_Dir="/usr/src/mrtg/mrtg-2.4.1/";
+$mrtgcfg_Dir=$mrtg_Dir;
+
+####### Set this, 5
+#Set the name you would like the 'mrtg.cfg' file to be.  By locating or
+#naming differently from existing 'mrtg.cfg' files, you can run this
+#software independently of your existing mrtg installation.
+$mrtgcfg_file="mrtg-dynip.cfg";
+
+####### Set this, 6
+#Set this to update interval in amount of minutes.  Ensure when this file
+#is run from crond and that the cron run inteval matches this update 
+#interval
+$update=5;
+
+######## Set this, 7
+#Default community "public" may be sufficient. The community defined here
+#is the default community to use if no community is defined in the
+#for a particular interface in configuration of $interface in section 12.
+$community_default="public";
+
+######## Set this, 8
+#Email address of network manager(s).  Ensure a '\' appears before
+#'@' in email address, as in example.
+$email="";         #No attempt to display if null
+#$email="admin\@our_org.com";
+
+######## Set this, 9
+#Web address of home page for your system, do not include http:// at start
+$home_page="";  	#No attempt to display if null   
+#$home_page="www.our_org.com";
+
+######## Set this, 10         
+#Text for clickable link to home page of your system
+$home_page_descr="";  	#No attempt to display if null    
+#$home_page_descr="Our home page";
+
+######## Set this, 11
+#Set to a non zero if you want the program to die if there are problems
+#with responses from agents or hosts. Useful in testing phase.
+#$suicidal = 0; #Program is to soldier on if there are no responses from a host
+$suicidal = 1; #Program is to bomb out if there are problems with reponses
+
+######## Set this, 12
+#Set this to a non zero if you have interfaces with the same IP number on
+#different masquerading firewall, or address translation, routers/hosts,
+#otherwise leave as 0.  This adds the name of the host to all web page file
+#names as well as the IP addresses.  Avoid using this option as its use make
+#it more difficult to keep track of interface data. 
+#$firewall_masq_tran_if = 1;
+$firewall_masq_tran_if = 0;
+
+######## Set this, 13
+#A pair of lines between blank lines represents an interface on a 
+#particular host.  
+#
+#You can comment out a single pair of lines with a '#' or any non digit
+#(except whitespace) as the first character of a pair of lines.
+#
+#The first line has the following format
+#'n' 'IP-addr' 'if-speed' 'snmp host' 'snmp community'
+#
+#The second line has the following format
+#	'Any free text description of interface'
+# 
+#The items must not be enclosed by '"' or '''.  Plese see example
+#below before reading any further. Any whitespace or combination
+#of whitespace (tabs or spaces) can seperate the items. However it
+#is important the two lines with 'END_OF_INTERFACES' end without
+#whitespace. 
+#
+#'n' is place this entry is to appear in the index of interfaces web file.
+#The number of digits should be the same for each interface, for example
+#use sequence 000 010 020 for successive numbers. You can temporarily
+#take an interface out of consideration by placing any non digit 
+#(except whitespace) before these digits, for example replace 010 
+#by N010 or #010
+#
+#'IP-addr' is a consistent IP address of a physical interface.
+#
+#'if-speed' is the interface speed in integer bits/sec. K and M multipliers
+#for Kb/s and Mb/s can be used (see example). If you want to use decimal
+#values then rewrite with a lower multiplier, for example write 
+#33.3K as  34099 (integer portion of 33.3 multiplied by 1024).
+#
+#'snmp host' is a common and consistent DNS name, or IP address, for
+#interfaces that belong to a particular machine.  For efficiency of snmp
+#agent use it is better all interfaces that belong to a particular machine
+#use a consistent name.
+#
+#'snmp community' is the community name of the 'public' community
+#for an interface (the public community does not have to be named 
+#'public').  This vale does not have to be set: if this value is 
+#not set then the value of $community_default is used instead.
+#
+#'Any free text description of the interface ' on the second line
+#is as indicated.  It need not begin with whitepace (tabs or spaces).
+#
+#For dynamic IP interfaces, you must use unvarying 'remote' IPs as indicated
+#above.  Virtual interface devices should not be used, they provide the same
+#statistics as the real interface they are a virtual interface of.
+#
+#Example (all comment symbols '#' must be removed for real use)
+#
+#{
+#$interfaces = <<END_OF_INTERFACES
+#
+#010	192.168.2.1  	10M	localhost	public
+#	Ethernet interface 12.168.2.1
+#
+#020	192.168.2.5	33K	localhost	public
+#	Dial in PPP link 192.168.2.5
+#
+#030	192.168.2.7	34099	localhost	
+#	Masquerade dial out ppp link 192.168.2.7
+#
+#END_OF_INTERFACES
+#}
+
+{
+$interfaces = <<END_OF_INTERFACES
+
+010     192.168.2.1     10M     localhost	public
+        Ethernet interface 12.168.2.1
+
+020     192.168.2.5     33K     localhost	public
+        Dial in PPP link 192.168.2.5
+
+030     192.168.2.7     34099   localhost
+        Masquerade dial out ppp link 192.168.2.7
+
+END_OF_INTERFACES
+}
+
+###### You have reached the end of the configuration section, there is no
+#need to make any adjustments below for normal operation.
+
+@lines = split(/\n/,$interfaces);
+$line=0;
+while ($line <= $#lines)
+{
+  @elements = split (" ",$lines[$line]);
+  if (defined ($elements[3]))
+  {
+    $descr=$lines[$line+1];
+    $descr =~ s/^\s*//;
+    $community = defined ($elements[4]) ? $elements[4] : $community_default;
+    $ip_descr{$elements[1]."@".$elements[3]} = [$elements[0],$elements[2],$community,$descr];
+    $snmp_comm_host{$community."@".$elements[3]}{$elements[1]}=1;
+    $line=$line+2;
+  }
+  else
+  {
+    $line++;
+  }
+}
+
+#Use Simon Leinen's Perl 5 snmp modules included with mrtg
+#consistent with manner Simon uses in examples
+{
+&snmp_get_response;
+}
+
+open MRTGCFG, ">$mrtg_Dir"."$mrtgcfg_file"
+         || die "$mrtg_Dir"."$mrtgcfg_file file could not be opened\n";
+
+$ip_descr_ptr = \%ip_descr;
+
+foreach $ip_i (keys(%target))
+{
+if ($$ip_descr_ptr{$ip_i}->[0] =~ /^\d/) 
+{
+($speed_fig,$speed_mult) = $$ip_descr_ptr{$ip_i}->[1] =~ /^(\d+)(\D*)/;
+if ($speed_mult =~ /M|m/)
+{
+  $scale = int ( $speed_fig * 1024 * 1024 / 8 );
+}
+elsif ($speed_mult =~ /K|k/)
+{
+  $scale = int ( $speed_fig * 1024 / 8 );
+}
+elsif ( $speed_mult eq "" )
+{
+  $scale = int ( $speed_fig / 8 );
+}
+else
+{
+  die("Incorrect speed format in scaler constant $interfaces\n");
+}
+
+($ip_if,$host) = split (/@/,$ip_i);
+if ($firewall_masq_tran_if != 0)
+{
+$snmp_target=$ip_i;
+}
+else
+{
+$snmp_target=$ip_if;
+}
+
+print MRTGCFG <<END
+Target[$snmp_target]: $target{$ip_i}:$$ip_descr_ptr{$ip_i}->[2]\@$host
+MaxBytes[$snmp_target]: $scale
+Title[$snmp_target]: Traffic Analysis through interface device with IP address $ip_if of host $host
+PageTop[$snmp_target]: <H1>Stats for interface device with description $$ip_descr_ptr{$ip_i}->[3]</H1>
+
+END
+}
+}
+{
+print MRTGCFG <<END
+
+WorkDir: $HTTP_Work_Dir
+END
+}
+close MRTGCFG;
+
+$interval = $update * 60;
+$expires = gmtime (time + $interval + 60);
+$now=&datestr(time);
+
+open MRTGCFGWEB, ">$HTTP_Work_Dir"."$HTTP_index_file"
+	 || die "Mrtg web index file could not be created\n";
+{
+print MRTGCFGWEB <<END
+<HTML><HEAD> 
+<META HTTP-EQUIV=\"Refresh\" CONTENT=\"$interval\">
+<META HTTP-EQUIV=\"Expires\" CONTENT=\"$expires GMT\"> 
+
+<TITLE>Index of stats pages for interface devices on interfaces described below</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000"> 
+<FONT FACE="Arial,Helvetica">
+<H1>Active and inactive interace device stats on interfaces described below</H1>
+This page last updated on $now<p>
+END
+}
+
+if ($home_page && $home_page_descr)
+{
+print MRTGCFGWEB <<END
+<p>
+A network management service courtesy of <a href=\"http://$home_page\">
+$home_page_descr</a>
+<p>
+END
+}
+
+if ($email)
+{
+print MRTGCFGWEB <<END
+<p>
+Information and contact address: Network management at email 
+<a href=\"mailto:$email\">$email</a>
+<p>
+END
+}
+
+{
+print MRTGCFGWEB <<END
+</FONT>
+<table>
+END
+}
+
+foreach $ip_i (keys %ip_descr)
+{
+$ip_order{$$ip_descr_ptr{$ip_i}->[0]} = $ip_i if ($$ip_descr_ptr{$ip_i}->[0] =~ /^\d/);
+}
+
+foreach $i (sort (keys %ip_order))
+{
+$ip_i = $ip_order{$i};
+
+if ($firewall_masq_tran_if != 0)
+{
+$file_name=$ip_i;
+}
+else
+{
+($file_name) = split (/@/,$ip_i);
+}
+
+if ( defined ($target{$ip_i}) )
+{
+print MRTGCFGWEB <<END
+<tr><td><FONT FACE="Arial,Helvetica">ACTIVE</FONT></td> <td><FONT FACE="Arial,Helvetica"><A HREF=\"$file_name.html\">$$ip_descr_ptr{$ip_i}->[3]</a></FONT></td></tr>
+END
+}
+else
+{
+print MRTGCFGWEB <<END
+<tr><td><FONT FACE="Arial,Helvetica">INACTIVE</FONT></td> <td><FONT FACE="Arial,Helvetica"><A HREF=\"$file_name.html\">$$ip_descr_ptr{$ip_i}->[3]</a></td></FONT></tr>
+END
+}
+}
+{
+print MRTGCFGWEB <<END
+</table>
+<FONT FACE="Arial,Helvetica">
+<p> This web page (but not the web pages above)
+generated by mrtg-dynip, version 0.35x, 1997/10/12 
+created by <br>John Heenan, <a
+href="mailto:john\@heenan.ironbark.id.au">john\@heenan.ironbark.id.au</a>
+
+<P>Mrtg-dynip is a contribution to mrtg, enabling mrtg to generate multi
+interface traffic graphs for various hosts which do not provide a consistent
+interface name for physical interfaces, such as in a dynamic IP environment. 
+The hosts must run snmp agents.  For completeness, information about
+interface devices with unvarying interface names, such as ethernet cards,
+can be configured to be included.<P>
+
+This web page and web pages above, auto update details, and refresh, every
+$update minutes.<p>
+
+Source code for the latest version of the mrtg-dynip software contribution is
+available from <a href="http://www.heenan.ironbark.id.au/source/mrtg-dynip">
+http://www.heenan.ironbark.id.au/source/mrtg-dynip</a><p> 
+END
+}
+
+print MRTGCFGWEB "</FONT></BODY></HTML>","\n";
+
+close MRTGCFGWEB; 
+
+exec ("$mrtg_Dir"."mrtg $mrtgcfg_Dir"."$mrtgcfg_file");
+
+sub datestr {
+($time) = shift(@_) || return 0;
+($wday) = ('Sunday','Monday','Tuesday','Wednesday',
+                'Thursday','Friday','Saturday')[(localtime($time))[6]];
+($month) = ('January','February' ,'March' ,'April' ,
+                 'May' , 'June' , 'July' , 'August' , 'September' ,
+                 'October' ,
+                 'November' , 'December' )[(localtime($time))[4]];
+($mday,$year,$hour,$min) = (localtime($time))[3,5,2,1];
+if ($min<10) {$min = "0$min";}
+return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+}
+
+sub snmp_get_response
+{
+use BER;
+use SNMP_Session;
+
+SOLDIER_ON: foreach $comm_host (keys (%snmp_comm_host))
+{
+($community,$host) = split (/@/,$comm_host);
+if ($session = SNMP_Session->open ($host, $community, 161))
+{
+@ipRouteIfIndex = split ('\.', '1.3.6.1.2.1.4.21.1.2');
+@ipAdEntIfIndex = split ('\.', '1.3.6.1.2.1.4.20.1.2');
+$if_route_index_index = encode_oid (@ipRouteIfIndex);
+$if_index_index = encode_oid (@ipAdEntIfIndex);
+
+  @oids = ($if_route_index_index);
+  for (;;) {
+    if ($session->getnext_request_response (@oids)) {
+        $response = $session->pdu_buffer;
+        ($bindings) = $session->decode_get_response ($response);
+        @next_oids = ();
+        ($binding,$bindings) = decode_sequence ($bindings);
+        ($oid,$value) = decode_by_template ($binding, "%O%@");
+        last unless BER::encoded_oid_prefix_p ($if_route_index_index, $oid);
+        push @next_oids, $oid;
+        ($ip_if) = pretty_print ($oid) =~ /.*\.(\d+\.\d+\.\d+\.\d+)$/;
+        $target_i = pretty_print ($value);
+        $target{$ip_if."@".$host} = $target_i if ( defined ($snmp_comm_host{$community."@".$host}{$ip_if}) );
+    } else 
+        {
+          die ("Suicide: no response from community $community on host $host","\n") if ($suicidal != 0);
+          print ("Soldiering on: no response from community $community on host $host","\n");
+          $session->close ();
+          last SOLDIER_ON;
+        }
+    @oids = @next_oids;
+  }
+
+  @oids = ($if_index_index);
+  for (;;) {
+    if ($session->getnext_request_response (@oids)) {
+        $response = $session->pdu_buffer;
+        ($bindings) = $session->decode_get_response ($response);
+        @next_oids = ();
+        ($binding,$bindings) = decode_sequence ($bindings);
+        ($oid,$value) = decode_by_template ($binding, "%O%@");
+        last unless BER::encoded_oid_prefix_p ($if_index_index, $oid);
+        push @next_oids, $oid;
+        ($ip_if) = pretty_print ($oid) =~ /.*\.(\d+\.\d+\.\d+\.\d+)$/;
+        $target_i = pretty_print ($value);
+        $target{$ip_if."@".$host} = $target_i if ( defined ($snmp_comm_host{$community."@".$host}{$ip_if}) );
+    } else 
+        {
+          die ("Suicide: no response from community $community on host $host","\n") if ($suicidal != 0);
+          print ("Soldiering on: no response from community $community on host $host","\n");
+	  $session->close ();
+          last SOLDIER_ON;
+        }
+    @oids = @next_oids;
+  }
+$session->close ();
+}
+else
+  {
+     die ("Suicide: unable to open SNMP session to community $community on host $host","\n") if ($suicidal != 0);
+     print ("Soldiering on: unable to open SNMP session to community $community on host $host","\n");
+  }
+}
+}

@@ -1,0 +1,149 @@
+The files in this direectory have been contributed to mrtg ... If you have
+questions in connection with these please contact the authors ...
+
+
+mrtg-dynip
+----------
+From: John Heenan <johnhe@syd.net.au>
+
+Mrtg-dynip is a contribution to mrtg, enabling mrtg to generate multi
+interface traffic graphs for various hosts which do not provide a
+consistent interface name for physical interfaces, such as in a dynamic IP
+environment.
+
+
+ircstats
+--------
+From: Matt Ramsey (MR227) mjr@geeks.org, mjr@nin.com
+
+ircstats.pl is the simple perl script I use to monitor client
+loads and such on various EFnet IRC servers.
+
+PM3Lines
+--------
+From: Carlos Canau <canau@dawn.EUnet.pt>
+
+Here's another script for contrib. It allows one to make a
+graph of analog/ISDN lines on a Livingston Portmaster 3.
+
+atmmaker
+--------
+From: Mark Trettin <mkt@lucent.com>
+
+I am sending a copy of our atmmaker script that generates a cfg
+for the FORE ASX switch you may add it to your contrib section.
+
+distrib
+-------
+From: Philippe Simonet <sip00@vg.swissptt.ch>
+
+'distrib' read mrtg log files and computes traffic distribution in 
+  the time. It ouputs a graph with : 
+    - in x the percentage of trafic utilisation (% bandwith)
+    - in y how many times the utilization was reached (% time)
+
+rdlog2
+------
+From: Philippe Simonet <sip00@vg.swissptt.ch>
+
+Rdlog is a small (and primitive) tool that gives indication on network
+traffic on a graphic map. It takes information from MRTG log files, and draw
+a GIF file with links that have colors based on the current traffic on your
+network. This small test explain how to use this tool.
+
+mrtg-ipget
+----------
+From: Jim Willette <mailroom@ctec.net>
+
+I have modified mrtgV2 to record stats based on interface ip address instead
+of Interface number. It does not do all the great errorchecking and no OS
+testing but it is functional for my needs.
+
+mrtgidx
+-------
+From: Axel Dunkel <ad@Dunkel.de>
+
+mrtgidx works like makeindex but the output produced looks different ...
+
+get-active
+----------
+From: Russ Wright <Wright@LBL.Gov>
+
+This will look at the $trafficDir directory for MRTG generated HTML
+files, parse them and generate a listing of the most active interfaces
+in a file called "active.htlm" in the same directory
+
+ascendget
+---------
+From: John-David Childs <jdc@ism.net>
+
+SHELL SCRIPT TO GET # of connected users on Ascend
+use Target[router]: `ascendget`
+
+get-multiserial
+---------------
+From: T. Pospisek <tpo@spin.ch>
+
+SHELL scripts to get active tty(-dial-in modem-) lines localy and remotely. 
+I'm using them with a cyclades board but they can be adapted at wish to
+different tasks.
+
+use Target[modems]: `get-multiserial`
+
+ping-probe
+----------
+From: "Peter W. Osel" <pwo@hl.siemens.de>
+
+A perl script to get roundtrip delays to hosts by sending a ping 
+to them. 
+
+rumb-stat
+---------
+From: Anthony Rumble <anthonyr@ce.com.au>
+
+Heres some handy scripts to get byte stats from apache (web server) 1.1.1
+and better and squid (proxy server) 1.1.1 and better.
+
+portmaster
+----------
+From: Chris Johnson <admin@nantucket.net>
+Subject: MRTG for portmasters
+
+A script and config to produce Modem statistics for Livingston
+Portmasters.
+
+mrtg-blast
+----------
+From: "Balthasar T. Indermuehle" <bi@inside.ch>
+
+This is a tcpblast interface available for MRTG 2.1. It works much like
+the famed ping-probe, instead of ping it uses tcpblast to estimate
+network bandwidth.
+ 
+GetSNMPLinesUP
+--------------
+From: Carlos Canau <canau@dawn.EUnet.pt>
+
+GetSNMPLinesUP.pl checks some SNMP  variables for a certain  value and
+returns their sum  in a format used to  feed values to MRTG.
+
+mrtgindex.cgi
+-------------
+From: Mick Ghazey <mick@lowdown.com>
+
+like mrtgindex, but runs as a cgi. Thus it will not need SSIs ...
+
+mrtg-mail
+---------
+From: Rachel Polanskis <r.polanskis@nepean.uws.edu.au>
+
+plot sendmail mailstats with mrtg
+
+mrtg-archiver
+-------------
+From: Emanuele Leonardi <Emanuele.Leonardi@roma1.infn.it>
+
+It wakes up at 23:54 every night and copies all the current daily gifs
+for the given list of routers to a directory named with the current date
+(e.g. 970717). The Perl code is extremely straightforward so there
+should be no problem in understanding it.
