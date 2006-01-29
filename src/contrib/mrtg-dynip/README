@@ -1,0 +1,56 @@
+#################################################################
+ Multi Dynamic IP Traffic Grapher contibution to mrtg
+#################################################################
+
+Created by John Heenan <john@heenan.ironbark.id.au>
+
+Available from the mrtg-dynip web page at
+http://www.heenan.ironbark.id.au/mrtg-dynip
+
+#################################################################
+
+Distributed under the GNU copyleft
+
+mrtg-dynip, v 0.35x 1997/10/12 
+ 
+Copyright John Heenan, with exception of datestr subroutine
+(copied from mrtg executable) and much of internal_walk
+subroutine (manner of using snmp modules copied from an example
+by Simon Lenine)
+
+##################################################################
+
+Mrtg-dynip is a contribution to mrtg, enabling mrtg to generate multi
+interface traffic graphs for various hosts which do not provide a
+consistent interface name for physical interfaces, such as in a dynamic IP
+environment.  The hosts must run snmp agents.  
+
+Generates a web index file of stats web pages.
+
+For completeness, information about interface devices with unvarying
+interface names, such as ethernet cards, can be configured to be included,
+however this is not necessarily an efficient course of action. Certainly for
+hosts or routers that do have consistent interface names, mrtg-dynip is not
+an efficient approach to take.
+
+The names of the files packaged into mrtg-dynip-0.35x.tar.gz are
+
+README		This file
+Install		Install details
+FAQ		'Frequently Asked Questions' 
+mrtg-dynip	A full configuartion commented executable
+mrtg-dynip-b	The same executable with configuration comments removed
+Changes		Change history
+TODO		What the future might hold
+
+The package is oriented towards UNIX systems, there is no reason mrtg-dynip
+should nor run under Windows NT, some comments are made relevant to this. 
+Please note the first task under Windows NT is to ensure the UNIX new lines
+are converted to DOS new lines or are readable.
+
+If you use this please let me know.  If you would also like your site to be
+linked from the mrtg-dynip web page, please let me know.
+
+John Heenan
+john@heenan.ironbark.id.au
+www.heenan.ironbark.id.au/mrtg-dynip

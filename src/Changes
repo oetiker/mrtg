@@ -1,0 +1,235 @@
+Changes 2.5.1
+-------------
+
+* Percentages in HTML pages was 8 time to high with the bits option
+
+Changes 2.5
+-----------
+
+* we want perl 5.003 now. older versions have problems with
+  large numbers ... 
+
+* better cisco scanning added to cfgmaker ... Carlos Canau   
+
+* actually remove whitespace at the end of the line ... 
+
+* BER.pm and SNMPSession.pm with version numbers ... 
+
+* rewrite of the mailstats script 
+  from Petter Reinholdtsen <pere@minerva.link.no>
+
+* do only draw the maxbytes line if it is within the actual graph.
+
+* NT portability fixes for rateup.c
+
+* contrib from Emanuele Leonardi: Script to archive the daily stat-gifs
+  to a separate directory every night ... 
+
+* fix for Timezone handling ... 
+
+* another attempt to fix overflows ... and strange behavior of sprintf ...
+
+* fixed handling of SNMP errors
+
+* Updated SNMP_Session.pm to 0.51 (Better Error Reporting)
+
+* made cfgmaker ignore cisco E1 controllers, as their if-descriptions
+  seems not to be reported properly by IOS .... 
+  patch from Josh Bailey (mailto:joshb@xtra.co.nz)
+
+* Added README.logfile-format by Butch Kemper
+
+* update mrtg-pingprobe thanks peter
+
+* added atmmaker by Mark Trettin <mkt@lucent.com> to the
+  contrib section. this is a cfgmaker variant which generates
+  cfgs for the FORE ASX
+
+* its suppress and not suppress. Changed this and added backward compatibility.
+
+* From: Niels <niels@holding.pi.net>: added Option[] Integer which
+  suppresses the  decimal part the summary line below the graphs ...
+
+* added --vendor switch to cfgmaker. This enables and disables the 
+  vendor specific queries ...
+
+* added contrib from Carlos Canau <canau@dawn.EUnet.pt>
+  It allows one to make a graph of analog/ISDN lines on a 
+  Livingston Portmaster 3.   (PMLines)
+
+* fixed a longstanding bug where rateup was skewing at log entries not
+  aligned with the normal sampling interval. This happened when ever
+  the NEXT macro was going from one sampling interval onto another one
+  ... thanks to  Lane Patterson of GlobalCenter ISI <lane@isi.net>,
+  Erwin Authried <eauth@softsys.co.at> and Ari Lewitter <ajl@NewsAlert.com>
+
+* further improved the accuracy for large installations. Mrtg does now
+  get a timestamp down with every reading taken from a router. If 
+  we are running a simple target, this timestamp is passed along to
+  rateup with the t option
+
+* ircstats contrib by Matt Ramsey added ...
+
+* fixed 'current time' passing from mrtg to rateup ...
+
+* much improved handling of 'first run'
+
+* output for cfgmaker is now sorted alphabeticaly .. (Andres Kroonmaa)
+
+* added mrtg-dynip contrib from John Heenan, providing support for
+  environments with dynamic IP addersses ...
+
+* Added Contrib to mibhelp.txt
+
+* check the output of external gatherers. Are we realy being fed a number?
+
+* Added PageFoot[] configurable ... 
+
+Changes 2.4.1
+-------------
+* fixed external command bug
+
+
+Changes 2.4
+-----------
+
+* fixed IconDir ... Carlos Canau <canau@dawn.EUnet.pt>
+
+* mrtg.cfg-dist debugged and rewritten ...  Paul FIscher <paul@shire.btg.com>
+
+* mod_expire tip from Stephane Bortzmeyer <bortzmeyer@cache.cnrs.fr>
+  added to mrtg.cfg-dist
+
+* mrtg: large values are not handled by int any more but rather by 
+  sprintf "%.0f"
+
+* mailstat fixes by Petter Reinholdtsen <pere@minerva.link.no>
+ 
+* added nopercent option as suggested by Frank van Wensveen
+
+* added contrib by Philippe.Simonet@SWISSTELECOM.com
+  a c-program to create gifs showing the traffic distribution over time
+  real neat ...  Thanks ...
+
+* changed chops in mrtg to chomp calls just in case ... 
+
+* fixed 'external' command parsing in target lines ...
+
+
+Changes 2.3
+-----------
+
+Added IconDir configurable, for people who want to keep the mrtg 
+logo in a central location. As suggested by James FitzGibbon <james@nexis.net>
+
+Made the period var a double in rateup.c as suggested by Dave
+
+Added patch from Paul <root@nevertheless.redline.ru> to cfgmaker
+now it will try to figure the speed of an interface ....
+
+Stooped mrtg from aborting on non existing HOST names
+
+Warn on Duplicate CFG entries.
+
+Customizable week number thingy from Simon Leinen
+
+rateup fix for FreeBSD: FreeBSD does not need malloc.h
+included. From: Ulf Zimmermann <ulf@Alameda.net>
+
+Fix for time chitter by Dave ...
+
+new pingprobe from Peter W. Osel
+
+relaxed parsing of keywords. ther can be a space before the 
+colon .... as sugested by Samath
+
+
+From mcm@unx.sas.com Tue Jun  3 07:43:38 1997
+
+Cheanged rateup.c so that it will start scaling the graphs when the 
+datarate is higher than MaxBytes, if the AbsMax value is set. Even when it
+is operation in unscaled mode ...
+I also changed 'indexmaker' to allow me to pass in a title, and
+to support the 'Directory' option in the configuration file.
+
+From: Jay Soffian <jay@lw.net> Wed, 04 Jun 1997 15:34:01 -0400
+
+Added new configurables XScale[], YScale[] to realy enlarge the graphs and not
+just make their pixels larger ...
+
+Added configurable Step[] to allow for shorter base periods different from 
+5 Minutes ... But beware, this is NOT supported ... and its likely
+that you will run into problems ...
+
+Updated to latest version of SNMP_Session.pm This will work fine with 
+perl5.002 and above. BUT not with perl 5.001 !!! so if you are still using 
+an old version of perl, use SNMP_Session.pm-for-perl5.001
+
+
+2.2
+---
+
+Added Contribution from Anthony Rumble. For gathering stats for apache
+webservers and squid proxies
+
+From: T. Pospisek <tpo@spin.ch>
+SHELL scripts to get active tty(-dial-in modem-) lines localy and remotely. 
+I'm using them with a cyclades board but they can be adapted at wish to
+different tasks.
+
+made graphs in indexmaker generated pages clickable ... leewm@sgp.hp.com 
+
+added contributet script for gatherig portmaster stats 
+
+added mrtg-blast contrib from Balthasar T. Indermuehle
+
+made mrtg observe order of routers in cfg file .... as suggested by
+Mick Ghazey <mick@lowdown.com>  
+
+Added GetSNMPLinesUP to contrib ... from Carlos Canau <canau@dawn.EUnet.pt>
+this is for monitoring Modembanks ...
+
+Added timezone configurable to set a timezone per router. Details in 
+mrtg.cfg-dist as suggested by Jun (John) Wu 
+
+Added MaxBytes check ....
+
+Fixed portability problem of Makefile under IRIX
+
+Added sendmail stats contrib from Rachel Polanskis
+
+
+2.1
+---
+
+Added 100BaseVG iftyp to cfgmaker
+
+Fixed rounding Bug in rateup.c which caused it to scale graphs with small 
+values incorrectly ...
+
+Added rdlog2 by Phillip Simonet. This tool transforms a xfig network 
+map into a clickable gif with colorcoded representation of the 
+current load of your network links. The information for the colorcoding
+is taken from the mrtg log files.
+
+From: "Peter W. Osel" <pwo@hl.siemens.de>
+A perl script to get roundtrip delays to hosts by sending a ping 
+to them. Added to contrib.
+
+Allowed any character except @ and \s to be used in a community string ...
+
+Fixed two instances where variables were declared twice (my($var)) 
+within the same scope. Late perl5.003 versions do not like that ...
+and it was wrong anyway. This happens both in SNMP_Session.pm 
+and mrtg
+
+When using the Directory option in connection with [^] a stray space gets
+added to the path. This is now removed with s/\s//g ... spaces in path names
+are stupid anyway.
+
+2.0.1
+-----
+
+Fixed ascendget script 
+
+

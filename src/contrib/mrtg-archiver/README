@@ -1,0 +1,19 @@
+Date: Thu, 17 Jul 1997 14:31:32 +0200
+From: Emanuele Leonardi <Emanuele.Leonardi@roma1.infn.it>
+To: mrtg@list.ee.ethz.ch
+
+It wakes up at 23:54 every night and copies all the current daily gifs
+for the given list of routers to a directory named with the current date
+(e.g. 970717). The Perl code is extremely straightforward so there
+should be no problem in understanding it.
+
+The cron entry I use is:
+54 23 * * * /usr/local/lib/mrtg-2.2/backup.pl 1>>
+/usr/local/lib/mrtg-2.2/backup.log 2>&1
+
+I'll be very happy to discuss any possible improvement or modification.
+
+Ciao
+
+              Emanuele
+

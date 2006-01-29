@@ -1,0 +1,60 @@
+*** mrtg.orig	Sun Jan 12 21:18:12 1997
+--- mrtg	Tue Jan 14 15:04:30 1997
+***************
+*** 114,120 ****
+      #frame relay stuff ... see the docs for explanations
+      'frInOctets' => '1.3.6.1.2.1.10.32.2.1.9',
+      'frOutOctets' => '1.3.6.1.2.1.10.32.2.1.7',
+!   );
+  
+  
+  sub main {
+--- 114,121 ----
+      #frame relay stuff ... see the docs for explanations
+      'frInOctets' => '1.3.6.1.2.1.10.32.2.1.9',
+      'frOutOctets' => '1.3.6.1.2.1.10.32.2.1.7',
+!     'ipRouteifIndex' => '1.3.6.1.2.1.4.21.1.2',		  
+! );
+  
+  
+  sub main {
+***************
+*** 447,454 ****
+  	  $target{$targ}{'oid1'} = "ifInOctets.$port";
+  	  $target{$targ}{'oid2'} = "ifOutOctets.$port";
+  	} else {
+  	  my($o1, $o2) = split(/\&/, $port,2);
+! 	  if (!$o1 || !$o2) {
+  	    warn ("\nERROR: If specifying the full OID, you must specify\n".
+  		  "2 full OID's separated by '&'. Error found with\n".
+  		  "\"$&\" in \"Target[$rou]\"\n");
+--- 448,466 ----
+  	  $target{$targ}{'oid1'} = "ifInOctets.$port";
+  	  $target{$targ}{'oid2'} = "ifOutOctets.$port";
+  	} else {
++      	if (!$01 && !$02 && $port) {
++ 	$target{$targ}{'port'} = "ipRouteifIndex.$port";
++ 	($port)=
++ 	&snmpget($target{$targ}{'router'},
++            $target{$targ}{'community'},
++ 	   $target{$targ}{'port'});
++ 
++ 	$target{$targ}{'oid1'} = "ifInOctets.$port";
++          $target{$targ}{'oid2'} = "ifOutOctets.$port";
++ 	} else {
+  	  my($o1, $o2) = split(/\&/, $port,2);
+! 
+! 	if (!$o1 || !$o2) {
+  	    warn ("\nERROR: If specifying the full OID, you must specify\n".
+  		  "2 full OID's separated by '&'. Error found with\n".
+  		  "\"$&\" in \"Target[$rou]\"\n");
+***************
+*** 456,461 ****
+--- 468,474 ----
+  	  }
+  	  $target{$targ}{'oid1'} = $o1;
+  	  $target{$targ}{'oid2'} = $o2;
++ 	}
+  	}	
+        }
+        

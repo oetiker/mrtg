@@ -1,0 +1,48 @@
+#!/bin/ksh
+#
+# mrtg-ping-cfg <device> <"Title of page">
+#
+# This creates the mrtg.cfg configurations to do pings to devices.
+# Makes use of mrt-ping-probe by Peter W. Osel <pwo@guug.de> (see below)
+#
+# leewm@sgp.hp.com
+# Hewlett Packard Singapore
+# IT Site Infrastructure Services
+
+# location of mrtg ping probe
+PING_PROBE=/usr/local/httpd/mrtg/mrtg-ping-probe
+
+if [ $# -ne 2 ]
+then
+	head -10 $0
+	exit
+fi
+
+cat <<EOF
+#############################################################
+# ping stats for $1
+# $2
+
+Title[$1]: $2
+MaxBytes[$1]: 5000
+AbsMax[$1]: 10000
+Options[$1]: gauge
+Target[$1]: \`$PING_PROBE $1\`
+PageTop[$1]: <H1>$2</H1>
+	<P>Actually we are measuring the ping time between our web server and $1.
+YLegend[$1]: Round Trip Time
+ShortLegend[$1]: ms
+Legend1[$1]: Maximum Round Trip Time in Milli Second
+Legend2[$1]: Minimum Round Trip Time in Milli Second
+Legend3[$1]: Maximal 5 Minute Maximum Round Trip Time
+Legend4[$1]: Maximal 5 Minute Minimum Round Trip Time
+LegendI[$1]: &nbsp;Max:
+LegendO[$1]: &nbsp;Min:
+WithPeak[$1]: ymwd
+
+#-------------------------------------------------------------------
+
+EOF
+
+exit
+
