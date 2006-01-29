@@ -21,18 +21,14 @@
 <link* REL="icon" HREF="$(ROOT)/inc/favicon.ico" TYPE="image/ico" />
 ..Title!>>MRTG - Page without a Title<<..
 <title*>MRTG - {#Title#}</title*>
-
-<!--[if lt IE 7]><script src="$(ROOT)/inc/IE7/ie7-standard-p.js" type="text/javascript"></script><![endif]-->
-
 <style type="text/css">
 <!--/* <![CDATA[ */
 /* ie5 for mac thinks this comment does not end here because of the backslash \*/
 @import url("$(ROOT)/design.css");
-
-
 /* ]]> */-->
 </style>
 </head>
+<body>
 <div id="page_header">
 #<small>
 #<A HREF="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/<where/>">Swiss Original</A>.&nbsp;Mirrors: 
@@ -95,9 +91,7 @@ LINE
 <div id="page_footer">
 <table class="footer_splitter" cellspacing="0" cellpadding="0" border="0">
 <tr><td id="footer_logo">
-<a href="/">
 <img src="$(ROOT)/images/foot_logo.gif" alt="MRTG" />
-</a>
 </td><td>
 <small>
 Web design by <a href="http://www.templatemonster.com" title=" Template Monster - Website Templates | Flash Templates | Web Templates Design">Template&nbsp;Monster</a>
