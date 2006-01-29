@@ -3,7 +3,7 @@ MRTG-UNIX-GUIDE(1)             mrtg            MRTG-UNIX-GUIDE(1)
 
 
 NNAAMMEE
-       mrtg-unix-guide - Instructions for running MRTG 2.12.2 on
+       mrtg-unix-guide - Instructions for running MRTG 2.13.0 on
        a Unix Box
 
 DDEESSCCRRIIPPTTIIOONN
@@ -155,8 +155,8 @@ MMRRTTGG CCOOMMPPIILLAATTIIOONN
        Ok, now everything is ready for the mrtg compilation.
 
         cd /usr/local/src
-        gunzip -c mrtg-2.12.2.tar.gz | tar xvf -
-        cd mrtg-2.12.2
+        gunzip -c mrtg-2.13.0.tar.gz | tar xvf -
+        cd mrtg-2.13.0
 
        If all the libraries have been preinstalled on your system
        you can configure mrtg by doing a simple:
@@ -280,7 +280,7 @@ RRUUNNNNIINNGG MMRRTTGG
        A mmiinniimmaall script to put into _i_n_i_t_._d might look like this:
 
         #! /bin/sh
-        cd /usr/local/mrtg-2.12.2/bin && ./mrtg --user=mrtg-user \
+        cd /usr/local/mrtg-2.13.0/bin && ./mrtg --user=mrtg-user \
               /home/httpd/mrtg/mrtg.cfg  --logging /var/log/mrtg.log
 
        Note that this will only work with RRuunnAAssDDaaeemmoonn:: YYeess in
@@ -291,4 +291,4 @@ AAUUTTHHOORR
 
 
 
-2.12.2                      2005-06-19         MRTG-UNIX-GUIDE(1)
+2.13.0                      2006-01-29         MRTG-UNIX-GUIDE(1)

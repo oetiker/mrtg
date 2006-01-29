@@ -1,6 +1,6 @@
 =head1 NAME
 
-mrtg-help - How to get help if you have problems with MRTG
+mrtg-faq - How to get help if you have problems with MRTG
 
 =head1 SYNOPSIS
 
@@ -9,17 +9,12 @@ apart from the documentation where you can find help for mrtg.
 
 =head1 FAQ
 
-Alex van den Bogaerdt E<lt>alex@ergens.op.Het.NetE<gt> maintains the
-MRTG FAQ website on
-
- http://faq.mrtg.org
-
 In the following sections you'll find some additonal Frequently Asked Questions, with Answers.
 
 =head2 Why is there no "@#$%" (my native language) version of MRTG?
 
 Nobody has contributed a F<@#$%.pmd> file yet. Go into the
-F<mrtg-2.12.2/translate> directory and create your own translation file.
+F<mrtg-2.13.0/translate> directory and create your own translation file.
 When you are happy with it send it to me for inclusion with the next mrtg
 release.
 
@@ -27,7 +22,7 @@ release.
 =head2 I need a script to make mrtg work with my xyz device.
 
 Probably this has already been done. Check the stuff in the
-F<mrtg-2.12.2/contrib> directory. There is a file called F<00INDEX> in
+F<mrtg-2.13.0/contrib> directory. There is a file called F<00INDEX> in
 that directory which tells what you can find in there.
 
 =head2 How does this SNMP thing work
@@ -35,7 +30,7 @@ that directory which tells what you can find in there.
 There are many resources on the net that explain SNMP.
 Take a look at this article from the Linux Journal by David Guerrero
 
- http://www.develnet.es/~david/papers/snmp/
+ http://www.david-guerrero.com/papers/snmp/
 
 And at this rather long document from CISCO.
 

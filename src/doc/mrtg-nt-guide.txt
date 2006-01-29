@@ -3,7 +3,7 @@ MRTG-NT-GUIDE(1)               mrtg              MRTG-NT-GUIDE(1)
 
 
 NNAAMMEE
-       mrtg-nt-guide - The Windows Guide to MRTG 2.12.2
+       mrtg-nt-guide - The Windows Guide to MRTG 2.13.0
 
 SSYYNNOOPPSSIISS
        Installing MRTG on a Windows box is not quite as "click
@@ -20,17 +20,17 @@ PPRREERREEQQUUIISSIITTSS
 
        +o   The latest version of MRTG from http://peo-
            ple.ee.ethz.ch/~oetiker/webtools/mrtg/pub Look for
-           mrtg-2.12.2.zip or better. The archive also contains a
+           mrtg-2.13.0.zip or better. The archive also contains a
            precompiled copy of rateup.exe for Win32.
 
-IINNSSTTAALLLLAATTIIOONN
+IINNSSTTAALLLLAATTLLIINNGG
        I suggest you do the following from the machine that will
        be running MRTG, which, in this case, is also a web
        server. All examples are for doing things to a LOCAL
        machine.
 
        First
-           Unzip MRTG to C:\mrtg-2.12.2 on the Windowsmachine of
+           Unzip MRTG to C:\mrtg-2.13.0 on the Windowsmachine of
            your choice.
 
        Next
@@ -44,7 +44,7 @@ IINNSSTTAALLLLAATTIIOONN
            Panel]->[System]->[Environment]
 
        To see if everything is installed properly you can open a
-       Command Shell and go into _c_:_\_m_r_t_g_-_2_._1_2_._2_\_b_i_n. Type:
+       Command Shell and go into _c_:_\_m_r_t_g_-_2_._1_3_._0_\_b_i_n. Type:
 
         perl mrtg
 
@@ -75,7 +75,7 @@ CCOONNFFIIGGUURRIINNGG MMRRTTGG
 
        The first thing we do in setting up mrtg is making a
        default config file.  Get to a cmd prompt and change to
-       the _c_:_\_m_r_t_g_-_2_._1_2_._2_\_b_i_n directory. Type the following com-
+       the _c_:_\_m_r_t_g_-_2_._1_3_._0_\_b_i_n directory. Type the following com-
        mand:
 
         perl cfgmaker public@10.10.10.1 --global "WorkDir: c:\www\mrtg" --output mrtg.cfg
@@ -156,7 +156,7 @@ CCOONNFFIIGGUURRIINNGG MMRRTTGG
          #---------------------------------------------------------------
 
        And that's a very basic mrtg config file. You can run this
-       and see your results by going into the _c_:_\_m_r_t_g_-_2_._1_2_._2_\_b_i_n
+       and see your results by going into the _c_:_\_m_r_t_g_-_2_._1_3_._0_\_b_i_n
        directory and typing:
 
         perl mrtg mrtg.cfg
@@ -187,7 +187,7 @@ MMAAKKEE MMRRTTGG RRUUNN AALLLL TTHHEE TTIIMMEE
 
        to your mrtg.cfg file and start it with:
 
-        start /Dc:\mrtg-2.12.2\bin wperl mrtg --logging=eventlog mrtg.cfg
+        start /Dc:\mrtg-2.13.0\bin wperl mrtg --logging=eventlog mrtg.cfg
 
        If you use wwppeerrll instead of ppeerrll, no console window will
        show. MRTG is now running in the background. If it runs
@@ -199,7 +199,7 @@ MMAAKKEE MMRRTTGG RRUUNN AALLLL TTHHEE TTIIMMEE
        If you put a shortcut with
 
         Target:    wperl mrtg --logging=eventlog mrtg.cfg
-        Start in:  c:\mrtg-2.12.2\bin
+        Start in:  c:\mrtg-2.13.0\bin
 
        into your startup folder, mrtg will now start whever you
        login to your NT box.
@@ -255,7 +255,7 @@ HHOOWW TTOO SSEETTUUPP MMRRTTGG AASS AA WWIINNDDOOWWSS S
             "AppParameters"="c:\\mrtg\\bin\\mrtg --logging=eventlog c:\\mrtg\\bin\\mrtg.cfg"
             "AppDirectory"="c:\\mrtg\\bin\\"
 
-       IInnssttaallllaattiioonn
+       SSeerrvviiccee IInnssttaallllaattiioonn
 
        Once again, assuming that MRTG is already fully installed
        and configured on the target system under c:\mrtg\ the
@@ -406,4 +406,4 @@ AAUUTTHHOORRSS
 
 
 
-2.12.2                      2005-06-19           MRTG-NT-GUIDE(1)
+2.13.0                      2006-01-29           MRTG-NT-GUIDE(1)

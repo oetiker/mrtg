@@ -129,9 +129,9 @@
 .\" ========================================================================
 .\"
 .IX Title "CFGMAKER 1"
-.TH CFGMAKER 1 "2005-06-19" "2.12.2" "mrtg"
+.TH CFGMAKER 1 "2006-01-29" "2.13.0" "mrtg"
 .SH "NAME"
-cfgmaker \- Creates mrtg.cfg files (for mrtg\-2.12.2)
+cfgmaker \- Creates mrtg.cfg files (for mrtg\-2.13.0)
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
 cfgmaker [options] [community@]router [[options] [community@]router ...]
@@ -178,7 +178,7 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
 .PP
 .Vb 9
 \& --host-template=templatefile
-\&                   In addition to creating targets for a host's interfaces 
+\&                   In addition to creating targets for a host's interfaces
 \&                   do also create targets for the host itself as specified
 \&                   by the contents in the file templatefile.  The file is
 \&                   supposed to contain Perl code to be executed to generate
@@ -207,9 +207,9 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
 .Ve
 .PP
 .Vb 4
-\& --subdirs=format  give each router its own subdirectory, naming each per 
-\&                   "format", in which HOSTNAME and SNMPNAME will be 
-\&                   replaced by the values of those items -- for instance,  
+\& --subdirs=format  give each router its own subdirectory, naming each per
+\&                   "format", in which HOSTNAME and SNMPNAME will be
+\&                   replaced by the values of those items -- for instance,
 \&                   --subdirs=HOSTNAME or --subdirs="HOSTNAME (SNMPNAME)"
 .Ve
 .PP
@@ -283,9 +283,9 @@ want to try this first if you do not know the community name of a
 device. If you are using the wrong community name you will get no
 response from the device.
 .PP
-\&\fIRouter\fR is the \s-1DNS\s0 name or the \s-1IP\s0 number of an SNMP-managable device.           
-Following the name you can specify 6 further options separated by                 
-colons.  The full syntax looks like this:                                      
+\&\fIRouter\fR is the \s-1DNS\s0 name or the \s-1IP\s0 number of an SNMP-managable device.
+Following the name you can specify 6 further options separated by
+colons.  The full syntax looks like this:
 .PP
 \&\fBrouter\fR[:[\fBprt\fR][:[\fBtmout\fR][:[\fBretr\fR][:[\fBbackoff\fR][:\fBvers\fR]]]]]
 .PP
@@ -377,7 +377,7 @@ to return a truth value.  If true, include the interface and if false,
 exclude the interface.
 .Sp
 For a further discussion on how these filters work, see the section
-\&\*(L"\s-1DETAILS\s0 \s-1ON\s0 \s-1FILTERS\s0\*(R" below.
+\&\*(L"Details on Filters\*(R" below.
 .IP "\fB\-\-if\-template\fR \fBtemplate-file\fR" 4
 .IX Item "--if-template template-file"
 First of all, this is under some development and is experimental.
@@ -388,7 +388,7 @@ will be evaluated as a Perl program which generates the lines using certain
 variables for input and output.
 .Sp
 For a further discussion on how these templates work, see the section
-\&\*(L"\s-1DETAILS\s0 \s-1ON\s0 \s-1TEMPLATES\s0\*(R" below.
+\&\*(L"Details on Temaplates\*(R" below.
 .IP "\fB\-\-host\-template\fR \fBtemplate-file\fR" 4
 .IX Item "--host-template template-file"
 First of all, this is under some development and is experimental.
@@ -400,7 +400,7 @@ once per host as a Perl program which generates the lines using certain
 variables for input and output.
 .Sp
 For a further discussion on how these templates work, see the section
-\&\*(L"\s-1DETAILS\s0 \s-1ON\s0 \s-1TEMPLATES\s0\*(R" below.
+\&\*(L"Details on Templates\*(R" below.
 .IP "\fB\-\-community\fR \fBcommunity-string\fR" 4
 .IX Item "--community community-string"
 Use this to set the community for the routers following on the command
@@ -445,7 +445,7 @@ specified by \fB\-\-snmp\-options\fR by using the syntax
 .ie n .IP "\fB\-\-global\fR \fB""\fR\fIbla: abc\fR\fB""\fR" 4
 .el .IP "\fB\-\-global\fR \fB``\fR\fIbla: abc\fR\fB''\fR" 4
 .IX Item "--global ""bla: abc"""
-Use this to add global options to the generated config file. 
+Use this to add global options to the generated config file.
 You can call \fB\-\-global\fR several times to add multiple options.
 The line will appear in the configuration just before the config for
 the next router appearing on the command line.
@@ -522,8 +522,93 @@ default behaviour).
 .Sp
 The main usage of this option is to negate an \-\-nointerfaces appearing
 earlier on the command line.
-.SH "DETAILS ON FILTERS"
-.IX Header "DETAILS ON FILTERS"
+.Sh "\s-1SNMP\s0 V3 Options"
+.IX Subsection "SNMP V3 Options"
+\&\fBCfgmaker\fR supports \s-1SNMP\s0 V3.  There are optional parameters affecting \s-1SNMP\s0 operation.
+.PP
+\fISNMPv3 Arguments\fR
+.IX Subsection "SNMPv3 Arguments"
+.PP
+A \s-1SNMP\s0 context is a collection of management information accessible by a \s-1SNMP\s0
+entity.  An item of management information may exist in more than one context
+and a \s-1SNMP\s0 entity potentially has access to many contexts.  The combination of
+a contextEngineID and a contextName unambiguously identifies a context within
+an administrative domain.  In a SNMPv3 message, the contextEngineID and
+contextName are included as part of the scopedPDU.  All methods that generate
+a \s-1SNMP\s0 message optionally take a \fB\-\-contextengineid\fR and \fB\-\-contextname\fR
+argument to configure these fields.
+.IP "Context Engine \s-1ID\s0" 4
+.IX Item "Context Engine ID"
+The \fB\-\-contextengineid\fR argument expects a hexadecimal string representing
+the desired contextEngineID.  The string must be 10 to 64 characters (5 to
+32 octets) long and can be prefixed with an optional \*(L"0x\*(R".  Once the
+\&\fB\-\-contextengineid\fR is specified it stays with the object until it is changed
+again or reset to default by passing in the undefined value.  By default, the
+contextEngineID is set to match the authoritativeEngineID of the authoritative
+\&\s-1SNMP\s0 engine.
+.IP "Context Name" 4
+.IX Item "Context Name"
+The contextName is passed as a string which must be 0 to 32 octets in length
+using the \fB\-\-contextname\fR argument.  The contextName stays with the object
+until it is changed.  The contextName defaults to an empty string which
+represents the \*(L"default\*(R" context.
+.PP
+\fIUser-based Security Model Arguments\fR
+.IX Subsection "User-based Security Model Arguments"
+.PP
+The User-based Security Model (\s-1USM\s0) used by SNMPv3 requires that a securityName
+be specified using the \fB\-username\fR argument.  The creation of a Net::SNMP
+object with the version set to SNMPv3 will fail if the \fB\-\-username\fR argument
+is not present.  The \fB\-username\fR argument expects a string 1 to 32 octets
+in length.
+.PP
+Different levels of security are allowed by the User-based Security Model which
+address authentication and privacy concerns.  A SNMPv3 target will
+derive the security level (securityLevel) based on which of the following
+arguments are specified.
+.PP
+By default a securityLevel of 'noAuthNoPriv' is assumed.  If the \fB\-\-authkey\fR
+or \fB\-\-authpassword\fR arguments are specified, the securityLevel becomes
+\&'authNoPriv'.  The \fB\-\-authpassword\fR argument expects a string which is at
+least 1 octet in length.  Optionally, the \fB\-\-authkey\fR argument can be used so
+that a plain text password does not have to be specified in a script.  The
+\&\fB\-\-authkey\fR argument expects a hexadecimal string produced by localizing the
+password with the authoritativeEngineID for the specific destination device.
+The \f(CW\*(C`snmpkey\*(C'\fR utility included with the Net::SNMP  distribution can be used to create
+the hexadecimal string (see snmpkey).
+.PP
+Two different hash algorithms are defined by SNMPv3 which can be used by the
+Security Model for authentication.  These algorithms are \s-1HMAC\-MD5\-96\s0 \*(L"\s-1MD5\s0\*(R"
+(\s-1RFC\s0 1321) and \s-1HMAC\-SHA\-96\s0 \*(L"\s-1SHA\-1\s0\*(R" (\s-1NIST\s0 \s-1FIPS\s0 \s-1PUB\s0 180\-1).   The default
+algorithm used by the module is \s-1HMAC\-MD5\-96\s0.  This behavior can be changed by
+using the \fB\-\-authprotocol\fR argument.  This argument expects either the string
+\&'md5' or 'sha' to be passed to modify the hash algorithm.
+.PP
+By specifying the arguments \fB\-\-privkey\fR or \fB\-\-privpassword\fR the securityLevel
+associated with the object becomes 'authPriv'.  According to SNMPv3, privacy
+requires the use of authentication.  Therefore, if either of these two
+arguments are present and the \fB\-\-authkey\fR or \fB\-\-authpassword\fR arguments are
+missing, the creation of the object fails.  The \fB\-\-privkey\fR and
+\&\fB\-\-privpassword\fR arguments expect the same input as the \fB\-\-authkey\fR and
+\&\fB\-\-authpassword\fR arguments respectively.
+.PP
+The User-based Security Model described in \s-1RFC\s0 3414 defines a single encryption
+protocol to be used for privacy.  This protocol, CBC-DES \*(L"\s-1DES\s0\*(R" (\s-1NIST\s0 \s-1FIPS\s0 \s-1PUB\s0
+46\-1), is used by default or if the string 'des' is passed to the
+\&\fB\-\-privprotocol\fR argument.  By working with the Extended Security Options
+Consortium http://www.snmp.com/eso/, the module also supports additional
+protocols which have been defined in draft specifications.  The draft
+http://www.snmp.com/eso/draft\-reeder\-snmpv3\-usm\-3desede\-00.txt
+defines the support of \s-1CBC\-3DES\-EDE\s0 \*(L"Triple\-DES\*(R" (\s-1NIST\s0 \s-1FIPS\s0 46\-3) in the
+User-based Security Model.  This protocol can be selected using the
+\&\fB\-\-privprotocol\fR argument with the string '3desede'.  The draft
+http://www.snmp.com/eso/draft\-blumenthal\-aes\-usm\-04.txt
+describes the use of \s-1CFB128\-AES\-128/192/256\s0 \*(L"\s-1AES\s0\*(R" (\s-1NIST\s0 \s-1FIPS\s0 \s-1PUB\s0 197) in the
+\&\s-1USM\s0. The three \s-1AES\s0 encryption protocols, differentiated by their key sizes,
+can be selected by passing 'aescfb128', 'aescfb192', or 'aescfb256' to the
+\&\fB\-privprotocol\fR argument.
+.Sh "Details on Filters"
+.IX Subsection "Details on Filters"
 The purpose of the filters is to decide which interfaces to accept and
 which interfaces to reject.  This decision is done for each interface by
 evaluating the filter expression as a piece of Perl code and investigating
@@ -558,8 +643,10 @@ Boolean negation of a single expression.  Example:  \fBnot\fR \fIexpression\fR .
 Yet another example: \fB!\fR\fIexpression\fR
 .PP
 (For more details on this I recommend a book on Perl)
-.Sh "Predefined Filter Variables"
+.PP
+\fIPredefined Filter Variables\fR
 .IX Subsection "Predefined Filter Variables"
+.PP
 To facilitate, there are a number of predefined values available to use
 in the filter.  Note that these variables are also available when templates
 interfaces are evaluated (but not host templates).
@@ -594,7 +681,7 @@ Here's a list of some of the most common interface types by number:
 \&   9 iso88025TokenRing
 \&  15 fddi
 \&  19 E1
-\&  20 basicISDN 
+\&  20 basicISDN
 \&  21 primaryISDN
 \&  22 propPointToPointSerial
 \&  23 ppp
@@ -642,7 +729,7 @@ state.
 A number of variables are also predefined to easily decide if an interface
 belong to a certain cathegory or not.  Below is all those variables listed
 together with which if_type numbers each variable will be true for.  Note
-that some variables refer to other variables as well. 
+that some variables refer to other variables as well.
 .IP "\fB$if_is_ethernet\fR" 4
 .IX Item "$if_is_ethernet"
 True for ethernet interfaces (nr 6, 7, 26, 62, 69 and 117).
@@ -688,8 +775,10 @@ Besides that, you can also use the variables defined for templates below.
 Further, all the variables available in cfgmaker is at the scripts disposal
 even if the use of such features is discouraged.  More \*(L"shortcuts\*(R" in the
 form of variables and functions will be made avaiable in the future instead.
-.Sh "Examples on Filters"
+.PP
+\fIExamples on Filters\fR
 .IX Subsection "Examples on Filters"
+.PP
 The following filter will not affect which interfaces get's included or
 excluded, it will make cfgmaker behave as normally.
 .PP
@@ -710,8 +799,8 @@ all interfaces which are administratively down.
 .Vb 1
 \& '--if-filter=$if_admin && $default_iftype'
 .Ve
-.SH "DETAILS ON TEMPLATES"
-.IX Header "DETAILS ON TEMPLATES"
+.Sh "Details on Templates"
+.IX Subsection "Details on Templates"
 The contents of the template files are evaluated as a Perl program.  A
 number or Perl variables are available for the program to read and others
 are used to be written to.
@@ -723,8 +812,10 @@ escaping means that the chars \*(L"<\*(R", \*(L">\*(R" and \*(L"&\*(R" are repla
 \&\*(L"&gt;\*(R" and \*(L"&amp;\*(R" and that newlines embedded in the string are prepended
 with \*(L"<\s-1BR\s0>\*(R" and appended with a space character (if a newline is last in the
 string it is not touched).
-.Sh "Writable Template Variables"
+.PP
+\fIWritable Template Variables\fR
 .IX Subsection "Writable Template Variables"
+.PP
 These are the variables available to store the configuration lines in.
 Some of them are initialized prior to the evaluation of the template but
 such content normally is comments for inclusion in the final configuration
@@ -770,9 +861,11 @@ Test against \fB$if_ok\fR instead.
 This variable is the placeholder for the string to use as the separator
 between the code for individual targets.  The contents of this variable
 is put after each target (so the lines will appear after the end of the
-last target in the config as well).  
-.Sh "Predefined Template Variables"
+last target in the config as well).
+.PP
+\fIPredefined Template Variables\fR
 .IX Subsection "Predefined Template Variables"
+.PP
 All the variables below are available for interface templates to use.
 For host templates, only those listed under \*(L"Host and System Variables\*(R"
 are available.
@@ -785,7 +878,7 @@ For interface templates the variables listed under
 .IP "\fB$router_name\fR" 4
 .IX Item "$router_name"
 This is the fully qualified name for the router.  It is affected by the
-following items on the command line:  the router name itself and 
+following items on the command line:  the router name itself and
 \&\fB\-\-dns\-domain\fR.
 .IP "\fB$router_connect\fR" 4
 .IX Item "$router_connect"
@@ -831,7 +924,7 @@ directives.  (There's no \s-1HTML\s0 escaped variant available)
 This the reference string for the interface.  It is expected to be used
 in the \*(L"Target[xyz]\*(R" directive to distinguish what interface to use.  The
 value of this variable is affected by the \fB\-\-ifref\fR command line option.
-It is normally used together with \fB$router_connect\fR. 
+It is normally used together with \fB$router_connect\fR.
 (There's no \s-1HTML\s0 escaped variant available)
 .IP "\fB$if_ok\fR" 4
 .IX Item "$if_ok"
@@ -970,7 +1063,7 @@ If the host is a Cisco Catalyst \s-1LAN\s0 switch, this variable is the name of
 that port.  (No \s-1HTML\s0 escaped variant available)
 .IP "\fB$desc_prefix\fR" 4
 .IX Item "$desc_prefix"
-This variable is a prefix of the description of what the target is to use in 
+This variable is a prefix of the description of what the target is to use in
 the \*(L"Title[]\*(R" directive and in the H1 section of the \*(L"PageTop[]\*(R".  Default is
 \&\*(L"Traffic analysis for \*(R".  (\s-1HTML\s0 escaped variant: \fB$html_desc_prefix\fR)
 .IP "\fB$if_title_desc\fR" 4
@@ -983,8 +1076,10 @@ of the variable \fB$if_title\fR.  The latter is used as the full string in the
 which indirectly controls the contents of \fB$if_title\fR
 .Sp
 (\s-1HTML\s0 escaped variant: \fB$html_if_title_desc\fR)
-.Sh "Help Functions for Templates"
+.PP
+\fIHelp Functions for Templates\fR
 .IX Subsection "Help Functions for Templates"
+.PP
 The following functions exists to facilitate the writing of host and
 interface templates.
 .IP "\fBhtml_escape(\f(BIstring\fB)\fR" 4
@@ -994,9 +1089,11 @@ where the following substitutions has been done:  the chars \*(L"<\*(R", \*(L">\
 \&\*(L"&\*(R" are replaced by \*(L"&lt;\*(R", \*(L"&gt;\*(R" and \*(L"&amp;\*(R" and that newlines embedded
 in the string are prepended with \*(L"<\s-1BR\s0>\*(R" and appended with a space character
 (newlines at the end of the string are not touched).
-.Sh "Example Template Files"
+.PP
+\fIExample Template Files\fR
 .IX Subsection "Example Template Files"
-\fITemplate Example 1: Eliminating Rejected Targets From Appearing\fR
+.PP
+Template Example 1: Eliminating Rejected Targets From Appearing
 .IX Subsection "Template Example 1: Eliminating Rejected Targets From Appearing"
 .PP
 This template file generates exactly the same configuration code per
@@ -1138,11 +1235,11 @@ Below is an example of a host template.
 \& YLegend[$target_name]: Percentage CPU load
 \& ShortLegend[$target_name]: %
 \& Legend1[$target_name]: CPU load in %
-\& Legend2[$target_name]: 
+\& Legend2[$target_name]:
 \& Legend3[$target_name]: Max Observed CPU load
-\& Legend4[$target_name]: 
+\& Legend4[$target_name]:
 \& LegendI[$target_name]: &nbsp;CPU Load:
-\& LegendO[$target_name]: 
+\& LegendO[$target_name]:
 \& WithPeak[$target_name]: ywm
 \& MaxBytes[$target_name]: 100
 \& Options[$target_name]: growright, gauge, nopercent
@@ -1173,11 +1270,11 @@ Below is an example of a host template.
 .Ve
 .SH "EXAMPLES"
 .IX Header "EXAMPLES"
-The first example creates a config file for \fIrouter.place.xyz\fR:  the router           
-has the community name \fIpublic\fR.  Interfaces get identified by their             
-\&\s-1IP\s0 number.  Two global options get added to the config file.  The                 
-config file gets redirected to \fImrtg.conf\fR.  The '\e' signs at the end            
-of the line mean that this command should be written on a single line.            
+The first example creates a config file for \fIrouter.place.xyz\fR:  the router
+has the community name \fIpublic\fR.  Interfaces get identified by their
+\&\s-1IP\s0 number.  Two global options get added to the config file.  The
+config file gets redirected to \fImrtg.conf\fR.  The '\e' signs at the end
+of the line mean that this command should be written on a single line.
 .PP
 .Vb 4
 \& cfgmaker --global "WorkDir: /home/tobi"           \e
@@ -1187,7 +1284,7 @@ of the line mean that this command should be written on a single line.
 .Ve
 .PP
 Note: if cfgmaker is not in your path, but you are in the directory where
-cfgmaker is stored, you can start it with ./cfgmaker 
+cfgmaker is stored, you can start it with ./cfgmaker
 .PP
 The next example creates a config file for four devices:
 \&\fIrouter1.place.xyz\fR, \fIrouter2.place.xyz\fR, \fIswitch1.place.xyz\fR and

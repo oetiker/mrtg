@@ -80,9 +80,9 @@ MMIIBB LLIISSTT
 
        iiffIInnEErrrroorrss
 
-       Descriptor:             ifInErrors Identi-
-       fier:         1.3.6.1.2.1.2.2.1.14 ASN.1 Syn-
-       tax:       Counter32
+        Descriptor:            ifInErrors
+        Identifier:            1.3.6.1.2.1.2.2.1.14
+        ASN.1 Syntax:          Counter32
 
        The number of inbound packets that contained errors pre-
        venting them from being deliverable to a higher-layer pro-
@@ -90,9 +90,9 @@ MMIIBB LLIISSTT
 
        iiffIInnUUnnkknnoowwnnPPrroottooss
 
-       Descriptor:             ifInUnknownProtos Identi-
-       fier:         1.3.6.1.2.1.2.2.1.15 ASN.1 Syn-
-       tax:       Counter32
+        Descriptor:            ifInUnknownProtos
+        Identifier:            1.3.6.1.2.1.2.2.1.15
+        ASN.1 Syntax:          Counter32
 
        The number of packets received via the interface which
        were discarded because of an unknown or unsupported proto-
@@ -100,16 +100,16 @@ MMIIBB LLIISSTT
 
        iiffOOuuttOOcctteettss
 
-       Descriptor:             ifOutOctets Identi-
-       fier:         1.3.6.1.2.1.2.2.1.16 ASN.1 Syn-
-       tax:       Counter32
+        Descriptor:            ifOutOctets
+        Identifier:            1.3.6.1.2.1.2.2.1.16
+        ASN.1 Syntax:          Counter32
 
        The total number of octets transmitted out of the inter-
        face, including framing characters.
 
        iiffOOuuttUUccaassttPPkkttss
 
-        Descriptor:             ifOutUcastPkts
+        Descriptor:            ifOutUcastPkts
         Identifier:            1.3.6.1.2.1.2.2.1.17
         ASN.1 Syntax:          Counter32
 
@@ -193,4 +193,4 @@ AAUUTTHHOORR
 
 
 
-2.12.2                      2005-06-19            MRTG-MIBHELP(1)
+2.13.0                      2006-01-29            MRTG-MIBHELP(1)

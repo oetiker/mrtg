@@ -2,7 +2,7 @@
 # -*- mode: cperl -*-
 
 ###################################################################
-# MRTG 2.12.2  Multi Router Traffic Grapher
+# MRTG 2.13.0  Multi Router Traffic Grapher
 ###################################################################
 # Created by Tobias Oetiker <oetiker@ee.ethz.ch>
 #            and Dave Rand <dlr@bungi.com>
@@ -23,6 +23,7 @@ my @STARTARGS=($0,@ARGV);
 # base - basic program flow
 # tarp - target parser
 # snpo - snmp polling
+# snpo2 - more snmp debug
 # coca - confcache operations
 # repo - track confcache repopulation
 # fork - forking view
@@ -83,7 +84,6 @@ use Math::BigFloat;
 
 # search for binaries in the bin and bin/../lib  directory
 use MRTG_lib "2.100015";
-use SNMP_util;
 
 # $SNMP_Session::suppress_warnings = 2;
 use locales_mrtg "0.07";
@@ -101,7 +101,7 @@ BEGIN {
 BEGIN {
     if ($^O eq 'MSWin32'){
 	eval {require Win32; Win32::SetChildShowWindow(0)};
-	warn "WARNING: $@\n";
+	warn "WARNING: $@\n" if $@;
     }    
 }
 
@@ -156,11 +156,16 @@ sub main {
     my @routers;
     my %cfg;
     my %rcfg;
-    my %opts;
-    GetOptions(\%opts, 'user=s', 'group=s', 'lock-file=s','confcache-file=s','logging=s', 'check', 'fhs', 'daemon',  'pid-file=s','debug=s');
+    my %opts; 
+    my $EXITCODE = 0;
+    
+    GetOptions(\%opts, 'user=s', 'group=s', 'lock-file=s','confcache-file=s','logging=s', 'check', 'fhs', 'daemon',  'pid-file=s','debug=s', 'log-only');
 
     if (defined $opts{debug}){
-        @main::DEBUG = split /\s*,\s*/, $opts{debug}
+        @main::DEBUG = split /\s*,\s*/, $opts{debug};
+	if (defined $SNMP_util::Debug){
+	        $SNMP_util::Debug = 1 if grep /^snpo2$/, @main::DEBUG;
+	}
     }
 
     my $uid = $<;
@@ -239,6 +244,33 @@ sub main {
 
     debug('base', "Reading Config File: $cfgfile");
     readcfg($cfgfile,\@routers,\%cfg,\%rcfg);
+
+    
+    
+    # Enable or disable snmpv3
+    if(defined $cfg{enablesnmpv3}) {
+        $cfg{enablesnmpv3} = lc($cfg{enablesnmpv3});
+    } else {
+        $cfg{enablesnmpv3} = 'no';
+    }
+
+    # Check we have the necessary libraries for IPv6 support
+    if ($cfg{enablesnmpv3} eq 'yes') {
+        if  (eval {require Net_SNMP_util;})   {
+	    import Net_SNMP_util;
+            debug('base', "SNMP V3 libraries found, SNMP V3 enabled.");
+        } else {
+            warn "WARNING: SNMP V3 libraries not found, SNMP V3 disabled.\n";
+            $cfg{enablesnmpv3} =  'no';
+	    require SNMP_util;
+	    import SNMP_util;
+        }
+    }
+    else {	# load V1/V2 libraries 
+	require SNMP_util;
+	import SNMP_util;
+    }
+    
 
     # Enable or disable IPv6
     if(defined $cfg{enableipv6}) {
@@ -372,6 +404,14 @@ sub main {
 
             my ($inlast, $outlast, $uptime, $name, $time) = 
               getcurrent(\@target, $router, \%rcfg, \%cfg);
+
+            if ( defined($inlast) and defined($outlast)) {
+              $EXITCODE = $EXITCODE | 1;
+            }
+            else {
+              $EXITCODE = $EXITCODE | 2;
+            }
+
 	    debug('base', "Get Current values: in:".( defined $inlast ? $inlast : "undef").", out:".
                                                  ( defined $outlast? $outlast : "undef").", up:".
                                                  ( defined $uptime ? $uptime : "undef").", name:".
@@ -405,10 +445,10 @@ sub main {
             if ($rcfg{'options'}{'dorelpercent'}{$router}) {
                 ($maxin, $maxout, $maxpercent, $avin, $avout, $avpercent,
                  $cuin, $cuout, $cupercent, $avmxin, $avmxout) =
-                  writegraphics($router, \%cfg, \%rcfg, $inlast, $outlast, $time,$LOC);
+                  writegraphics($router, \%cfg, \%rcfg, $inlast, $outlast, $time,$LOC, \%opts);
             } else {
                 ($maxin, $maxout ,$avin, $avout, $cuin, $cuout, $avmxin, $avmxout) =
-                  writegraphics($router, \%cfg, \%rcfg, $inlast, $outlast, $time,$LOC);
+                  writegraphics($router, \%cfg, \%rcfg, $inlast, $outlast, $time,$LOC, \%opts);
             }
             # skip this update if we did not get anything usefull out of
             # writegraphics
@@ -417,7 +457,11 @@ sub main {
 	    debug('base', "Check for Thresholds");
             threshcheck(\%cfg,\%rcfg,$cfgfile,$router,$cuin,$cuout);
 
-	    if ($cfg{logformat} eq 'rateup'){
+	    if (defined $opts{'log-only'}){
+		debug('base', "Disable Graph and HTML generation");
+	    }
+
+	    if ($cfg{logformat} eq 'rateup' and not defined $opts{'log-only'} ){
 		debug('base', "Check for Write HTML Pages");
 		writehtml($router, \%cfg, \%rcfg,
 			  $maxin, $maxout, $maxpercent, $avin, $avout, $avmxin, $avmxout, $avpercent,
@@ -446,6 +490,16 @@ sub main {
     delete $$confcache{___updated} if exists $$confcache{___updated}; # make sure everything gets written out not only the updated entries
     writeconfcache($confcache,$confcachefile);
 
+    if ( ! $cfg{'runasdaemon'} or $cfg{'runasdaemon'} !~ /y/i ) {
+      if ( ($EXITCODE & 1) and ($EXITCODE & 2) ) {
+        # At least one target was sucessful
+        exit 91;
+      }
+      elsif ( not ($EXITCODE & 1) and ($EXITCODE & 2) ) {
+        # All targets failed
+        exit 92;
+      }
+    }
 }
 
 # ( $inlast, $outlast, $uptime, $name, $time ) =
@@ -540,10 +594,11 @@ sub getcurrent {
 	# (community@host) that may have been specified with the RouterUptime
 	# target keyword
 	if( defined $rcfg->{ routeruptime }{ $rou } ) {
+	  my $snmpopt=eval("{".$rcfg->{ snmpoptions }{ $rou }."}");
 		( $uptime, $name ) = snmpget(
 			v4onlyifnecessary( $rcfg->{ routeruptime }{ $rou },
 				$rcfg->{ ipv4only }{ $rou } ),
-			$cfg->{ snmpoptions }, 'sysUptime', 'sysName');
+			$snmpopt, 'sysUptime', 'sysName');
 	}
   
 	# Get the device name from the alternate location (OID or
@@ -565,7 +620,7 @@ sub getcurrent {
 			if defined $rcfg->{ routeruptime }{ $rou } and not $nloc;
 		# Get the device name if $nloc (community@host) has been specified
 		# one way or the other
-		( $name ) = snmpget( $nloc, $$cfg{snmpoptions}, $noid ) if $nloc;
+		( $name ) = snmpget( $nloc, $$rcfg{snmpoptions}{ $rou }, $noid ) if $nloc;
 	}
   
 	return ( $last{ _IN_ }, $last{ _OUT_ }, $uptime, $name, $time );
@@ -588,7 +643,7 @@ sub rateupcheck ($) {
 }
 
 sub writegraphics {
-    my($router, $cfg, $rcfg, $inlast, $outlast, $time,$LOC) = @_;
+    my($router, $cfg, $rcfg, $inlast, $outlast, $time,$LOC, $opts) = @_;
   
     my($absmax,$maxv, $maxvi, $maxvo, $i, $period, $res);
     my(@exec, @mxvls, @metas);
@@ -694,19 +749,20 @@ sub writegraphics {
 
         # get the rrdtool-processed values back from rrdtool
         # for the threshold checks (we cannot use the fetched data)
-        my $lasttime = RRDs::last($dotrrd);
-        debug('log', "Called: RRDs::last()");
+        my $info =  RRDs::info($dotrrd);
+        my $lasttime =  $info->{last_update} - $info->{last_update} % $info->{step};        
+        debug('log', "Called: RRDs::info($dotrrd)");
         $e = RRDs::error(); 
-        warn "ERROR: Cannot 'last' $dotrrd: $e\n" if ($e);
-        my $fetch = (RRDs::fetch($dotrrd,'AVERAGE','-s',$lasttime,'-e',$lasttime))[3];
+        warn "ERROR: Cannot 'info' $dotrrd: $e\n" if ($e);
+        my $fetch = (RRDs::fetch($dotrrd,'AVERAGE','-s',$lasttime-1,'-e',$lasttime))[3];
         $e = RRDs::error(); 
         warn "ERROR: Cannot 'fetch' $dotrrd: $e\n" if ($e);
         debug('log', "Called: RRDs::fetch($dotrrd,'AVERAGE','-s',$lasttime,'-e',$lasttime)");        
-        my $in = $fetch->[0]->[0] ?  $fetch->[0]->[0] : "NaN" ;
-        my $out = $fetch->[0]->[1] ? $fetch->[0]->[1] : "NaN" ;
+        my $in = $fetch->[0][0] ?  $fetch->[0][0] : "NaN" ;
+        my $out = $fetch->[0][1] ? $fetch->[0][1] : "NaN" ;
         debug('log', "  got: $in/$out");
-        $cuin{'d'}{$router} = $fetch->[0]->[0];
-        $cuout{'d'}{$router} = $fetch->[0]->[1];
+        $cuin{'d'}{$router} = $fetch->[0][0];
+        $cuout{'d'}{$router} = $fetch->[0][1];
         # the html pages and the graphics are created at "call time" so that's it!
         # (the returned hashes are empty, it's just to minimize the changes to mrtg)
         if ($$rcfg{'options'}{'dorelpercent'}{$router}) {  
@@ -813,15 +869,17 @@ sub writegraphics {
     if ($$rcfg{'weekformat'}{$router}) {
         push (@exec, "W", $$rcfg{'weekformat'}{$router});
     }
-    if (not defined $$rcfg{'suppress'}{$router} or $$rcfg{'suppress'}{$router} !~ /d/) {
+    my $SAGE = (time - $main::STARTTIME) / 3600 / 24; # current script age 
+    if (not defined $$opts{'log-only'}){
+      if (not defined $$rcfg{'suppress'}{$router} or $$rcfg{'suppress'}{$router} !~ /d/) {
         # VMS: should work for both now
         push (@exec, "i", "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-day.${main::GRAPHFMT}",
               $sign*$maxvi, $sign*$maxvo, $maxx, $maxy, ,$xscale, $yscale, $growright, $step, $bits, $ytics, $yticsf, $timestrfmt, $timestrpos);
         @mxvls = ("d");
         push (@metas, "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-day.${main::GRAPHFMT}",
               $$cfg{'interval'} ? $$cfg{'interval'} : 5);
-    }
-    my $SAGE = (time - $main::STARTTIME) / 3600 / 24; # current script age 
+       }
+  
 
     if (((not -e "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-week.${main::GRAPHFMT}") or
          ((-M "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-week.${main::GRAPHFMT}") + $SAGE  >= 0.5/24)) and
@@ -860,6 +918,7 @@ sub writegraphics {
               $sign*$maxvi, $sign*$maxvo, $maxx, $maxy, $xscale, $yscale, $growright, $step, $bits, $ytics, $yticsf, $timestrfmt, $timestrpos);
         push (@metas, "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-year.${main::GRAPHFMT}", 1440);
     }
+  }
 
     # VMS: this might work now ... or does VMS NOT know about pipes?
     # NT doesn't have fork() so an open(xxx,"-|") won't work
@@ -1030,12 +1089,11 @@ sub fmi {
     my($number, $maxbytes, $router, @foo) = @_;
     return "?????" unless defined $number;
     my($rcfg,$LOC)=@foo;
-    my @short;
+    my @short= (&$LOC(""),&$LOC(""),&$LOC(""),&$LOC(""));
     my $mul = 1;
     if ($$rcfg{'kmg'}{$router}) {
         my($i);
         if ($$rcfg{'options'}{'bits'}{$router}) {
-            @short = ();
             foreach $i (split(/,/, $$rcfg{'kmg'}{$router})) {
                 if ($$rcfg{'options'}{'perminute'}{$router}) {
                     $short[$#short+1] = "$i".&$LOC("b/min");
@@ -1047,7 +1105,6 @@ sub fmi {
             }
             $mul= 8;
         } else {
-            @short = ();
             foreach $i (split(/,/, $$rcfg{'kmg'}{$router})) {
                 if ($$rcfg{'options'}{'perminute'}{$router}) {
                     $short[$#short+1] = "$i".&$LOC ("B/min");
@@ -1060,7 +1117,6 @@ sub fmi {
             $mul= 1;
         }
         if (defined $$rcfg{'shortlegend'}{$router}) {
-            @short = ();
             foreach $i (split(/,/, $$rcfg{'kmg'}{$router})) {
                 $short[$#short+1] = "$i"."$$rcfg{'shortlegend'}{$router}";
             }
@@ -1190,18 +1246,20 @@ sub writehtml {
     my $dirrel = "../" x ($$rcfg{'directory_web'}{$router} =~ tr|/|/|);
 
     $Today=&$LOC(datestr(time));
-    $VERSION = "2.12.2";
+    $VERSION = "2.13.0";
     open (HTML,">$$cfg{'htmldir'}$$rcfg{'directory'}{$router}$router.$$rcfg{'extension'}{$router}") || 
       do { warn ("WARNING: Writing $router.$$rcfg{'extension'}{$router}: $!");
       	   next };
-    print HTML '<?xml version="1.0" encoding="' . &$LOC('iso-8859-1') . '"?>' . "\n";
-	 print HTML '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/dtd/xhtml11.dtd">' . "\n";
-    print HTML "<!-- Begin Head -->\n";
+    # this unforutnately confuses IE greatly ... so we have to comment
+    # it out for now ... :-(
+    # print HTML '<?xml version="1.0" encoding="' . &$LOC('iso-8859-1') . '"?>' . "\n";
+    print HTML '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/dtd/xhtml11.dtd">' . "\n";
     print HTML "<html>\n";
     my $interval =$$cfg{'interval'} ? $$cfg{'interval'} : 5;
     my $expiration = &expistr($interval);
     my $refresh =  $$cfg{'refresh'} ? $$cfg{'refresh'} : 300;
     my $namestring = &$LOC("the device");  
+    print HTML "<!-- Begin Head -->\n";
     print HTML <<"TEXT";    
 	<head>
 		<title>$$rcfg{'title'}{$router}</title>
@@ -1298,7 +1356,7 @@ TEXT
 			}
 			div table .outpeak th {
 				color: $$rcfg{'rgb4'}{$router};
-			} " if ( $$rcfg{'withpeak'}{$router} );
+			} " if defined $rcfg->{withpeak}{$router};
 
     print HTML "
 			div table .relpercent th {
@@ -1421,11 +1479,12 @@ $$rcfg{'pagetop'}{$router}";
         # take the image directory away from the html directory to give us relative links
 
 
+	my $imagepath = ( $cfg->{htmldir} ne $cfg->{imagedir} ) ? "$dirrel$$cfg{imagehtml}$$rcfg{directory_web}{$router}" : "";
         print HTML "
 <!-- Begin $sample{$peri} -->
 		<div class=\"graph\">
 			<h2>".&$LOC("$sample{$peri}")." ".&$LOC("Average)")."</h2>
-			<img src=\"$dirrel$$cfg{imagehtml}$$rcfg{directory_web}{$router}$router-$full{$peri}.${main::GRAPHFMT}\" title=\"$full{$peri}\" alt=\"$full{$peri}\" />
+			<img src=\"$imagepath$router-$full{$peri}.${main::GRAPHFMT}\" title=\"$full{$peri}\" alt=\"$full{$peri}\" />
 			<table>
 				<tr>
 					<th></th>
@@ -1460,7 +1519,7 @@ print HTML "
 					<td colspan=\"8\">
 						" . &$LOC("Average max 5 min values for $sample{$peri} interval):") . "
 						<span class=\"in\">$InCo</span> " . &fmi($$avmxin{$peri}{$router}, $$rcfg{'maxbytes1'}{$router}, $router, @foo) . "/
-						<span clsas=\"out\">$OutCo</span> " . &fmi($$avmxout{$peri}{$router}, $$rcfg{'maxbytes2'}{$router}, $router, @foo) . "
+						<span class=\"out\">$OutCo</span> " . &fmi($$avmxout{$peri}{$router}, $$rcfg{'maxbytes2'}{$router}, $router, @foo) . "
 					</td>
 				</tr>" if ($$rcfg{'options'}{'avgpeak'}{$router} and $InCo and $OutCo);
         print HTML "
@@ -1602,7 +1661,7 @@ sub printusage {
     print <<USAGEDESC;
 Usage: mrtg <config-file>
 
-mrtg-2.12.2 is the Multi Router Traffic Grapher.
+mrtg-2.13.0 is the Multi Router Traffic Grapher.
 
 If you want to know more about this tool, you might want
 to read the docs. They came together with mrtg! 
@@ -1853,7 +1912,7 @@ sub getsnmparg ($$$){
 
 	    if (not defined readfromcache($confcache,$hostkey,$$target{IfSel}[$i],$$target{Key}[$i])) {
 		debug('snpo',"($i) Populate ConfCache for $$target{Host}$$target{SnmpOpt}");
-		populateconfcache($confcache,"$$target{Community}\@$$target{Host}$$target{SnmpOpt}",$$target{ipv4only},1,$$cfg{snmpoptions});
+		populateconfcache($confcache,"$$target{Community}\@$$target{Host}$$target{SnmpOpt}",$$target{ipv4only},1,$$target{snmpoptions});
 	    }
 	    if (not defined readfromcache($confcache,$hostkey,$$target{IfSel}[$i],$$target{Key}[$i])) {
 		warn "WARNING: Could not match host:'$$target{Community}\@$$target{Host}$$target{SnmpOpt}' ref:'$$target{IfSel}[$i]' key:'$$target{Key}[$i]'\n";
@@ -1911,19 +1970,24 @@ sub getsnmparg ($$$){
     my $targtemp = $$target{Community}.'@'.$$target{Host}.$$target{SnmpOpt};
     $targtemp = v4onlyifnecessary($targtemp, $$target{ipv4only});
     
-    my @snmpoids = grep !/^Pseudo/, @OID;
+    my @snmpoids = grep !/^(Pseudo|WaLK|GeTNEXT)/, @OID;
+        
     if (defined $$cfg{singlerequest}){
-        local $BER::pretty_print_timeticks = 0;
+#LH        local $BER::pretty_print_timeticks = 0;
 	foreach my $oid (@snmpoids){
-            push @ret, snmpget($targtemp,$$cfg{snmpoptions},$oid);
+            push @ret, snmpget($targtemp,$$target{snmpoptions},$oid);
 	}
     } else {
-	@ret = snmpget($targtemp,$$cfg{snmpoptions},@snmpoids);
+	@ret = snmpget($targtemp,$$target{snmpoptions},@snmpoids);
     }
     my @newret;
     for (@OID) {
         /^PseudoZero$/ && do { push @newret, 0; next; };
         /^PseudoOne$/ && do { push @newret, 1; next; };
+        s/^WaLK(\d*)// && do { my $idx = $1 || 0; my $oid=$_;push @newret, (split /:/, (snmpwalk($targtemp,$$target{snmpoptions},$oid))[$idx],2)[1]; 
+                          debug('snpo',"snmpwalk '$oid' -> ".($newret[-1]||'UNDEF'));next};
+        s/^GeTNEXT// && do { my $oid=$_;push @newret, (split /:/, snmpgetnext($targtemp,$$target{snmpoptions},$oid),2)[1]; 
+                          debug('snpo',"snmpgetnext '$oid' -> ".($newret[-1]||'UNDEF'));next};
         push @newret, shift @ret;
     }
     @ret = @newret;

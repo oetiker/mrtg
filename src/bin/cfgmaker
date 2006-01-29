@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 # -*- mode: Perl -*-
 ##################################################################
-# MRTG 2.12.2  -- Config file creator
+# MRTG 2.13.0  -- Config file creator
 ##################################################################
 # Created by Tobias Oetiker <oetiker@ee.ethz.ch>
 # this produces an mrtg config file for one router or more routers
@@ -15,8 +15,8 @@
 # base - basic program flow
 # snpo - SNMP Polling
 # snpd - SNMP Detail
-@main::DEBUG=qw(base snpo coca);
-#@main::DEBUG=qw();
+#@main::DEBUG=qw(base snpo coca);
+@main::DEBUG=qw();
 
 require 5.005;
 use strict;
@@ -47,7 +47,6 @@ use lib "${FindBin::Bin}";
 use lib "${FindBin::Bin}${main::SL}..${main::SL}lib${main::SL}mrtg2";
 
 use MRTG_lib "2.100015";
-use SNMP_util;
 use Getopt::Long;
 use Pod::Usage;
 use Socket;
@@ -59,8 +58,8 @@ sub main {
     my %routers;
     my %confcache;
     my $ipv4only;
-    init();
-    $opt{fullcmd} = 
+    my %v3opt;
+    $opt{fullcmd} =
             "$0 ".(join " ",
             map {$_ =~ /[ \[\]\*\{\}\;\>\<\&]/ ? "'$_'" : $_ } @ARGV);
     $opt{community}="public";
@@ -84,42 +83,80 @@ sub main {
         warn "WARNING: Using 16bit RequestIDs\n";
         $SNMP_Session::default_use_16bit_request_ids=1;
     }
+    # Check for SNMP V3
+    #
+    	if (exists($opt{username}) or lc($opt{enablesnmpv3}) eq "yes") {
+	       if  (eval {require Net_SNMP_util;})   {
+	            import Net_SNMP_util;
+	            debug('base', "SNMP V3 libraries found, SNMP V3 enabled.");
+		    $opt{enablesnmpv3} = "yes";
+	  	    push @{$opt{global}}, "enablesnmpv3: yes";
+	        } else {
+	            warn "WARNING: SNMP V3 libraries not found, SNMP V3 disabled. Falling back to V2c.\n";
+	            require SNMP_util;
+	            import SNMP_util;
+		    $opt{enablesnmpv3} = "revert";
+	        }															
+	}
+	else	{
+	        require SNMP_util;
+	        import SNMP_util;
+		$opt{enablesnmpv3} = "no";
+	}
+
+    init();
 
     foreach my $router
     (sort
      {($routers{$a}{noofrouter}) <=> ($routers{$b}{noofrouter})}
      keys %routers)
     {
+	my @snmpopt = split(/:/,$routers{$router}{'snmp-options'});
+	if ($snmpopt[5] == 3) {
+		if ($opt{enablesnmpv3} eq "revert") {
+			$snmpopt[5] = 2;
+			warn "reverting to snmpV2c for router $router\n";
+			$routers{$router}{'snmp-options'} = join(":",@snmpopt);
+		} else {
+			die "SNMP V3 requires a --username parameter as part of the User Security Model for router $routers{$router}{routerkey}" if $opt{enablesnmpv3} eq "no";
+			%v3opt = parsev3(\%opt);
+		}
+	} else {
+		debug('base',"snmpv3 available, but using v1/v2c for $routers{$router}{routerkey}") if $opt{enablesnmpv3} eq "yes";
+	}
+
+			
         # pod2usage(-verbose=>1,-message=>"ERROR: Could not Parse $router\n")
         #     unless  $router =~ /.*\@.*/;
-        debug('base',"Get Device Info on $router");        
+        debug('base',"Get Device Info on $router");
         $routers{$router}{ipv4only} = $ipv4only;
-        if ( my $devinfo = DeviceInfo($router,\%routers) ) {
+        if ( my $devinfo = DeviceInfo($router,\%routers,\%v3opt) ) {
             $routers{$router}{deviceinfo} = $devinfo;
         } else {
             warn "WARNING: Skipping $router as no info could be retrieved\n\n";
             sleep 5;
             next;
         }
-  
+
         if ($opt{interfaces}) {
             debug('base',"Populating confcache");
-            populateconfcache(\%confcache,$router,$routers{$router}{ipv4only},1,{});
+            populateconfcache(\%confcache,$router,$routers{$router}{ipv4only},1,\%v3opt);
             debug('base',"Get Interface Info");
-            InterfaceInfo(\%confcache,\%routers,$router,\%opt);
+            InterfaceInfo(\%confcache,\%routers,$router,\%opt,\%v3opt);
         }
     }
-    GenConf(\%opt,\%routers,\%confcache);
+    GenConf(\%opt,\%routers,\%confcache,\%v3opt);
 } # end main
 
 main;
 exit 0;
 
-sub InterfaceInfo($$$$) {
+sub InterfaceInfo($$$$$) {
     my $confcache = shift;
     my $routers = shift;
     my $router = shift;
     my $opt = shift;
+    my $v3opt = shift;
     my @Variables = qw (ifIndex ifType ifAdminStatus ifOperStatus ifMtu);
 
     my $snmphost = v4onlyifnecessary($router, $routers->{$router}{ipv4only});
@@ -128,20 +165,20 @@ sub InterfaceInfo($$$$) {
         $routers->{$router}{deviceinfo}{sysDescr} =~ m/Version\s+(\d\d\.\d+)/) {
         push @Variables,  ($1 > 11.0) ? "ifAlias" : "CiscolocIfDescr";
         if ($1 > 11.2) {push @Variables, "vmVlan";};
-    } elsif ( $routers->{$router}{deviceinfo}{Vendor} =~ /(?:juniper|foundry|dellLan|force10|extremenetworks)/) {
+    } elsif ( $routers->{$router}{deviceinfo}{Vendor} =~ /(?:hp|juniper|foundry|dellLan|force10|extremenetworks)/) {
         push @Variables, "ifAlias";
     }
 
-    my $descr = $routers->{$router}{deviceinfo}{sysDescr};                                   
-    if ($routers->{$router}{deviceinfo}{Vendor} eq 'cisco' &&                                
-        $descr =~ m/Catalyst\sOperating\sSystem|Cisco\sSystems\sWS-C2900/ ) {                             
-        push @Variables,  "CiscoCatalystPortName";                                 
+    my $descr = $routers->{$router}{deviceinfo}{sysDescr};
+    if ($routers->{$router}{deviceinfo}{Vendor} eq 'cisco' &&
+        $descr =~ m/Catalyst\sOperating\sSystem|Cisco\sSystems\sWS-C2900/ ) {
+        push @Variables,  "CiscoCatalystPortName";
         push @Variables, "vmVlan";
-    }                                                                            
+    }
 
     foreach my $var (@Variables) {
         debug('base',"Walking $var");
-        foreach my $tuple (snmpwalk($snmphost, $var)){
+        foreach my $tuple (snmpwalk($snmphost,$v3opt, $var)){
             my($if,$value) = split /:/, $tuple, 2;
             $value =~ s/[\0- ]+$//; # no trailing space
             $routers->{$router}{$if}{$var} = $value;
@@ -149,16 +186,16 @@ sub InterfaceInfo($$$$) {
         }
     }
 
-    # interface speed var depends on snmp version 
+    # interface speed var depends on snmp version
 
     my $snmp_version = ($router =~ /:/)? (split(':', $router, 6))[5] : 1;
 
-    if ( $snmp_version eq '2' ) {
+    if ( $snmp_version =~ /[23]/ ) {
         debug('base',"Walking ifSpeed");
-        my @ifSpeed = snmpwalk($snmphost, 'ifSpeed');
+        my @ifSpeed = snmpwalk($snmphost, $v3opt,'ifSpeed');
 	debug('snpd',"\@ifSpeed = @ifSpeed\n");
         debug('base',"Walking ifHighSpeed");
-        my @ifHighSpeed = snmpwalk($snmphost, 'ifHighSpeed');
+        my @ifHighSpeed = snmpwalk($snmphost,$v3opt, 'ifHighSpeed');
         for ( my $i=0; $i<=$#ifHighSpeed; $i++ ) {
             my ($if,$value) = split /:/, $ifSpeed[$i], 2;
 # the mib entry on ifSpeed says
@@ -171,7 +208,7 @@ sub InterfaceInfo($$$$) {
 #            maximum value (4,294,967,295) and ifHighSpeed must be used
 #            to report the interace's speed.  For a sub-layer which has
 #            no concept of bandwidth, this object should be zero."
-            if ( not defined $value || ($value == 2**32-1)) {
+            if ( (not defined $value) || ($value == 2**32-1)) {
                 ($if, $value) = split /:/, $ifHighSpeed[$i], 2;
 	        $value = $value * 1000000;  # highSpeed = contador * 10^6
                 #debug('base',"Speed: $if - $value");
@@ -180,7 +217,7 @@ sub InterfaceInfo($$$$) {
         }
     } else {
         debug('base',"Walking ifSpeed");
-        foreach my $tuple (snmpwalk($snmphost, 'ifSpeed')){
+        foreach my $tuple (snmpwalk($snmphost,$v3opt, 'ifSpeed')){
             my($if,$value) = split /:/, $tuple, 2;
             $routers->{$router}{$if}{'ifSpeed'} = $value;
 	    debug('snpd',"  $router -> $if -> ifSpeed = $value");
@@ -191,20 +228,20 @@ sub InterfaceInfo($$$$) {
 
     if ($routers->{$router}{deviceinfo}{Vendor} eq 'portmaster') {
         # We can only approximate speeds
-        # 
+        #
         # so we think that ppp can do 76800 bit/s, and slip 38400.
         # (actualy, slip is a bit faster, but usualy users with newer modems
         # use ppp). Alternatively, you can set async speed to 115200 or
         # 230400 (the maximum speed supported by portmaster).
-        # 
+        #
         # But if the interface is ptpW (sync), max speed is 128000
         # change it to your needs. On various Portmasters there are
         # various numbers of sync interfaces, so modify it.
-        # 
+        #
         #  The most commonly used PM-2ER has only one sync.
-        # 
+        #
         #  Paul Makeev (mac@redline.ru)
-        # 
+        #
         foreach my $if (keys %{$routers->{$router}}) {
             next unless $if =~ /^\d+$/;
             my $ift = $routers->{$router}{$if}{ifType};
@@ -239,7 +276,7 @@ sub InterfaceInfo($$$$) {
                 #     $routers->{$router}{$if}{$method} =~ s/(:)/\\$1/g;
                 #     next;
                 # };
-        
+
                 #find hostname of IF
                 !$$opt{noreversedns} && /^Ip$/ and do {
                     my $name =
@@ -256,12 +293,13 @@ sub InterfaceInfo($$$$) {
     }
 } # end InterfaceInfo
 
-sub GenConf ($$$) {
+sub GenConf ($$$$) {
     my $opt = shift;
     my $routers = shift;
     my $confcache = shift;
+    my $v3opt = shift;
     my $conf = "# Created by \n# $$opt{fullcmd}\n\n";
-    
+
     # print global options
     $conf .= <<ECHO;
 
@@ -307,7 +345,7 @@ ECHO
         # that do not support SNMP over IPv6.
         my $ipv4only_directive;
         my $router_ipv4only = ($$opt{'enable-ipv6'} == 1) && $$router_ref{ipv4only};
-    
+
         my $syscontact = $$router_dev{sysContact};
         my $html_syscontact = html_escape($syscontact);
         my $syslocation = $$router_dev{sysLocation};
@@ -320,19 +358,24 @@ ECHO
         my $community = $$router_ref{community};
         $community  =~ s/([@ ])/\\$1/g;
         my $router_connect = "$community\@$$router_ref{routername}$$router_ref{snmpopt_current}";
+	my @v3options;
+		foreach my $v3op (keys %$v3opt) {
+			push @v3options, $v3op."=>'".$$v3opt{$v3op}."'";
+		}
+	my $v3options = join(",",@v3options) if $$router_ref{'snmp-options'} =~ /(?=:.*?){4}:3/ ;
         my $html_sysdescr = html_escape($sysdescr);
         my $router_name =
             ($$router_ref{routername}
              . (($$router_ref{'dns-domain'})?'.':'')
              . $$router_ref{'dns-domain'});
-    
+
         # James Overbeck 2001/09/20
         # Moved $directory_name definition from within the interface
         # foreach loop to here. In its previous location, $directory_name
         # was not accessible to host templates. $directory_name is not
         # changed per-interface so it might as well be here instead of
         # where it was.
-    
+
         my $directory_name = "";
 
         if (defined $$router_opt{subdirs}) {
@@ -352,11 +395,11 @@ ECHO
 # Location: $syslocation
 ######################################################################
 ";
-    
+
         my $separator_lines = "\n\n";
-    
+
         # Host specific config lines generation code starts HERE
-    
+
         if(defined $$router_opt{'host-template'}) {
             # First test if the file exists and is readable, die if not.
             die "File $$router_opt{'host-template'} didn't exist.\n"
@@ -365,33 +408,33 @@ ECHO
             # Open the file (or die).
             open IF_TEMPLATE, $$router_opt{'host-template'}
                 or die "File $$router_opt{'host-template'} couldn't be opened.\n";
-        
+
             my @template_lines = readline *IF_TEMPLATE;
             $@ = undef;
             eval (join "", @template_lines);
-        
+
             die  "ERROR Evaluation of the contents in the file \n\n".
                  "$$router_opt{'host-template'}\ngave the error \n\n\"$@\"\n\nExiting cfgmaker\n" if $@;
         }
-    
+
         $conf .= ($head_lines
               . $problem_lines
               . $target_lines
               . $separator_lines);
-    
+
         # Host specific config lines generation code ends HERE
 
-    
+
         if ($$router_opt{'interfaces'}) {
             foreach my $ifindex (sort {int($a) <=> int($b)} keys %$router_ref) {
                 next unless $ifindex =~ /^\d+$/;
                 my $i = $$router_ref{$ifindex};
-        
+
                 # Now define a number of variables used for this interface.
-                # Some variables are just used internally by cfgmaker to 
+                # Some variables are just used internally by cfgmaker to
                 # process the interface, others are provided for usage in
                 # host and interface templates and for interface filters.
-        
+
                 my $if_index = $ifindex;
                 my $if_eth = $$i{Eth};
 
@@ -400,10 +443,10 @@ ECHO
                 my $default_ifstate = 1; # State assumed up.
                 my $default_iftype = 1;  # iftype assumed ok.
                 my $if_ok = 1;           #
-        
+
                 my $if_admin = ($$i{ifAdminStatus} == 1);
                 my $if_oper = ($$i{ifOperStatus} == 1);
-        
+
                 my $if_type = $$i{ifType};
                 my $if_is_ethernet = 0 < scalar(grep {$_ == $if_type;}
                                     (6,7,26,62,69,117));
@@ -427,8 +470,8 @@ ECHO
                 my $if_is_ciscovlan =
                     ($$router_dev{Vendor} eq 'cisco'
                     and $$i{Descr} =~ /^V(LAN|lan)\d+$/);
-        
-                my $if_ip = $$i{Ip};                
+
+                my $if_ip = $$i{Ip};
                 my $if_snmp_descr = $$i{Descr};
                 $if_snmp_descr =~ s/\n$//; # no you don't want to know who does this
                                            # ok ... dell 3524
@@ -448,13 +491,13 @@ ECHO
                     if ($$i{ifType} ne "6" &&
                         $$router_dev{sysDescr} =~ / IPSO / &&
                         $$i{Ip} =~ /^\d+/ &&
-                       ($$i{Eth} == undef || 
-                        $$i{ifSpeed} < 10 || 
-                        $$i{ifSpeed} == undef ) 
+                       ($$i{Eth} == undef ||
+                        $$i{ifSpeed} < 10 ||
+                        $$i{ifSpeed} == undef )
                        ) {
                         my $logical_if_name = $$i{Name};
 
-                        # Split the LOGICAL interface name in attempt 
+                        # Split the LOGICAL interface name in attempt
                         # to match with base PHYSICAL interface detail.
                         my ($logical_if_HEAD, $logical_if_TAIL) =
                             $logical_if_name =~ /^(.*)(c\d+)$/;
@@ -465,11 +508,11 @@ ECHO
 
                             my $physical_if_name = $$router_ref{$ifindexTMP};
 
-                            if ($$physical_if_name{ifType} == 6 && 
+                            if ($$physical_if_name{ifType} == 6 &&
                                 $logical_if_HEAD eq $$physical_if_name{Name} ) {
                                 $$i{Eth} = $$physical_if_name{Eth}
                                 if ( $$i{Eth} == undef );
-                                $$i{ifSpeed} = $$physical_if_name{ifSpeed} 
+                                $$i{ifSpeed} = $$physical_if_name{ifSpeed}
                                 if ( $$i{ifSpeed} == undef || $$i{ifSpeed} < 10 );
                             }
                         }
@@ -485,9 +528,9 @@ ECHO
                         push @prob, "it is in administrative TEST mode";
                         $default_ifstate = 0;
                     }
-                 
+
                     if (not defined $$router_opt{'show-op-down'}) {
-                       if ($$i{ifOperStatus} == 2) {           
+                       if ($$i{ifOperStatus} == 2) {
                           push @prob, "it is operationally DOWN";
                           $default_ifstate = 0;
                        } elsif ($$i{ifOperStatus} == 3) {
@@ -496,8 +539,8 @@ ECHO
                       }
                     }
                  }
-                
-    
+
+
                 # Investigate the type of the interface.
                 if ($$router_dev{Vendor} eq 'cisco' && $$i{ifType} == 18) { # by fwo@obsidian.co.za
                     push @prob, "it is a DS1 controllers";
@@ -511,6 +554,12 @@ ECHO
                 } elsif ($$router_dev{Vendor} eq 'cisco' && $$i{ifType} == 30) { # by blube@floridadigital.net
                     push @prob, "it is a DS3 controller";
                     $default_iftype = 0;
+                } elsif ($$router_dev{Vendor} eq 'cisco' && $$i{ifType} == 102) { # by dan.mcdonald@austinenergy.com
+                    push @prob, "it is a Voice controller";
+                    $default_iftype = 0;
+                } elsif ($$router_dev{Vendor} eq 'cisco' && $$i{ifType} == 103) { # by dan.mcdonald@austinenergy.com
+                    push @prob, "it is a Voice dial peer";
+                    $default_iftype = 0;
                 } elsif ($$i{ifType} == 162) {
                     push @prob, "it is a CEF Sub-interface"; # John Begley <maslow@mediaone.net>
                 } elsif ($$router_dev{Vendor} eq 'cisco'
@@ -520,24 +569,9 @@ ECHO
                 }
                 my $default = $default_iftype && $default_ifstate;
 
-                # If --if-filter is provided, evalutat that.  If it
-                # returns true, clear @prob.  If it returns false,
-                # instead add a complaint to @prob.
-            
-                if (defined $$router_opt{'if-filter'}) {
-                    $@ = undef;
-                    if (eval($$router_opt{'if-filter'})) {
-                        @prob = ();
-                    } else {
-                        push @prob, "filter specified by --if-filter rejected the interface";
-                        $if_ok = 0;
-                    }
-                    die "ERROR: with if-filter $$router_opt{'if-filter'}: $@" if $@;
-                }
-            
                 # Do some futher investigation if the interface makes
                 # sense to collect on
-            
+
 		# I debated whether to insert the zero-speed check before
 		# or after the "will always be zero" sections below.
 		# I settled on before since I'll assume the user knows
@@ -575,18 +609,20 @@ ECHO
                     push @prob, "has a speed of $$i{ifSpeed} which makes no sense";
                     $if_ok = 0;
                 }
-            
+
                 my $message;
-                if ($message = IsCounterBroken($ifindex, $router_ref)) {
+                if ($message = IsCounterBroken($ifindex, $router_ref,$v3opt)) {
                     # set snmpopt_current to working snmp options
                     push @prob, "got '$message' from interface when trying to query";
                     $if_ok = 0;
                 }
-                
+
                 my $community = $$router_ref{community};
                 $community  =~ s/([@ ])/\\$1/g;
                 my $router_connect = "$community\@$$router_ref{routername}$$router_ref{snmpopt_current}";
-    
+   		
+		my $v3options = join(",",@v3options) if $$router_ref{snmpopt_current} =~ /(?=:.*?){4}:3/ ;
+		
                 # determine interface reference
                 my $if_ref;
                 if (defined $$router_opt{ifref}) {
@@ -599,23 +635,13 @@ ECHO
                         /^nr$/ && do {$if_ref = $ifindex; last};
                         die "ERROR: Invalid value for --ifref: '$$router_opt{ifref}'\n";
                     }
-                    if (not defined $if_ref) {  
+                    if (not defined $if_ref) {
                         push @prob, "--ifref=$$router_opt{ifref} is not unique for this interface";
                         $if_ref = $ifindex;
                         $if_ok = 0;
                     }
                 } else {
                     $if_ref = $ifindex;
-                }
-        
-                # issue problem report
-            
-                my $problem_lines = "";
-        
-                if (@prob) {
-                    $problem_lines .= "### The following interface is commented out because:\n";
-                    map {$problem_lines .= "### * $_\n"} @prob;
-                    $if_ok = 0;
                 }
 
                 # generate Target name
@@ -662,7 +688,7 @@ ECHO
                 $if_title_desc = $if_snmp_name if not $if_title_desc;
                 my $html_if_title_desc = html_escape($if_title_desc);
                 my $html_desc_prefix = html_escape($desc_prefix);
-            
+
                 my $html_if_snmp_descr = html_escape($if_snmp_descr);
                 my $html_if_snmp_name = html_escape($if_snmp_name);
                 my $html_if_snmp_alias = html_escape($if_snmp_alias);
@@ -671,22 +697,23 @@ ECHO
                 my $html_if_description = html_escape($if_description);
                 my $if_title = "$desc_prefix$if_title_desc -- $sysname";
                 my $html_if_title = html_escape($if_title);
-        
+
                 my $head_lines = "### Interface $ifindex >> Descr: '$if_snmp_descr' |".
                                  " Name: '$if_snmp_name' | Ip: '$if_ip' | Eth: '$$i{Eth}' ###\n";
 
                 my $target_lines = "";
                 my $separator_lines = "\n\n";
-    
+
                 # escape the if reference
                 $if_ref =~ s/([& :])/\\$1/g;
                 my $default_target_directive = "Target[$target_name]: $if_ref:$router_connect";
+		$default_target_directive .= "\nSnmpOptions[$target_name]: $v3options"  if $$router_ref{snmpopt_current} =~ /(?=:.*?){4}:3/ ;
                 my $default_setenv_directive = "SetEnv[$target_name]: MRTG_INT_IP=\"$if_ip\" MRTG_INT_DESCR=\"$if_snmp_descr\"";
                 my $default_directory_directive = ($directory_name ? "Directory[$target_name]: $directory_name" : "");
                 my $default_maxbytes_directive = "MaxBytes[$target_name]: $if_speed";
-    
+
                 $ipv4only_directive = $router_ipv4only ? "IPv4Only[$target_name]: yes" : "";
-    
+
                 my $default_title_directive = "Title[$target_name]: $html_desc_prefix$html_if_title_desc -- $sysname";
                 my $default_pagetop_directive =
                 "PageTop[$target_name]: <h1>$html_desc_prefix$html_if_title_desc -- $sysname</h1>
@@ -730,7 +757,7 @@ ECHO
                 $default_pagetop_directive .= "
 			</table>
 		</div>";
-    
+
                 my $default_target_lines =
                     ("\n"
                     . $default_target_directive . "\n"
@@ -744,19 +771,19 @@ ECHO
                     : "")
                     . $default_title_directive . "\n"
                     . $default_pagetop_directive . "\n");
-    
-                # The target config generation code starts HERE.        
-        
+
+                # The target config generation code starts HERE.
+
                 if (defined $$router_opt{'if-template'}) {
                     # First test if the file exists and is readable,
                     # die if not.
-                    die "File $$router_opt{'if-template'} didn't exist.\n" unless (-e $$router_opt{'if-template'} 
+                    die "File $$router_opt{'if-template'} didn't exist.\n" unless (-e $$router_opt{'if-template'}
                         and -r $$router_opt{'if-template'});
                     # Open the file (or die).
                     open IF_TEMPLATE, $$router_opt{'if-template'}
                         or die "File $$router_opt{'if-template'} couldn't be opened.\n";
                     my @template_lines = readline *IF_TEMPLATE;
-            
+
                     $@ = undef;
                     eval (join "", @template_lines);
                     die "Evaluation of the contents in the file \n\n$$router_opt{'if-template'}\n".
@@ -764,21 +791,48 @@ ECHO
                 } else {
                     $target_lines = $default_target_lines;
                 }
-    
+
+
+                # If --if-filter is provided, evalutat that.  If it
+                # returns true, clear @prob.  If it returns false,
+                # instead add a complaint to @prob.
+
+                if (defined $$router_opt{'if-filter'}) {
+                    $@ = undef;
+                    if (eval($$router_opt{'if-filter'})) {
+                        @prob = ();
+                    } else {
+                        push @prob, "filter specified by --if-filter rejected the interface";
+                        $if_ok = 0;
+                    }
+                    die "ERROR: with if-filter $$router_opt{'if-filter'}: $@" if $@;
+                }
+
                 if ($target_lines && not $if_ok) { # comment out the target lines if needed
                     $target_lines =~ s/^/\# /gm;
                 }
-            
+
+                # issue problem report
+
+                my $problem_lines = "";
+
+                if (@prob) {
+                    $problem_lines .= "### The following interface is commented out because:\n";
+                    map {$problem_lines .= "### * $_\n"} @prob;
+                    $if_ok = 0;
+                }
+
+
                 $conf .= ($head_lines
                     . $problem_lines
                     . $target_lines
                     . $separator_lines);
-            
+
             }
             # Target generation code ends HERE.
         }
     }
-    
+
     # print any global options which might have
     # appeared on the command line after the last
     # router.
@@ -798,9 +852,10 @@ ECHO
     }
 } # end GenConf
 
-sub IsCounterBroken ($$) {
+sub IsCounterBroken ($$$) {
     my $if = shift;
     my $router_ref = shift;
+    my $v3opt = shift;
     my $router = $$router_ref{routerkey};
     my $old_state = $SNMP_Session::suppress_warnings;
     $$router_ref{snmpopt_current} = $$router_ref{'snmp-options'};
@@ -809,25 +864,25 @@ sub IsCounterBroken ($$) {
     my $ipv4only = $$router_ref{ipv4only};
     my $snmphost = v4onlyifnecessary($router, $ipv4only);
 
-    if ($router =~ /:\d*:\d*:\d*:\d*:2$/) {
+    if ($router =~ /:\d*:\d*:\d*:\d*:[23]$/) {
         # anybody knows why /:(\d*:){4}2$/ does not work ?
-        my $speed = (snmpget($snmphost, 'ifHighSpeed.'.$if))[0];        
+        my $speed = (snmpget($snmphost, $v3opt, 'ifHighSpeed.'.$if))[0];
         debug('base',"snmpget $snmphost for ifHighSpeed.$if -> $speed Mb/s");
         $SNMP_Session::errmsg = undef;
-        my $counter = (snmpget($snmphost, 'ifHCInOctets.'.$if))[0];
+        my $counter = (snmpget($snmphost,$v3opt, 'ifHCInOctets.'.$if))[0];
         debug('base',"snmpget $snmphost for ifHCInOctets.$if -> $counter");
         if(not $speed or $counter eq "" or $SNMP_Session::errmsg){
             $SNMP_Session::errmsg = undef;
-            $$router_ref{snmpopt_current} =~ s/:+2$//;
+            $$router_ref{snmpopt_current} =~ s/:+[23]$//;
             debug('base',"check for HighspeedCounters failed ... Dropping back to V1");
         } else {
            $SNMP_Session::suppress_warnings = $old_state;
            return 0;
         }
     }
-    $router = "$$router_ref{community}\@$$router_ref{routername}$$router_ref{'snmp-options'}";    
+    $router = "$$router_ref{community}\@$$router_ref{routername}$$router_ref{'snmp-options'}";
     $snmphost = v4onlyifnecessary($router, $ipv4only);
-    if ( $$router_ref{snmpopt_current} !~ /:2/) {
+    if ( $$router_ref{snmpopt_current} !~ /:[23]/) {
          snmpget($snmphost, 'ifInOctets.'.$if);
          if (defined $SNMP_Session::errmsg) {
              my $error = $SNMP_Session::errmsg;
@@ -846,16 +901,17 @@ sub IsCounterBroken ($$) {
 # query using IPv4 in case the target does not support SNMP over IPv6.
 # If DeviceInfo falls back to IPv4, it sets the ipv4only field for the target
 # in the routers hash.
-sub DeviceInfo ($$) {
+sub DeviceInfo ($$$) {
     my $router=shift;
     my $routers=shift;
+    my $v3opt=shift;
     my @variables = qw(sysDescr sysContact
                sysName sysLocation
                sysObjectID);
     my %DevInfo;
     my $ipv4only = $$routers{$router}{ipv4only};
 
-    my @variables = snmpwalk(v4onlyifnecessary($router, $ipv4only), '1.3.6.1.2.1.1'); # walk system
+    my @variables = snmpwalk(v4onlyifnecessary($router, $ipv4only),$v3opt,'1.3.6.1.2.1.1'); # walk system
     if (!(defined $variables[0])) {
         # Do we need to fall back to IPv4?
         my ($commmunity, $host) = ($1, $2) if ($router =~ /^(.*)@([^@]+)$/);
@@ -863,14 +919,20 @@ sub DeviceInfo ($$) {
             # Not using IPv4, not an IPv6 address, so a hostname
             debug ('base',"No response using IPv6 for $router, trying again using IPv4");
             $$routers{$router}{ipv4only} = 1;
-            @variables = snmpwalk(v4onlyifnecessary($router, 1), '1.3.6.1.2.1.1');
+            @variables = snmpwalk(v4onlyifnecessary($router, 1),$v3opt, '1.3.6.1.2.1.1');
         }
     }
 
     if ( defined $variables[0] ) {
-        my %DevInfo; 
-        my %revOIDS = reverse %SNMP_util::OIDS;
-        foreach my $variable ( @variables ) { 
+        my (%DevInfo, %revOIDS);
+	
+	if ($$routers{$router}{enablesnmpv3} eq "yes") {
+        	%revOIDS = reverse %Net_SNMP_util::OIDS;
+	 }
+	 else {
+		%revOIDS = reverse %SNMP_util::OIDS;
+	}	
+        foreach my $variable ( @variables ) {
             my ($oid, $value) = split ( ':', $variable, 2);
             $DevInfo{ $revOIDS{'1.3.6.1.2.1.1.'.$oid} } = $value;
         }
@@ -879,6 +941,7 @@ sub DeviceInfo ($$) {
             # Add your vendor here
             # sysObjectID                Vendora
             '1.3.6.1.4.1.43.' =>        '3com',
+            '1.3.6.1.4.1.11.' =>        'hp',
             '1.3.6.1.4.1.9.' =>         'cisco',
             '1.3.6.1.4.1.674.10895.' => 'dellLan',
             '1.3.6.1.4.1.1916.' =>      'extremenetworks',
@@ -1075,7 +1138,7 @@ sub options ($$) {
     my $routers = shift;
 
     my $noofrouter = 0; # How many routers we've seen on cmdline.
-   
+
     # The $flags hash stores what we've seen in Options[_],
     # Options[^] and Options[$] so far.
     # A cmdline arg like --global 'Options[_]: bits' will insert
@@ -1088,7 +1151,7 @@ sub options ($$) {
     # be overkill to use such a comples solution but it makes life
     # easier if cfgmaker in the future has to be extended to be
     # aware of other Options[] settings like gauge, growright etc.
- 
+
     my %flags;
     {
         my $def = {};
@@ -1098,12 +1161,12 @@ sub options ($$) {
                   prepend => $pre,
                   append  => $app);
     }
- 
+
     my $addrouter_ornf = addrouter($opt,
                    $routers,
                    \$noofrouter,
                    \%flags);
- 
+
     Getopt::Long::Configure("permute");
     GetOptions( $opt,
         'help|?',
@@ -1119,17 +1182,27 @@ sub options ($$) {
         'interfaces!',
         'host-template=s',
         'community=s',
+	'username=s',
+	'authkey=s',
+	'authpassword=s',
+	'authprotocol=s',
+	'contextengineid=s',
+	'contextname=s',
+	'privkey=s',
+	'privpassword=s',
+	'privprotocol=s',
         'snmp-options=s',
         'dns-domain=s',
         'version',
         'output=s',
         'global=s@',
         'enable-ipv6',
+        'enable-snmpv3',
         'use-16bit',
 	'zero-speed=s',
         '<>', $addrouter_ornf) or pod2usage(2);
 
-    die("cfgmaker for mrtg-2.12.2\n") if $$opt{version};
+    die("cfgmaker for mrtg-2.13.0\n") if $$opt{version};
     pod2usage(-exitval => 0, -verbose => 2) if $$opt{man};
     pod2usage(-verbose => 1) if not keys %$routers;
 } # end options
@@ -1161,7 +1234,7 @@ sub addrouter() {
         # Now make sure that the router is defined with the
         # proper community, domainname and SNMP options.
         # Dissect the rawname to find out what it contains.
-    
+
         # First check for community:
         if ($rawname =~ /^(.+)\@([^@]+)$/) {
             # Community was given explicitly!
@@ -1182,33 +1255,33 @@ sub addrouter() {
             ($routername, $snmpopt) = split(':', $tmpname, 2);
         }
         @tmpsnmp = split(':', $snmpopt);
-            
+
         $routername =~ s/\.$//; # if the hostname ends in a '.' remove it
                                 # it seems to cause trouble in some other
                                 # parts of mrtg
-    
+
         # Now setup the SNMP options.
         if (not defined $$opt{'snmp-options'}) {
             $snmpopt = ':' . (join ':', @tmpsnmp);  # No merge needed.
         } else {
             my ($t,$o,@s);
             my @optsnmp = split ':',$$opt{'snmp-options'};
-    
+
             # Trim first element as the SNMP options start
             # with a colon and thus the first element is a
             # dummy "" string not corresponding to any SNMP option
             # (or rather, corresponding to a router, if there had
             # been one...)
             shift @optsnmp;
-            
+
             while ((scalar @tmpsnmp > 0)
                or (scalar @optsnmp > 0)) {
                 $t = shift @tmpsnmp;
                 $o = shift @optsnmp;
-            
+
                 if(not defined $t) {$t = "";}
                 if(not defined $o) {$o = "";}
-    
+
                 if($t ne "")
                 {
                     push @s, $t;
@@ -1216,15 +1289,15 @@ sub addrouter() {
                     push @s, $o;
                 }
             }
-            
+
             $snmpopt = ':' . (join ':', @s);
         }
-    
+
         my $newopt={};  # Perhaps unecessary initialization but...
-    
+
         foreach my $o (keys %$opt) {
             my $ovalue = $$opt{$o};
-    
+
             $$newopt{$o} = $ovalue
             unless
                 ($o =~ /^fullcmd$/ or
@@ -1233,11 +1306,11 @@ sub addrouter() {
                  $o =~ /^global$/ or
                  $o =~ /^output$/
                  );
-    
+
             # Ok, copy the --globals array from $$opt so we know
             # that which global(s) to print out into the config.
             push @{$$newopt{$o}}, @{$$opt{$o}} if ($o =~ /^global$/);
-    
+
             # Go through these --global statements one by one.
             # If anyone of them contains Options[] for any of the
             # targets [_], [^] or [_], process those statements
@@ -1250,7 +1323,7 @@ sub addrouter() {
                 $t =~ s/_/default/;
                 $t =~ s/\^/prepend/;
                 $t =~ s/\$/append/;
-        
+
                 # If a line like "options[X]:" is found clear
                 # all flags for that category and then go to next
                 # --global 'Options[..' line if any.
@@ -1263,17 +1336,17 @@ sub addrouter() {
                     }
                 }
             }
-            
+
             $$opt{$o} = [] if ($o =~ /^global$/);
         }
-        
+
         # Now let this router get it's own copy of
         # the "currently effective" flags.
         # Note, Options[_] should only be considered
         # if Options[^] and Options[$] both are absent.
-        
+
         my $newflags = {};
-        
+
         if((0 == keys %{$$flags{prepend}})
             and (0== keys %{$$flags{append}})) {
             for my $f (keys %{$$flags{default}}) {
@@ -1285,46 +1358,46 @@ sub addrouter() {
                 $$newflags{$f}="set";
             }
         }
-    
+
         if(defined $$opt{'dns-domain'}) {
             $dnsdomain=$$opt{'dns-domain'};
         } else {
             $dnsdomain="";
         }
-    
+
         $routerkey =
-            "${community}\@${routername}" 
+            "${community}\@${routername}"
             . (($dnsdomain eq "")?"":".")
                 . "${dnsdomain}${snmpopt}";
-    
-        $$routers{$routerkey}= { 
+
+        $$routers{$routerkey}= {
             # rawname is the unprocessed string from the
             # command line.
             rawname     => $rawname,
-     
+
             # opt is the commandline options which are
             # in effect for THIS particular router.
             opt         => $newopt,
-    
+
             # noofrouter is the unique number for the
             # router.  The first router on the command
             # line is given number 1, the second number 2
             # and so on.
             noofrouter  => $$noofrouter,
-        
+
             # flags contains which --global 'Options[^_$]: flags'
             # are effective for THIS particular router.
             flags       => $newflags,
-    
+
             # community is the SNMP community used for the router
             community   => $community,
-    
+
             # snmpopt is the SNMP options on the form
             # [port[:timeout[:retries[:backoff[:version]]]]]
             # The empty string simply means that no
             # specific SNMP options has been given.
             'snmp-options' => $snmpopt,
-    
+
             # dns-domain is a domain which should be added
             # to the routers hostname.
             # e.g if dns-domain is place.xyz and host is router
@@ -1332,7 +1405,7 @@ sub addrouter() {
             # If host is "router.dept" the poll will be against
             # "router.dept.place.xyz".
             'dns-domain' => $dnsdomain,
-    
+
             # routername is the routers name as given on the
             # command line but with SNMP community (if given)
             # and SNMP options (if given) stripped.
@@ -1340,7 +1413,7 @@ sub addrouter() {
             # (Yes, routername COULD be on the form
             # "host.domain" or "host.subdomain.domain")
             routername  => $routername,
-    
+
             # routerkey is the same as the has key used for the
             # router, which is the router name with everything
             # taken into account: community, dns-domain and
@@ -1348,7 +1421,6 @@ sub addrouter() {
             # SNMP communication with the router.
             routerkey => $routerkey,
             };
-        
     }
 } # end addrouter
 
@@ -1361,6 +1433,47 @@ sub html_escape ($) {
     return $s;
 } # end html_escape
 
+sub parsev3 ($) {
+    my $opt = shift;
+    my %v3opt;
+	if (!exists ($$opt{username})) {
+    		die "SMNP V3 requires a --username paramter as part of the User Security Model";
+	} else {
+		$v3opt{username} = $$opt{username};
+	}
+	$v3opt{contextname} = $$opt{contextname} if exists($$opt{contextname});
+	if (exists ($$opt{authkey})) {
+		die "Can't use both an --authkey and --authpassword in the User Security Model" if exists($$opt{authpassword});	
+		$v3opt{authkey} = $$opt{authkey};
+	}
+	if (exists ($$opt{authpassword})) {
+		die "Use of --authpassword requires --contextengineid" if !exists($$opt{contextengineid});
+		$v3opt{authpassword} = $$opt{authpassword};
+	}
+	if (exists ($$opt{authprotocol})) {
+		die "Only sha and md5 are defined for --authprotocol" if $$opt{authprotocol} !~ /^(md5|sha)$/i;
+		die "--authprotocol can only be used with --authpassword or --authkey" if ! exists($$opt{authpassword}) and ! exists($$opt{authkey});
+		($v3opt{authprotocol}) = (lc($$opt{authprotocol}) =~ /^(md5|sha)$/);
+	}
+	if (exists ($$opt{privkey})) {
+		die "Can't use both an --privkey and --privpassword in the User Security Model" if exists($$opt{privpassword});	
+		die "Can't have privacy parameters without authentication in the User security Model" if ! exists($$opt{authpassword}) and ! exists($$opt{authkey});
+		$v3opt{privkey} = $$opt{privkey};
+	}
+	if (exists ($$opt{privpassword})) {
+		die "Use of --privpassword requires --contextengineid" if !exists($$opt{contextengineid});
+		die "Can't have privacy parameters without authentication in the User security Model" if ! exists($$opt{authpassword}) and ! exists($$opt{authkey});
+		$v3opt{privpassword} = $$opt{privpassword};
+	}
+	if (exists ($$opt{privprotocol})) {
+		die "Only des, 3desede, aescfb128, aescffb192 and aescfb256 are defined for --privprotocol" if $$opt{privprotocol} !~ /^(3*des(ede)*|aescfb(128|192|256))$/;
+		die "--privprotocol can only be used with --privpassword or --privkey" if ! exists($$opt{privpassword}) and ! exists($$opt{privkey});
+		$v3opt{privprotocol} = lc($$opt{privprotocol});
+	}
+	return %v3opt;
+}
+		
+	
 sub init () {
   snmpmapOID('sysObjectID' => '1.3.6.1.2.1.1.2.0',
              'CiscolocIfDescr' => '1.3.6.1.4.1.9.2.2.1.1.28',
@@ -1371,9 +1484,11 @@ sub init () {
 
 __END__
 
+=pod
+
 =head1 NAME
 
-cfgmaker - Creates mrtg.cfg files (for mrtg-2.12.2)
+cfgmaker - Creates mrtg.cfg files (for mrtg-2.13.0)
 
 =head1 SYNOPSIS
 
@@ -1411,9 +1526,9 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
                    code to be executed to generate the lines for the
                    target in the configuration file.
                    (Experimental, under development, might change)
- 
+
  --host-template=templatefile
-                   In addition to creating targets for a host's interfaces 
+                   In addition to creating targets for a host's interfaces
                    do also create targets for the host itself as specified
                    by the contents in the file templatefile.  The file is
                    supposed to contain Perl code to be executed to generate
@@ -1421,7 +1536,7 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
                    ping response time measurements etc.) in the config-
                    uration file.
                    (Experimental, under development, might change)
- 
+
  --global "x: a"   add global config entries
 
  --no-down         do not look at admin or opr status of interfaces
@@ -1432,9 +1547,9 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
                    speed for all interfaces that return a speed of 0
                    via ifSpeed/ifHighSpeed.  100Mbps = 100000000
 
- --subdirs=format  give each router its own subdirectory, naming each per 
-                   "format", in which HOSTNAME and SNMPNAME will be 
-                   replaced by the values of those items -- for instance,  
+ --subdirs=format  give each router its own subdirectory, naming each per
+                   "format", in which HOSTNAME and SNMPNAME will be
+                   replaced by the values of those items -- for instance,
                    --subdirs=HOSTNAME or --subdirs="HOSTNAME (SNMPNAME)"
 
  --noreversedns    do not reverse lookup ip numbers
@@ -1486,9 +1601,9 @@ want to try this first if you do not know the community name of a
 device. If you are using the wrong community name you will get no
 response from the device.
 
-I<Router> is the DNS name or the IP number of an SNMP-managable device.           
-Following the name you can specify 6 further options separated by                 
-colons.  The full syntax looks like this:                                      
+I<Router> is the DNS name or the IP number of an SNMP-managable device.
+Following the name you can specify 6 further options separated by
+colons.  The full syntax looks like this:
 
 B<router>[:[B<prt>][:[B<tmout>][:[B<retr>][:[B<backoff>][:B<vers>]]]]]
 
@@ -1505,7 +1620,6 @@ Note that the first line of the generated cfg file will contain all the
 commandline options you used for generating it. This is to allow for the
 easy 'regeneration' in case you want to add newhosts or make some other
 global change.
-
 
 =head2 Configuration
 
@@ -1590,7 +1704,7 @@ to return a truth value.  If true, include the interface and if false,
 exclude the interface.
 
 For a further discussion on how these filters work, see the section
-L<DETAILS ON FILTERS> below.
+L<Details on Filters> below.
 
 =item B<--if-template> B<template-file>
 
@@ -1602,7 +1716,7 @@ will be evaluated as a Perl program which generates the lines using certain
 variables for input and output.
 
 For a further discussion on how these templates work, see the section
-L<DETAILS ON TEMPLATES> below.
+L<Details on Temaplates> below.
 
 =item B<--host-template> B<template-file>
 
@@ -1615,7 +1729,7 @@ once per host as a Perl program which generates the lines using certain
 variables for input and output.
 
 For a further discussion on how these templates work, see the section
-L<DETAILS ON TEMPLATES> below.
+L<Details on Templates> below.
 
 =item B<--community> B<community-string>
 
@@ -1662,7 +1776,7 @@ B<router>[:[B<port>][:[B<timeout>][:[B<retries>][:[B<backoff>][:B<version>]]]]]
 
 =item B<--global> B<">I<bla: abc>B<">
 
-Use this to add global options to the generated config file. 
+Use this to add global options to the generated config file.
 You can call B<--global> several times to add multiple options.
 The line will appear in the configuration just before the config for
 the next router appearing on the command line.
@@ -1743,7 +1857,98 @@ earlier on the command line.
 
 =back
 
-=head1 DETAILS ON FILTERS
+=head2 SNMP V3 Options
+
+B<Cfgmaker> supports SNMP V3.  There are optional parameters affecting SNMP operation.
+
+
+=head3 SNMPv3 Arguments
+
+A SNMP context is a collection of management information accessible by a SNMP
+entity.  An item of management information may exist in more than one context
+and a SNMP entity potentially has access to many contexts.  The combination of
+a contextEngineID and a contextName unambiguously identifies a context within
+an administrative domain.  In a SNMPv3 message, the contextEngineID and
+contextName are included as part of the scopedPDU.  All methods that generate
+a SNMP message optionally take a B<--contextengineid> and B<--contextname>
+argument to configure these fields.
+
+=over
+
+=item Context Engine ID
+
+The B<--contextengineid> argument expects a hexadecimal string representing
+the desired contextEngineID.  The string must be 10 to 64 characters (5 to
+32 octets) long and can be prefixed with an optional "0x".  Once the
+B<--contextengineid> is specified it stays with the object until it is changed
+again or reset to default by passing in the undefined value.  By default, the
+contextEngineID is set to match the authoritativeEngineID of the authoritative
+SNMP engine.
+
+=item Context Name
+
+The contextName is passed as a string which must be 0 to 32 octets in length
+using the B<--contextname> argument.  The contextName stays with the object
+until it is changed.  The contextName defaults to an empty string which
+represents the "default" context.
+
+=back
+
+=head3 User-based Security Model Arguments
+
+The User-based Security Model (USM) used by SNMPv3 requires that a securityName
+be specified using the B<-username> argument.  The creation of a Net::SNMP
+object with the version set to SNMPv3 will fail if the B<--username> argument
+is not present.  The B<-username> argument expects a string 1 to 32 octets
+in length.
+
+Different levels of security are allowed by the User-based Security Model which
+address authentication and privacy concerns.  A SNMPv3 target will
+derive the security level (securityLevel) based on which of the following
+arguments are specified.
+
+By default a securityLevel of 'noAuthNoPriv' is assumed.  If the B<--authkey>
+or B<--authpassword> arguments are specified, the securityLevel becomes
+'authNoPriv'.  The B<--authpassword> argument expects a string which is at
+least 1 octet in length.  Optionally, the B<--authkey> argument can be used so
+that a plain text password does not have to be specified in a script.  The
+B<--authkey> argument expects a hexadecimal string produced by localizing the
+password with the authoritativeEngineID for the specific destination device.
+The C<snmpkey> utility included with the Net::SNMP  distribution can be used to create
+the hexadecimal string (see L<snmpkey>).
+
+Two different hash algorithms are defined by SNMPv3 which can be used by the
+Security Model for authentication.  These algorithms are HMAC-MD5-96 "MD5"
+(RFC 1321) and HMAC-SHA-96 "SHA-1" (NIST FIPS PUB 180-1).   The default
+algorithm used by the module is HMAC-MD5-96.  This behavior can be changed by
+using the B<--authprotocol> argument.  This argument expects either the string
+'md5' or 'sha' to be passed to modify the hash algorithm.
+
+By specifying the arguments B<--privkey> or B<--privpassword> the securityLevel
+associated with the object becomes 'authPriv'.  According to SNMPv3, privacy
+requires the use of authentication.  Therefore, if either of these two
+arguments are present and the B<--authkey> or B<--authpassword> arguments are
+missing, the creation of the object fails.  The B<--privkey> and
+B<--privpassword> arguments expect the same input as the B<--authkey> and
+B<--authpassword> arguments respectively.
+
+The User-based Security Model described in RFC 3414 defines a single encryption
+protocol to be used for privacy.  This protocol, CBC-DES "DES" (NIST FIPS PUB
+46-1), is used by default or if the string 'des' is passed to the
+B<--privprotocol> argument.  By working with the Extended Security Options
+Consortium http://www.snmp.com/eso/, the module also supports additional
+protocols which have been defined in draft specifications.  The draft
+http://www.snmp.com/eso/draft-reeder-snmpv3-usm-3desede-00.txt
+defines the support of CBC-3DES-EDE "Triple-DES" (NIST FIPS 46-3) in the
+User-based Security Model.  This protocol can be selected using the
+B<--privprotocol> argument with the string '3desede'.  The draft
+http://www.snmp.com/eso/draft-blumenthal-aes-usm-04.txt
+describes the use of CFB128-AES-128/192/256 "AES" (NIST FIPS PUB 197) in the
+USM. The three AES encryption protocols, differentiated by their key sizes,
+can be selected by passing 'aescfb128', 'aescfb192', or 'aescfb256' to the
+B<-privprotocol> argument.
+
+=head2 Details on Filters
 
 The purpose of the filters is to decide which interfaces to accept and
 which interfaces to reject.  This decision is done for each interface by
@@ -1784,7 +1989,7 @@ Yet another example: B<!>I<expression>
 
 (For more details on this I recommend a book on Perl)
 
-=head2 Predefined Filter Variables
+=head3 Predefined Filter Variables
 
 To facilitate, there are a number of predefined values available to use
 in the filter.  Note that these variables are also available when templates
@@ -1820,7 +2025,7 @@ Here's a list of some of the most common interface types by number:
    9 iso88025TokenRing
   15 fddi
   19 E1
-  20 basicISDN 
+  20 basicISDN
   21 primaryISDN
   22 propPointToPointSerial
   23 ppp
@@ -1840,7 +2045,7 @@ Here's a list of some of the most common interface types by number:
   94 Asymetric Digital Subscriber Loop (ADSL)
  117 Gigabit Ethernet
  134 ATM Sub Interface
- 
+
 =item B<$default>
 
 True if and only if cfgmaker normally should
@@ -1874,7 +2079,7 @@ state.
 A number of variables are also predefined to easily decide if an interface
 belong to a certain cathegory or not.  Below is all those variables listed
 together with which if_type numbers each variable will be true for.  Note
-that some variables refer to other variables as well. 
+that some variables refer to other variables as well.
 
 =over
 
@@ -1936,7 +2141,7 @@ Further, all the variables available in cfgmaker is at the scripts disposal
 even if the use of such features is discouraged.  More "shortcuts" in the
 form of variables and functions will be made avaiable in the future instead.
 
-=head2 Examples on Filters
+=head3 Examples on Filters
 
 The following filter will not affect which interfaces get's included or
 excluded, it will make cfgmaker behave as normally.
@@ -1953,7 +2158,7 @@ all interfaces which are administratively down.
 
  '--if-filter=$if_admin && $default_iftype'
 
-=head1 DETAILS ON TEMPLATES
+=head2 Details on Templates
 
 The contents of the template files are evaluated as a Perl program.  A
 number or Perl variables are available for the program to read and others
@@ -1967,7 +2172,7 @@ escaping means that the chars "<", ">" and "&" are replaced by "&lt;",
 with "<BR>" and appended with a space character (if a newline is last in the
 string it is not touched).
 
-=head2 Writable Template Variables
+=head3 Writable Template Variables
 
 These are the variables available to store the configuration lines in.
 Some of them are initialized prior to the evaluation of the template but
@@ -2020,11 +2225,11 @@ Test against B<$if_ok> instead.
 This variable is the placeholder for the string to use as the separator
 between the code for individual targets.  The contents of this variable
 is put after each target (so the lines will appear after the end of the
-last target in the config as well).  
+last target in the config as well).
 
 =back
 
-=head2 Predefined Template Variables
+=head3 Predefined Template Variables
 
 All the variables below are available for interface templates to use.
 For host templates, only those listed under L<Host and System Variables>
@@ -2040,7 +2245,7 @@ L<Predefined Filter Variables> are also available.
 =item B<$router_name>
 
 This is the fully qualified name for the router.  It is affected by the
-following items on the command line:  the router name itself and 
+following items on the command line:  the router name itself and
 B<--dns-domain>.
 
 =item B<$router_connect>
@@ -2097,7 +2302,7 @@ directives.  (There's no HTML escaped variant available)
 This the reference string for the interface.  It is expected to be used
 in the "Target[xyz]" directive to distinguish what interface to use.  The
 value of this variable is affected by the B<--ifref> command line option.
-It is normally used together with B<$router_connect>. 
+It is normally used together with B<$router_connect>.
 (There's no HTML escaped variant available)
 
 =item B<$if_ok>
@@ -2271,7 +2476,7 @@ that port.  (No HTML escaped variant available)
 
 =item B<$desc_prefix>
 
-This variable is a prefix of the description of what the target is to use in 
+This variable is a prefix of the description of what the target is to use in
 the "Title[]" directive and in the H1 section of the "PageTop[]".  Default is
 "Traffic analysis for ".  (HTML escaped variant: B<$html_desc_prefix>)
 
@@ -2288,7 +2493,7 @@ which indirectly controls the contents of B<$if_title>
 
 =back
 
-=head2 Help Functions for Templates
+=head3 Help Functions for Templates
 
 The following functions exists to facilitate the writing of host and
 interface templates.
@@ -2305,9 +2510,9 @@ in the string are prepended with "<BR>" and appended with a space character
 
 =back
 
-=head2 Example Template Files
+=head3 Example Template Files
 
-=head3 Template Example 1: Eliminating Rejected Targets From Appearing
+=head4 Template Example 1: Eliminating Rejected Targets From Appearing
 
 This template file generates exactly the same configuration code per
 interface as cfgmaker does by default, with the exception that it eliminates
@@ -2317,15 +2522,15 @@ interface happens to be rejected.
  if(not $problem_lines)
  {
    $target_lines .= <<ECHO;
- 
+
  Target[$target_name]: $if_ref:$router_connect
  SetEnv[$target_name]: MRTG_INT_IP="$if_ip" MRTG_INT_DESCR="$if_snmp_descr"
  ECHO
- 
+
    if ($directory_name) {
        $target_lines .= "Directory[$target_name]: $directory_name\n";
    }
- 
+
    $target_lines .= <<ECHO;
  MaxBytes[$target_name]: $if_speed
  Title[$target_name]: $html_desc_prefix$html_if_title_desc -- $sysname
@@ -2353,28 +2558,28 @@ interface happens to be rejected.
 					<td>$html_if_snmp_name</td>
 				</tr>
  ECHO
- 
+
    $target_lines .= <<ECHO if defined $if_port_name;
 				<tr>
 					<td>Port Name:</td>
 					<td>$if_port_name</td>
 				</tr>
  ECHO
- 
+
    $target_lines .= <<ECHO;
 				<tr>
 					<td>Max Speed:</td>
 					<td>$if_speed_str</td>
 				</tr>
  ECHO
- 
+
    $target_lines .= <<ECHO if $if_ip;
 				<tr>
 					<td>Ip:</td>
 					<td>$if_ip ($if_dns_name)</td>
 				</tr>
  ECHO
- 
+
    $target_lines .= <<ECHO;
 			</table>
 		</div>
@@ -2405,7 +2610,7 @@ B<$default_target_lines>.
    $target_lines="";
    $separator_lines="";
  }
-  
+
 =head3 Template Example 3: Creating CPU Targets for Hosts
 
 Below is an example of a host template.
@@ -2417,15 +2622,15 @@ Below is an example of a host template.
  my $target_name = $router_name . ".cpu";
 
  $target_lines .= <<ECHO;
- 
+
  YLegend[$target_name]: Percentage CPU load
  ShortLegend[$target_name]: %
  Legend1[$target_name]: CPU load in %
- Legend2[$target_name]: 
+ Legend2[$target_name]:
  Legend3[$target_name]: Max Observed CPU load
- Legend4[$target_name]: 
+ Legend4[$target_name]:
  LegendI[$target_name]: &nbsp;CPU Load:
- LegendO[$target_name]: 
+ LegendO[$target_name]:
  WithPeak[$target_name]: ywm
  MaxBytes[$target_name]: 100
  Options[$target_name]: growright, gauge, nopercent
@@ -2457,11 +2662,11 @@ Below is an example of a host template.
 
 =head1 EXAMPLES
 
-The first example creates a config file for I<router.place.xyz>:  the router           
-has the community name I<public>.  Interfaces get identified by their             
-IP number.  Two global options get added to the config file.  The                 
-config file gets redirected to I<mrtg.conf>.  The '\' signs at the end            
-of the line mean that this command should be written on a single line.            
+The first example creates a config file for I<router.place.xyz>:  the router
+has the community name I<public>.  Interfaces get identified by their
+IP number.  Two global options get added to the config file.  The
+config file gets redirected to I<mrtg.conf>.  The '\' signs at the end
+of the line mean that this command should be written on a single line.
 
  cfgmaker --global "WorkDir: /home/tobi"           \
           --global "Options[_]: growright,bits"    \
@@ -2469,7 +2674,7 @@ of the line mean that this command should be written on a single line.
           public@router.place.xyz > mrtg.cfg
 
 Note: if cfgmaker is not in your path, but you are in the directory where
-cfgmaker is stored, you can start it with ./cfgmaker 
+cfgmaker is stored, you can start it with ./cfgmaker
 
 The next example creates a config file for four devices:
 I<router1.place.xyz>, I<router2.place.xyz>, I<switch1.place.xyz> and

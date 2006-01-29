@@ -3,7 +3,7 @@ MRTG-REFERENCE(1)              mrtg             MRTG-REFERENCE(1)
 
 
 NNAAMMEE
-       mrtg-reference - MRTG 2.12.2 configuration reference
+       mrtg-reference - MRTG 2.13.0 configuration reference
 
 OOVVEERRVVIIEEWW
        The runtime behaviour of MRTG is governed by a configura-
@@ -131,6 +131,19 @@ OOPPTTIIOONNAALL GGLLOOBBAALL KKEEYYWWOORRDDSS
 
 
 
+       EEnnaabblleeSSnnmmppVV33
+
+       When set to yes, uses the Net::SNMP module instead of the
+       SNMP_SESSION module for generating snmp queries.  This
+       allows the use of SNMPv3 if other snmpv3 parameters are
+       set.
+
+       SNMPv3 is disabled by default.
+
+       Example:
+
+        EnableSnmpV3: yes
+
        RReeffrreesshh
 
        How many seconds apart should the browser (Netscape) be
@@ -251,6 +264,9 @@ OOPPTTIIOONNAALL GGLLOOBBAALL KKEEYYWWOORRDDSS
        value.  Note that these settings OVERRIDE the per target
        timeout settings.
 
+       A per-target SnmpOptions[] keyword will override the
+       global settings.  That keyword is primarily for SNMPv3.
+
        The 16bit request ids are the only way to query the broken
        SNMP implementation of SMC Barricade routers.
 
@@ -326,9 +342,6 @@ OOPPTTIIOONNAALL GGLLOOBBAALL KKEEYYWWOORRDDSS
 
         LibAdd: /usr/local/rrdtool/lib/perl/
 
-
-
-
        PPaatthhAAdddd
 
        If the rrrrddttooooll executable can not be found in the normal
@@ -393,8 +406,6 @@ OOPPTTIIOONNAALL GGLLOOBBAALL KKEEYYWWOORRDDSS
        this will make mrtg run but without detaching it from the
        terminal.
 
-
-
        CCoonnvveerrssiioonnCCooddee
 
        Some devices may produce non-numeric values that would
@@ -448,9 +459,9 @@ OOPPTTIIOONNAALL GGLLOOBBAALL KKEEYYWWOORRDDSS
 
 PPEERR TTAARRGGEETT CCOONNFFIIGGUURRAATTIIOONN
        Each monitoring target must be identified by a unique
-       name. This name must be appended to each parameter belong-
-       ing to the same target. The name will also be used for
-       naming the generated webpages, logfiles and images for
+       name. This name must be appended to each parameter
+       belonging to the same target. The name will also be used
+       for naming the generated webpages, logfiles and images for
        this target.
 
        TTaarrggeett
@@ -488,6 +499,23 @@ PPEERR TTAARRGGEETT CCOONNFFIIGGUURRAATTIIOONN
 
             Target[myrouter]: 2:public@router1:::::2
 
+       SNMPv3
+           As an alternative to SNMPv2c, SNMPv3 provides access
+           to the ifHC* counters, along with encryption.  Not all
+           devices support SNMPv3, and you will also need the
+           perl Net::SNMP library in order to use it.  It is rec-
+           ommended that cfgmaker be used to generate configura-
+           tions involving SNMPv3, as it will check if the
+           Net::SNMP library is loadable, and will switch to
+           SNMPv2c if v3 is unavailable.
+
+           SNMP v3 requires additional authentication parameters,
+           passed using the SnmpOptions[] per-target keyword.
+
+           Example:
+             Target[myrouter]: 2:router1:::::3
+             SnmpOptions[myrouter]: username=>'user1'
+
        Reversing
            Sometimes you are sitting on the wrong side of the
            link, and you would like to have mrtg report Incoming
@@ -522,6 +550,20 @@ PPEERR TTAARRGGEETT CCOONNFFIIGGUURRAATTIIOONN
            Example:
 
             Target[myrouter]: ifInErrors.1&ifOutErrors.1:public@myrouter
+
+       SnmpWalk
+           It may be that you want to monitor an snmp object that
+           is only reachable by 'walking'. You can get mrtg to
+           walk by prepending the OID with the string WWaaLLKK or if
+           you want a particular entry from the table returned by
+           the walk you can use WWaaLLKK_x where _x is a number start-
+           ing from 0 (!).
+
+           Example:
+
+             Target[myrouter]: WaLKstrangeOid.1&WaLKstrangeOid.2:public@myrouter
+
+             Target[myrouter]: WaLK3strangeOid.1&WaLK4strangeOid.2:public@myrouter
 
        Interface by IP
            Sometimes SNMP interface index can change, like when
@@ -591,9 +633,9 @@ PPEERR TTAARRGGEETT CCOONNFFIIGGUURRAATTIIOONN
 
             Target[myrouter]: #\:\ fun:public@hello.router
 
-           <Note that the # sign will be interpreted as a comment
+           Note that the # sign will be interpreted as a comment
            character if it is the first non white-space character
-           on the line.>
+           on the line.
 
        Interface by Ethernet Address
            When the SNMP interface index changes, you can key
@@ -674,10 +716,13 @@ PPEERR TTAARRGGEETT CCOONNFFIIGGUURRAATTIIOONN
 
            version
                for SNMP version. If you have a fast router you
-               might want to put a '2' here. This will make mrtg
-               try to poll the 64 bit counters and thus prevent
-               excessive counter wrapping. Not all routers sup-
-               port this though.
+               might want to put a '2' here.  For authenticated
+               or encrypted SNMP, you can try to put a '3' here.
+               This will make mrtg try to poll the 64 bit coun-
+               ters and thus prevent excessive counter wrapping.
+               Not all routers support this though.  SNMP v3
+               requires additional setup, see SnmpOptions[] for
+               full details.
 
                Example:
 
@@ -855,8 +900,6 @@ PPEERR TTAARRGGEETT CCOONNFFIIGGUURRAATTIIOONN
 
         MaxBytes[myrouter]: 1250000
 
-
-
        TTiittllee
 
        Title for the HTML page which gets generated for the
@@ -919,10 +962,6 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
 
         RouterName[kacisco.comp.edu]: 1.3.6.1.4.1.4779.1.1.3.0:public@194.64.66.251
 
-
-
-
-
        MMaaxxBByytteess11
 
        Same as MaxBytes, for variable 1.
@@ -955,6 +994,91 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
 
         Target[v4onlyrouter_1]: 1:public@v4onlyrouter
         IPv4Only[v4onlyrouter_1]: Yes
+
+       SSnnmmppOOppttiioonnss ((VV33))
+
+       SNMPv3 requires a fairly rich set of options.  This per-
+       target keyword allows access to the User Security Model of
+       SNMPv3.  Options are listed in the same syntax as a perl
+       hash.
+
+       _S_e_c_u_r_i_t_y _M_o_d_e_s
+
+       SNMPv3 has three security modes, defined on the device
+       being polled.  For example, on Cisco routers the security
+       mode is defined by the snmp-server group global configura-
+       tion command.
+
+       NoAuthNoPriv
+           Neither Authentication nor Privacy is defined.  Only
+           the Username option is specified for this mode.
+
+           Example:
+
+            SnmpOptions[myrouter]: username=>'user1'
+
+       AuthNoPriv
+           Uses a Username and a password.  The password can be
+           hashed using the snmpkey application, or passed in
+           plain text along with the ContextEngineID
+
+           Example:
+
+            SnmpOptions[myrouter]: username=>'user1',authpassword=>'example',
+              contextengineid=>'80000001110000004000000'
+
+       Priv
+           Both Authentication and Privacy is defined.  The
+           default privacy protocol is des.
+
+           Example:
+            SnmpOptions[myrouter]:
+           authkey=>'0x1e93ab5a396e2af234c8920e61cfe2028072c0e2',
+              authprotocol=>'sha',privprotocol=>'des',user-
+           name=>'user1',
+              privkey=>'0x498d74940c5872ed387201d74b9b25e2'
+
+       _s_n_m_p _o_p_t_i_o_n_s
+
+       The following option keywords are recognized:
+
+       username
+           The user associated with the User Security Model
+
+       contextname
+           An SNMP agent can define multiple contexts.  This key-
+           word allows them to be polled.
+
+       contextengineid
+           A unique 24-byte string identifying the snmp-agent.
+
+       authpassword
+           The plaintext password for a user in either AuthNoPriv
+           or Priv mode.
+
+       authkey
+           A md5 or sha hash of the plain-text password, along
+           with the engineid.  Use the snmpkey commandline pro-
+           gram to generate this hash, or use Net::SNMP::Secu-
+           rity::USM in a script.
+
+       authprotocol {sha|md5}
+           The hashing algorithm defined on the SNMP client.
+           Defaults to md5.
+
+       privpassword
+           A plaintext pre-shared key for encrypting snmp packets
+           in Priv mode.
+
+       privkey
+           A hash of the plain-text pre-shared key, along with
+           the engineid.  Use the snmpkey commandline program to
+           generate this hash, or use Net::SNMP::Security::USM in
+           a script.
+
+       privprotocol {des|3desede|aescfb128|aescfb192|aescfb256}
+           Specifies the encryption method defined on the snmp
+           agent.  The default is des.
 
        PPaaggeeFFoooott
 
@@ -1061,6 +1185,8 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
 
         Extension[myrouter]: phtml
 
+
+
        DDiirreeccttoorryy
 
        By default, mrtg puts all the files that it generates for
@@ -1118,8 +1244,6 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
 
         XScale[myrouter]: 1.5
         YScale[myrouter]: 1.5
-
-
 
        YYTTiiccss aanndd YYTTiiccssFFaaccttoorr
 
@@ -1381,10 +1505,6 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
         kMG[myrouter]: n,u,m,,k,M,G,T,P
         options[myrouter]: perhour
 
-
-
-
-
        CCoolloouurrss
 
        The _C_o_l_o_u_r_s tag allows you to override the default colour
@@ -1447,8 +1567,6 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
            The strings for the colour legend.
 
        Example:
-
-
 
          YLegend[myrouter]: Bits per Second
          ShortLegend[myrouter]: b/s
@@ -1529,6 +1647,8 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
 
         TimeStrPos[myrouter]: RU
 
+
+
        TTiimmeeSSttrrFFmmtt
 
        Using this keyword you may specify format of the timestamp
@@ -1591,6 +1711,10 @@ TTHHRREESSHHOOLLDD CCHHEECCKKIINNGG
        variable, the threshold value broken, and the current
        parameter value.
 
+
+
+
+
        TThhrreesshhPPrrooggOOKKII  ((PPEERR TTAARRGGEETT))
 
        This defines a program to be run if the parameter is cur-
@@ -1622,7 +1746,6 @@ TTHHRREESSHHOOLLDD CCHHEECCKKIINNGG
 
         SetEnv[myrouter]:  EMAIL="contact_email@someplace.net"
                            HOST="www.some_server.net"
-                           URL="http://www.some_server.net/path/mrtg.html"
 
 PPEERR TTAARRGGEETT DDEEFFAAUULLTT VVAALLUUEESS
        PPrree-- aanndd PPoossttffiixx
@@ -1653,6 +1776,10 @@ PPEERR TTAARRGGEETT DDEEFFAAUULLTT VVAALLUUEESS
 
         PageTop[^]:
         PageTop[$]:
+
+
+
+
 
        NNooSSppaacceeCChhaarr
 
@@ -1775,12 +1902,23 @@ CCOOMMMMAANNDD LLIINNEE OOPPTTIIOONNSS
 
             --debug="cfg,snpo"
 
+EEXXIITT CCOODDEESS
+       An exit code of 0 indicates that all targets were success-
+       ful.  Generally speaking, most codes greater than 0 indi-
+       cate that there was an unrecoverable problem.  One excep-
+       tion to this is code 91, which indicates that at least one
+       of the targets was succesful.  A partial listing of the
+       codes follows:
+
+         0: All targets sucessful
+
+         2: Config error (can't read, fatal error in config, etc)
+        17: Another MRTG process is processing config
+
+        91: At least one target sucessful
+        92: No targets were sucessful
+
 EEXXAAMMPPLLEESS
-
-
-
-
-
        MMiinniimmaall mmrrttgg..ccffgg
 
         WorkDir: /usr/tardis/pub/www/stats/mrtg
@@ -1821,4 +1959,4 @@ AAUUTTHHOORR
 
 
 
-2.12.2                      2005-06-19          MRTG-REFERENCE(1)
+2.13.0                      2006-01-29          MRTG-REFERENCE(1)

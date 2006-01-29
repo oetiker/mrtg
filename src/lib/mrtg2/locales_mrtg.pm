@@ -307,9 +307,11 @@ $VERSION = '0.07';
 				<a href=\"mailto:webmaster\@kingisme.com\">&lt;webmaster\@kingisme.com&gt;</a>",
 # cn/中文汉字
    'cn' =>
-   "MRTG完美汉化：
-				<a href=\"http://horus.kingisme.com\">李晨光</a>
-				<a href=\"mailto:zurkabsd\@yahoo.com.cn\">&lt;zurkabsd\@yahoo.com.cn&gt;</a>",
+   "  <HR NOSHADE>
+    MRTG完美汉化：
+    <NOBR><A HREF=\"http://www.darkstage.net\">李晨光</A>
+  <A HREF=\"mailto:zurkabsd\@yahoo.com.cn\">
+  &lt;zurkabsd\@yahoo.com.cn&gt;</A></NOBR>",
 # Croatian/hrvatski
    'croatian' =>
    "Hrvatska lokalizacija - 
@@ -343,8 +345,7 @@ $VERSION = '0.07';
    'eucjp' =>
    "泣塑胳条(EUC-JP)侯喇
 				<a href=\"http://www.kgz.com/~uematsu/\">竣揪 矢屏</a>
-				<a href=\"mailto:uematsu\@kgz.com\">&lt;uematsu\@kgz.com&gt;</a>
-",
+				<a href=\"mailto:uematsu\@kgz.com\">&lt;uematsu\@kgz.com&gt;</a>",
 # Finnish/Suomi
    'finnish' =>
    "Lokalisoinut
@@ -1108,20 +1109,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'iso-8859-1'                             => 'gb2312',
+     'charset=iso-8859-1'                     => 'charset=gb2312',
      'Maximal 5 Minute Incoming Traffic'      => '5分钟最大流入量',
      'Maximal 5 Minute Outgoing Traffic'      => '5分钟最大流出量',
      'the device'                             => '设备',
      'The statistics were last updated(.*)'   => '统计最后更新时间：$1',
-     ' Average\)'                             => ' 平均)',
-     'Average'                                => '平均',
-     'Max'                                    => '最大',
-     'Current'                                => '当前',
+     ' Average\)</B><BR>'                     => ' 平均)</B><BR>',
+     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>平均$1',
+     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>最大$1',
+     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>当前$1',
      'version'                                => '版本',
-     '`Daily\' Graph \((.*) Minute'           => '"每日" 图表 ($1 分钟',
-     '`Weekly\' Graph \(30 Minute'            => '"每周" 图表 (30 分钟' ,
-     '`Monthly\' Graph \(2 Hour'              => '"每月" 图表 (2 小时',
-     '`Yearly\' Graph \(1 Day'                => '"每年" 图表 (1 天', 
+     '<B>`Daily\' Graph \((.*) Minute'        => '<B>"每日" 图表 ($1 分钟',
+     '<B>`Weekly\' Graph \(30 Minute'         => '<B>"每周" 图表 (30 分钟' ,
+     '<B>`Monthly\' Graph \(2 Hour'           => '<B>"每月" 图表 (2 小时',
+     '<B>`Yearly\' Graph \(1 Day'             => '<B>"每年" 图表 (1 天', 
      'Incoming Traffic in (\S+) per Second'   => '每秒流入 $1 量',
      'Outgoing Traffic in (\S+) per Second'   => '每秒流出 $1 量',
      'at which time (.*) had been up for(.*)' => '此时 $1 已运作了： $2 ',
@@ -1130,9 +1131,9 @@ return "" unless defined $string;
      '(.+)/h$'                                => '$1/时',
      # 'Bits'                                 => 'Bits',
      # 'Bytes'                                => 'Bytes'
-     'In'                                     => '流入：',
-     'Out'                                    => '流出：',
-     'Percentage'                             => '百分比：',
+     '&nbsp;In:</FONT>'                       => '&nbsp;流入：</FONT>',
+     '&nbsp;Out:</FONT>'                      => '&nbsp;流出：</FONT>',
+     '&nbsp;Percentage</FONT>'                => '&nbsp;百分比：</FONT>',
      'Ported to OpenVMS Alpha by'             => '移植到 OpenVMS 者', 
      'Ported to WindowsNT by'                 => '移植到 WindowsNT 者',
      'and'                                    => '和',
@@ -1754,7 +1755,7 @@ foreach $i (keys %translations)
 sub eucjp
 {
   my $string = shift;
-return "" unless defined $string;
+  return "" unless defined $string;
   my(%translations,%month,%wday);
 
   my($i,$j);
@@ -1766,47 +1767,46 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'iso-8859-1'                             => 'euc-jp',
-     'Maximal 5 Minute Incoming Traffic'      => '呵络の5尸粗の减慨翁',
-     'Maximal 5 Minute Outgoing Traffic'      => '呵络の5尸粗の流慨翁',
-     'the device'                             => 'デバイス',
-     'The statistics were last updated(.*)'   => '构糠泣箕$1',
-     ' Average\)'                             => 'の士堆)',
-     'Average'                                => '士堆猛',
-     'Max'                                    => '呵络猛',
-     'Current'                                => '附哼猛',
-     'version'                                => 'version',
-     '`Daily\' Graph \((.*) Minute'           => '泣粗グラフ($1尸粗',
-     '`Weekly\' Graph \(30 Minute'            => '降粗グラフ(30尸粗',
-     '`Monthly\' Graph \(2 Hour'              => '奉粗グラフ(2箕粗',
-     '`Yearly\' Graph \(1 Day'                => '钳粗グラフ(1泣',
-     'Incoming Traffic in (\S+) per Second'   => '减慨翁($1/擅)',
-     'Incoming Traffic in (\S+) per Minute'   => '减慨翁($1/尸)',
-     'Incoming Traffic in (\S+) per Hour'     => '减慨翁($1/箕)',
-     'Outgoing Traffic in (\S+) per Second'   => '流慨翁($1/擅)',
-     'Outgoing Traffic in (\S+) per Minute'   => '流慨翁($1/尸)',
-     'Outgoing Traffic in (\S+) per Hour'     => '流慨翁($1/箕)',
-     'at which time (.*) had been up for(.*)' => '$1 の苍漂箕粗$2',
-     'Average max 5 min values for `Daily\' Graph \((.*) Minute interval\):' => '泣粗グラフでの呵络の5尸粗($1尸髓)の士堆:',
-     'Average max 5 min values for `Weekly\' Graph \(30 Minute interval\):' => '降粗グラフでの呵络の5尸粗(30尸髓)の士堆:',
-     'Average max 5 min values for `Monthly\' Graph \(2 Hour interval\):' => '奉粗グラフでの呵络の5尸粗(2箕粗髓)の士堆:',
-     'Average max 5 min values for `Yearly\' Graph \(1 Day interval\):' => '钳粗グラフでの呵络の5尸粗(1泣髓)の士堆:',
-     '([kMG]?)([bB])/s'                       => '$1$2/擅',
-     '([kMG]?)([bB])/min'                     => '$1$2/尸',
-     '([kMG]?)([bB])/h'                       => '$1$2/箕',
-     'Bits'                                   => 'ビット',
-     'Bytes'                                  => 'バイト',
-     'In'                                     => '减慨',
-     'Out'                                    => '流慨',
-     'Percentage'                             => '孺唯',
-     'Ported to OpenVMS Alpha by'             => 'OpenVMS Alphaへの败竣',
-     'Ported to WindowsNT by'                 => 'WindowsNTへの败竣',
-     'and'                                    => 'and',
+     '^iso-8859-1'                            => 'euc-jp',
+     '^Maximal 5 Minute Incoming Traffic'     => '呵络5尸减慨翁',
+     '^Maximal 5 Minute Outgoing Traffic'     => '呵络5尸流慨翁',
+     '^the device'                            => 'デバイス',
+     '^The statistics were last updated (.*)' => '构糠泣箕 $1',
+     '^Average\)'                             => '士堆)',
+     '^Average$'                              => '士堆',
+     '^Max$'                                  => '呵络',
+     '^Current'                               => '呵糠',
+     '^`Daily\' Graph \((.*) Minute'          => '泣グラフ($1尸粗',
+     '^`Weekly\' Graph \(30 Minute'           => '降グラフ(30尸粗',
+     '^`Monthly\' Graph \(2 Hour'             => '奉グラフ(2箕粗',
+     '^`Yearly\' Graph \(1 Day'               => '钳グラフ(1泣',
+     '^Incoming Traffic in (\S+) per Second'  => '髓擅の减慨$1眶',
+     '^Incoming Traffic in (\S+) per Minute'  => '髓尸の减慨$1眶',
+     '^Incoming Traffic in (\S+) per Hour'    => '髓箕の减慨$1眶',
+     '^Outgoing Traffic in (\S+) per Second'  => '髓擅の流慨$1眶',
+     '^Outgoing Traffic in (\S+) per Minute'  => '髓尸の流慨$1眶',
+     '^Outgoing Traffic in (\S+) per Hour'    => '髓箕の流慨$1眶',
+     '^at which time (.*) had been up for (.*)' => '$1の苍漂箕粗 $2',
+     '^Average max 5 min values for `Daily\' Graph \((.*) Minute interval\):' => '泣グラフでの呵络5尸猛の士堆($1尸粗持):',
+     '^Average max 5 min values for `Weekly\' Graph \(30 Minute interval\):' => '降グラフでの呵络5尸猛の士堆(30尸粗持):',
+     '^Average max 5 min values for `Monthly\' Graph \(2 Hour interval\):' => '奉グラフでの呵络5尸猛の士堆(2箕粗粗持):',
+     '^Average max 5 min values for `Yearly\' Graph \(1 Day interval\):' => '钳グラフでの呵络5尸猛の士堆(1泣粗持):',
+     #'^([kMG]?)([bB])/s'                      => '$1$2/擅',
+     #'^([kMG]?)([bB])/min'                    => '$1$2/尸',
+     #'^([kMG]?)([bB])/h'                      => '$1$2/箕',
+     '^Bits$'                                 => 'ビット',
+     '^Bytes$'                                => 'バイト',
+     '^In$'                                   => '减慨',
+     '^Out$'                                  => '流慨',
+     '^Percentage'                            => '孺唯',
+     '^Ported to OpenVMS Alpha by'            => 'OpenVMS Alphaへの败竣',
+     '^Ported to WindowsNT by'                => 'WindowsNTへの败竣',
+     #'^and'                                   => 'and',
      '^GREEN'                                 => '涡',
-     'BLUE'                                   => '滥',
-     'DARK GREEN'                             => '考涡',
-     'MAGENTA'                                => 'マゼンタ',
-     'AMBER'                                  => '噼噌'
+     '^BLUE'                                  => '滥',
+     '^DARK GREEN'                            => '考涡',
+     '^MAGENTA'                               => 'マゼンタ',
+     '^AMBER'                                 => '噼噌'
   );
 
 # maybe expansions with replacement of whitespace would be more appropriate
@@ -1820,13 +1820,13 @@ foreach $i (keys %translations)
 
 %wday = 
     (
-      'Sunday'    => '(泣)', #'Sun' => 'Sun',
-      'Monday'    => '(奉)', #'Mon' => 'Mon',
-      'Tuesday'   => '(残)', #'Tue' => 'Tue',
-      'Wednesday' => '(垮)', #'Wed' => 'Wed',
-      'Thursday'  => '(腾)', #'Thu' => 'Thu',
-      'Friday'    => '(垛)', #'Fri' => 'Fri',
-      'Saturday'  => '(炮)', #'Sat' => 'Sat'
+      'Sunday'    => '(泣)',
+      'Monday'    => '(奉)',
+      'Tuesday'   => '(残)',
+      'Wednesday' => '(垮)',
+      'Thursday'  => '(腾)',
+      'Friday'    => '(垛)',
+      'Saturday'  => '(炮)',
     );
 
 %month = 
@@ -1837,22 +1837,18 @@ foreach $i (keys %translations)
       'July'      => '7奉',    'August'   => '8奉',
       'September' => '9奉',    'October'  => '10奉',
       'November'  => '11奉',   'December' => '12奉',
-#     'Jan'   => 'Jan',    'Feb'     => 'Feb',     'Mar'    => 'Mar',
-#     'Apr'   => 'Apr',    'May'     => 'May',     'Jun'    => 'Jun',
-#     'Jul'   => 'Jul',    'Aug'     => 'Aug',     'Sep'    => 'Sep', 
-#     'Oct'   => 'Oct',    'Nov'     => 'Nov',     'Dec'    => 'Dec' 
     );
 
-  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+) (.*)/);
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)\s+(.*)/);
   if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
     {
-	if($foo[3]=~(/(.*)at(.*)/))
+	if($foo[3]=~/at/)
       { 
-        @quux=split(/ at /,$foo[3]);
+        @quux=split(/\s+at\s+/,$foo[3]);
       }
 	else
       { 
-        @quux=split(/ /,$foo[3], 2);
+        @quux=split(/ /,$foo[3],2);
       };
       return "$quux[0]钳$month{$foo[2]}$foo[1]泣$wday{$foo[0]} $quux[1]"; 
     };
@@ -1869,7 +1865,7 @@ foreach $i (keys %translations)
   
   return $string;
 
-  };
+};
 # Finnish
 
 sub finnish
@@ -2460,10 +2456,10 @@ sub german
      'Max'                                    => 'Maximal',
      'Current'                                => 'Aktuell',
      'version'                                => 'Version',
-     '`Daily\' Graph \((.*) Minute'           => 'Tages&uuml;bersicht (Skalierung $1 Minute(n))',
-     '`Weekly\' Graph \(30 Minute'            => 'Wochen&uuml;bersicht (Skalierung 30 Minuten)',
-     '`Monthly\' Graph \(2 Hour'              => 'Monats&uuml;bersicht (Skalierung 2 Stunden)',
-     '`Yearly\' Graph \(1 Day'                => 'Jahres&uuml;bersicht (Skalierung 1 Tag)', 
+     '`Daily\' Graph \((.*) Minute'           => 'Tages&uuml;bersicht (Skalierung $1 Minute(n)',
+     '`Weekly\' Graph \(30 Minute'            => 'Wochen&uuml;bersicht (Skalierung 30 Minuten',
+     '`Monthly\' Graph \(2 Hour'              => 'Monats&uuml;bersicht (Skalierung 2 Stunden',
+     '`Yearly\' Graph \(1 Day'                => 'Jahres&uuml;bersicht (Skalierung 1 Tag', 
      'Incoming Traffic in (\S+) per Second'   => 'Hereinkommender Traffic in $1 pro Sekunde',
      'Outgoing Traffic in (\S+) per Second'   => 'Hinausgehender Traffic in $1 pro Sekunde',
      'Incoming Traffic in (\S+) per Minute'   => 'Hereinkommender Traffic in $1 pro Minute',
@@ -2993,7 +2989,7 @@ foreach $i (keys %translations)
 sub iso2022jp
 {
   my $string = shift;
-return "" unless defined $string;
+  return "" unless defined $string;
   my(%translations,%month,%wday);
 
   my($i,$j);
@@ -3005,47 +3001,46 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'iso-8859-1'                             => 'iso-2022-jp',
-     'Maximal 5 Minute Incoming Traffic'      => "\e\\\$B:GBg\\\$N\e(B5\e\\\$BJ,4V\\\$N<u?.NL\e(B",
-     'Maximal 5 Minute Outgoing Traffic'      => "\e\\\$B:GBg\\\$N\e(B5\e\\\$BJ,4V\\\$NAw?.NL\e(B",
-     'the device'                             => "\e\\\$B%G%P%\\\$%9\e(B",
-     'The statistics were last updated(.*)'   => "\e\\\$B99?7F|;~\e(B\$1",
-     ' Average\)'                             => "\e\\\$B\\\$NJ?6Q\e(B)",
-     'Average'                                => "\e\\\$BJ?6QCM\e(B",
-     'Max'                                    => "\e\\\$B:GBgCM\e(B",
-     'Current'                                => "\e\\\$B8=:_CM\e(B",
-     'version'                                => 'version',
-     '`Daily\' Graph \((.*) Minute'           => "\e\\\$BF|4V%0%i%U\e(B(\$1\e\\\$BJ,4V\e(B",
-     '`Weekly\' Graph \(30 Minute'            => "\e\\\$B=54V%0%i%U\e(B(30\e\\\$BJ,4V\e(B",
-     '`Monthly\' Graph \(2 Hour'              => "\e\\\$B7n4V%0%i%U\e(B(2\e\\\$B;~4V\e(B",
-     '`Yearly\' Graph \(1 Day'                => "\e\\\$BG/4V%0%i%U\e(B(1\e\\\$BF|\e(B",
-     'Incoming Traffic in (\S+) per Second'   => "\e\\\$B<u?.NL\e(B(\$1/\e\\\$BIC\e(B)",
-     'Incoming Traffic in (\S+) per Minute'   => "\e\\\$B<u?.NL\e(B(\$1/\e\\\$BJ,\e(B)",
-     'Incoming Traffic in (\S+) per Hour'     => "\e\\\$B<u?.NL\e(B(\$1/\e\\\$B;~\e(B)",
-     'Outgoing Traffic in (\S+) per Second'   => "\e\\\$BAw?.NL\e(B(\$1/\e\\\$BIC\e(B)",
-     'Outgoing Traffic in (\S+) per Minute'   => "\e\\\$BAw?.NL\e(B(\$1/\e\\\$BJ,\e(B)",
-     'Outgoing Traffic in (\S+) per Hour'     => "\e\\\$BAw?.NL\e(B(\$1/\e\\\$B;~\e(B)",
-     'at which time (.*) had been up for(.*)' => "\$1 \e\\\$B\\\$N2TF/;~4V\e(B\$2",
-     'Average max 5 min values for `Daily\' Graph \((.*) Minute interval\):' => "\e\\\$BF|4V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(\$1\e\\\$BJ,Kh\e(B)\e\\\$B\\\$NJ?6Q\e(B:",
-     'Average max 5 min values for `Weekly\' Graph \(30 Minute interval\):' => "\e\\\$B=54V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(30\e\\\$BJ,Kh\e(B)\e\\\$B\\\$NJ?6Q\e(B:",
-     'Average max 5 min values for `Monthly\' Graph \(2 Hour interval\):' => "\e\\\$B7n4V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(2\e\\\$B;~4VKh\e(B)\e\\\$B\\\$NJ?6Q\e(B:",
-     'Average max 5 min values for `Yearly\' Graph \(1 Day interval\):' => "\e\\\$BG/4V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(1\e\\\$BF|Kh\e(B)\e\\\$B\\\$NJ?6Q\e(B:",
-     '([kMG]?)([bB])/s'                       => "\$1\$2/\e\\\$BIC\e(B",
-     '([kMG]?)([bB])/min'                     => "\$1\$2/\e\\\$BJ,\e(B",
-     '([kMG]?)([bB])/h'                       => "\$1\$2/\e\\\$B;~\e(B",
-     'Bits'                                   => "\e\\\$B%S%C%H\e(B",
-     'Bytes'                                  => "\e\\\$B%P%\\\$%H\e(B",
-     'In'                                     => "\e\\\$B<u?.\e(B",
-     'Out'                                    => "\e\\\$BAw?.\e(B",
-     'Percentage'                             => "\e\\\$BHfN(\e(B",
-     'Ported to OpenVMS Alpha by'             => "OpenVMS Alpha\e\\\$B\\\$X\\\$N0\\\\?\"\e(B",
-     'Ported to WindowsNT by'                 => "WindowsNT\e\\\$B\\\$X\\\$N0\\\\?\"\e(B",
-     'and'                                    => 'and',
-     '^GREEN'                                 => "\e\\\$BNP\e(B",
-     'BLUE'                                   => "\e\\\$B\\\@D\e(B",
-     'DARK GREEN'                             => "\e\\\$B?<NP\e(B",
-     'MAGENTA'                                => "\e\\\$B%^%<%s%?\e(B",
-     'AMBER'                                  => "\e\\\$B`h`a\e(B"
+     '^iso-8859-1'                            => 'iso-2022-jp',
+     '^Maximal 5 Minute Incoming Traffic'     => '\e\\$B:GBg\e(B5\e\\$BJ,<u?.NL\e(B',
+     '^Maximal 5 Minute Outgoing Traffic'     => '\e\\$B:GBg\e(B5\e\\$BJ,Aw?.NL\e(B',
+     '^the device'                            => '\e\\$B%G%P%\\$%9\e(B',
+     '^The statistics were last updated (.*)' => '\e\\$B99?7F|;~\e(B $1',
+     '^Average\)'                             => '\e\\$BJ?6Q\e(B)',
+     '^Average$'                              => '\e\\$BJ?6Q\e(B',
+     '^Max$'                                  => '\e\\$B:GBg\e(B',
+     '^Current'                               => '\e\\$B:G?7\e(B',
+     '^`Daily\' Graph \((.*) Minute'          => '\e\\$BF|%0%i%U\e(B($1\e\\$BJ,4V\e(B',
+     '^`Weekly\' Graph \(30 Minute'           => '\e\\$B=5%0%i%U\e(B(30\e\\$BJ,4V\e(B',
+     '^`Monthly\' Graph \(2 Hour'             => '\e\\$B7n%0%i%U\e(B(2\e\\$B;~4V\e(B',
+     '^`Yearly\' Graph \(1 Day'               => '\e\\$BG/%0%i%U\e(B(1\e\\$BF|\e(B',
+     '^Incoming Traffic in (\S+) per Second'  => '\e\\$BKhIC\\$N<u?.\e(B$1\e\\$B?t\e(B',
+     '^Incoming Traffic in (\S+) per Minute'  => '\e\\$BKhJ,\\$N<u?.\e(B$1\e\\$B?t\e(B',
+     '^Incoming Traffic in (\S+) per Hour'    => '\e\\$BKh;~\\$N<u?.\e(B$1\e\\$B?t\e(B',
+     '^Outgoing Traffic in (\S+) per Second'  => '\e\\$BKhIC\\$NAw?.\e(B$1\e\\$B?t\e(B',
+     '^Outgoing Traffic in (\S+) per Minute'  => '\e\\$BKhJ,\\$NAw?.\e(B$1\e\\$B?t\e(B',
+     '^Outgoing Traffic in (\S+) per Hour'    => '\e\\$BKh;~\\$NAw?.\e(B$1\e\\$B?t\e(B',
+     '^at which time (.*) had been up for (.*)' => '$1\e\\$B\\$N2TF/;~4V\e(B $2',
+     '^Average max 5 min values for `Daily\' Graph \((.*) Minute interval\):' => '\e\\$BF|%0%i%U\\$G\\$N:GBg\e(B5\e\\$BJ,CM\\$NJ?6Q\e(B($1\e\\$BJ,4V3V\e(B):',
+     '^Average max 5 min values for `Weekly\' Graph \(30 Minute interval\):' => '\e\\$B=5%0%i%U\\$G\\$N:GBg\e(B5\e\\$BJ,CM\\$NJ?6Q\e(B(30\e\\$BJ,4V3V\e(B):',
+     '^Average max 5 min values for `Monthly\' Graph \(2 Hour interval\):' => '\e\\$B7n%0%i%U\\$G\\$N:GBg\e(B5\e\\$BJ,CM\\$NJ?6Q\e(B(2\e\\$B;~4V4V3V\e(B):',
+     '^Average max 5 min values for `Yearly\' Graph \(1 Day interval\):' => '\e\\$BG/%0%i%U\\$G\\$N:GBg\e(B5\e\\$BJ,CM\\$NJ?6Q\e(B(1\e\\$BF|4V3V\e(B):',
+     #'^([kMG]?)([bB])/s'                      => '$1$2/\e\\$BIC\e(B',
+     #'^([kMG]?)([bB])/min'                    => '$1$2/\e\\$BJ,\e(B',
+     #'^([kMG]?)([bB])/h'                      => '$1$2/\e\\$B;~\e(B',
+     '^Bits$'                                 => '\e\\$B%S%C%H\e(B',
+     '^Bytes$'                                => '\e\\$B%P%\\$%H\e(B',
+     '^In$'                                   => '\e\\$B<u?.\e(B',
+     '^Out$'                                  => '\e\\$BAw?.\e(B',
+     '^Percentage'                            => '\e\\$BHfN(\e(B',
+     '^Ported to OpenVMS Alpha by'            => 'OpenVMS Alpha\e\\$B\\$X\\$N0\\\?"\e(B',
+     '^Ported to WindowsNT by'                => 'WindowsNT\e\\$B\\$X\\$N0\\\?"\e(B',
+     #'^and'                                   => 'and',
+     '^GREEN'                                 => '\e\\$BNP\e(B',
+     '^BLUE'                                  => '\e\\$B\\@D\e(B',
+     '^DARK GREEN'                            => '\e\\$B?<NP\e(B',
+     '^MAGENTA'                               => '\e\\$B%^%<%s%?\e(B',
+     '^AMBER'                                 => '\e\\$B`h`a\e(B'
   );
 
 # maybe expansions with replacement of whitespace would be more appropriate
@@ -3059,13 +3054,13 @@ foreach $i (keys %translations)
 
 %wday = 
     (
-      'Sunday'    => "(\e\$BF|\e(B)", #'Sun' => 'Sun',
-      'Monday'    => "(\e\$B7n\e(B)", #'Mon' => 'Mon',
-      'Tuesday'   => "(\e\$B2P\e(B)", #'Tue' => 'Tue',
-      'Wednesday' => "(\e\$B?e\e(B)", #'Wed' => 'Wed',
-      'Thursday'  => "(\e\$BLZ\e(B)", #'Thu' => 'Thu',
-      'Friday'    => "(\e\$B6b\e(B)", #'Fri' => 'Fri',
-      'Saturday'  => "(\e\$BEZ\e(B)", #'Sat' => 'Sat'
+      'Sunday'    => "(\e\$BF|\e(B)",
+      'Monday'    => "(\e\$B7n\e(B)",
+      'Tuesday'   => "(\e\$B2P\e(B)",
+      'Wednesday' => "(\e\$B?e\e(B)",
+      'Thursday'  => "(\e\$BLZ\e(B)",
+      'Friday'    => "(\e\$B6b\e(B)",
+      'Saturday'  => "(\e\$BEZ\e(B)",
     );
 
 %month = 
@@ -3076,22 +3071,18 @@ foreach $i (keys %translations)
       'July'      => "7\e\$B7n\e(B",    'August'   => "8\e\$B7n\e(B",
       'September' => "9\e\$B7n\e(B",    'October'  => "10\e\$B7n\e(B",
       'November'  => "11\e\$B7n\e(B",   'December' => "12\e\$B7n\e(B",
-#     'Jan'   => 'Jan',    'Feb'     => 'Feb',     'Mar'    => 'Mar',
-#     'Apr'   => 'Apr',    'May'     => 'May',     'Jun'    => 'Jun',
-#     'Jul'   => 'Jul',    'Aug'     => 'Aug',     'Sep'    => 'Sep', 
-#     'Oct'   => 'Oct',    'Nov'     => 'Nov',     'Dec'    => 'Dec' 
     );
 
-  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+) (.*)/);
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)\s+(.*)/);
   if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
     {
-	if($foo[3]=~(/(.*)at(.*)/))
+	if($foo[3]=~/at/)
       { 
-        @quux=split(/ at /,$foo[3]);
+        @quux=split(/\s+at\s+/,$foo[3]);
       }
 	else
       { 
-        @quux=split(/ /,$foo[3], 2);
+        @quux=split(/ /,$foo[3],2);
       };
       return "$quux[0]\e\$BG/\e(B$month{$foo[2]}$foo[1]\e\$BF|\e(B$wday{$foo[0]} $quux[1]"; 
     };
@@ -3108,7 +3099,7 @@ foreach $i (keys %translations)
   
   return $string;
 
-  };
+};
 # Italian
 
 sub italian

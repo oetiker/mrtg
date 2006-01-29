@@ -10,25 +10,14 @@ contributions every week, here are a few guidelines which explain how to
 contribute so that I can use the contribution without too much additional
 work.
 
-=head1 TRANSLATIONS
+=head2 Translations
 
 MRTG messages have been translated to a number of languages but there are
 still many which have not been covered yet. If you want to add yours, go
-into the F<mrtg-2.12.2/translate> directory and follow the instructions
+into the F<mrtg-2.13.0/translate> directory and follow the instructions
 given in the F<README> file.
 
-=head1 DOCUMENTATION
-
-All documentation of mrtg is done with the perl B<POD> system. If you want to
-learn about it, type
-
- perldoc perlpod
-
-and read the instructions. If you have bugfixes or additions to the existing
-documents, make sure you modify the B<POD> files and not the html or txt
-versions.
-
-=head1 PATCHES
+=head2 Patches
 
 When you have created your modification or extension to mrtg and want to
 submit it to me, please crate a patch for the files which you have modified.
@@ -45,7 +34,16 @@ or if you have modified several files do
 
  diff --recursive --unified --ignore-space-change old-dir/ new-dir/ >long.patch
 
-=head1 DOCUMENTATION
+=head2 Documentation
+
+All documentation of mrtg is done with the perl B<POD> system. If you want to
+learn about it, type
+
+ perldoc perlpod
+
+and read the instructions. If you have bugfixes or additions to the existing
+documents, make sure you modify the B<POD> files and not the html or txt
+versions.
 
 I take documentation very seriously. Whenever you create a new feature for
 mrtg which you want to get included in the official release, your patch must

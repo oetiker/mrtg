@@ -129,7 +129,7 @@
 .\" ========================================================================
 .\"
 .IX Title "MRTG 1"
-.TH MRTG 1 "2005-06-19" "2.12.2" "mrtg"
+.TH MRTG 1 "2006-01-29" "2.13.0" "mrtg"
 .SH "NAME"
 mrtg \- What is MRTG
 .SH "DESCRIPTION"
@@ -182,6 +182,9 @@ Only check the cfg file for errors. Do not do anything.
 .IP "\fB\-\-pid\-file=s\fR" 4
 .IX Item "--pid-file=s"
 Define the name and path of the pid file for mrtg running as a daemon
+.IP "\fB\-\-log\-only\fR" 4
+.IX Item "--log-only"
+Only update the logfile, do not produce graphics or html pages
 .IP "\fB\-\-debug=s\fR" 4
 .IX Item "--debug=s"
 Enable debug options. The argument of the debug option is a comma separated list of debug values:

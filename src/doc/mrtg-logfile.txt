@@ -94,4 +94,4 @@ AAUUTTHHOORR
 
 
 
-2.12.2                      2005-06-19            MRTG-LOGFILE(1)
+2.13.0                      2006-01-29            MRTG-LOGFILE(1)

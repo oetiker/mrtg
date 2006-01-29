@@ -3,7 +3,7 @@ CFGMAKER(1)                    mrtg                   CFGMAKER(1)
 
 
 NNAAMMEE
-       cfgmaker - Creates mrtg.cfg files (for mrtg-2.12.2)
+       cfgmaker - Creates mrtg.cfg files (for mrtg-2.13.0)
 
 SSYYNNOOPPSSIISS
        cfgmaker [options] [community@]router [[options] [commu-
@@ -235,7 +235,7 @@ DDEESSCCRRIIPPTTIIOONN
            face.
 
            For a further discussion on how these filters work,
-           see the section "DETAILS ON FILTERS" below.
+           see the section "Details on Filters" below.
 
        ----iiff--tteemmppllaattee tteemmppllaattee--ffiillee
            First of all, this is under some development and is
@@ -248,7 +248,7 @@ DDEESSCCRRIIPPTTIIOONN
            certain variables for input and output.
 
            For a further discussion on how these templates work,
-           see the section "DETAILS ON TEMPLATES" below.
+           see the section "Details on Temaplates" below.
 
        ----hhoosstt--tteemmppllaattee tteemmppllaattee--ffiillee
            First of all, this is under some development and is
@@ -263,7 +263,7 @@ DDEESSCCRRIIPPTTIIOONN
            output.
 
            For a further discussion on how these templates work,
-           see the section "DETAILS ON TEMPLATES" below.
+           see the section "Details on Templates" below.
 
        ----ccoommmmuunniittyy ccoommmmuunniittyy--ssttrriinngg
            Use this to set the community for the routers follow-
@@ -391,7 +391,116 @@ DDEESSCCRRIIPPTTIIOONN
            The main usage of this option is to negate an --noint-
            erfaces appearing earlier on the command line.
 
-DDEETTAAIILLSS OONN FFIILLTTEERRSS
+
+
+
+
+       SSNNMMPP VV33 OOppttiioonnss
+
+       CCffggmmaakkeerr supports SNMP V3.  There are optional parameters
+       affecting SNMP operation.
+
+       _S_N_M_P_v_3 _A_r_g_u_m_e_n_t_s
+
+       A SNMP context is a collection of management information
+       accessible by a SNMP entity.  An item of management infor-
+       mation may exist in more than one context and a SNMP
+       entity potentially has access to many contexts.  The com-
+       bination of a contextEngineID and a contextName unambigu-
+       ously identifies a context within an administrative
+       domain.  In a SNMPv3 message, the contextEngineID and con-
+       textName are included as part of the scopedPDU.  All meth-
+       ods that generate a SNMP message optionally take a ----ccoonn--
+       tteexxtteennggiinneeiidd and ----ccoonntteexxttnnaammee argument to configure these
+       fields.
+
+       Context Engine ID
+           The ----ccoonntteexxtteennggiinneeiidd argument expects a hexadecimal
+           string representing the desired contextEngineID.  The
+           string must be 10 to 64 characters (5 to 32 octets)
+           long and can be prefixed with an optional "0x".  Once
+           the ----ccoonntteexxtteennggiinneeiidd is specified it stays with the
+           object until it is changed again or reset to default
+           by passing in the undefined value.  By default, the
+           contextEngineID is set to match the authorita-
+           tiveEngineID of the authoritative SNMP engine.
+
+       Context Name
+           The contextName is passed as a string which must be 0
+           to 32 octets in length using the ----ccoonntteexxttnnaammee argu-
+           ment.  The contextName stays with the object until it
+           is changed.  The contextName defaults to an empty
+           string which represents the "default" context.
+
+       _U_s_e_r_-_b_a_s_e_d _S_e_c_u_r_i_t_y _M_o_d_e_l _A_r_g_u_m_e_n_t_s
+
+       The User-based Security Model (USM) used by SNMPv3
+       requires that a securityName be specified using the --uusseerr--
+       nnaammee argument.  The creation of a Net::SNMP object with
+       the version set to SNMPv3 will fail if the ----uusseerrnnaammee
+       argument is not present.  The --uusseerrnnaammee argument expects a
+       string 1 to 32 octets in length.
+
+       Different levels of security are allowed by the User-based
+       Security Model which address authentication and privacy
+       concerns.  A SNMPv3 target will derive the security level
+       (securityLevel) based on which of the following arguments
+       are specified.
+
+       By default a securityLevel of 'noAuthNoPriv' is assumed.
+       If the ----aauutthhkkeeyy or ----aauutthhppaasssswwoorrdd arguments are speci-
+       fied, the securityLevel becomes 'authNoPriv'.  The ----aauutthh--
+       ppaasssswwoorrdd argument expects a string which is at least 1
+       octet in length.  Optionally, the ----aauutthhkkeeyy argument can
+       be used so that a plain text password does not have to be
+       specified in a script.  The ----aauutthhkkeeyy argument expects a
+       hexadecimal string produced by localizing the password
+       with the authoritativeEngineID for the specific destina-
+       tion device.  The "snmpkey" utility included with the
+       Net::SNMP  distribution can be used to create the hexadec-
+       imal string (see snmpkey).
+
+       Two different hash algorithms are defined by SNMPv3 which
+       can be used by the Security Model for authentication.
+       These algorithms are HMAC-MD5-96 "MD5" (RFC 1321) and
+       HMAC-SHA-96 "SHA-1" (NIST FIPS PUB 180-1).   The default
+       algorithm used by the module is HMAC-MD5-96.  This behav-
+       ior can be changed by using the ----aauutthhpprroottooccooll argument.
+       This argument expects either the string 'md5' or 'sha' to
+       be passed to modify the hash algorithm.
+
+       By specifying the arguments ----pprriivvkkeeyy or ----pprriivvppaasssswwoorrdd
+       the securityLevel associated with the object becomes
+       'authPriv'.  According to SNMPv3, privacy requires the use
+       of authentication.  Therefore, if either of these two
+       arguments are present and the ----aauutthhkkeeyy or ----aauutthhppaasssswwoorrdd
+       arguments are missing, the creation of the object fails.
+       The ----pprriivvkkeeyy and ----pprriivvppaasssswwoorrdd arguments expect the same
+       input as the ----aauutthhkkeeyy and ----aauutthhppaasssswwoorrdd arguments
+       respectively.
+
+       The User-based Security Model described in RFC 3414
+       defines a single encryption protocol to be used for pri-
+       vacy.  This protocol, CBC-DES "DES" (NIST FIPS PUB 46-1),
+       is used by default or if the string 'des' is passed to the
+       ----pprriivvpprroottooccooll argument.  By working with the Extended
+       Security Options Consortium http://www.snmp.com/eso/, the
+       module also supports additional protocols which have been
+       defined in draft specifications.  The draft
+       http://www.snmp.com/eso/draft-reeder-snmpv3-usm-3desede-00.txt
+       defines the support of CBC-3DES-EDE "Triple-DES" (NIST
+       FIPS 46-3) in the User-based Security Model.  This proto-
+       col can be selected using the ----pprriivvpprroottooccooll argument with
+       the string '3desede'.  The draft
+       http://www.snmp.com/eso/draft-blumenthal-aes-usm-04.txt
+       describes the use of CFB128-AES-128/192/256 "AES" (NIST
+       FIPS PUB 197) in the USM. The three AES encryption proto-
+       cols, differentiated by their key sizes, can be selected
+       by passing 'aescfb128', 'aescfb192', or 'aescfb256' to the
+       --pprriivvpprroottooccooll argument.
+
+       DDeettaaiillss oonn FFiilltteerrss
+
        The purpose of the filters is to decide which interfaces
        to accept and which interfaces to reject.  This decision
        is done for each interface by evaluating the filter
@@ -429,7 +538,7 @@ DDEETTAAIILLSS OONN FFIILLTTEERRSS
 
        (For more details on this I recommend a book on Perl)
 
-       PPrreeddeeffiinneedd FFiilltteerr VVaarriiaabblleess
+       _P_r_e_d_e_f_i_n_e_d _F_i_l_t_e_r _V_a_r_i_a_b_l_e_s
 
        To facilitate, there are a number of predefined values
        available to use in the filter.  Note that these variables
@@ -462,6 +571,26 @@ DDEETTAAIILLSS OONN FFIILLTTEERRSS
 
            Here's a list of some of the most common interface
            types by number:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
               6 ethernetCsmacd
               7 iso88023Csmacd
@@ -574,7 +703,7 @@ DDEETTAAIILLSS OONN FFIILLTTEERRSS
        form of variables and functions will be made avaiable in
        the future instead.
 
-       EExxaammpplleess oonn FFiilltteerrss
+       _E_x_a_m_p_l_e_s _o_n _F_i_l_t_e_r_s
 
        The following filter will not affect which interfaces
        get's included or excluded, it will make cfgmaker behave
@@ -594,7 +723,10 @@ DDEETTAAIILLSS OONN FFIILLTTEERRSS
 
         '--if-filter=$if_admin && $default_iftype'
 
-DDEETTAAIILLSS OONN TTEEMMPPLLAATTEESS
+
+
+       DDeettaaiillss oonn TTeemmppllaatteess
+
        The contents of the template files are evaluated as a Perl
        program.  A number or Perl variables are available for the
        program to read and others are used to be written to.
@@ -609,7 +741,7 @@ DDEETTAAIILLSS OONN TTEEMMPPLLAATTEESS
        appended with a space character (if a newline is last in
        the string it is not touched).
 
-       WWrriittaabbllee TTeemmppllaattee VVaarriiaabblleess
+       _W_r_i_t_a_b_l_e _T_e_m_p_l_a_t_e _V_a_r_i_a_b_l_e_s
 
        These are the variables available to store the configura-
        tion lines in.  Some of them are initialized prior to the
@@ -668,7 +800,7 @@ DDEETTAAIILLSS OONN TTEEMMPPLLAATTEESS
            target (so the lines will appear after the end of the
            last target in the config as well).
 
-       PPrreeddeeffiinneedd TTeemmppllaattee VVaarriiaabblleess
+       _P_r_e_d_e_f_i_n_e_d _T_e_m_p_l_a_t_e _V_a_r_i_a_b_l_e_s
 
        All the variables below are available for interface tem-
        plates to use.  For host templates, only those listed
@@ -912,7 +1044,7 @@ DDEETTAAIILLSS OONN TTEEMMPPLLAATTEESS
 
            (HTML escaped variant: $$hhttmmll__iiff__ttiittllee__ddeesscc)
 
-       HHeellpp FFuunnccttiioonnss ffoorr TTeemmppllaatteess
+       _H_e_l_p _F_u_n_c_t_i_o_n_s _f_o_r _T_e_m_p_l_a_t_e_s
 
        The following functions exists to facilitate the writing
        of host and interface templates.
@@ -926,10 +1058,10 @@ DDEETTAAIILLSS OONN TTEEMMPPLLAATTEESS
            "<BR>" and appended with a space character (newlines
            at the end of the string are not touched).
 
-       EExxaammppllee TTeemmppllaattee FFiilleess
+       _E_x_a_m_p_l_e _T_e_m_p_l_a_t_e _F_i_l_e_s
 
-       _T_e_m_p_l_a_t_e _E_x_a_m_p_l_e _1_: _E_l_i_m_i_n_a_t_i_n_g _R_e_j_e_c_t_e_d _T_a_r_g_e_t_s _F_r_o_m
-       _A_p_p_e_a_r_i_n_g
+       Template Example 1: Eliminating Rejected Targets From
+       Appearing
 
        This template file generates exactly the same configura-
        tion code per interface as cfgmaker does by default, with
@@ -1185,4 +1317,4 @@ CCOOPPYYRRIIGGHHTT
 
 
 
-2.12.2                      2005-06-19                CFGMAKER(1)
+2.13.0                      2006-01-29                CFGMAKER(1)

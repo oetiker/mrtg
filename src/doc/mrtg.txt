@@ -64,6 +64,10 @@ DDEESSCCRRIIPPTTIIOONN
            Define the name and path of the pid file for mrtg run-
            ning as a daemon
 
+       ----lloogg--oonnllyy
+           Only update the logfile, do not produce graphics or
+           html pages
+
        ----ddeebbuugg==ss
            Enable debug options. The argument of the debug option
            is a comma separated list of debug values:
@@ -202,4 +206,4 @@ AAUUTTHHOORR
 
 
 
-2.12.2                      2005-06-19                    MRTG(1)
+2.13.0                      2006-01-29                    MRTG(1)
