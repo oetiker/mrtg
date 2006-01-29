@@ -1,0 +1,105 @@
+<HTML>
+<HEAD>
+<TITLE>mrtg: Multi Router Traffic Grapher (1.0)</TITLE>
+</HEAD>
+<BODY>
+<H1>mrtg: Multi Router Traffic Grapher (1.0)</H1>
+Created by <A HREF="http://engelberg.dmu.ac.uk>
+Tobias Oetiker</A>
+<A HREF="mailto:oetiker@dmu.ac.uk">
+&lt;oetiker@dmu.ac.uk&gt;</A><BR>
+This program is distributed under the GNU copyleft.
+<HR>
+<H2>Description</H2>
+
+The <I>Multi Router Traffic Grapher</I> can be used to monitor a
+number of Internet links. It produces a <TT>html</TT> page which
+contains 3 graphs, showing the load on the link over the last 24
+hours, 7 days and 365 Days. Check <A
+HREF="http://www.dmu.ac.uk//dept/admin/dld/lin/netcomm/traffic/jips.html">The stats of DMU's Internet Link</A> see a sample output.<P>
+
+The program runs as a cron job and is therfore quite robust to system
+crashes. It uses <TT>snmpget</TT> from the <A
+HREF="ftp://sunsite.doc.ic.ac.uk/computing/comms/tcpip/snmp/cmu-snmp/cmu-snmp2.1.2.tar.gz">cmu-snmp distribution</A> to collect data from the router. The
+graphs are produced with <TT>ppmtogif</TT> from the <A
+HREF="ftp://sunsite.doc.ic.ac.uk/computing/graphics/systems/X11/contrib/utilities/netpbm-1mar1994.tar.gz">netpbm package</A>.
+
+<H2>Man Page</H2>
+<DL>
+  <DT> Command line:
+  <DD> mrtg mrtg.cfg
+
+  <DT> Synopsis:
+  <DD> This tool, when started up regularly, through a crontab,
+       creates a daily, weekly and yearly graph, representing the 
+       incoming and outgoing traffic on a snmp manageable router.
+       The tool also produces a HTML document around the graphics
+       for easy access on a web server.
+
+  <DT> Configuration:
+  <DD> The operation of the "mrtg" is governed by entries in the 
+       configuration file. The filename of the configuration file 
+       must be specified as a command line argument when calling 
+       "mrtg"
+          
+  <DT> Installation:
+  <DD> Adapt the configuration file to your needs. Then put up a 
+       crontab which starts "mrtg" every five minutes.
+       If for some reasons mrtg misses on reading, this doesn't matter, 
+       it will automatically take that into account.
+</DL>
+  
+<HR>
+<H2>Example Config File</H2>
+
+<PRE>
+
+# Multi Router Traffic Grapher -- Configuration File
+#######################################################################
+ 
+# General Configuration ###############################################
+#######################################################################
+ 
+WorkDir: /usr/local/www/data/dept/admin/dld/lin/netcomm/traffic
+snmpget: /home/oetiker/bin/snmpget
+mibfile: /home/oetiker/etc/mib.txt
+ppmtogif: /usr/local/bin/ppmtogif 
+ 
+# Configuration for the CISCO Gateway #################################
+#######################################################################
+ 
+IP[jips]: 146.227.1.248
+MaxBytes[jips]: 8000   
+Title[jips]: Traffic Analysis for DMU's Internet Gateway
+ 
+Comment[jips]: Our Internet link curently runs over a 64Kb X.25 Link.
+  This gives a maximum throughput of 8 KBytes per Second.
+ 
+ifOut[jips]: interfaces.ifTable.ifEntry.ifOutOctets.6
+ifIn[jips]: interfaces.ifTable.ifEntry.ifInOctets.6 
+
+#
+# You can add other routers here. Just pick another identifier.
+#
+
+</PRE>
+
+<HR>
+The latest version of this program is available from <A
+HREF="ftp://ftp.dmu.ac.uk/pub/netcomm/src/internet>ftp://ftp.dmu.ac.uk/pub/netcomm/src/internet/mrtg-*.tar.gz</A>.<P>
+
+If you have any questions about this program, or have it up and
+running, I would like to hear from you.<P>
+
+Enjoy!<P>
+
+<ADDRESS><A HREF="http://engelberg.dmu.ac.uk>
+Tobias Oetiker</A>
+<A HREF="mailto:oetiker@dmu.ac.uk">
+&lt;oetiker@dmu.ac.uk&gt;</A></ADDERSS>
+</BODY>
+</HTML>
+
+
+
+
