@@ -1,0 +1,8 @@
+<PAGE AUTHOR = "Tobias Oetiker <tobi@oetiker.ch>"
+        PAGE = "doc">
+
+<H1>MRTG Documentation</H1>
+
+<dl>
+#include "index.inc"
+</dl>

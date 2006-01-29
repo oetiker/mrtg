@@ -1,0 +1,20 @@
+<PAGE AUTHOR = "Tobias Oetiker <tobi@oetiker.ch>"
+        PAGE = "license">
+
+<H1>License</H1>
+
+<H2>GNU General Public License</H2>
+
+<P>MRTG is available under the terms of the <A
+HREF="http://www.gnu.org/copyleft/gpl.html">GNU General Public License</A>.
+This means you can do most things you want with this software as long as you
+do not claim you created the software and don't sell it (or modified version
+of it) under a license other than the GNU GPL.</P>
+
+<H2>Give Credit</H2>
+
+<P>One of the things I get out of MRTG is 'Being Known in the Industry'.
+This only works if you give credit. This means that you
+mention MRTG on webpages and other publications containing graphs
+created with MRTG. If possible, a link should be included in the
+publication, pointing to the MRTG homepage.</p>

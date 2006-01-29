@@ -1,0 +1,3 @@
+-o LANG_VAR:%BASE.var
+-o (ALL-LANG_*)+LANG_EN:%BASE.en.html@ug+x
+#-o (ALL-LANG_*)+LANG_DE:%BASE.de.html@ug+x

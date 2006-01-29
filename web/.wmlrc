@@ -1,0 +1,17 @@
+-DROOT~.
+
+###############################
+# Language setup 
+-DLANGS="en"
+
+###############################
+
+#-I/home/eedesign/public_html
+# last has priority
+-I.
+
+-E $(ROOT)/bin/htmlfix.sh 
+-P $(ROOT)/bin/headfix.pl
+
+# tune mp4h behaviour (expansion 0 means complain about everything)
+-W "2,--expansion=0"
