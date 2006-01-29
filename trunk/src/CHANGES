@@ -1,7 +1,66 @@
+Changes 2.11.1, 2005-01-05
+--------------------------
+From: Artyom Adjemov <one.bofh location gmail.com>
+* new Windows docu ... running mrtg as an nt service with srvany.
+
+From: Joe Pruett <joey location clean.q7.com>
+* fixed snmp options parsing in MRTG_lib.pm to allow for !
+
+From: Tobi
+
+* fixed secondmean and logscale to actually issue the propper
+  options for rateup.
+* fixed compilation of rateup.exe for windows to get the new strftime
+  function to be actually used ... 
+
+Changes 2.11.00, 2004-12-08
+---------------------------
+
+From: Al Payne <apayne location pleiades.com>
+* integrated support for dellLan in cfgmaker
+* reindented cfgmaker
+
+From: Mike Nealon <mnealon location conversent.com>
+      and Larry Fahnoe <fahnoe@FahnoeTech.com>
+* fix cfgmaker handling of 'lowspeed' highSpeed interfaces
+
+From: Tobi Oetiker
+* reindent rateup.c
+* remove @ signs from mail addresses in change log
+* added if_MTU variable to cfgmaker
+* make windows users happy. rateup.exe now uses a special strftime.c
+  that knows about %V and will thus provided propper ISO week numbers for
+  windows as well. Changed the default week format to V.
+
+From: zurkabsd location yahoo.com.cn
+* new chinese translation
+
+From: Jaime Damiao Anjos Cadete <jaime.d.cadete location ptprime.pt>
+* put -lm into LIBS to make sure it comes last
+
+From: Ian Duplisse <i.duplisse location cablelabs.com>
+* remove the flattening of peaks from the code in rateup.c this does not reflect
+  what actually happens
+
+From: John Van Essen <vanes002 location umn.edu>
+* fix handling of unknonwn (-1) data in rateup ... 
+
+From: Benjamin Despres <http://users.tmok.com/~pla/email_me.shtml>
+* Logscale and Secondmean logarithmic scaling for rateup
+
+From: alex <alex location craxor.com>
+* contributed mrtg message dll. Added note about it to mrtg-reference.pod
+
+From: Mateusz <mateusz location republika.pl>
+* support option derive is using rrdtool logging
+
+From: Ulf Härnhammar <Ulf.Harnhammar.9485 location student.uu.se>
+* prevent potential buffer overflow in ratup due to 'strange' input files
+
 Changes 2.10.15, 2004-08-08
 ---------------------------
 
-From: NormW <normw@bocnet.com.au>
+From: NormW <normw location bocnet.com.au>
 * patches for netware support
 
 From: Tobi
@@ -11,80 +70,80 @@ From: Tobi
 * better error message for missing library
 * Updated to snmp_session 1.05
 
-From: Fuminori -Tany- Tanizaki <tany@tany.org>
+From: Fuminori -Tany- Tanizaki <tany location tany.org>
 * fix for cuin and cout values saved in html comments
 
-From: Tom Pala <gotar@pld-linux.org>
+From: Tom Pala <gotar location pld-linux.org>
 * fix for polish translation
 
-From: Georgi Georgiev <chutz@gg3.net>
+From: Georgi Georgiev <chutz location gg3.net>
 * nodetach option for running mrtg under daemontools
 
-From: Jozsef Szilagyi <j.szilagyi@atlastelecom.ro>
+From: Jozsef Szilagyi <j.szilagyi location atlastelecom.ro>
 * fixed indexmaker. added missing last for  --section=portname code
 
-From: Bartosz Kwitniewski <zerg2000@lurker.ath.cx>
+From: Bartosz Kwitniewski <zerg2000 location lurker.ath.cx>
 * fixed scaling bug in rateup (unsigned long) should have been long long
 
-From: Mike Mitchell <mcm@unx.sas.com>
+From: Mike Mitchell <mcm location unx.sas.com>
 * fix indexmaker when used with 14all
 
 Changes 2.10.14
 ---------------
-From: Michael P. Soulier <michael_soulier@mitel.com>
+From: Michael P. Soulier <michael_soulier location mitel.com>
 * new option subtitle for indexmaker
 
-From: Lech Szychowski <lech.szychowski@pse.pl>
+From: Lech Szychowski <lech.szychowski location pse.pl>
 * added new options for printing date inside the graph:
   TimeStrPos[] and TimeStrFmt[]
 
-From: Joshua Nichols <nichoj@scorec.rpi.edu>
+From: Joshua Nichols <nichoj location scorec.rpi.edu>
 * teach Makefile about DESTDIR
 
 From: Tobi
 * do not try to populate the confcache off a dead hosts ... 
 
 
-From: Norm <normw@bocnet.com.au>
+From: Norm <normw location bocnet.com.au>
 * make mrtg work on netware
 
-From: Fuminori Uematsu <uematsu@kgz.com>
+From: Fuminori Uematsu <uematsu location kgz.com>
 * updated japanese translation
 
-From: Ladislav Mihok <starman@inmail.sk>
+From: Ladislav Mihok <starman location inmail.sk>
 * fixed encoding for slovak translation
 
-From:  Hal Dell <hdell@epodworks.net>
+From:  Hal Dell <hdell location epodworks.net>
 * added 3com RMON VLAN detection to cfgmaker
 
-From: Michael_Soulier@Mitel.com
+From: Michael_Soulier location Mitel.com
 * added --headeradd option to indexmaker
 
-From: Simon Leinen <simon@switch.ch>
+From: Simon Leinen <simon location switch.ch>
 * updated SMNP_Session to 1.03
 
-From: Quentin Dunchue <que@qnr.biz>
+From: Quentin Dunchue <que location qnr.biz>
 * added host anchor in indexmaker
 * fixed $default filter in cfgmaker to not include everything
 
-From:  ¶ÀªF¶© <ryan@asplord.com>
+From:  ¶ÀªF¶© <ryan location asplord.com>
 * updates for chinese big5 translation
 
-From: Klaus Schmidinger <Klaus.Schmidinger@cadsoft.de>
+From: Klaus Schmidinger <Klaus.Schmidinger location cadsoft.de>
 * fix for ytics with small values in rateup
 
-From: "Peter Wirdemo (MO/EMW)" <peter.wirdemo@ericsson.com>
+From: "Peter Wirdemo (MO/EMW)" <peter.wirdemo location ericsson.com>
 * enhance cfgmaker for extremenetworks
 
-From: Tobi and Bernd Drefs <drefs@gmx.de>
+From: Tobi and Bernd Drefs <drefs location gmx.de>
 * fix hairy issue with description matching in indexmaker (add quoting)
 
-From: Kenji <kenji@club.h14m.org>
+From: Kenji <kenji location club.h14m.org>
 * make thresholds work when maxbytes1 and maxbytes2 are in use ... 
 
 Changes 2.10.13
 ---------------
-From: Pedro Marcolino <pedro@jazznet.pt>
+From: Pedro Marcolino <pedro location jazznet.pt>
 * fixed undef data problem with forks
 * add --icondir option to indexmaker
 
@@ -94,11 +153,11 @@ From: Tobi
 
 Changes 2.10.12
 ---------------
-From: Nico Kadel-Garcia <nkadel@merl.com>
+From: Nico Kadel-Garcia <nkadel location merl.com>
 * Makefile should not complain when running clean on a clean setup
 * It's community not comunity.
 
-From: Luc Pauwels <Luc.Pauwels@xalasys.com> and Simon Leinen
+From: Luc Pauwels <Luc.Pauwels location xalasys.com> and Simon Leinen
 * 16-Bit SNMP Session ID support for cfgmaker and SNMP_Session
 
 From: Tobi
@@ -123,12 +182,12 @@ Changes 2.10.9
 From: Tobi
 * with forks, do not try to look at filehandles which have been closed
 
-From: Albert Chin-A-Young <china@thewrittenword.com>
+From: Albert Chin-A-Young <china location thewrittenword.com>
 * improved long long check for configure.in
 
 Changes 2.10.8
 --------------
-From: Marc Baudoin <babafou@pasteur.fr>
+From: Marc Baudoin <babafou location pasteur.fr>
 * cfgmaker has to know about Foundry virtual Ethernet interfaces
 
 From: Tobi
@@ -136,7 +195,7 @@ From: Tobi
 
 Changes 2.10.7
 --------------
-From: Don Russell <drussel2@san.rr.com>
+From: Don Russell <drussel2 location san.rr.com>
 * fixed READPID in MRTG_lib.pm
 * added commandline as meta tag in indexmaker output
 
@@ -145,13 +204,13 @@ From: Tobi
 
 Changes 2.10.6
 --------------
-From: Dave Plonka <plonka@doit.wisc.edu>
+From: Dave Plonka <plonka location doit.wisc.edu>
 * modified fork code to use select to determine if data is ready to be read
 
-From: Philipp Capoy <pcapoy@diversenet.com>
+From: Philipp Capoy <pcapoy location diversenet.com>
 * teach cfgmaker about  Nokia IPSO
 
-From: Richard Bullington-McGuire <rbulling@obscure.org>
+From: Richard Bullington-McGuire <rbulling location obscure.org>
 * pseudo entry for his contributions which somehow got lost from
   the changes file. Early in 2.0 history (1996) Richard
   contributed.
@@ -161,20 +220,20 @@ From: Richard Bullington-McGuire <rbulling@obscure.org>
   * Perl code cleanup
   Sorry for that.
   
-From: Klaus Schmidinger <Klaus.Schmidinger@cadsoft.de>
+From: Klaus Schmidinger <Klaus.Schmidinger location cadsoft.de>
 * fix rounding error with YTicsFactor in ratuep (nmax_q is double)
 
-From: Mike Mitchell <Mike.Mitchell@sas.com>
+From: Mike Mitchell <Mike.Mitchell location sas.com>
 * fix for generation of non negative request ids
   in SNMP_Session.pm
 
-From: Alex Samorukov <samm@os2.ru>
+From: Alex Samorukov <samm location os2.ru>
 * updated OS/2 portability ...RunAsDaemon works now
 
-From: Stephen Heise <stephen@streetprices.com>
+From: Stephen Heise <stephen location streetprices.com>
 * fix for lockfile management when two instances run in parallel
 
-From: Rafael Martinez Torres <rafael.martinez@novagnet.com>
+From: Rafael Martinez Torres <rafael.martinez location novagnet.com>
 * updated docs and snmp_session to be comaptible with INET6-2.00
 
 From: Tobi
@@ -197,7 +256,7 @@ From: Tobi
 
 Changes 2.10.5
 --------------
-From: Dmitry Sivachenko <mitya@cavia.pp.ru>
+From: Dmitry Sivachenko <mitya location cavia.pp.ru>
 * Improved configure to work on *bsd as well
 
 Changes 2.10.4
@@ -222,21 +281,21 @@ From: Tobi
 
 Changes 2.10.0
 --------------
-From: Simon Leinen <simon@limmat.switch.ch>
+From: Simon Leinen <simon location limmat.switch.ch>
 * New Version of SNMP Library (0.97)
 
-From: Martin Opitz <xomartin@ti.com>
+From: Martin Opitz <xomartin location ti.com>
 * allow sci notation numbers
 
 Changes 2.10.0pre9
 ------------------
-From: Jon Barber <jon@scorpiocomputing.com>
+From: Jon Barber <jon location scorpiocomputing.com>
 * new configurables: printrouter and pngdate ... check the docs
-From: Jessica Blackburn <jessica.blackburn@acterna.com>
+From: Jessica Blackburn <jessica.blackburn location acterna.com>
 * indexmaker: improve handling of multiple cfg file situation with rrdtool logging
 From: Tobi
 * allow user and group to be set even when not running as a daemon.
-From: "Spain, Jeffry A." <spainj@countryday.net>
+From: "Spain, Jeffry A." <spainj location countryday.net>
 * use Math::BigFloat objects with 40 digits of precision
   so that we can handle floats for rrdtool if needs be
 * detect if a target is a simple target for simplified handling of uptime and
@@ -250,7 +309,7 @@ From: Tobi
   same as in the previous round.
   fixes the stray update error with rrdtool.
 
-From: Eric Einhorn <eric@monmouth.com>
+From: Eric Einhorn <eric location monmouth.com>
 * there are snmp devices which emit bizzar output when their tables get
   walked in the wrong order. Use a fix walking order now. No more
   hanging cfgmaker instances.
@@ -266,7 +325,7 @@ Changes 2.10.0pre6
 From: Tobi
 * attempt to restart when hitting a die in daemon mode.
 
-From: "Spain, Jeffry A." <spainj@countryday.net>
+From: "Spain, Jeffry A." <spainj location countryday.net>
 * revamped target parser to weed out duplicat polls
 * added new 'per target' conversion filter capability
 
@@ -277,7 +336,7 @@ From: Tobi
 
 Changes 2.10.0pre4
 ------------------
-From: Alex Samorukov <samm@os2.ru>
+From: Alex Samorukov <samm location os2.ru>
 * OS/2 port
 
 From: Tobi
@@ -287,66 +346,66 @@ From: Tobi
 * make diff routine more conservative in rateup ... 
 * snmpv2 did not poll HC counters anymore ... fixed
 
-From: Lorenzo Colitti <lorenzo@colitti.com>,
+From: Lorenzo Colitti <lorenzo location colitti.com>,
 * updated docs on ipv6
 * portability fixes for perl 5.00502
 
-From: Brian Lube <blube@mail.fdn.com>
+From: Brian Lube <blube location mail.fdn.com>
 * use $if_snmp_name if $if_title_desc is empty in cfgmaker
 
-From: Dmitry Sivachenko <mitya@cavia.pp.ru>
+From: Dmitry Sivachenko <mitya location cavia.pp.ru>
 * fix to rateup where  sizeof(time_t) != sizeof(long)
 
 Changes 2.10.0pre3
 ------------------
-From: Andrew A. Vasilyev <andy@demos.su>
+From: Andrew A. Vasilyev <andy location demos.su>
 * fix for freebsd ... its %qd and not %lld there
 
-From: Simon Leinen <simon@limmat.switch.ch>
-      and Lorenzo Colitti <lorenzo@colitti.com>
+From: Simon Leinen <simon location limmat.switch.ch>
+      and Lorenzo Colitti <lorenzo location colitti.com>
 * updates to SNMP_Session
 
-From:  Gleydson Mazioli da Silva <gleydson.mazioli@ima.sp.gov.br>
+From:  Gleydson Mazioli da Silva <gleydson.mazioli location ima.sp.gov.br>
 * fixes for brazilian translation
 
 Changes 2.10.0pre2
 ------------------
 
-From: bill shamam <bill@continuity.cx>
+From: bill shamam <bill location continuity.cx>
 * contributed a favicon
 
-From: Lorenzo Colitti <lorenzo@colitti.com>,
-      Valerio Bontempi <v.bontempi@inwind.it>,
-      Roma Tre Computer Networks research group <compunet@dia.uniroma3.it>
+From: Lorenzo Colitti <lorenzo location colitti.com>,
+      Valerio Bontempi <v.bontempi location inwind.it>,
+      Roma Tre Computer Networks research group <compunet location dia.uniroma3.it>
 * fix for IPv6 support (work with out option settings)
 * fix IPv6 module detection
 
-From: Daniel J McDonald <dan.mcdonald@austinenergy.com>
+From: Daniel J McDonald <dan.mcdonald location austinenergy.com>
 * allow $if_vlan_id in cfgmaker filters 
 
-From: imacat <imacat@mail.imacat.idv.tw>
+From: imacat <imacat location mail.imacat.idv.tw>
 * make --bindir, --libdir, --mandir, etc work
 
-From: Paul Slootman <paul@debian.org>
+From: Paul Slootman <paul location debian.org>
 * removes a couple of silly typo's and the capitalization for weekday and month names
 * fix indexmaker to propperly parse description tags which do not have a white space at the end of the line.
 
 Changes 2.10.0pre1
 ------------------
-From: Lorenzo Colitti <lorenzo@colitti.com>,
-      Valerio Bontempi <v.bontempi@inwind.it>,
-      Roma Tre Computer Networks research group <compunet@dia.uniroma3.it>
+From: Lorenzo Colitti <lorenzo location colitti.com>,
+      Valerio Bontempi <v.bontempi location inwind.it>,
+      Roma Tre Computer Networks research group <compunet location dia.uniroma3.it>
 * IPv6 for mrtg
 
-From: Ryan Finnie <ryan@finnie.org>
+From: Ryan Finnie <ryan location finnie.org>
 * get router name from a dirfferent oid with Routerneme configurable
 
 From: Tobi
 * cfgmaker now complains about hosts it can not get info from, but does not die.
 * force all counters to be BigInt
-* make configure escape to scanf if long long is missing (inspired by marc.elsen@imec.be)
+* make configure escape to scanf if long long is missing (inspired by marc.elsen location imec.be)
 
-From: Clas Mayer <clas@mayer.se>
+From: Clas Mayer <clas location mayer.se>
 * improved swedish translation
 
 Changes 2.9.29
@@ -358,16 +417,16 @@ From: Tobi
 
 Changes 2.9.28
 --------------
-From: jackie <jackie@pub.dgnet.gd.cn>
+From: jackie <jackie location pub.dgnet.gd.cn>
 * fix charset in gb2312
 
-From: Jan Kasprzak <kas@informatics.muni.cz>
+From: Jan Kasprzak <kas location informatics.muni.cz>
 * small fix for BER.pm. Sent upstream to Simon too.
 
-From: Andreas Plesner Jacobsen <apj@mutt.dk>
+From: Andreas Plesner Jacobsen <apj location mutt.dk>
 * make sure ifdescr does not display doubly exscaped descriptions
 
-From: Colin Horsington <chorsington@flow.com.au>
+From: Colin Horsington <chorsington location flow.com.au>
 * foundry ATM subinterfaces always report 0 speed, make it 155Mbps instead. 
 
 From: Tobi
@@ -379,38 +438,38 @@ From: Tobi
 * update compile instructions
 * fix ifref escaping in cfgmaker
 
-From: Fernando Nieto <fnieto@satec.es>
+From: Fernando Nieto <fnieto location satec.es>
 * make cfgmaker handle highspeed interface speed better
 
 Changes 2.9.27
 --------------
-From: Gordon Tetlow <gordon@FreeBSD.org>
+From: Gordon Tetlow <gordon location FreeBSD.org>
 * allow unsetting of Unscaled, WithPeak, and Suppress
 
-From: Barry Rountree <rountree@san.rr.com>
+From: Barry Rountree <rountree location san.rr.com>
 * updated compile instructions for new gdlib
 * various documentation fixes
 
-From: David Corlette <corlette@huarp.harvard.edu>
+From: David Corlette <corlette location huarp.harvard.edu>
 * a whole set of new mrtg commandline options: "--fhs", --daemon",
  "--pid-file", "--confcachefile" ... this makes 
 
-From: MASUDA Takashi <t-masuda@mvd.biglobe.ne.jp>
+From: MASUDA Takashi <t-masuda location mvd.biglobe.ne.jp>
 * fix for propperly handling 'one unknown' value ... 
 
-From: Markus Schlup <markus@qbik.ch>
+From: Markus Schlup <markus location qbik.ch>
 * --check option for mrtg
 
-From: Christian Birchinger <joker@netswarm.net>
+From: Christian Birchinger <joker location netswarm.net>
 * --pid-file option for mrtg
 
-From: Willem Jaap Zwart <W.J.Zwart@TriMM.nl>
+From: Willem Jaap Zwart <W.J.Zwart location TriMM.nl>
 * --perhost option for indexmaker
 
-From: Dave Habben <dhabben@illinois.net>
+From: Dave Habben <dhabben location illinois.net>
 * fix UTF-8 warning ...
 
-From: Moose God <grendel@moose.interq.or.jp>
+From: Moose God <grendel location moose.interq.or.jp>
 * cfgmaker now treats old pre-XL Catalyst 2900 the same as any other
   non-CiscoIOS Catalyst switch
 
@@ -424,25 +483,25 @@ From: Tobi
 * add check for correct operation of long long %lld and strtoll
 * fixed daemon code
 
-From: Ambrose Li <a.c.li@ieee.org>
+From: Ambrose Li <a.c.li location ieee.org>
 * treat script output ##UNDEF## as this ...
 
-From: Norbert Klasen <norbert.klasen@avinci.de>
+From: Norbert Klasen <norbert.klasen location avinci.de>
 *  strings for sys* are too long in cfgmaker use snmpwalk
 
 Changes 2.9.26
 --------------
-From: André Silveira <ASilveira@multirede.com.br>
+From: André Silveira <ASilveira location multirede.com.br>
 * with thresholds ... have two decimals in % mode
 * give threshdesc and value as ar 4 and 5 of called threshprog
 
-From: Pietro Falessi <falessi@uniroma3.it>
+From: Pietro Falessi <falessi location uniroma3.it>
 * propperly ignore signal 127 on UNIX
 
-From: Leon Chang <leon.c@staff.ihug.co.nz>
+From: Leon Chang <leon.c location staff.ihug.co.nz>
 * make cfgmaker foundry aware
 
-From: "Jones, Derek C." <dcjones@GAPAC.com>
+From: "Jones, Derek C." <dcjones location GAPAC.com>
 * ds3 (30) and sonet (39) are wan interface types too
   added them to the $if_is_wan group in cfgmaker
 
@@ -451,18 +510,18 @@ From: Tobi
 * make rateup.c (64bit) work on macos x
 * debug 64bit rateup ...
 
-From: Michael C. Haller <michael@cilly.com>
+From: Michael C. Haller <michael location cilly.com>
 * drop special MacOS X includes they are harmful on 10.2. Use bsd approach
 
-From: Emilio Mena (emilio@satec.es)
+From: Emilio Mena (emilio location satec.es)
 * use long long in log files to enable logging of FAST links
   long long = 64 bit integers
 
-From: Fernando Nieto <fnieto@satec.es>
+From: Fernando Nieto <fnieto location satec.es>
 * make cfgmaker support ifHighSpeed propperly and teach it
   about Juniper
 
-From: "Davids, Ronald" <Ronald.Davids@Essent.nl>
+From: "Davids, Ronald" <Ronald.Davids location Essent.nl>
 * make output of cfgmaker such that indexmaker will sort propperly
 
 Changes 2.9.25
@@ -477,7 +536,7 @@ From: Tobi
 
 Changes 2.9.23
 --------------
-From: John Papandriopoulos <jpap@users.sourceforge.net>
+From: John Papandriopoulos <jpap location users.sourceforge.net>
 * cosmetic tweaks for layout
 
 From: Tobi
@@ -487,38 +546,38 @@ From: Tobi
 * skip all queries to a host for one round when 1 query has returned undef.
 * skip all trailing space in keys when matching interface by Name, Description, Anything
 
-From: Francois Wolmarans <fwo@obsidian.co.za>
+From: Francois Wolmarans <fwo location obsidian.co.za>
 * remove <br> before <hr> near pagetop
 
-From: Jeremy Hinton <jgh@visi.net>
+From: Jeremy Hinton <jgh location visi.net>
 * make Includes search in directory of main config files as well as in current directory
 
-From: Quip <quip@quip.cz>
+From: Quip <quip location quip.cz>
 * addhead option for indexmaker
 
-From: hw <hw@ksue.edu.ua>
+From: hw <hw location ksue.edu.ua>
 * fix for uptime for squid and other non standard devices
 
 
-From: Norbert.Klasen@avinci.de
+From: Norbert.Klasen location avinci.de
 * indexmaker: improve handling of urls given with --rrdviewer
 
-From: webmaster@kingisme.com
+From: webmaster location kingisme.com
 * improved chinese translation
 
 Changes 2.9.22
 --------------
-From: Nick Hilliard <nick@iol.ie>
+From: Nick Hilliard <nick location iol.ie>
 * fixed pid file handling under unix
 
 From: Tobi
 * removed VERSION for ISA arry in MRTG_lib.pm ... it has no reason to be
   there, and perl 5.8 complains
 
-From: James Overbeck <grendel@gmo.jp>
+From: James Overbeck <grendel location gmo.jp>
 * fixed cfgmaker directory_name for template accessibility
 
-From: John Caruso <caruso@paradiso.umuc.edu>
+From: John Caruso <caruso location paradiso.umuc.edu>
 * fix for rateup rounding problems ...
 
 Changes 2.9.21
@@ -537,9 +596,9 @@ From: Tobi
 Changes 2.9.19
 --------------
 
-From: Szabo Balazs Zsolt <baxi@iq.rulez.org>
+From: Szabo Balazs Zsolt <baxi location iq.rulez.org>
 * fix for dynamic graph label ...
-From: Andrea Rossi <rouge@shiny.it>
+From: Andrea Rossi <rouge location shiny.it>
 * updated italian translation
 
 From: Tobi
@@ -565,7 +624,7 @@ From: Tobi
 Changes 2.9.18pre12
 -------------------
 
-From: Herold Heiko <Heiko.Herold@previnet.it>
+From: Herold Heiko <Heiko.Herold location previnet.it>
  * --sectionhost option for indexmaker
 From: Tobi
  * some more casts in rateup.c to make things work right
@@ -577,9 +636,9 @@ Changes 2.9.18pre11
 -------------------
 From: Tobi
  * make sure inlast and outlast never go negative if rateup is used
-From: Herold Heiko <Heiko.Herold@previnet.it>
+From: Herold Heiko <Heiko.Herold location previnet.it>
  * feature update for indexmaker
-From: Peter K <peterk@inorbit.com>
+From: Peter K <peterk location inorbit.com>
  * kill warnings in rateup :-)
 
 Changes 2.9.18pre10
@@ -590,10 +649,10 @@ From: Tobi
  * deal the mrtg-rrd returning nan for last update
  * complain if workdir has spaces in path on windows
 
-From: "Jones, Derek C." <dcjones@GAPAC.com>
+From: "Jones, Derek C." <dcjones location GAPAC.com>
  * cfgmaker new if-filter ... if_is_wan
 
-From: CHOI Junho <cjh@kr.FreeBSD.org>
+From: CHOI Junho <cjh location kr.FreeBSD.org>
  * fixes for korean translation
 
 Changes 2.9.18pre9
@@ -615,7 +674,7 @@ From: Tobi
    before using them in the cfg file
  * make mrtg work if it installed in c:/program files
    
-From: Jussi Siponen <jussi.siponen@posiona.com>
+From: Jussi Siponen <jussi.siponen location posiona.com>
  * finish translation
 
 From: Tobi
@@ -636,7 +695,7 @@ From: Tobi
 
 Changes 2.9.18pre5
 ------------------
-From: Ian Duplisse <i.duplisse@cablelabs.com>
+From: Ian Duplisse <i.duplisse location cablelabs.com>
  * using kilo is not sensible everywhere in rateup as long as
    there are still pow and log10 instances there.
 
@@ -647,7 +706,7 @@ From: Tobi
    fixed the most obvious issues already. As a side effect the code
    should work with perl 5.003 again.
 
-From: Delev Zoran <delevz@esmak.com.mk>
+From: Delev Zoran <delevz location esmak.com.mk>
  * translation to macedionan
 
 Changes 2.9.18pre4
@@ -657,25 +716,25 @@ From: Tobi
    backout of the change from pre2
  * data cleanup ... if a value is unknown, then it is set to 'undef'
  * more robust 'error' handling for strange target return values
-From: Adrian Senn <adrian@senn.ch>
+From: Adrian Senn <adrian location senn.ch>
  * drop . from the end of hostnames in cfgmaker
-From: Sergiy Guminilovych <gray@arte-fact.net>
+From: Sergiy Guminilovych <gray location arte-fact.net>
  * improved Ukrainian translation
-From: Systems Administrator <sysadmin@sunet.com.au>
+From: Systems Administrator <sysadmin location sunet.com.au>
  * we also are using squid if the OID matches enterprises.3495
 
 Changes 2.9.18pre3
 ------------------
-From: yoshimoto <enolagay@nifty.com>
+From: yoshimoto <enolagay location nifty.com>
  * Patch for YTics Factor Problem in rateup ... 
    YTics Should work properly now ...
-From: David Lee <t.d.lee@durham.ac.uk>
+From: David Lee <t.d.lee location durham.ac.uk>
  * allow ../configure to work ... 
-From: Klemens Kasemaa <klem@estpak.ee>
+From: Klemens Kasemaa <klem location estpak.ee>
  * estonian translation
-From: dima@Chg.RU
+From: dima location Chg.RU
  * Updated Russian translation
-From: Amir Guindehi <amir@datacore.ch>
+From: Amir Guindehi <amir location datacore.ch>
  * added missing prefix to flastmod in indexmaker
 
 Changes 2.9.18pre2
@@ -689,16 +748,16 @@ From: Tobi
    on the same config file.
  * rateup: force rateup to compile static ... try realy hard :-)
 
-From: Olexander Kunytsa <kunia@x-telecom.net>
+From: Olexander Kunytsa <kunia location x-telecom.net>
  * updated ukranian translation 
 
-From: Simon Leinen and Mike Mitchell <Mike.Mitchell@sas.com> 
+From: Simon Leinen and Mike Mitchell <Mike.Mitchell location sas.com> 
  * update to SNMP_Session 0.92
 
 Changes 2.9.18pre1
 ------------------
 
-From: "MORI, Takahiro" <mori@chan.to>
+From: "MORI, Takahiro" <mori location chan.to>
  * yticsfactor was not considered when building ylab in rateup.c
    atted *yticsf to line 668 of the code
 
@@ -711,10 +770,10 @@ From: Tobi
    (paid for by Advances.Com, Inc.)
  * cfgmaker should not comment out DS3 interfaces on non Cisco Gear
 
-From: "Leitch, Roger (CRTLDN)" <Roger.Leitch@concert.com>
+From: "Leitch, Roger (CRTLDN)" <Roger.Leitch location concert.com>
  * fix for withzeros option ... this did not work before
 
-From: Roman Festchook <roma@polesye.net>
+From: Roman Festchook <roma location polesye.net>
  * translation file for mrtg to ukrainian language
 
 Changes 2.9.17
@@ -746,34 +805,34 @@ From: Tobi
 
 Changes 2.9.14
 --------------
-From: Martin.Frys@newtonit.cz
+From: Martin.Frys location newtonit.cz
  * fix for configure ... -lfreetrype will not work :-)
 From: Tobi
  * propper caching for new gd lib variant tests in configure.in
 
 Changes 2.9.13
 --------------
-From: Damien <damien@detonate.net>
+From: Damien <damien location detonate.net>
  * contrib mrtg_php_portal 
-From: HERITIER Hervé <hh@handco.org>
+From: HERITIER Hervé <hh location handco.org>
  * contrib iptables_acc_snmp
-From: Pascal Eeftinck <arcade@planet.nl>
+From: Pascal Eeftinck <arcade location planet.nl>
  * snmpv2 regexp did not match in cfgmaker
-From: Alexander V Redyuk <aredyuk@irmcity.com>
+From: Alexander V Redyuk <aredyuk location irmcity.com>
  * russian translation to windows-1251 russian charset. 
-From: Klaus_Klein@mckinsey.com
+From: Klaus_Klein location mckinsey.com
  * contrib apc_ups monitor
-From: Ratko Bucic <ratko@ban.junis.ni.ac.yu>
+From: Ratko Bucic <ratko location ban.junis.ni.ac.yu>
  * serbian language translation updated
-From: O'Shaughnessy Evans <shaug@wumpus.org>
+From: O'Shaughnessy Evans <shaug location wumpus.org>
  * fix for indexmakers extension feature
-From: Dinko Korunic <kreator@fly.srk.fer.hr>
+From: Dinko Korunic <kreator location fly.srk.fer.hr>
  * croatian translation
-From: Graziano <graziano.sommariva@elsag.it>
+From: Graziano <graziano.sommariva location elsag.it>
  * updated cfgmaker_dlci contrib with work with win32
-From: Jamaludin Ahmad <jamaludin@jamalinux.com>
+From: Jamaludin Ahmad <jamaludin location jamalinux.com>
  * Indonesian and Malaysian translations
-From: "Newman, Daniel" <NewmanD@telergy.net>
+From: "Newman, Daniel" <NewmanD location telergy.net>
  * contrib document monitoring Cisco BPX and MGX switches with MRTG
 From: Tobi
  * improved mrtg logfile format description
@@ -790,7 +849,7 @@ From: Tobi
  * try to fix IsCounterBroken test in cfgmaker ... just cant find any broken
    coutners to test this :-(
 
-From: Jakob Ilves <jakob.ilves@oracle.com>
+From: Jakob Ilves <jakob.ilves location oracle.com>
  * configuration templates for cfgmaker ... read the docs
  * fix for broken --dns-domain in cfgmaker
 Changes 2.9.12a
@@ -801,12 +860,12 @@ From: Tobi
 
 Changes 2.9.12
 --------------
-From: Tobi & Jeff Frost <jeff@digitalpipe.net>
+From: Tobi & Jeff Frost <jeff location digitalpipe.net>
  * fix for broken RouterUptime[] configurable
 
 Changes 2.9.11
 --------------
-From: Mike Mitchell <Mike.Mitchell@sas.com>
+From: Mike Mitchell <Mike.Mitchell location sas.com>
  * fix for broken snmp with returns negative numbers for counters ...
  * integrated my SNMP_utils changes into the real thing.
 
@@ -816,43 +875,43 @@ From: Tobi
 From: Chad Mynhier
  * properly integrated ytics support in rateup
 
-From: Diogo Gomes <etdgomes@ua.pt>
+From: Diogo Gomes <etdgomes location ua.pt>
  * Portuguese translation for mrtg
 
-From: Thomas Abthorpe - Tby. * <tabthorpe@cgc.ca>
+From: Thomas Abthorpe - Tby. * <tabthorpe location cgc.ca>
  * The period "." was missing in front of $$rcfg{extension}{$item}.
    in indexmaker
 
-From: James Overbeck <grendel@interq.ad.jp>
+From: James Overbeck <grendel location interq.ad.jp>
  * properly deal with target math resulting in non integer data even when
    logging to rateup which can not deal with floats.
 
 
-From: Simon Butcher <simonb@alien.net.au>
+From: Simon Butcher <simonb location alien.net.au>
  * cleanup of rateup.c and some new options -b -a -o -i
  * new options for mrtg noborder, noarrow, noi, noo, nobanner and nolegend
    check reference.pod for docs.
  * generator meta tag to html pages
 
-From: Gerry Van Steerteghem <gerry.vansteerteghem@pandora.be>
+From: Gerry Van Steerteghem <gerry.vansteerteghem location pandora.be>
  * add hyperlinks to 14all compatible indexmaker pages
 
-From: David Boyer <Boyer_D@glan-hafren.ac.uk>
+From: David Boyer <Boyer_D location glan-hafren.ac.uk>
  * contrib mrtg.php produces live index
 
-From: David A. Pérez <david@kamborio.com>
+From: David A. Pérez <david location kamborio.com>
  * contrib TTrafic a *.log analyzer in asp
 
-From: Ratko Bucic <ratko@ban.junis.ni.ac.yu>
+From: Ratko Bucic <ratko location ban.junis.ni.ac.yu>
  * serbian language translation
 
-From: "Gill, Vern" <vgill@technologist.com>
+From: "Gill, Vern" <vgill location technologist.com>
  * contrib iptables-accounting
 
-From: Dan Lukes <dan@gw.nic.cz>
+From: Dan Lukes <dan location gw.nic.cz>
  * allow configure to work even if you have a gdlib which supports BOTH gif and png
 
-From: GOMEZ Henri <hgomez@slib.fr>
+From: GOMEZ Henri <hgomez location slib.fr>
  * add 'only_ip_address_matching' feature to SNMP_Session. We are
    more libaral when accepting snmp responses now.
 
@@ -864,7 +923,7 @@ From: Tobi
  * added SnmpOptions: command to mrtg.cfg lanuage ... It allows
    to set Snmp Options as available in SNMP_Session. Check the reference.txt file.
  * test for availability of ifHCInOctets when running cfgmaker for v2 targets
-   suggested by  Pascal Eeftinck <arcade@planet.nl>
+   suggested by  Pascal Eeftinck <arcade location planet.nl>
  * fixed indexmake image path for situations with Directories
  * added option --prefix to indexmaker for people keeping thier index
    somewhere else than default.
@@ -873,19 +932,19 @@ From: Tobi
  * when the integer option was specified, there was still a .x printed in the sumary area ... 
  * updated url in ircstats2 README
  * mrtg will now timestamp any warning and error message it emits
-   suggested by SUZUKI Yasuhiro <ysuzuki@bb.mbn.or.jp>
+   suggested by SUZUKI Yasuhiro <ysuzuki location bb.mbn.or.jp>
  
-From: Juha Laine <juha.laine@soon.fi>
+From: Juha Laine <juha.laine location soon.fi>
  * fixed threshold processing ... IT REALY WORKS NOW! ... 
    **** Incompatible CHANGE ****************
    ThreshProgOK now gets the same
    commandline arguments as the normal ThreshProg ... 
    **** Incompatible CHANGE ****************
 
-From: Alexey Milevsky <alex@pbank.donetsk.ua>
+From: Alexey Milevsky <alex location pbank.donetsk.ua>
  * configurable confcache (.ok) file location
 
-From: Anthony Howe <achowe@snert.com>
+From: Anthony Howe <achowe location snert.com>
  * add <meta http-equiv="Cache-Control" content="no-cache">
    to html files as this seems to be more understandable than "Pragma" content="no-cache"
 
@@ -923,38 +982,38 @@ From: Tobi
    programs when a threshold boundery has been crossed ...                      
  * threshold stuff should be realy working now                                  
 
-From: Fernando Braghetto - Webmaster Hiway <webmaster@hiway.com.br>
+From: Fernando Braghetto - Webmaster Hiway <webmaster location hiway.com.br>
  * total control modem config
 
-From: Sune Kirkeby <sune@silvertag.com>
+From: Sune Kirkeby <sune location silvertag.com>
  * configurable lockfile locations
  
-From: Tim Cimarusti <tim@cimware.com> 
+From: Tim Cimarusti <tim location cimware.com> 
  * update for ciscoindex contrib
 
-From: Michael Bussmann <bus@fgan.de>  
+From: Michael Bussmann <bus location fgan.de>  
  * update mrtgindx.cgi to work with .png files
 
-From: Steven Shipway <Steven_Shipway@adsweu.com>
+From: Steven Shipway <Steven_Shipway location adsweu.com>
  * Steven has a MRTG&RRDTOOL website now. Replaced references and contribs
    with links to http://www.cheshire.demon.co.uk/pub/
 
-From: Gianmarco Armellin <gianmarco@armellin.com>
+From: Gianmarco Armellin <gianmarco location armellin.com>
  * index.html?.meta code was not working
 
-From: Us <us@sweet-sorrow.com>
+From: Us <us location sweet-sorrow.com>
  * slovenian translation
 
-From: Andres Kroonmaa <andre@online.ee>
+From: Andres Kroonmaa <andre location online.ee>
  * add commandline to generated output of indexmaker as a commet
 
-From: Andrew Ivanov <ivanov@rbc.ru>
+From: Andrew Ivanov <ivanov location rbc.ru>
  * snmpoptions were disregadrded in the table population area of the script
 
-From: Simon Lyall <simon.lyall@ihug.co.nz>
+From: Simon Lyall <simon.lyall location ihug.co.nz>
  * more tolerant matching for Description in indexmaker
 
-From: Anthony Fabian <anthony.fabian@comindico.com.au>
+From: Anthony Fabian <anthony.fabian location comindico.com.au>
  * fixed threshold feature: threshprog was not getting the right parameters
    when called 
 
@@ -964,13 +1023,13 @@ From: Tobi
  * improved scanning of results from external scripts ...
  * in cfgmaker remove excess \ in Titles
 
-From: Wolfgang Hoffmann <woho@netpark.at>
+From: Wolfgang Hoffmann <woho location netpark.at>
  * new mrtglog programm in contrib
 
-From: Tobi and Daniel Elvin <daniel.elvin@fagotten.org>
+From: Tobi and Daniel Elvin <daniel.elvin location fagotten.org>
  * added --show-op-down parameter to cfgmaker
 
-From: Jakob Ilves <jakob.ilves@oracle.com>
+From: Jakob Ilves <jakob.ilves location oracle.com>
  * massive enhancement to cfgmaker ... the beast has become much more
    configurable. Hold on to your hats, there is more to come.
 
@@ -987,14 +1046,14 @@ From: Tobi
 
 Changes 2.9.5
 -------------
-From: Jakob Ilves <jakob.ilves@oracle.com>
+From: Jakob Ilves <jakob.ilves location oracle.com>
  * rewrote  --ifdesc in cfgmaker ... there are many more options now
 
-From: O'Shaughnessy Evans <oevans@acm.org>
+From: O'Shaughnessy Evans <oevans location acm.org>
  * fixes for cfgmaker (--help, --noreversedns and version param)
  * fixes for indexmaker (--help, --version, added man info on section=descr)
  
-From:  Do Jong Gwan <daker@metri.re.kr>
+From:  Do Jong Gwan <daker location metri.re.kr>
  * rules for activating threshold checking were not ideal ...
    (often it did not get activated when it should)
 
@@ -1007,10 +1066,10 @@ From: Tobi
  * thresholds can now be specified in % of maxbytes to activate this,
    they must end in '%'
  
-From: Tobi & Luiz Encarnacao <lfencarnacao@hotmail.com>
+From: Tobi & Luiz Encarnacao <lfencarnacao location hotmail.com>
  * All translations had bad formating in the credit line (extra font and td tags)
 
-From: Justin Schoonover <JustinS@dis-corp.com>
+From: Justin Schoonover <JustinS location dis-corp.com>
  * Make Rateup honour the yticsf properly
 
 From: Tobi
@@ -1018,26 +1077,26 @@ From: Tobi
    to Rainers website. This ensures that people get the current version
    and not some outdated code from my contrib archive.
 
-From: Curtis Doty <Curtis@GreenKey.net>
+From: Curtis Doty <Curtis location GreenKey.net>
  * add refresh and expiery to indexmaker pages
  * fix rateup.c to honor weekformat when drawing grid lines "Format U"
 
-From: Tobi & Mac Daddy <macdaddy@vinnie.ksu.ksu.edu>
+From: Tobi & Mac Daddy <macdaddy location vinnie.ksu.ksu.edu>
  * New BodyTag configurable lets you customize the webpages <body ..> tag
 
-From: Alex <alex@nac.net> and Tobi
+From: Alex <alex location nac.net> and Tobi
  * fix for external data sources sending "" as response breaking the logfile problem
 
-From: Hubert Figuiere <hfiguiere@teaser.fr>
+From: Hubert Figuiere <hfiguiere location teaser.fr>
  * Support for MAC OS X
 
 From: Simon Leinen
  * Update to SNMP Session 0.81 
 
-From: Bernard Martinet <Bernard.Martinet@grenet.fr>
+From: Bernard Martinet <Bernard.Martinet location grenet.fr>
  * Fix for parsing of 'by name' matchin target parser ...
 
-From: Miroslaw.Maczka@bze.com.pl
+From: Miroslaw.Maczka location bze.com.pl
  * update to nt-service
 
 From: Tobi
@@ -1045,33 +1104,33 @@ From: Tobi
 
 Changes 2.9.4
 -------------
-From: Curtis Doty <Curtis@GreenKey.net>
+From: Curtis Doty <Curtis location GreenKey.net>
  * excess whitespace after cfgmaker ECHO line was wrecking havoc
 
 Changes 2.9.3
 -------------
-From: Andrew Farrior <afarrior@king.vc.cc.tx.us>
+From: Andrew Farrior <afarrior location king.vc.cc.tx.us>
  + teach cfgmaker about catalyst port names 
-From: O'Shaughnessy Evans <oevans@acm.org>
+From: O'Shaughnessy Evans <oevans location acm.org>
  + cfgmaker will now add a SetEnv line to each router config block
  * improved cfgmaker docu spelling
  + indexmaker change --section=descr so that it doesn't include the basic                   
     interface description unless it doesn't have a Cisco description
     to use; adds/docs a new option, --show=none, which disables inclusion of               
     any graph in the index page 
-From: Kevin Benton <s1kevin@sotatech.net>
+From: Kevin Benton <s1kevin location sotatech.net>
  + contrib gentcucci
-From: Matija Grabnar <matija.grabnar@arnes.si>                                     
+From: Matija Grabnar <matija.grabnar location arnes.si>                                     
  + teach log2rrd to honour perhour and perminute options
-From: Dan Harkless <mrtg@dilvish.speed.net>   
+From: Dan Harkless <mrtg location dilvish.speed.net>   
  + made cfgmakers --subdirs option way more flexible
-From: Yo <dgb97@yahoo.com>                                                         
+From: Yo <dgb97 location yahoo.com>                                                         
  + tranlation into galician
-From: Dimitrios Stergiou <dste@intranet.gr>     
+From: Dimitrios Stergiou <dste location intranet.gr>     
  + contrib procmem ... cisco cpu monitoring
-From: Jeff Liebermann <jeffl@comix.santa-cruz.ca.us>
- * fixed @dddd[] structures in gb2312.pmd
-From: John Begley <maslow@mediaone.net>
+From: Jeff Liebermann <jeffl location comix.santa-cruz.ca.us>
+ * fixed  location dddd[] structures in gb2312.pmd
+From: John Begley <maslow location mediaone.net>
  * CEF subinterfaces are not 'graphable' (cfgmaker)
 From: Tobi
  * forking code revisited again ... missed closing a handle 
@@ -1082,12 +1141,12 @@ From: Tobi
  * check is RunAsDeamon is set to yes 
  + cfgmaker option --noreversedns
  + add options --user and --group to mrtg script to allow setting user and group
-   when starting mrtg as a daemon from init.d (idea from Dan Harkless <mrtg@dilvish.speed.net> )
-From: Francis VIVAT <francis.vivat@cetp.ipsl.fr>                 
+   when starting mrtg as a daemon from init.d (idea from Dan Harkless <mrtg location dilvish.speed.net> )
+From: Francis VIVAT <francis.vivat location cetp.ipsl.fr>                 
  * add start command line to runasdaemon section of nt-guide
-From: Chris Pepper <pepper@mail.reppep.com>
+From: Chris Pepper <pepper location mail.reppep.com>
  * about 1000 spell fixes for the mrtg docu
-From: Dan Harkless <mrtg@dilvish.speed.net>
+From: Dan Harkless <mrtg location dilvish.speed.net>
  * spell fix for MRTG_lib.pm again ... 
 
 Changes 2.9.2
@@ -1096,20 +1155,20 @@ From: Tobi
  * revisited and fixed forking code. mrtg was not stable when run as daemon
    with forking enabled. Aftermath of the confcache problems in 2.9.0
  * cfgmaker was not working properly when multiple routers were specified on the commandline
-From: Dan Harkless <mrtg@dilvish.speed.net>
+From: Dan Harkless <mrtg location dilvish.speed.net>
  * cfgmaker fixes: spelling, quote arguments with space, make --subdirs work
  * MRTG_lib.pm include file error message had misspelling and output wrong file.
-From:  donlong <donlong@seed.net.tw>
+From:  donlong <donlong location seed.net.tw>
  * updated big5 translation
 
 Changes 2.9.1
 -------------
-From: Rainer Bawidamann <Rainer.Bawidamann@rz.uni-ulm.de>
+From: Rainer Bawidamann <Rainer.Bawidamann location rz.uni-ulm.de>
  * problem with confcache update marker
-From: Dan Harkless <mrtg@dilvish.speed.net>
+From: Dan Harkless <mrtg location dilvish.speed.net>
  * Various documentation spelling and version number fixes.
  * Change whatis.* doc files to mrtg.* to not conflict with system whatis.1.
-From: Lars Christiansen <lcr@dk.uu.net>
+From: Lars Christiansen <lcr location dk.uu.net>
  * get subif description on cisco hssi interfaces in cfgmaker
 
 Changes 2.9.0
@@ -1153,10 +1212,10 @@ Changes 2.9.0
 
 Details:
 
-From: Rainer Bawidamann <Rainer.Bawidamann@rz.uni-ulm.de>
+From: Rainer Bawidamann <Rainer.Bawidamann location rz.uni-ulm.de>
  - new version of 14all.cgi
 ----pre33-------------
-From: Justin Shore <listuser@vinnie.ksu.ksu.edu>
+From: Justin Shore <listuser location vinnie.ksu.ksu.edu>
  - End MRTG Block comment was going to STDOUT ... 
 ----pre32-------------
 From: Tobi
@@ -1168,32 +1227,32 @@ From: Tobi
 ----pre31-------------
 From: Tobi
  - indexmaker with no sorting was broken in pre30 ... 
-From: Curtis Doty <Curtis@GreenKey.net>
+From: Curtis Doty <Curtis location GreenKey.net>
  - improved sorting for repeated titles in indexmaker
 ----pre30-------------
 From: Tobi
  - removed exess close from forking code ... it seems that perl hates it when
    I try to close a FH of a dead pipe
-From: Gereon Ruetten <gently@baer.rwth-aachen.de>
+From: Gereon Ruetten <gently location baer.rwth-aachen.de>
  - contrib:  script for using mrtg with iptables
-From: Dimitar Pashev <mitko@banksoft-bg.com>
+From: Dimitar Pashev <mitko location banksoft-bg.com>
  - mrtg can now also run as daemon ... check reference.txt
-From: Curtis Doty <Curtis@GreenKey.net>
+From: Curtis Doty <Curtis location GreenKey.net>
  - added --descint  option to cfgmake
    describe interface instead of just 'Traffic Analysis for'
 From: Tobi & Alex
  - added query test to cfgmaker (it now does a test query to see if the interface
    does acctually have traffic counters)
-From: Peter <webmaster@appleclub.com.hk>
+From: Peter <webmaster location appleclub.com.hk>
  - gb2312 translation
-From: Jonathan Cohn <jccohn@lightningcast.net>
+From: Jonathan Cohn <jccohn location lightningcast.net>
  - better equipment identification for cfgmaker
    ... cisco and nokia got mixed up du to a missing .
-From: Patrik Andersin <cat@bbnetworks.net>
+From: Patrik Andersin <cat location bbnetworks.net>
  - mrtg was not accepting withzeroes option (typo in cfg checker)
-From: "Starkweather, Mike (CNS)" <mike.starkweather@anheuser-busch.com>
+From: "Starkweather, Mike (CNS)" <mike.starkweather location anheuser-busch.com>
  - NT does know -x ... repaced it with -e in threshprog*
-From: O'Shaughnessy Evans <oevans@acm.org>
+From: O'Shaughnessy Evans <oevans location acm.org>
  - allow capitals in SetEnv
  - cfgmeker added option --subdirs ... give subdir to each router
 From: Tobi
@@ -1206,17 +1265,17 @@ From: tobi
  - cfgmaker ignore agregate interfaces (53) on cisco
 
 ----pre28-------------
-From: Rainer Bawidamann <Rainer.Bawidamann@informatik.uni-ulm.de>
+From: Rainer Bawidamann <Rainer.Bawidamann location informatik.uni-ulm.de>
  - upgraded to 14all.cgi 1.1.p5
 
-From: O'Shaughnessy Evans <oevans@acm.org>
+From: O'Shaughnessy Evans <oevans location acm.org>
  - allow to use Description for sectioning in indexmaker
 
-From: Adrian Turcu <adi@cfrcta.ro>
+From: Adrian Turcu <adi location cfrcta.ro>
  - contributed mrtgrq ... quota monitoring script
  - contributed net-hosts for monitoring a set of hosts using fping 
 
-From: Robert Boyle <robert@tellurian.com>
+From: Robert Boyle <robert location tellurian.com>
  - updated version of PMLines which works with Portmaster 2 to 4
 
 From: tobi
@@ -1225,46 +1284,46 @@ From: tobi
  - properly detect situations where the Interface number can not be determined
 
 ----pre27-------------
-From: John Lange <john.lange@darkcore.net>
+From: John Lange <john.lange location darkcore.net>
  - update for ipchains script
 From: Tobi
  - fix for indexmaker ... $$item problem
 ----pre26-------------
-From: Brian Mudge <bmudge@nortelnetworks.com>
+From: Brian Mudge <bmudge location nortelnetworks.com>
  - fixed showstoppers in mrtg and cfgmaker
 
 ----pre25-------------
 From: Tobi
  - added xff parameter for log2rrd function in accordance with rrdtool 1.0.27
-From: Michele Michelotto <michele.michelotto@pd.infn.it>
+From: Michele Michelotto <michele.michelotto location pd.infn.it>
  - removed excess <cr> from locales
-From: blube@floridadigital.net
+From: blube location floridadigital.net
  - make cfgmaker comment out DS3 controlers ... they do not count their traffic
-From: Rainer Bawidamann <Rainer.Bawidamann@rz.uni-ulm.de>
+From: Rainer Bawidamann <Rainer.Bawidamann location rz.uni-ulm.de>
  - made PID file name generation robust to cfg files without extenssion
-From: Mattias Lilliesköld <mattias.lillieskold@martinsson.se>
+From: Mattias Lilliesköld <mattias.lillieskold location martinsson.se>
  - make cfgmaker recognize options[^]: bits
-From: Thomas Abthorpe - Tby. * <tabthorpe@cgc.ca>
+From: Thomas Abthorpe - Tby. * <tabthorpe location cgc.ca>
  - go for threshold checking if threshdir is defined
 ----pre24------------
-From: Robert Boyle <robert@tellurian.com>
+From: Robert Boyle <robert location tellurian.com>
  - Contrib PM4lines, the Lucent Portmaster 4 monitor
-From: Lucas Nussbaum <Lucas@ians.be>
+From: Lucas Nussbaum <Lucas location ians.be>
  - create a pid file when mrtg gets executed in daemon mode
-From: Thomas Abthorpe - Tby. * <tabthorpe@cgc.ca>
+From: Thomas Abthorpe - Tby. * <tabthorpe location cgc.ca>
  - fix for configurable file extension in indexmaker
-From: Juergen Baier <baier@ip-plus.net> and Jacques Supcik
+From: Juergen Baier <baier location ip-plus.net> and Jacques Supcik
  - fix for 'target by Ip' name matching code
 From: Tobi
  - fixed router uptime ... was not asking on the right target ...
-From: Steven.Shipway@adsweu.com
+From: Steven.Shipway location adsweu.com
  - updated contrib/routers to version 1.0
  - contributed contrib/servers.cgi
-From: Rainer Bawidamann <Rainer.Bawidamann@informatik.uni-ulm.de>
+From: Rainer Bawidamann <Rainer.Bawidamann location informatik.uni-ulm.de>
  - fixes for 14all.cgi ... 
  - more debbugging information in log mode about what happens when rrdtool and rateup run
 ----pre23------------
-From: Rainer Bawidamann <Rainer.Bawidamann@informatik.uni-ulm.de>
+From: Rainer Bawidamann <Rainer.Bawidamann location informatik.uni-ulm.de>
  - fixed threshold support for rrdtool mode
  - -w fixes for MRTG_lib.pm
  - relax check for going into threshold mode
@@ -1275,16 +1334,16 @@ From: Tobi
  - fixed indexmaker in connection with the directory option 
  
 ----pre22------------
-From: Rainer Bawidamann <Rainer.Bawidamann@informatik.uni-ulm.de>
+From: Rainer Bawidamann <Rainer.Bawidamann location informatik.uni-ulm.de>
  - updated version of 14all.cgi
  - identify threshold checking configs properly
  - fixed snmp level 2 identification for simple targets
  - add default values for background and backgc
 
-From: Benoit Artuso <benoit@proxad.net>
+From: Benoit Artuso <benoit location proxad.net>
  - fix for confcache regeneration
 
-From: Bjorn Nordbo <bn@nextra.com>
+From: Bjorn Nordbo <bn location nextra.com>
  - fixes for forker (trgnum was wrong ...)
  - fixes for missing 'directory' support in log2rrd
 
@@ -1301,7 +1360,7 @@ From: Tobi
 
 ----pre21------------
 
-From: Lucas Nussbaum <lucas@ians.be>
+From: Lucas Nussbaum <lucas location ians.be>
  - contrib: ircstats2.pl a script used to monitor the user load on IRC networks.
    Contrary to ircstats by Matt Ramsey, it remains connected to the server.
 
@@ -1318,7 +1377,7 @@ From: Tobi
  - added the Include: keyword to the config parser as discussed on the ML
 
 ----pre20------------
-From: Matthew Schumacher <schu@schu.net>
+From: Matthew Schumacher <schu location schu.net>
  - upate to cpu info
 From: Tobi
  - fixed start time for newly created rrds ... this must be $time-2 not $now
@@ -1342,7 +1401,7 @@ From: Tobi
 
 ----pre19------------
 
-From: Roy-Magne Mo <romo@interpost.no>
+From: Roy-Magne Mo <romo location interpost.no>
  - binaries must be installed with 755
 From: Tobi
  - when eval fails in target we die
@@ -1352,7 +1411,7 @@ From: Tobi
 ----pre18------------
 From: Tobi
  - cfgmaker will disable cisco interfaces with description VLAN.. 
-From:  Ferenc Toth <ftoth@infobal.com>
+From:  Ferenc Toth <ftoth location infobal.com>
  - MRTG_lib.pm target parser for complex targets (&) was broken in pre16 .. (off by one error)
 
 ----pre17------------
@@ -1370,13 +1429,13 @@ From: Tobi
    logformat rrdtool
  - fixed lost uptime and sys name querying for rateup logformat
  
-From: Steven.Shipway@adsweu.com
+From: Steven.Shipway location adsweu.com
  - updated contrib/routers to version 0.11
 
 ----pre16------------
-Thomas Abthorpe - Tby. * <tabthorpe@cgc.ca>
+Thomas Abthorpe - Tby. * <tabthorpe location cgc.ca>
  - fixed broken header introduced in pre15 :-)
-From: Rainer Bawidamann <Rainer.Bawidamann@informatik.uni-ulm.de>
+From: Rainer Bawidamann <Rainer.Bawidamann location informatik.uni-ulm.de>
  - reenabled threshold checking which got inadvertedly disabled
    in pre15
  - cosmetic fixes for MRTG_lib.pm
@@ -1422,28 +1481,28 @@ From: Tobi
 
  - fixed error handling with RRDtool
 
-From: William P. McGonigle <William.P.McGonigle@artoo.hitchcock.org>
+From: William P. McGonigle <William.P.McGonigle location artoo.hitchcock.org>
  
  - if writeexpire has been defined, create one for the index.html file as well
  
-From: Kit-pui Wong <kpwong@etnet.com.hk>
+From: Kit-pui Wong <kpwong location etnet.com.hk>
  - fixed alignement of indexmaker graph titles ...
 
-From: Miroslaw.Maczka@bze.com.pl 
+From: Miroslaw.Maczka location bze.com.pl 
  - a rateup for NT which produces pngs so finally no mode gifs for NT as well
 
-From: Rainer Bawidamann <Rainer.Bawidamann@rz.uni-ulm.de>
+From: Rainer Bawidamann <Rainer.Bawidamann location rz.uni-ulm.de>
  - Documentation for MRTG_lib and some better argument checking for
    MRTG_lib
 
-From: Curtis Doty <Curtis@GreenKey.net> & Tobi
+From: Curtis Doty <Curtis location GreenKey.net> & Tobi
  - use FindBin to determine location of modules. Revamped all the
    library finding code in mrtg
  - indexmaker fix for filter regexp and some output fixes
 
 ----pre14------------
 
-From: Rainer Bawidamann <Rainer.Bawidamann@rz.uni-ulm.de>
+From: Rainer Bawidamann <Rainer.Bawidamann location rz.uni-ulm.de>
  - more flexible config parsing functionality added to
    MRTG_lib.pm in preparation for a better configurable
    14all.cgi due out soon.
@@ -1453,10 +1512,10 @@ From: Tobi
    put some \Q and \E in to fix things ... (I am amazed it did run at
    all befor this hmmm.
 
-From: Curtis Doty <Curtis@GreenKey.net>
+From: Curtis Doty <Curtis location GreenKey.net>
  - fixes some install errors in Makefile.in
 
-From: Thomas Brian Granier <BrianG@zebec.net>
+From: Thomas Brian Granier <BrianG location zebec.net>
  - NT verion wanted to create "zip" instead for "gif" fixed
  
 ----pre13------------
@@ -1474,7 +1533,7 @@ From: Tobi
  - modified parsing rules for EXEC targets, COMMUNITY
    and DESCRIPTION ... 
    EXEC backticks can be used inside when escaped like this: \`
-   COMMUNITY space and @ can be used like this \@ and "\ "
+   COMMUNITY space and @ can be used like this \ location  and "\ "
    DESCRIPTION space and : can be used with "\ " and "\:"
    in all other combinations the \ has no special significance
    
@@ -1505,10 +1564,10 @@ From: Tobi
  - fixed mrtg target parser for If number 0 case ... 
 
 ----pre8------------
-From: Curtis Doty <Curtis@GreenKey.net>      
+From: Curtis Doty <Curtis location GreenKey.net>      
  - fixes for Makefile install routine
 
-From: Simon Barnes <barnes@gatwick.Geco-Prakla.slb.com>
+From: Simon Barnes <barnes location gatwick.Geco-Prakla.slb.com>
  - fix to test for validty of results from data returned
    by 'external' targets.It was inverted.
 
@@ -1522,10 +1581,10 @@ From: Alex
  - spell fixes for unix-guide.pod, forum.pod, contrib.pod
 
 ----pre7------------
-From: Rainer Bawidamann <Rainer.Bawidamann@rz.uni-ulm.de>
+From: Rainer Bawidamann <Rainer.Bawidamann location rz.uni-ulm.de>
  - contrib / version 1.0p16 of 14all.cgi
 
-From: Benoit Artuso <benoit@proxad.net>
+From: Benoit Artuso <benoit location proxad.net>
  - images did not get generated in the correct place with the 'directory' option
 
 From: Tobi
@@ -1585,132 +1644,132 @@ From: Tobi
  - added $! to most open calls for better error reporting
  - reviewed and updated install instructions in README
 
-From: Ilja Pavkovic <illsen@gumblfarz.de>
+From: Ilja Pavkovic <illsen location gumblfarz.de>
  - update fuer deutsches locale
 ----pre5------------
 From: Tobi
  - removed debug output from mrtg
 ----pre4------------
-From: Yovko Lambrev <yovko@plov.omega.bg>
+From: Yovko Lambrev <yovko location plov.omega.bg>
  - fixed bulgarian translation
 From: Rainer and Tobi
  - added docu for PageFoot to config.pod
 From: Tobi
  - extension config did not work ... now it does
-From: ve@hardcore.lt
+From: ve location hardcore.lt
  - update to lithuanian locale
 From: Tobi
  - made new options imagedir logdir and htmldir work
-From: Simon Leinen <simon@limmat.switch.ch>
+From: Simon Leinen <simon location limmat.switch.ch>
  - some SNMPv2c additions to SNMP_util.pm
 From: Tobi
  - added SetEnv[xyz]: option to mrtg.cfg for passing information on to
    external scripts.
-From: John Dunning/NS/WSC <jodunni1@wsc.edu>
+From: John Dunning/NS/WSC <jodunni1 location wsc.edu>
  - added -d option to indexmaker wich makes index.html files go into
    the directory with the data files for a target
-From: Matija Grabnar <matija.grabnar@arnes.si>
+From: Matija Grabnar <matija.grabnar location arnes.si>
  - added RRDtool / 14all.cgi awareness to indexmaker
-From: CmdrData <CmdrData@ex-pressnet.com>
+From: CmdrData <CmdrData location ex-pressnet.com>
  - contrib nt_n_cisco some tools for running mrtg with ms-sql and cisco gear
-From: Graziano Sommariva <Graziano.Sommariva@elsag.it>
+From: Graziano Sommariva <Graziano.Sommariva location elsag.it>
  - contrib cfgmaker_dlci
-From: Rainer Bawidamann <Rainer.Bawidamann@rz.uni-ulm.de>
+From: Rainer Bawidamann <Rainer.Bawidamann location rz.uni-ulm.de>
  - made theshold configs working in connections with UseRRDtool: yes
  - updated 14all.cgi in contrib to 1.0p13
-From: John Lange <john.lange@darkcore.net>
+From: John Lange <john.lange location darkcore.net>
  - contrib: ipchains accounting script with mrtg
-From: Justin Shore <macdaddy@ieee.org>
+From: Justin Shore <macdaddy location ieee.org>
  - added comments into generated webpage for easier parsing
-From: Hui Zhang <zhanghui2@asiainfo.com>
+From: Hui Zhang <zhanghui2 location asiainfo.com>
  - added chinese locale gb
-From: Thomas Lehnig <thomas@valinor.escape.de>
+From: Thomas Lehnig <thomas location valinor.escape.de>
  - add new config option 'factor' for scaling the values
    printed below the graph
-From: Colin Morey <colin.morey@emaponline.com>
+From: Colin Morey <colin.morey location emaponline.com>
  - allow to split images, logfiles, webpages into different directories
    introduces HtmlDir ImageDir LogDir .
-From: Chris Knipe <cgknipe@mweb.co.za>
+From: Chris Knipe <cgknipe location mweb.co.za>
  - contrib: monitor -- NT/Access/ASP based network monitoring system using mrtg technology.
-From: Oleg Krotoff <krot@tnsplus.kz>
+From: Oleg Krotoff <krot location tnsplus.kz>
  - contrib: mrtg-archiver-script
-From: Ladislav Mihok <laco@mrokh.shmu.sk>
+From: Ladislav Mihok <laco location mrokh.shmu.sk>
  - slovak translation for mrtg
-From: Martin Røsjorde <martin.rosjorde@vestfold.eltele.no>
+From: Martin Røsjorde <martin.rosjorde location vestfold.eltele.no>
  - improved norwegian translation
-From: Michael Med <michael.med@rrz-wien.raiffeisen.at>
+From: Michael Med <michael.med location rrz-wien.raiffeisen.at>
  - make complex TZ settings work with rateup in solaris. By copying
    the localtime data to private memory.
-From: Walery Kokarev <w.kokarev@link-ul.ru>
+From: Walery Kokarev <w.kokarev location link-ul.ru>
  - Added withzeroes option for people who want zero sample considered in their
    average transfer rate.
-From: Ù¤Âê¹û <gamago@sina.com>
+From: Ù¤Âê¹û <gamago location sina.com>
  - simplified chinese locale
-From: Patrick Koppen <koppen@unix-ag.uni-kl.de>
+From: Patrick Koppen <koppen location unix-ag.uni-kl.de>
  - make -r work in indexmaker
-From: Nick Hilliard <nick@iol.ie>
+From: Nick Hilliard <nick location iol.ie>
  - fix for title case in indexmaker (this should take care of the pagetop problem)
-From: Tobi and Albert Chin-A-Young <china@thewrittenword.com>
+From: Tobi and Albert Chin-A-Young <china location thewrittenword.com>
  - added install target to Makefile default prefix is /usr/local/mrtg-2
-From: Jodok Sutterluety <jodok@sutty.at>
+From: Jodok Sutterluety <jodok location sutty.at>
  - added extension option for people who want their pages end in something else than .html
-From: Zaphod Beeblebrox <zaphod@goatrance.com>
+From: Zaphod Beeblebrox <zaphod location goatrance.com>
  - bulgarian locale
-From: "John H. Robinson, IV" <jhriv@ucsd.edu>
+From: "John H. Robinson, IV" <jhriv location ucsd.edu>
  - made cfgmaker print interface speed with apropriate units if we think in
    bits
-From: Miroslaw.Maczka@bze.com.pl
+From: Miroslaw.Maczka location bze.com.pl
  - contrib nt-service: make mrtg a service under NT
-From: Nathan Wiger <nathan.wiger@west.sun.com>
+From: Nathan Wiger <nathan.wiger location west.sun.com>
  - make sure no name gets used twice
  - all errors from cfgmaker should go to STDERR
-From: x <tomm02@yahoo.com>
+From: x <tomm02 location yahoo.com>
  - contrib snmpping.pl see if a device speaks snmp
-From: Johannes Demel <demel@zid.tuwien.ac.at>
+From: Johannes Demel <demel location zid.tuwien.ac.at>
  - fixed minimal hearbeat to be in sync with Interval parameter
    when using RRDtool
-From: Simon Leinen <simon@limmat.switch.ch>
+From: Simon Leinen <simon location limmat.switch.ch>
  - new version of SNMP Session which can do SNMPv2c
    this allows to poll the ifHC??Octets counters (64Bit) if
    your router supports them ... No more wrapping in this life
-   or half life anyway. If you specify y:public@router1:::::2
+   or half life anyway. If you specify y:public location router1:::::2
    this will poll the HC counters. This will only work if
    your router supports it ...
-From: Richard Kwong <richard.kwong@cwo.com.au>
+From: Richard Kwong <richard.kwong location cwo.com.au>
  - fix for ytics in rateup
-From: Tobi and "Purvis, William" <William.Purvis@compaq.com>
+From: Tobi and "Purvis, William" <William.Purvis location compaq.com>
  - added nomib2 option to supress 'sysUptime', 'sysName'
    queriing .... some devices do not support this.
-From: Matthew Schumacher <schu@7x.com>
+From: Matthew Schumacher <schu location 7x.com>
  - update for contrib/cpuinfo
-From: Rainer Bawidamann <Rainer.Bawidamann@informatik.uni-ulm.de>
+From: Rainer Bawidamann <Rainer.Bawidamann location informatik.uni-ulm.de>
  - improved rrdtool integration ...
 From: Tobi
  - added default for interval in case it does not get set
-From: Anton Voronin <anton@urc.ac.ru>
+From: Anton Voronin <anton location urc.ac.ru>
  - additional syntax for Target: 
-   Target[ezwf]: \My-Interface2:public@wellfleet-fddi.ethz.ch
+   Target[ezwf]: \My-Interface2:public location wellfleet-fddi.ethz.ch
    use the interface description
-From: Jozsef Szilagyi <szjozsef@texnet.ro>
+From: Jozsef Szilagyi <szjozsef location texnet.ro>
  - improved romainan translation
-From: Alon Goldberg <pyro@boss.elapsed.net>
+From: Alon Goldberg <pyro location boss.elapsed.net>
  - bugfixes for contrib/diskmon/getdisk.pl
-From: Steven.Shipway@adsweu.com
+From: Steven.Shipway location adsweu.com
  - contrib routers: CGI frontend to mrtg/RRDtool
    check example on http://ukpavu99.adsweu.com/cgi-bin/routers.cgi 
-From: ve <ve@hardcore.lt>
+From: ve <ve location hardcore.lt>
  - pmd file for Lithuanian language
-From: Miroslaw.Maczka@bze.com.pl
+From: Miroslaw.Maczka location bze.com.pl
  - contrib Informix Performance monitoring
-From: Roddy Strachan <roddy@satlink.com.au>
+From: Roddy Strachan <roddy location satlink.com.au>
  - contrib Access-list Monitoring via MRTG
-From: Clas Mayer <cmayer@lulea.amu.se>
+From: Clas Mayer <cmayer location lulea.amu.se>
  - swedish translation
-From: Simos Xenitellis <S.Xenitellis@rhbnc.ac.uk>
+From: Simos Xenitellis <S.Xenitellis location rhbnc.ac.uk>
  - improved greek translation
-From: Christian Rost <cr@rocon.de>
+From: Christian Rost <cr location rocon.de>
  - spell fixes for german.pmd
-From: seweryn@anatema.torun.pdi.net
+From: seweryn location anatema.torun.pdi.net
  - spell fixes for polish translation
 From: Tobi
  - shame on me ... all these nice translations and I forgot to update the MANIFEST ...
@@ -1718,14 +1777,14 @@ From: Tobi
 
 Changes 2.8.12
 --------------
-From: Tobi + Hoorelbeke Rik <rik.hoorelbeke@online.be>
+From: Tobi + Hoorelbeke Rik <rik.hoorelbeke location online.be>
  - make -M and -r work in indexmaker
-From: Levente Nagy <levinet@euroweb.hu>
+From: Levente Nagy <levinet location euroweb.hu>
  - hungarian translation
-From: Peter Gervai <grin@tolna.net>
+From: Peter Gervai <grin location tolna.net>
  - NoSpaceChar option. Supresses SPACE normally inserted between local value and PRE
    or APPEND value.
-From: Francois Wolmarans <fwo@obsidian.co.za>
+From: Francois Wolmarans <fwo location obsidian.co.za>
  - new features for cfgmaker --iponly, --options, --workdir
 From: Tobi Oetiker
  - make RunAsDaemon work ... 
@@ -1735,98 +1794,98 @@ From: Tobi Oetiker
  - added ThreshDesc config option. Its value is assigned to the env variable
    THRESH_DESC before and of the Thresh-Action scripts are called.
 
-From: "[big5] ¶ÀªF¶©" <donlong@mail.pouchen.com.tw> and Tate <tate@joy-tech.com.tw>
+From: "[big5] ¶ÀªF¶©" <donlong location mail.pouchen.com.tw> and Tate <tate location joy-tech.com.tw>
  - bugfix for big5 locale
-From: knut.groneng@merkantildata.no
+From: knut.groneng location merkantildata.no
  - bugfix for norwegian.pmd
 
 
 Changes 2.8.11 (2000/01/17)
 --------------
-From: Lucas <Lucas@Kewl.Org>
+From: Lucas <Lucas location Kewl.Org>
  - it is RunAsDaemon and not RunAsDeamon
 
 Changes 2.8.10 (2000/01/16)
 --------------
-From: Rainer.Bawidamann@informatik.uni-ulm.de
+From: Rainer.Bawidamann location informatik.uni-ulm.de
  - update for rrdtool integration 14all.cgi to 0.16
-From: Morten S. Nielsen <msn@ipt.dtu.dk>
+From: Morten S. Nielsen <msn location ipt.dtu.dk>
  - updated danish translation
-From: Francois Wolmarans <fwo@obsidian.co.za>
+From: Francois Wolmarans <fwo location obsidian.co.za>
  - have cfgmaker put specific comments into the mrtg.cfg file
    regarding the reason for droping a certain interface ..
-From: Krister Karlsson <krister.karlsson@enator.se>
+From: Krister Karlsson <krister.karlsson location enator.se>
  - Added RunAsDeamon mode. Start mrtg only once. No Cron necessary.
-From: Ronald Florence <ron@18james.com>
+From: Ronald Florence <ron location 18james.com>
  - linux ip-filter integration in contrib
-From: Iulian Radu <iulian_r@starnets.ro>
+From: Iulian Radu <iulian_r location starnets.ro>
  - version 2.2 of mrtgmk in contrib
-From: LLuís Gras <lluis@seccat.com>
+From: LLuís Gras <lluis location seccat.com>
  - catalan locales
-From: John Line <webadm@info.cam.ac.uk>
+From: John Line <webadm location info.cam.ac.uk>
  - rateup.c fix for kMG override bug
-From: John Line <webadm@info.cam.ac.uk>
+From: John Line <webadm location info.cam.ac.uk>
  - allow to set ShortLegend to ''
 From: Tobi
  - better parsing of PageTop with intexmakers -P option
-From: Ruben Cheng <rcheng@saira.postgrado.uc.edu.ve>
+From: Ruben Cheng <rcheng location saira.postgrado.uc.edu.ve>
  - fix for spanish translation (uptime had some probmlems)
-From: Markley P. Dykeman <mdykeman@micron.net>
+From: Markley P. Dykeman <mdykeman location micron.net>
  - contrib: switchmaker produces mrtg cfg files for Cisco Catylst 5XXX
 From: Tobi
  - made sure -lm comes last when linking ...
-From: Tobi + Ben <ben@hotwired.com>
+From: Tobi + Ben <ben location hotwired.com>
  - converted remaining gifs to png
-From: Tobi + Mike Lawrie <mlawrie@apies.frd.ac.za>                                                                   
+From: Tobi + Mike Lawrie <mlawrie location apies.frd.ac.za>                                                                   
  - make sure AbsMax is not smaller than MaxBytes
-From: Halldor.Hognason@islandssimi.is                                                  
+From: Halldor.Hognason location islandssimi.is                                                  
  - translation to icelandic
-From: Fuminori Uematsu <uematsu@kgz.com>
+From: Fuminori Uematsu <uematsu location kgz.com>
  - added japanese translations for ISO-2022-JP and EUC-JP
-From: ozgurcd@koc.net
+From: ozgurcd location koc.net
  - added turkish translation
 
 Changes 2.8.9
 -------------
-From: Rainer.Bawidamann@informatik.uni-ulm.de
+From: Rainer.Bawidamann location informatik.uni-ulm.de
  - update for rrdtool integration 14all.cgi
-From: Morten S. Nielsen <msn@ipt.dtu.dk>
+From: Morten S. Nielsen <msn location ipt.dtu.dk>
  - Added more modular translation system
-From: Ilja Pavkovic <illsen@gumblfarz.de>
+From: Ilja Pavkovic <illsen location gumblfarz.de>
  - Added German Translation
-From: "Tate <­«¥Í>" <tate@joy-tech.com.tw>
+From: "Tate <­«¥Í>" <tate location joy-tech.com.tw>
  - Chinese Translation
-From: John-Mark Gurney <gurney_j@efn.org>
+From: John-Mark Gurney <gurney_j location efn.org>
  - cfgmaker_ip ... keep first address and not last ..
-From: Assakhof Bin Ab. Satar <assakhof@mimos.my>
+From: Assakhof Bin Ab. Satar <assakhof location mimos.my>
  - Malayan translation
 From: Tobi
  - restored mibhelp to its old glory ..
-From: Jon Rifkin <rifkin@uconn.edu>
+From: Jon Rifkin <rifkin location uconn.edu>
  - added ability to index interfaces by physical address analog to
    the existing IP stuff ... there is now also a cfgmaker_phys
-From: Lukasz Jokiel <Lukasz.Jokiel@klonex.com.pl>                                 
+From: Lukasz Jokiel <Lukasz.Jokiel location klonex.com.pl>                                 
  - polish translation 
-From: Hideyuki Suzuki <hideyuki@sat.t.u-tokyo.ac.jp>                                               
+From: Hideyuki Suzuki <hideyuki location sat.t.u-tokyo.ac.jp>                                               
  - graphing fix for rateup ... 
-From: Matthew Schumacher <schu@7x.com>                                                             
+From: Matthew Schumacher <schu location 7x.com>                                                             
  - cpuinfo contrib
-From: Paul E. Erkkila <pee@gblx.net>                                                               
+From: Paul E. Erkkila <pee location gblx.net>                                                               
  - contrib cisco config tftp
-From: Iulian Radu <iulian_r@starnets.ro>                                                           
+From: Iulian Radu <iulian_r location starnets.ro>                                                           
  - updates and bugfixes for mrtgmk v2.0 
-From: David Boone <David.Boone@premier-systems.net>
+From: David Boone <David.Boone location premier-systems.net>
  - fix for -F/-f in indexmaker
  - fix for view type in indexmaker
-From: Matthias Cramer <cramer@dolphins.c>
+From: Matthias Cramer <cramer location dolphins.c>
  - cisco accounting contrib
-From: Karl Friesen <krf@southwind.net>                                          
+From: Karl Friesen <krf location southwind.net>                                          
  - added -lm to LIBS in configure.in
-From: Morten S. Nielsen <msn@ipt.dtu.dk>                                        
+From: Morten S. Nielsen <msn location ipt.dtu.dk>                                        
  - patching system for languages ... check translate directory
-From: "Kloberg Mac (LAM)" <mac.kloberg@lam.liebherr.com>
+From: "Kloberg Mac (LAM)" <mac.kloberg location lam.liebherr.com>
  - NSI (Network Status Imager for MRTG) contrib
-From: Rawlin Blake <blake@nevada.edu>                                           
+From: Rawlin Blake <blake location nevada.edu>                                           
  - updates for mrtg-archiver
 Changes 2.8.8
 -------------
@@ -1835,44 +1894,44 @@ From: Tobi
 
 Changes 2.8.7
 -------------
-From: Rainer Bawidamann <Rainer.Bawidamann@informatik.uni-ulm.de>
+From: Rainer Bawidamann <Rainer.Bawidamann location informatik.uni-ulm.de>
  - contrib: RRDtool integration -> contrib/14all
-From: Xenitellis S <S.Xenitellis@rhbnc.ac.uk>
+From: Xenitellis S <S.Xenitellis location rhbnc.ac.uk>
  - greek locales
-From: Andrea Rossi <rouge@shiny.it>
+From: Andrea Rossi <rouge location shiny.it>
  - italian locales
-From: Martin Goebel <mago@farm.de>
+From: Martin Goebel <mago location farm.de>
  - better html for indexmaker ...
-From: "Stieers, Ken" <KStieers@DainRauscher.com>
+From: "Stieers, Ken" <KStieers location DainRauscher.com>
  - added a new switch to indexmaker ( [-v d|w|m|y] ) which allows you to
    select which graphs you get.
-From: Daniel Haun <dhaun@snark.cx>
+From: Daniel Haun <dhaun location snark.cx>
  - indexmaker can now take - as a filename to allow input from stdin
  - cfgmaker_ip works with IOS 10.0 now (CRLF <=> LF in sysDescr)
 From: Tobi
  - allow targets with name of Option entries ... 
-From: Marcelo Roccasalva <marcelo@mendoza.gov.ar>
+From: Marcelo Roccasalva <marcelo location mendoza.gov.ar>
  - contributed spanish locale
 From: Tobi
  - added LD_RUN_PATH to make file and configure in support ofr shared
    libraries ...
-From: Luiz Felipe R E <lf@encarnacao.com>
+From: Luiz Felipe R E <lf location encarnacao.com>
  - fixed gifpath for NT
  - added brazilian portuguese locales
-From: Barry van Dijk <barry@dijk.com>
+From: Barry van Dijk <barry location dijk.com>
  - added Dutch locales 
-From: calle olsen <calle@volvo.se>
+From: calle olsen <calle location volvo.se>
  - updated stat.pl in contrib
 From: tobi
  - added -lm do default LDFLAGS
-From: Daisuke Aoyama <jack@st.rim.or.jp>
+From: Daisuke Aoyama <jack location st.rim.or.jp>
  - fixes for generated HTML
-From: Dmitry S. Sivachenko <dima@Chg.RU>
+From: Dmitry S. Sivachenko <dima location Chg.RU>
  - added russian translation
 
 Changes 2.8.6
 -------------
-From: Philippe.Simonet@swisscom.com
+From: Philippe.Simonet location swisscom.com
  - contributed rateup.exe for NT users
 
 Changes 2.8.5
@@ -1882,7 +1941,7 @@ From: Tobi
 
 Changes 2.8.4
 -------------
-From: Iulian Radu <iulian_r@starnets.ro>
+From: Iulian Radu <iulian_r location starnets.ro>
  - new version of mrtgmk contributed (2.1)
 
 From: Tobi
@@ -1897,8 +1956,8 @@ From: Tobi
    the last value seen. Be careful with this, often a flat line in the graph
    is much more obvious than a line at 0.
 
-From: Fabrice Prigent <fabrice.prigent@univ-tlse1.fr>
-      & Stéphane Marzloff <secrer@le-bar.fdn.fr>
+From: Fabrice Prigent <fabrice.prigent location univ-tlse1.fr>
+      & Stéphane Marzloff <secrer location le-bar.fdn.fr>
  - french locales
 
 Changes 2.8.3
@@ -1908,7 +1967,7 @@ From: Tobi
 
 Changes 2.8.2
 -------------
-From: Philippe.Simonet@swisscom.com
+From: Philippe.Simonet location swisscom.com
  - added updated rateup.exe for NT ... 
  - fixed NT *.zip distro ... 
 
@@ -1921,20 +1980,20 @@ Changes 2.8.0
 -------------
 From: Tobi
  - fixed autoconf system to work with new gd version
-From: Miguel Vitorino <mvitorino@automail.pt>
+From: Miguel Vitorino <mvitorino location automail.pt>
  - added -o filename option to indexmaker
-From: Antonio Querubin <tony@lava.net>
+From: Antonio Querubin <tony location lava.net>
  - fixed indexmaker to work with -m and -P option in parallel
-From: Rodrigue Assard <Rodrigue.ASSARD@mat.ensmp.fr>
+From: Rodrigue Assard <Rodrigue.ASSARD location mat.ensmp.fr>
  - added ytics and yticsfactor options to mrtg/rateup
-From: Iulian Radu <iulian_r@starnets.ro>
+From: Iulian Radu <iulian_r location starnets.ro>
  - contributed mrtgmk, a mrtg.cfg file generator ... 
-From: Yozo Toda <yozo@aohakobe.ipc.chiba-u.ac.jp> and
- and  Bernard Quatermass <bernard@quatermass.co.uk>
+From: Yozo Toda <yozo location aohakobe.ipc.chiba-u.ac.jp> and
+ and  Bernard Quatermass <bernard location quatermass.co.uk>
  and  Tobi
  - support for gd-1.6.1 ... Depending on the available version of libgd
    mrtg will be configured for generation png or gif images 
-From: Mike Mitchell <mcm@unx.sas.com>
+From: Mike Mitchell <mcm location unx.sas.com>
  - MIB Parsing for mrtg ... the mrtg.cfg file can now countain something
    like this:
 
@@ -1943,40 +2002,40 @@ From: Mike Mitchell <mcm@unx.sas.com>
    MIB-II and FrameRelay MIB are preloaded ... For improved efficiency
    a OID cache is maintained in the WorkDir oid-mib-cache.txt
 
-From: Morten Nielsen <msn@ipt.dtu.dk>
+From: Morten Nielsen <msn location ipt.dtu.dk>
  - Support for different locales in mrtg added ... At the moment the only
    supported Languages are English and Danish if you want to translate
    things to your language, edit the locales_mrtg file apropriately.
    In the mrtg.cfg file you can select your language with the global
    Language: <language> option
-From: Cristian Caramida <brick@bbs.ro>
+From: Cristian Caramida <brick location bbs.ro>
  - Contributed mrtg-ipacc script for using Linux IP accounting kernel rules
    to feed mrtg
 
 Changes 2.7.6
 -------------
-From: Henry Steinhauer <H1STEINH@hewitt.com>
+From: Henry Steinhauer <H1STEINH location hewitt.com>
  - contrib cfgmaker for ATM Bay MIB
-From: Fred Korz <fred.korz@smarts.com>
+From: Fred Korz <fred.korz location smarts.com>
  - fixed some typos in config.pod and manual.html
 
 Changes 2.7.5
 -------------
-From: Kari.Hiitola@sonera.fi
+From: Kari.Hiitola location sonera.fi
  - make maxbytes = 0 work ... 
-From: Iulian Radu <iulian_r@starnets.ro>
+From: Iulian Radu <iulian_r location starnets.ro>
  - contrib mrtgmk
-From: Tomas Pospisek <tpo@spin.ch>
+From: Tomas Pospisek <tpo location spin.ch>
  - update for get-multiserial contrib
-From: "Gellatly, Laurie (x8864)" <laurie.gellatly@vodafone.com.au>
+From: "Gellatly, Laurie (x8864)" <laurie.gellatly location vodafone.com.au>
  - contrib: hp openview integration
-From: Jef Considine <jconsidine@infolibria.com>
+From: Jef Considine <jconsidine location infolibria.com>
  - fixed the relative percent y-coordinates in rateup when using bits
-From: Tim Cimarusti <cimarust@mercernet.com>
+From: Tim Cimarusti <cimarust location mercernet.com>
  - ciscoindex contribution
-From: "J. Nick Koston" <bdraco@the.system.is.halted.net>
+From: "J. Nick Koston" <bdraco location the.system.is.halted.net>
  - allow @ in community names ...
-From: Steven Micallef <smic@wire.net.au>
+From: Steven Micallef <smic location wire.net.au>
  - addded diskmon contrib
 
 From: Tobi
@@ -1984,52 +2043,52 @@ From: Tobi
  - added nt-guide back into the archive ...
  - fixed the Signal 127 with Exit Value 16777215 problem
 
-From: Justin McCann <justin@karlnet.com>
+From: Justin McCann <justin location karlnet.com>
  - moved a last malloc to calloc in rateup ..
 
-From: Butch Kemper <kemper@tstar.net>
+From: Butch Kemper <kemper location tstar.net>
  - updated PM3Lines.pl
 
-From: Calle Olsen <calle@volvo.se>
+From: Calle Olsen <calle location volvo.se>
  - added stat.pl (DNS monitor)
 
 Changes 2.7.4
 -------------
-From: Alexandre Steinberg <steinberg@marconi.base.com.br>
+From: Alexandre Steinberg <steinberg location marconi.base.com.br>
  - rateup.c made to compile with VC++ 6.0
  - new rateup.exe which has no timezone problems added to zip
    archive.
 
-From: Thomas Muggli - NSM <mugglit@cscoe.ac.com>
+From: Thomas Muggli - NSM <mugglit location cscoe.ac.com>
  - added threshold monitoring functionality
 
 Changes 2.7.3
 -------------
-From: Dima Sivachenko <dima@Chg.RU>
+From: Dima Sivachenko <dima location Chg.RU>
  - more squid OIDs for SNMP_util.pm
-From: Vlado Potisk <vlado_potisk@tempest.sk>
+From: Vlado Potisk <vlado_potisk location tempest.sk>
  - reproducable evaluation order by sorting targets ...
-From: Morten S. Nielsen <msn@ipt.dtu.dk>
+From: Morten S. Nielsen <msn location ipt.dtu.dk>
  - fixes for Squid OIDs in SNMP_utils.pm
-From: "Tony-Farr (Canberra)" <Tony.Farr@austrade.gov.au>
+From: "Tony-Farr (Canberra)" <Tony.Farr location austrade.gov.au>
  - contributed Whodo, a set of Perl scripts to analyse IP accounting data
    from a cisco. to be found in the contrib direcotry.
-From: Andreas Papst <Andreas.Papst@univie.ac.at>
+From: Andreas Papst <Andreas.Papst location univie.ac.at>
  - fix for y legend in scaling mode with dorelpercent enabled
 Changes 2.7.2
 -------------
-From: Brad <brad@openbsd.org>
+From: Brad <brad location openbsd.org>
  - Fix for malloc.h warning when compiling on *BSD
 From: Tobi
  - Ignore \n at the end of ifDescrs. This was fatal for Reconfig checking
-From: Ken Stieers <KStieers@ontrack.com>
+From: Ken Stieers <KStieers location ontrack.com>
  - Added -G and -g as arguments to indexmaker
 
 Changes 2.7.1
 -------------
-From: Kevin Sartorelli <kevin@sartorelli.gen.nz>
+From: Kevin Sartorelli <kevin location sartorelli.gen.nz>
  - SNMP_util.pm cacheCurrentSwapSize should end in 14
-From: Andres Kroonmaa <andre@ml.ee>
+From: Andres Kroonmaa <andre location ml.ee>
  - added option transparent to make the background of generated gifs
    transparent ...
  - more updates to indexmaker
@@ -2037,29 +2096,29 @@ From: Andres Kroonmaa <andre@ml.ee>
    this is experimental code. it is called cfgmaker_ip.
  - ipget integrated into mrtg. you can now specify an ip address
    instead of an port number ...
-From: Horak Daniel <horak@mmp.plzen-city.cz>
+From: Horak Daniel <horak location mmp.plzen-city.cz>
  - updated ip-get patch 
-From: "Mark D. Nagel" <nagel@intelenet.net>
+From: "Mark D. Nagel" <nagel location intelenet.net>
  - icondir awarenes for indexmaker
-From: Alexandre BAUMEISTER <alex@finance-net.com>
+From: Alexandre BAUMEISTER <alex location finance-net.com>
  - fixed -s /-S options in indexmaker
-From: Ralf Weber <fl1ger@de.colt.net>
+From: Ralf Weber <fl1ger location de.colt.net>
  - fixed compatibility problem with SNMP_Session ... undef != -1 !!! 
 
 Changes 2.7.0
 -------------
 From: Steve Pierce, Director of Fun @ HDL
  - new nt install guide ... 
-From: Simon Leinen abd Mike Mitchell <mcm@wnt.sas.com>
+From: Simon Leinen abd Mike Mitchell <mcm location wnt.sas.com>
  - Update to SNMP_Session 0.69
  - ability to use @ in community string ...
-From: Eric Murat <Eric.Murat-Alten@renault.com>
+From: Eric Murat <Eric.Murat-Alten location renault.com>
   little error in subst code fixed ...
 
-From: Rory Clancy <Rory.Clancy@analog.com>
+From: Rory Clancy <Rory.Clancy location analog.com>
   <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 
-From: andre@ml.ee Thu Feb 25 21:13:01 1999
+From: andre location ml.ee Thu Feb 25 21:13:01 1999
  * NEW indexmaker ...
  - accepts multiple config files, (also wildcards)
  - options allowed per config-file (options between filenames)
@@ -2070,7 +2129,7 @@ From: andre@ml.ee Thu Feb 25 21:13:01 1999
  - option to specify overview graphs sizes
  - few options to increase/decrease bells an whistles
 
-From: Anri Kopystyansky <anri@polynet.lviv.ua>
+From: Anri Kopystyansky <anri location polynet.lviv.ua>
    * correct squid OIDs for cacheHttpInKb cacheHttpOutKb cacheICPpktsSent
      cacheICPpktsRecv
 
@@ -2079,20 +2138,20 @@ From: Simon Leinen
 
 Changes 2.6.5
 -------------
-From: Norman Aronsen <tib@jccomp.com>
+From: Norman Aronsen <tib location jccomp.com>
    * added space after #! in perl scripts this is more portable
-From: "riocat(^..^)~" <riocat@ceres.dti.ne.jp>
+From: "riocat(^..^)~" <riocat location ceres.dti.ne.jp>
    * Japanese translation of mrtg docu added ... 
-From: Robert Allmeroth <robert@hilan.de>
+From: Robert Allmeroth <robert location hilan.de>
    * relaxed SNMP_Session.pm s requirements for SNMP response consistancy
      so that error-index gets disregarded when error-status is 0
-From: "Tony-Farr (Canberra)" <Tony.Farr@austrade.gov.au>
+From: "Tony-Farr (Canberra)" <Tony.Farr location austrade.gov.au>
    * contributed script that extracts summary figures from the MRTG log files.
      Because it uses Excel, it is only useful on Windows.
-From: Eric Billeter <ebilleter@cableone.net>
+From: Eric Billeter <ebilleter location cableone.net>
    * contrubuted some scripts he modified to monitor the modem utilization
      of my USR Total control racks.
-From: Alberto Pasquale <pasquale@pianeta.it>
+From: Alberto Pasquale <pasquale location pianeta.it>
    * optional handling of two different MaxBytes settings: MaxBytes1/MaxBytes2  
 
 Changes 2.6.4
@@ -2139,21 +2198,21 @@ From: Tobi
    added configure script
    changed cfgmaker to use ipaddress as name for targets
  
-From: Simon Leinen  <simon@limmat.switch.ch>
+From: Simon Leinen  <simon location limmat.switch.ch>
    integration of the SNMP_util and the latest SNMP_session
    interestingly enough this can make things much faster on occasion ... 
    new version of cfgmaker which uses gettable ... 
 
-From: oliver.haid@tilak.or.at
+From: oliver.haid location tilak.or.at
    mrtg-conf.pod fixes, #a0a0a0 and integer option
    rateup.c added better scanning of legend argument
 
-From: Andreas Papst <Andreas.Papst@univie.ac.at>
+From: Andreas Papst <Andreas.Papst location univie.ac.at>
    dorelpercent kMG kilo
    improvements for perminute perhour
    some OIDs for SQUID 2.0.RELEASE
 
-From: Matija Grabnar <Matija.Grabnar@arnes.si>
+From: Matija Grabnar <Matija.Grabnar location arnes.si>
    I implemented a patch that displays the per-hour rate instead of the per-second
    rate. It is triggered by including "hourly" in the options line.
    The patch has worked satisfactorily on our site (used when measuring cache 
@@ -2178,13 +2237,13 @@ fixed fatal comma in cfgmaker ..
 Changes 2.5.4
 -------------
 
-From: Russell Carleton <roccor@netscape.net>
+From: Russell Carleton <roccor location netscape.net>
    almost 100 new interface types for cfgmaker ... 
 
-From: "Tony-Farr (Canberra)" <Tony.Farr@austrade.gov.au>
+From: "Tony-Farr (Canberra)" <Tony.Farr location austrade.gov.au>
    better matching for cisco version number in cfgmaker
 
-From: Ricardo Bravo <ricardob@comsat.net.ar>
+From: Ricardo Bravo <ricardob location comsat.net.ar>
    improved matching of regexp indexmaker
 
 From: yours truely
@@ -2192,17 +2251,17 @@ From: yours truely
    and back of external commands output
    fixed longstanding bug in diff function ... 0 - 10 did not work
 
-From: Henning P . Schmiedehausen <hps@tanstaafl.de>
+From: Henning P . Schmiedehausen <hps location tanstaafl.de>
    Correct behaviour if the child process has already terminated
    before mrtg goes to wait for it ...
 
-From: Daniel Trinkle <trinkle@cs.purdue.edu>
+From: Daniel Trinkle <trinkle location cs.purdue.edu>
    Error message if the cfg file can not be opened ... 
 
->From Simon Leinen <simon@limmat.switch.ch> better configurability of
+>From Simon Leinen <simon location limmat.switch.ch> better configurability of
 SNMP timeouts ... 
 
->From Jean-Luc RICHIER (Jean-Luc.Richier@Imag.Fr  richier@imag.fr)
+>From Jean-Luc RICHIER (Jean-Luc.Richier location Imag.Fr  richier location imag.fr)
 1/ If there is a ' in an external target description (within `),
    mrtg dies with eval problems.  (I needed ' to protect spaces).
    This comes from a substitution in the target, which tries to convert
@@ -2220,7 +2279,7 @@ Changes 2.5.3
 -------------
 * more consistant handling of pre and postfix settings in cfg files
   and lots of fixes to the manual ...
-  thanks to Mark Martinec <Mark.Martinec@nsc.ijs.si>
+  thanks to Mark Martinec <Mark.Martinec location nsc.ijs.si>
 * correct handling of ifDescrs which contain an = sign ...
 * better sanitizing of calculated target values
 * fixed overflow bug with maxx in rateup
@@ -2232,15 +2291,15 @@ Changes 2.5.2
 * removed NT cron from readme.html ... just too many problems with it ... 
 * make sure no two mrtgs are running at the same time. Locking code for
   UNIX by Dave Rand, for NT by Tobi (I don't know about NT ...:-) )
-  testing for the NT version was done by Henry Steinhauer <H1STEINH@hewitt.com>
+  testing for the NT version was done by Henry Steinhauer <H1STEINH location hewitt.com>
   thanks !
 * updated to SNMP_Session and BER.pm to their latest versions.
-* updated get-active contrib From: Wee-Meng LEE <leewm@hpsgmx18.sgp.hp.com>
-* cpumon contrib by Matthew Ramsey <mjr@blackened.com>
-* cfgmaker patch from Mike Diehn mdiehn@mindspring.net
+* updated get-active contrib From: Wee-Meng LEE <leewm location hpsgmx18.sgp.hp.com>
+* cpumon contrib by Matthew Ramsey <mjr location blackened.com>
+* cfgmaker patch from Mike Diehn mdiehn location mindspring.net
   to make it get Cisco PVC descriptions
 * Updated mrtg-dynip to 0.41b
-* mrtg.cfg-dist is now mrtg-conf.html thanks to Matija Grabnar <Matija.Grabnar@arnes.si>
+* mrtg.cfg-dist is now mrtg-conf.html thanks to Matija Grabnar <Matija.Grabnar location arnes.si>
 * typo in error messages when external gatherer returns invalid data.
 
 Changes 2.5.1
@@ -2261,7 +2320,7 @@ Changes 2.5
 * BER.pm and SNMPSession.pm with version numbers ... 
 
 * rewrite of the mailstats script 
-  from Petter Reinholdtsen <pere@minerva.link.no>
+  from Petter Reinholdtsen <pere location minerva.link.no>
 
 * do only draw the maxbytes line if it is within the actual graph.
 
@@ -2280,33 +2339,33 @@ Changes 2.5
 
 * made cfgmaker ignore cisco E1 controllers, as their if-descriptions
   seems not to be reported properly by IOS .... 
-  patch from Josh Bailey (mailto:joshb@xtra.co.nz)
+  patch from Josh Bailey (mailto:joshb location xtra.co.nz)
 
 * Added README.logfile-format by Butch Kemper
 
 * update mrtg-pingprobe thanks peter
 
-* added atmmaker by Mark Trettin <mkt@lucent.com> to the
+* added atmmaker by Mark Trettin <mkt location lucent.com> to the
   contrib section. this is a cfgmaker variant which generates
   cfgs for the FORE ASX
 
 * its suppress and not suppress. Changed this and added backward compatibility.
 
-* From: Niels <niels@holding.pi.net>: added Option[] Integer which
+* From: Niels <niels location holding.pi.net>: added Option[] Integer which
   suppresses the  decimal part the summary line below the graphs ...
 
 * added --vendor switch to cfgmaker. This enables and disables the 
   vendor specific queries ...
 
-* added contrib from Carlos Canau <canau@dawn.EUnet.pt>
+* added contrib from Carlos Canau <canau location dawn.EUnet.pt>
   It allows one to make a graph of analog/ISDN lines on a 
   Livingston Portmaster 3.   (PMLines)
 
 * fixed a longstanding bug where rateup was skewing at log entries not
   aligned with the normal sampling interval. This happened when ever
   the NEXT macro was going from one sampling interval onto another one
-  ... thanks to  Lane Patterson of GlobalCenter ISI <lane@isi.net>,
-  Erwin Authried <eauth@softsys.co.at> and Ari Lewitter <ajl@NewsAlert.com>
+  ... thanks to  Lane Patterson of GlobalCenter ISI <lane location isi.net>,
+  Erwin Authried <eauth location softsys.co.at> and Ari Lewitter <ajl location NewsAlert.com>
 
 * further improved the accuracy for large installations. Mrtg does now
   get a timestamp down with every reading taken from a router. If 
@@ -2338,21 +2397,21 @@ Changes 2.4.1
 Changes 2.4
 -----------
 
-* fixed IconDir ... Carlos Canau <canau@dawn.EUnet.pt>
+* fixed IconDir ... Carlos Canau <canau location dawn.EUnet.pt>
 
-* mrtg.cfg-dist debugged and rewritten ...  Paul FIscher <paul@shire.btg.com>
+* mrtg.cfg-dist debugged and rewritten ...  Paul FIscher <paul location shire.btg.com>
 
-* mod_expire tip from Stephane Bortzmeyer <bortzmeyer@cache.cnrs.fr>
+* mod_expire tip from Stephane Bortzmeyer <bortzmeyer location cache.cnrs.fr>
   added to mrtg.cfg-dist
 
 * mrtg: large values are not handled by int any more but rather by 
   sprintf "%.0f"
 
-* mailstat fixes by Petter Reinholdtsen <pere@minerva.link.no>
+* mailstat fixes by Petter Reinholdtsen <pere location minerva.link.no>
  
 * added nopercent option as suggested by Frank van Wensveen
 
-* added contrib by Philippe.Simonet@SWISSTELECOM.com
+* added contrib by Philippe.Simonet location SWISSTELECOM.com
   a c-program to create gifs showing the traffic distribution over time
   real neat ...  Thanks ...
 
@@ -2365,11 +2424,11 @@ Changes 2.3
 -----------
 
 Added IconDir configurable, for people who want to keep the mrtg 
-logo in a central location. As suggested by James FitzGibbon <james@nexis.net>
+logo in a central location. As suggested by James FitzGibbon <james location nexis.net>
 
 Made the period var a double in rateup.c as suggested by Dave
 
-Added patch from Paul <root@nevertheless.redline.ru> to cfgmaker
+Added patch from Paul <root location nevertheless.redline.ru> to cfgmaker
 now it will try to figure the speed of an interface ....
 
 Stooped mrtg from aborting on non existing HOST names
@@ -2379,7 +2438,7 @@ Warn on Duplicate CFG entries.
 Customizable week number thingy from Simon Leinen
 
 rateup fix for FreeBSD: FreeBSD does not need malloc.h
-included. From: Ulf Zimmermann <ulf@Alameda.net>
+included. From: Ulf Zimmermann <ulf location Alameda.net>
 
 Fix for time chitter by Dave ...
 
@@ -2389,7 +2448,7 @@ relaxed parsing of keywords. ther can be a space before the
 colon .... as sugested by Samath
 
 
->From mcm@unx.sas.com Tue Jun  3 07:43:38 1997
+>From mcm location unx.sas.com Tue Jun  3 07:43:38 1997
 
 Cheanged rateup.c so that it will start scaling the graphs when the 
 datarate is higher than MaxBytes, if the AbsMax value is set. Even when it
@@ -2397,7 +2456,7 @@ is operation in unscaled mode ...
 I also changed 'indexmaker' to allow me to pass in a title, and
 to support the 'Directory' option in the configuration file.
 
-From: Jay Soffian <jay@lw.net> Wed, 04 Jun 1997 15:34:01 -0400
+From: Jay Soffian <jay location lw.net> Wed, 04 Jun 1997 15:34:01 -0400
 
 Added new configurables XScale[], YScale[] to really enlarge the graphs and not
 just make their pixels larger ...
@@ -2417,21 +2476,21 @@ an old version of perl, use SNMP_Session.pm-for-perl5.001
 Added Contribution from Anthony Rumble. For gathering stats for apache
 webservers and squid proxies
 
-From: T. Pospisek <tpo@spin.ch>
+From: T. Pospisek <tpo location spin.ch>
 SHELL scripts to get active tty(-dial-in modem-) lines localy and remotely. 
 I'm using them with a cyclades board but they can be adapted at wish to
 different tasks.
 
-made graphs in indexmaker generated pages clickable ... leewm@sgp.hp.com 
+made graphs in indexmaker generated pages clickable ... leewm location sgp.hp.com 
 
 added contributet script for gatherig portmaster stats 
 
 added mrtg-blast contrib from Balthasar T. Indermuehle
 
 made mrtg observe order of routers in cfg file .... as suggested by
-Mick Ghazey <mick@lowdown.com>  
+Mick Ghazey <mick location lowdown.com>  
 
-Added GetSNMPLinesUP to contrib ... from Carlos Canau <canau@dawn.EUnet.pt>
+Added GetSNMPLinesUP to contrib ... from Carlos Canau <canau location dawn.EUnet.pt>
 this is for monitoring Modembanks ...
 
 Added timezone configurable to set a timezone per router. Details in 
@@ -2457,7 +2516,7 @@ map into a clickable gif with colorcoded representation of the
 current load of your network links. The information for the colorcoding
 is taken from the mrtg log files.
 
-From: "Peter W. Osel" <pwo@hl.siemens.de>
+From: "Peter W. Osel" <pwo location hl.siemens.de>
 A perl script to get roundtrip delays to hosts by sending a ping 
 to them. Added to contrib.
 

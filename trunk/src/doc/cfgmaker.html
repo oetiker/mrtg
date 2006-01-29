@@ -64,7 +64,7 @@
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
-<p>cfgmaker - Creates mrtg.cfg files (for mrtg-2.10.15)</p>
+<p>cfgmaker - Creates mrtg.cfg files (for mrtg-2.11.1)</p>
 <p>
 </p>
 <hr />
@@ -75,8 +75,8 @@
 <hr />
 <h1><a name="options">OPTIONS</a></h1>
 <pre>
- --ifref=nr        interface references by Interface Number (default)
- --ifref=ip                         ... by Ip Address
+ --ifref=nr    interface references by Interface Number (default)
+ --ifref=ip                     ... by Ip Address
  --ifref=eth                        ... by Ethernet Number
  --ifref=descr                      ... by Interface Description
  --ifref=name                       ... by Interface Name
@@ -142,11 +142,11 @@
                    Specify default SNMP options to be appended to all
                    routers following.  Individual fields can be empty.
                    Routers following might override some or all of the
-                   options given to --snmp-options.</pre>
+           options given to --snmp-options.</pre>
 <pre>
  --dns-domain=domain
-                   Specifies a domain to append to the name of all
-                   routers following.</pre>
+           Specifies a domain to append to the name of all
+           routers following.</pre>
 <pre>
  --nointerfaces    Don't do generate any configuration lines for interfaces,
                    skip the step of gathering interface information and
@@ -690,6 +690,12 @@ word Vlan or VLAN in their ifdescs)
 Returns the vlan id associated with a specific port
 on Cisco Catalyst switches under both Catalyst OS
 and IOS.  If it is not a vlan interface, will return undef.
+</dd>
+<p></p>
+<dt><strong><a name="item__24if_mtu"><strong>$if_MTU</strong></a></strong><br />
+</dt>
+<dd>
+Returns the Maximum Transfer Unit associated with a specific port.
 </dd>
 <p></p></dl>
 <p>Besides that, you can also use the variables defined for templates below.

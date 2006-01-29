@@ -1,7 +1,7 @@
 # things that the GNU standards document suggests all makefiles
 # should have.
 SHELL=/bin/sh
-VER=2.10.15
+VER=2.11.1
 .SUFFIXES:
 .SUFFIXES: .c .o .pl .pm .pod .html .man .wml .1 .txt
 
@@ -121,7 +121,9 @@ doc:    getpod versync man html txt
 
 
 rateupexe:
-	i386-mingw32msvc-gcc -Wall -Wno-format -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -O3 -mwindows -Ilibs-i386-mingw32msvc/zlib -Ilibs-i386-mingw32msvc/libpng -Ilibs-i386-mingw32msvc/gd -Llibs-i386-mingw32msvc/zlib -Llibs-i386-mingw32msvc/libpng -Llibs-i386-mingw32msvc/gd src/rateup.c -o bin/rateup.exe -lgd -lpng -lz
+	i386-mingw32msvc-gcc -Wall -Wno-format -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -O3 -mwindows -Ilibs-i386-mingw32msvc/zlib -Ilibs-i386-mingw32msvc/libpng -Ilibs-i386-mingw32msvc/gd -c src/strftime.c -o src/strftime.o
+	i386-mingw32msvc-gcc -Wall -Wno-format -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -O3 -mwindows -Ilibs-i386-mingw32msvc/zlib -Ilibs-i386-mingw32msvc/libpng -Ilibs-i386-mingw32msvc/gd -c src/rateup.c -o src/rateup.o -Dstrftime=strftime_
+	i386-mingw32msvc-gcc -Llibs-i386-mingw32msvc/zlib -Llibs-i386-mingw32msvc/libpng -Llibs-i386-mingw32msvc/gd  src/rateup.o src/strftime.o -o bin/rateup.exe -lgd -lpng -lz
 	i386-mingw32msvc-strip bin/rateup.exe
 
 tar:	doc rateupexe

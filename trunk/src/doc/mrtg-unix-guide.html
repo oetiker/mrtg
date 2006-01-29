@@ -28,7 +28,7 @@
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
-<p>mrtg-unix-guide - Instructions for running MRTG 2.10.15 on a Unix Box</p>
+<p>mrtg-unix-guide - Instructions for running MRTG 2.11.1 on a Unix Box</p>
 <p>
 </p>
 <hr />
@@ -152,7 +152,7 @@ already exist on your system. No problem, just use it.</p>
  cd ..</pre>
 <p>If you don't have libpng installed</p>
 <pre>
- wget <a href="http://planetmirror.com/pub/sourceforge/libpng/libpng-1.0.15.tar.gz">http://planetmirror.com/pub/sourceforge/libpng/libpng-1.0.15.tar.gz</a>
+ wget <a href="http://public.planetmirror.com/pub/sourceforge/l/li/libpng/libpng-1.0.15.tar.gz">http://public.planetmirror.com/pub/sourceforge/l/li/libpng/libpng-1.0.15.tar.gz</a>
  gunzip -c libpng-*.tar.gz |tar xf -
  rm libpng-*.tar.gz
  mv libpng-* libpng
@@ -196,8 +196,8 @@ following material should actually be written on a single line.
 <p>Ok, now everything is ready for the mrtg compilation.</p>
 <pre>
  cd /usr/local/src
- gunzip -c mrtg-2.10.15.tar.gz | tar xvf -
- cd mrtg-2.10.15</pre>
+ gunzip -c mrtg-2.11.1.tar.gz | tar xvf -
+ cd mrtg-2.11.1</pre>
 <p>If all the libraries have been preinstalled on your system you can
 configure mrtg by doing a simple:</p>
 <pre>
@@ -295,7 +295,7 @@ documentation of your system to make sure you get this right.</p>
 <p>A <strong>minimal</strong> script to put into <em>init.d</em> might look like this:</p>
 <pre>
  #! /bin/sh
- cd /usr/local/mrtg-2.10.15/bin &amp;&amp; ./mrtg --user=mrtg-user \
+ cd /usr/local/mrtg-2.11.1/bin &amp;&amp; ./mrtg --user=mrtg-user \
        /home/httpd/mrtg/mrtg.cfg  --logging /var/log/mrtg.log</pre>
 <p>Note that this will only work with <strong>RunAsDaemon: Yes</strong> in your
 mrtg.cfg file.</p>

@@ -2,7 +2,7 @@
 package MRTG_lib;
 
 ###################################################################
-# MRTG 2.10.15  Support library MRTG_lib.pm
+# MRTG 2.11.1  Support library MRTG_lib.pm
 ###################################################################
 # Created by Tobias Oetiker <oetiker@ee.ethz.ch>
 #            and Dave Rand <dlr@bungi.com>
@@ -583,10 +583,10 @@ sub cfgcheck ($$$$) {
     # duplicate entries in @$target.
     my $targIndex = { };
     my $error="no";
-    my(@known_options) = qw(growright bits noinfo absolute gauge nopercent avgpeak
+    my(@known_options) = qw(growright bits noinfo absolute gauge nopercent avgpeak derive
 			    integer perhour perminute transparent dorelpercent 
 			    unknaszero withzeroes noborder noarrow noi noo
-			    nobanner nolegend pngdate printrouter);
+			    nobanner nolegend logscale secondmean pngdate printrouter);
 
     snmpmapOID('hrSystemUptime' => '1.3.6.1.2.1.25.1.1');
 
@@ -805,6 +805,10 @@ sub cfgcheck ($$$$) {
                     $error="yes";
                 }
             }
+	    if ($rcfg->{'options'}{derive}{$rou} and not $cfg->{logformat} eq 'rrdtool'){
+		    warn ("WARNING: Option[$rou]: \"derive\" works only with rrdtool logformat\n");
+		    $error="yes";
+	    }
         }
         #
         # Check out routeruptime definition
@@ -1240,7 +1244,7 @@ sub targparser( $$$$ ) {
 			'@' .						# separator
 		'(?:(\[[a-fA-F0-9:]*\])|' .		# hostname as IPv6 address ($if->{HostIPv6})
 		'([-\w]+(?:\.[-\w]+)*))' .		# or DNS name ($if->{HostName})
-		'((?::[\d.]*)*)' .				# SNMP session configuration ($if->{SnmpInfo})
+		'((?::[\d.!]*)*)' .				# SNMP session configuration ($if->{SnmpInfo})
 		'(?:\|([a-zA-Z_][\w]*))?';		# numeric conversion subroutine ($if->{ConvSub})
 
 	# Match strings for simple and complex interface specifications. Entries

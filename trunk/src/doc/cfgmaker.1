@@ -129,17 +129,17 @@
 .\" ========================================================================
 .\"
 .IX Title "CFGMAKER 1"
-.TH CFGMAKER 1 "2004-08-08" "2.10.15" "mrtg"
+.TH CFGMAKER 1 "2005-01-06" "2.11.1" "mrtg"
 .SH "NAME"
-cfgmaker \- Creates mrtg.cfg files (for mrtg\-2.10.15)
+cfgmaker \- Creates mrtg.cfg files (for mrtg\-2.11.1)
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
 cfgmaker [options] [community@]router [[options] [community@]router ...]
 .SH "OPTIONS"
 .IX Header "OPTIONS"
 .Vb 6
-\& --ifref=nr        interface references by Interface Number (default)
-\& --ifref=ip                         ... by Ip Address
+\& --ifref=nr    interface references by Interface Number (default)
+\& --ifref=ip                     ... by Ip Address
 \& --ifref=eth                        ... by Ethernet Number
 \& --ifref=descr                      ... by Interface Description
 \& --ifref=name                       ... by Interface Name
@@ -233,13 +233,13 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
 \&                   Specify default SNMP options to be appended to all
 \&                   routers following.  Individual fields can be empty.
 \&                   Routers following might override some or all of the
-\&                   options given to --snmp-options.
+\&           options given to --snmp-options.
 .Ve
 .PP
 .Vb 3
 \& --dns-domain=domain
-\&                   Specifies a domain to append to the name of all
-\&                   routers following.
+\&           Specifies a domain to append to the name of all
+\&           routers following.
 .Ve
 .PP
 .Vb 3
@@ -666,6 +666,9 @@ word Vlan or \s-1VLAN\s0 in their ifdescs)
 Returns the vlan id associated with a specific port
 on Cisco Catalyst switches under both Catalyst \s-1OS\s0
 and \s-1IOS\s0.  If it is not a vlan interface, will return undef.
+.IP "\fB$if_MTU\fR" 4
+.IX Item "$if_MTU"
+Returns the Maximum Transfer Unit associated with a specific port.
 .PP
 Besides that, you can also use the variables defined for templates below.
 Further, all the variables available in cfgmaker is at the scripts disposal

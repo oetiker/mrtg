@@ -99,7 +99,7 @@ AC_ARG_WITH(png-inc,[  --with-png-inc=DIR      location of the libpng include fi
 		[CPPFLAGS="${CPPFLAGS} -I${withval}"])
 
 
-LDFLAGS="${LDFLAGS} ${MATHLIBS}"
+LIBS="${LIBS} ${MATHLIBS}"
 
 GDEXTRALIB=""
 dnl which version of gd do we have here ?
