@@ -1,0 +1,38 @@
+WorkDir: /home/lucas/public_html/mrtg
+
+Refresh: 300
+Interval: 5
+WriteExpires: Yes
+IconDir: images/
+RunAsDaemon: Yes
+
+#.....................................................................
+# Default settings
+
+MaxBytes[_]: 10000
+Options[_]: gauge, noinfo, nopercent, integer, growright
+Background[_]: #FFFFC0
+YLegend[_]: Users
+WithPeak[_]: wym
+ShortLegend[_]: Users
+Legend1[_]: Users
+Legend2[_]:
+Legend3[_]: Max Users
+Legend4[_]:
+LegendI[_]: &nbsp;Users :
+Colours[_]: BLUE#0000FF,BLUE#0000FF,LIGHT BLUE#C0C0FF,LIGHT BLUE#C0C0FF
+
+Target[global]: `cat /home/lucas/ircstats2/temp/globalusersmrtg`
+Title[global]: Irc.Kewl.Org User Load
+LegendO[global]:
+PageTop[global]: <H2>Irc.Kewl.Org User Load</H2><TABLE>
+  <TR><TD>Stats Maintainer :</TD><TD><A HREF="mailto:Lucas@Kewl.Org">Lucas@Kewl.Org</A></TD></TR>
+  </TABLE>
+
+Target[angers]: `cat /home/lucas/ircstats2/temp/angers.fr.eu.kewl.org`
+Title[angers]: Angers.FR.EU.Kewl.Org User Load
+LegendO[angers]:
+PageTop[angers]: <H2>Angers.FR.EU.Kewl.Org User Load</H2><TABLE>
+  <TR><TD>Stats Maintainer :</TD><TD><A HREF="mailto:Lucas@Kewl.Org">Lucas@Kewl.Org</A></TD></TR>
+  </TABLE>
+

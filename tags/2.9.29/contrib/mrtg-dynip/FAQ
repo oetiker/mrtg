@@ -1,0 +1,214 @@
+FAQ for mrtg-dynip version 0.41b
+
+0. What are the problems that gave rise to mrtg-dynip?
+  0.1  What is dynamic IP
+  0.2  What is static or fixed IP
+  0.3  What is SNMP and what information can it provide?
+  0.4  What is MRTG?
+  0.5  Can the configuration file MRTG runs on remain unchanged? 
+1.  What does mrtg-dynip do?
+  1.1  Can mrtg-dynip act as a front end to MRTG?
+  1.2  Can mrtg-dynip monitor modem banks?
+2. What do I need to run mrtg-dynip and where can I get it?
+3. What platforms does mrtg-dynip run on?
+4. Are there special considerations to running mrtg-dynip?
+  4.1 How do I make mrtg-dynip executable?
+  4.2 How can I ensure mrtg-dynip can write to directories and files
+5. How do I prevent errors and interpret error messages?
+  5.0 What problems external to mrtg-dynip affect it?
+     5.0.1 Why am I getting losts of weird email from cron?
+     5.0.2 Why does the mrtg-dynip log have weird messages from snmp
+         modules? 
+  5.1 Why doesn't my email address and web page link show?
+  5.2 I have configured everything, yet my index page does not update
+  5.3 Your crontab example looks really odd, please explain.
+6. Why do the in and out graphs closely follow each other in my modem bank
+        graphs? 
+7. I cannot find a solution to my problem in the docmentation and web
+   sites.  What support exists and is there a mailing list?
+
+
+0. What are the problems that gave rise to mrtg-dynip?
+
+The initial problem that gave rise to the creation of mrtg-dynip is that
+MRTG relies on snmp target numbers having a fixed association with file
+names representing physical interfaces.  In environments where the snmp
+target number of a physical interface can vary, such as in a PPP dial in
+environment, it is necessary to ensure that file names associated with real
+physical interfaces are associated with the current snmp target number for
+the device.  This is what mrtg-dynip does.
+
+0.1  What is dynamic IP
+
+To someone dialling in, dynamic IP means when they dial a rotary
+number they do not get a consistent IP address.  To the service provider it
+means a unique IP number is assinged to each telephone line/modem/port.
+
+0.2  What is static or fixed IP
+
+To someone dialling in, static or fixed IP means that their user name is
+approved to use a unique IP address, whether they dial into a rotary for a
+modem bank or into a non rotary number.  To the service provider, it means
+if someone is dialling into a rotary for a modem pool, they allow the modem
+port use a unique approved IP number for that user, that overrides the IP
+address used when a dial in user does not request a fixed or static IP.
+
+0.3  What is SNMP and what information can it provide?
+
+SNMP stands for Simple Network Management Protocol. Like much relating to
+the Internet, it is described by a set of Internet Engineering Task Force
+documents known as RFCs (Requests for Comments).  SNMP is a means by which
+network linked devices can have a wide variety of device status information
+reported from them, and have action performed on them, according to known
+protocols.
+
+0.4  What is MRTG?
+
+MRTG stands for 'Multi Router Traffic Grapher'. Among much else, it provides
+a means for graphing traffic quantity information through various
+interfaces, typically routers, in web acessible means, using information
+reurned from SNMP requests.
+
+0.5  Can the configuration file MRTG runs on remain unchanged?
+
+Not in environmants that the SNMP target number varies for physical
+interface devices you are interested in gathering information on.
+
+1.  What does mrtg-dynip do?
+
+#Mrtg-dynip is a contribution to mrtg, enabling mrtg to generate multi
+#interface traffic graphs for IP interfaces on hosts that do not provide
+#consistent SNMP target numbers for their interfaces.  Such IP interfaces
+#include IP active serial interfaces attached to modems in a PPP dial in
+#environment. The hosts must run snmp agents.  For completeness, information
+#about interface devices with unvarying SNMP target numbers, such as
+#ethernet cards, can be configured to be included.
+
+#Mrtg-dynip's configuration is simplest where static (or fixed) IP is not
+#used for dial into a rotary modem pool.
+
+#Mrtg-dynip can be considred to have sophisticated modem bank monitoring
+#capacity, when the modems carry PPP or SLIP traffic.
+
+#Regenerates a named 'mrtg.cfg' file to ensure snmp data remains with a
+#consistent IP number, or overridable IP number of a real physical device
+#in a dial in IP environment, rather than with an interface name which
+#can get assinged to different real physical devices, and runs mrtg on
+#the generated file.
+
+#Generates a web index file of stats web pages.
+
+#Please see the section 6 of this FAQ for this version for information on
+#for differences in interpreting graphs between some devices
+
+1.1  Can mrtg-dynip act as a front end to MRTG for traffic graphing?
+
+In a sense yes for interface or router traffic, but this is not ADVISABLE or
+necessarily efficient, see above.  Future versions may make mrtg-dynip more
+suitable as a front end to MRTG for some purposes, see the TODO file.
+
+2.  What do I need to run mrtg-dynip?
+
+You need the contribution to MRTG called mrtg-dynip.  Latest version
+available from http://www.heenan.ironbark.id.au/mrtg-dynip.
+
+MRTG needs to be successfully installed.  MRTG can be obtained from
+http://www.ee.ethz.ch/~oetiker/webtools/mrtg/mrtg.html.  MRTG itself needs
+the GD graphics library, see the MRTG package for details. 
+
+3. What platforms does mrtg-dynip run on?
+
+mrtg-dynip should run on all platforms MRTG runs on, including Windows NT. 
+Mrtg-dynip's comments are oriented towards running on UNIX style systems.
+such as Linux.  There are some comments on configuring directoy names for
+Windows NT. Issues involved in differences between running Perl scripts on
+UNIX systems and NT systems should be known to you, if you run run MRTG on
+an NT machine. 
+
+4. Are there special considerations to running mrtg-dynip?
+
+Not really.  You must of course ensure mrtg-dynip is executable and can
+write to directories and files it needs to when executed.
+
+4.1 How do I make mrtg-dynip executable?
+
+In UNIX the command 
+chmod 744 mrtg-dynip
+will make the file executable to the owner of the file
+
+4.2 How can I ensure mrtg-dynip can write to directories and files
+
+You need to ensure directories (and files if they exist already) have
+appropriate write permissions.  This is beyond the scope of this FAQ. 
+Basically if you have mrtg working, you will be able to get mrtg-dynip
+working.
+
+5. How do I prevent errors and interpret error messages?
+
+Please see section 4 above. Set up log file generation as indicated in the
+install file. With regard to starup error messages from rateup, see MRTG. 
+Confirm SNMP agents are running correctly.  After a reboot I have found it
+sometimes necesary to stop and restart the snmp daemon.  Changing order
+around in startup file may have fixed this problem.  I have found running
+mrtg-dynip manually outside its crond schedule may alter graph data,
+starting anew on some.
+
+5.0 What problems external to mrtg-dynip have been experienced?
+
+Such is the burden of the system adminstrator to be the victim of cryptic
+error messages
+  
+5.0.1 Why am I getting losts of weird email from cron?
+
+Check you only have one crond running.  If more than one is running then
+expect weird mesages and data loss.
+
+5.0.2 Why does the mrtg-dynip log have weird messages from snmp modules?
+
+If you think your configuration is correct, try killing your snmp daemon,
+restarting it and wait to see if the messages come up again before worrying
+about the messages.
+
+5.2 Why doesn't my email address and web page link show?
+
+Did you remove the comment symbol '#' in the configuration file?
+
+5.3 I have configured everything, yet my index page does not update
+
+The default option is to die if there are any response problems.  Try
+changing the $suicidal option. Examine the log file.
+
+5.4 Your crontab example looks really odd, please explain.
+
+First the script gets mrtg to run on the regenerated 'mrtg-dynip.cfg' file. 
+The crontab entry is designed to send any error mwessages from standard
+output and error to a log file with a date and time indicator.  If you don't
+do this you may end up perplexing/annoying/frightening those on the root
+email distribution list (who are automatically emailed unredirected standard
+output and error from cron jobs), if you run the script as user root. The
+error messages can be confusing to those inexperienced with mrtg and snmp,
+and can be lengthy and frequent!
+
+6. Why do the in and out graphs closely follow each other in my modem bank
+graphs?
+
+This has to do with the way information is reported by by the snmp agent for
+the interface devices.  On mainstream ISDN router devices, 'in' appears to
+indicate incoming packets on one side and 'out' appears to be outgoing
+packets on the same side.  
+
+For some interfaces, 'in' appears to indicate incoming packets to both sides
+and 'out' appears to mean the forwarded packet out of the interface from
+either sides.
+
+It appears as snmp counts both sides of an interface for counting on some
+devices but one side for other devices.  This problem needs to be sorted
+out.
+
+7. I cannot find a solution to my problem in the docmentation and web
+sites.  What support exists and is there a mailing list?
+
+This depends on the problem.  For problems to do with mrtg there is an
+active mailing list and extensive archive.  For problems specific to
+mrtg-dynip please send an email to me at john@heenan.ironbark.id.au.
+I will set up a mailing list if necessasry.

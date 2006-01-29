@@ -1,0 +1,23 @@
+#Echo This file builds the router config files for MRTG for each router"s interfaces
+#Echo See NEWRTR.TXT for details on buiding a new router to include
+
+rm *.cfg
+perl cfgmakerov 10.26.254.1 > nrgiga.cfg
+perl cfgmakerov 203.20.28.1 > zenith.cfg
+perl cfgmakerov 193.20.1.1 > cwdrtr1.cfg
+perl cfgmakerov 193.20.1.2 > cwdrtr2.cfg
+perl cfgmakerov 193.250.1.19 > cwdrtr3.cfg
+perl cfgmakerov 193.250.1.20 > cwdrtr4.cfg
+perl cfgmakerov 193.22.1.1 > melrtr1.cfg
+perl cfgmakerov 193.21.1.1 > sydrtr1.cfg
+perl cfgmakerov 193.21.1.2 > sydrtr2.cfg
+perl cfgmakerov 193.250.1.3 > sydrtr3.cfg
+perl cfgmakerov 10.224.124.0 > tasc1r01.cfg
+perl cfgmakerov 10.224.124.1 > tasc2r02.cfg
+perl cfgmakerov 10.25.252.3 > strc1r01.cfg
+perl cfgmakerov 10.27.252.3 > nrdc1r01.cfg
+perl cfgmakerov 10.24.253.21 > strrtr01.cfg
+perl cfgmakerov 10.24.253.22 > strrtr02.cfg
+perl cfgmakerov 193.250.1.145 > shrtr1.cfg
+perl cfgmakerov 10.20.20.1 > voda_router.cfg
+perl cfgmakerov 190.55.55.9 > total-tel-tulla.cfg

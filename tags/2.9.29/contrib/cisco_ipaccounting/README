@@ -1,0 +1,70 @@
+README - cisco_ip_acc_collect.pl
+
+This is cisco_ip_acc_collect.pl V0.9
+
+This Script gets IP-accounting data from a Cisco Router and generates output
+that can be fed into MRTG.
+
+Configzration:
+--------------
+
+First of all, I sugest you make a backup of your router config, before
+you configure IP accounting and run this script... If something happens,
+I've told you ...
+
+In the networks you can enter the networks you like to analyse in the
+following form:
+
+xxx.xxx.xxx.xxx/CDIR		Name
+
+xxx.xxx.xxx.xxx is the IP Adress of the Network
+
+CDIR            is the CDIR Bitmask
+                /32 = 255.255.255.255
+                /24 = 255.255.255.0
+                /16 = 255.255.0.0 etc.
+
+Name		Is the name of the network.
+                This name can apear more than once.
+                The traffic of all networks that have same 
+                name will be added into one output.
+
+In the .pl file you have to change some variables. See the .pl file for more
+informations.
+
+In the mrtg config file you can enter something like this:
+
+Target[tagretname]: `cat /usr/local/mrtg/cisco_ipaccounting/log_test`
+
+Running this script:
+--------------------
+
+I start this script with cron, yost before mrtg like this:
+
+*/5 * * * * cramer /usr/local/mrtg/cisco_ipaccounting/collect.pl ; /usr/local/mrtg/mrtg /usr/local/mrtg/accounting.conf
+
+Where to get updates:
+---------------------
+
+You can download new versions from ftp://ftp.dolphins.ch/pub/Dolphins/mrtg
+
+
+Copyrigth & Warranty:
+---------------------
+
+This script is 
+    (c) 1999 by Dolphins Network Systems, Matthias Cramer
+
+ This program is free software; you can redistribute it and/or modify it
+ under the terms of the GNU General Public License as published by the Free
+ Software Foundation; either version 2 of the License, or (at your option)
+ any later version.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ more details.
+
+ You should have received a copy of the GNU General Public License along
+ with this program; if not, write to the Free Software Foundation, Inc., 675
+ Mass Ave, Cambridge, MA 02139, USA.

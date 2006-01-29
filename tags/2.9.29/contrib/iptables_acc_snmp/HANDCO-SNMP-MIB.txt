@@ -1,0 +1,73 @@
+HANDCO-SNMP-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    OBJECT-TYPE, MODULE-IDENTITY,
+    Counter32, Integer32, Opaque, enterprises, Counter64
+        FROM SNMPv2-SMI
+
+    TEXTUAL-CONVENTION, DisplayString, TruthValue
+	FROM SNMPv2-TC;
+
+handco MODULE-IDENTITY
+    LAST-UPDATED "0104260000Z"
+    ORGANIZATION "Handco"
+    CONTACT-INFO    
+	 "Primary Author: Herve HERITIER
+         email:     hh@handco.org"
+    DESCRIPTION
+	"This file defines the private UCD SNMP MIB extensions."
+    REVISION	 "0104260000Z"
+    DESCRIPTION
+	"SMIv2 version"
+    ::= { enterprises 2055 }
+
+hostname OBJECT-TYPE
+    SYNTAX	DisplayString
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+	"The process name we're counting/checking on."
+    ::= { handco 1 }
+
+
+iptables OBJECT-TYPE
+	SYNTAX SEQUENCE OF IpTable
+	MAX-ACCESS read-only
+	STATUS	current
+	INDEX {tableName, chainName}
+	DESCRIPTION
+		""
+	::= {handco 2}
+
+IpTable ::= SEQUENCE {
+	chainName	DisplayString
+	chainCounter	Counter64
+	}
+
+iptable OBJECT-TYPE
+	SYNTAX IpTable
+	MAX-ACCESS read-only
+	STATUS	current
+	DESCRIPTION
+		""
+	::= {iptables 1}
+
+chainName OBJECT-TYPE
+	SYNTAX DisplayString
+	MAX-ACCESS read-only
+	STATUS	current
+	DESCRIPTION
+		""
+	::= {iptable 1}
+
+chainCounter OBJECT-TYPE
+	SYNTAX Counter32
+	MAX-ACCESS read-only
+	STATUS	current
+	DESCRIPTION
+		""
+	::= {iptable 2}
+
+
+
+END

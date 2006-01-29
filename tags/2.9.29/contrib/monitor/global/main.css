@@ -1,0 +1,411 @@
+BODY {
+	font : x-small Verdana, Arial, Helvetica, sans-serif;
+        font-size : 7.5pt;
+	color : 000000;}
+
+.NNBold-MCSP {
+	font : bold x-small Verdana, Arial, Helvetica, sans-serif;
+	font-size : 7.5pt;
+	font-weight : bold;
+	color : 3366CC;
+}	
+
+.NNBold-DA {
+	font : bold x-small Verdana, Arial, Helvetica, sans-serif;
+	font-size : 7.5pt;
+	font-weight : bold;
+	color : 003399;
+}	
+
+.NNBold-Gen {
+	font : bold x-small Verdana, Arial, Helvetica, sans-serif;
+	font-size : 7.5pt;
+	font-weight : bold;
+	color : 000000;
+}	
+
+.Greenhead {
+	font : bold x-small Verdana, Arial, Helvetica, sans-serif;
+	font-size : 7.5pt;
+	font-weight : bold;
+	color : 36B236;
+	text-decoration : underline;
+}	
+	
+.HEADING {
+	font : x-small Verdana, Arial, Helvetica, sans-serif;
+	color : 000000;
+	font-size : 10pt;
+	font-weight : bold;
+	}	
+	
+	
+.SEARCH {
+	font : x-small Verdana, Arial, Helvetica, sans-serif;
+	color : 003399;
+	font-size : 7.5pt;
+}	
+	
+.MCSP {
+	font : x-small Verdana, Arial, Helvetica, sans-serif;
+	color : 3366CC;
+	font-size : 7.5pt;	
+}
+
+.MSDA {
+	font : x-small Verdana, Arial, Helvetica, sans-serif;
+	color : 003399;
+	font-size : 7.5pt;	
+}
+
+.COLUMN {
+	font : x-small Verdana, Arial, Helvetica, sans-serif;
+	color : FFFFFF;
+	font-size : 7.5pt;
+	font-weight : bold;
+}	
+
+.COLUMNRED {
+	font : x-small Verdana, Arial, Helvetica, sans-serif;
+	color : FF3300;
+	font-size : 7.5pt;
+	font-weight : bold;
+}
+	
+.BUTTON {
+	background : 6699CC;
+	text-align : center;
+	font-weight : bold;
+	color : White;
+	font : 10px;
+	border-left-color : White;
+	border-top-color : White;
+	border-right-color : Black;
+	border-bottom-color : Black;
+}
+
+.INPUT{
+	height : 20px;
+	width : 100px;
+}
+
+
+
+DIV.Jobs {
+	position: relative;
+	width : 310;
+	height : 85;
+	border : 1px solid;
+	background-color:white;
+	padding : 8px;
+	text-align : left;
+	border-bottom-color : 003399;
+	border-color : 003399 003399 003399 003399;
+	border-left-color : 003399;
+	border-right-color : 003399;
+	border-top-color : 003399;
+}
+
+
+A.MCSPLEVEL1 {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:3366cc;
+	cursor:hand;
+	text-decoration:none;
+	font-weight:bold;}
+A.MCSPLEVEL1:VISITED {  	
+	font-size:7.5pt;
+	line-height:10pt; 
+	color:3366cc;
+	cursor:hand;
+	text-decoration:none;
+	font-weight:bold;}
+A.MCSPLEVEL1:ACTIVE {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:3366cc;
+	cursor:hand;
+	text-decoration:none;
+	font-weight:bold;}
+
+A.MCSPLEVEL2 {
+	font-size:7.5pt;
+	line-height:10pt;
+	color:3366cc;
+	cursor:hand;
+	font-weight : bold;
+	text-decoration : underline;
+}
+A.MCSPLEVEL2:VISITED {  	
+	font-size:7.5pt;
+	line-height:10pt; 
+	color:3366cc;
+	cursor:hand;
+	text-decoration:none;}
+A.MCSPLEVEL2:ACTIVE {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:3366cc;
+	cursor:hand;
+	text-decoration:none;}
+A.MCSPLEVEL2:HOVER {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:FF3300;
+	cursor:hand;
+	text-decoration:underline;}
+
+A.DALEVEL1 {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:003399;
+	cursor:hand;
+	text-decoration:none;
+	font-weight:bold;}
+A.DALEVEL1:VISITED {  	
+	font-size:7.5pt;
+	line-height:10pt; 
+	color:003399;
+	cursor:hand;
+	text-decoration:none;
+	font-weight:bold;}
+A.DALEVEL1:ACTIVE {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:003399;
+	cursor:hand;
+	text-decoration:none;
+	font-weight:bold;}
+
+A.DALEVEL2 {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:003399;
+	cursor:hand;
+	font-weight : bold;
+	text-decoration : underline;}
+		
+A.DALEVEL2:VISITED {  	
+	font-size:7.5pt;
+	line-height:10pt; 
+	color:003399;
+	cursor:hand;
+	text-decoration:none;}
+A.DALEVEL2:ACTIVE {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:003399;
+	cursor:hand;
+	text-decoration:none;}
+A.DALEVEL2:HOVER {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:FF3300;
+	cursor:hand;
+	text-decoration:underline;}
+
+
+
+.HRRED {
+	color:FF3300;
+	height : 1px;}
+
+DIV.Menu {
+	position:absolute;
+	left:160;
+	top: 200w;
+	width: 150;
+	border : 1px solid;
+	background-color:white;
+	padding : 3px;
+	text-align : left;
+	border-bottom-color : 003399;
+	border-color : 003399 003399 003399 003399;
+	border-left-color : 003399;
+	border-right-color : 003399;
+	border-top-color : 003399;
+ 	padding-left : 10px;
+ 	padding-right : 4px;
+ 	padding-top : 4px;
+ 	padding-bottom : 4px;
+	}
+
+.STANDARD {  	
+	font-size:8.5pt;
+	line-height:10pt;
+	color:000000;}
+
+.STANDARDSMALL {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:000000;}
+
+A.DEFAULT {  	
+	font-size:8.5pt;
+	line-height:10pt;
+	color:003399;
+	cursor:hand;}
+A.DEFAULT:VISITED {  	
+	font-size:8.5pt;
+	line-height:10pt;
+	color:003399;
+	cursor:hand;}
+A.DEFAULT:ACTIVE {  	
+	font-size:8.5pt;
+	line-height:10pt;
+	color:003399;
+	cursor:hand;}
+A.DEFAULT:HOVER {  	
+	font-size:8.5pt;
+	line-height:10pt;
+	color:FF3300;
+	cursor:hand;}
+
+A.DEFAULTSMALL {  	
+	font-size:7.5pt;
+	line-height:5pt;
+	color:003399;
+	cursor:hand;}
+A.DEFAULTSMALL:VISITED {  	
+	font-size:7.5pt;
+	line-height:5pt;
+	color:003399;
+	cursor:hand;}
+A.DEFAULTSMALL:ACTIVE {  	
+	font-size:7.5pt;
+	color:003399;
+	line-height:5pt;
+	cursor:hand;}
+A.DEFAULTSMALL:HOVER {  	
+	font-size:7.5pt;
+	line-height:5pt;
+	color:FF3300;
+	cursor:hand;}
+
+A.DEFAULTSMALLSUB {  	
+	font-size:7.5pt;
+	line-height:8pt;
+	color:003399;
+	cursor:hand;}
+A.DEFAULTSMALLSUB:VISITED {  	
+	font-size:7.5pt;
+	line-height:8pt;
+	color:003399;
+	cursor:hand;}
+A.DEFAULTSMALLSUB:ACTIVE {  	
+	font-size:7.5pt;
+	color:003399;
+	line-height:8pt;
+	cursor:hand;}
+A.DEFAULTSMALLSUB:HOVER {  	
+	font-size:7.5pt;
+	line-height:8pt;
+	color:FF3300;
+	cursor:hand;}
+
+
+
+A.BOLD {  	
+	font-size:8.5pt;
+	line-height:10pt;
+	color:003399;
+	cursor:hand;
+	text-decoration:none;
+	font-weight:bold;}
+A.BOLD:VISITED {  	
+	font-size:8.5pt;
+	line-height:10pt;
+	color:003399;
+	cursor:hand;
+	text-decoration:none;
+	font-weight:bold;}
+A.BOLD:ACTIVE {  	
+	font-size:8.5pt;
+	line-height:10pt;
+	color:003399;
+	cursor:hand;
+	text-decoration:none;
+	font-weight:bold;}
+A.BOLD:HOVER {  	
+	font-size:8.5pt;
+	line-height:10pt;
+	color:FF3300;
+	cursor:hand;
+	text-decoration:underline;
+	font-weight:bold;}
+
+A.RED {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:FF3300;
+	cursor:hand;
+	text-decoration:none;
+	font-weight:bold;}
+A.RED:VISITED {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:FF3300;
+	cursor:hand;
+	text-decoration:none;
+	font-weight:bold;}
+A.RED:ACTIVE {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:FF3300;
+	cursor:hand;
+	text-decoration:none;
+	font-weight:bold;}
+A.RED:HOVER {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:003399;
+	cursor:hand;
+	text-decoration:underline;
+	font-weight:bold;}
+	
+A.LEVEL1 {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:black;
+	cursor:hand;
+	text-decoration:none;
+	font-weight:bold;}
+A.LEVEL1:VISITED {  	
+	font-size:7.5pt;
+	line-height:10pt; 
+	color:black;
+	cursor:hand;
+	text-decoration:none;
+	font-weight:bold;}
+A.LEVEL1:ACTIVE {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:black;
+	cursor:hand;
+	text-decoration:none;
+	font-weight:bold;}
+
+A.LEVEL2 {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:003399;
+	cursor:hand;}
+A.LEVEL2:VISITED {  	
+	font-size:7.5pt;
+	line-height:10pt; 
+	color:003399;
+	cursor:hand;}
+A.LEVEL2:ACTIVE {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:black;
+	cursor:hand;}
+A.LEVEL2:HOVER {  	
+	font-size:7.5pt;
+	line-height:10pt;
+	color:FF3300;
+	cursor:hand;
+	text-decoration:underline;}
+
+

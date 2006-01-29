@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# Should be run every n minutes (generally either 5 or 10) in cron as in the
+# crontab example below...
+#
+# */5 * * * * /home/autorun/bin/mrtg_autorun
+#
+# Edit the paths for your system's needs.
+#
+cd /usr/local/mrtg/local-config
+
+gentcucci
+../run/mrtg mrtg.tcusercount.cfg
+../run/mrtg mrtg.tcdegree.cfg

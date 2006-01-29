@@ -1,0 +1,39 @@
+1997/08/22	Release_1_6_0
+
+	* added support for IRIX/6.2
+		contributed by Fabrizio Pivari <Fabrizio.Pivari@agip.it>
+
+1997/05/20	Release_1_5_0
+
+	* added support for FreeBSD/2.2.1
+		with the help of Samath Wijesundara <samath@slt.lk>
+
+	* captured output of external ping program now printed if
+		we can't find the ping summary.
+
+1997/03/12	Release_1_4_0
+
+	* prints now hostname for which ping summary was not found
+	* added support for BSD/OS 2.1
+		with the help of Gildas Perrot <perrot@francenet.fr>
+
+
+1997/03/08	Release_1_3_0
+
+	* added support for Linux,
+		with the help of Mick Ghazey <mick@lowdown.com>
+
+
+1997/02/28	Release_1_2_0
+
+	* added support for AIX,
+		contributed by Fabrizio Pivari <Fabrizio.Pivari@agip.it>
+
+
+1997/02/19	Release_1_1_0
+
+	* Initial public release, included in mrtg_2.1
+
+
+$Id: NEWS,v 1.7 1997/08/23 01:33:23 pwo Exp $
+mrtg-ping-probe release $Name: Release_1_6_0 $

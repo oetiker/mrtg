@@ -1,0 +1,71 @@
+##################################################################
+# Multi Router Traffic Grapher -- Example Configuration File
+#	to integrate mrtg-ping-probe - A Round Trip Time Probe
+##################################################################
+#
+# $Id: mrtg.cfg-ping,v 1.3 1997/02/19 06:55:06 pwo Exp $
+# mrtg-ping-probe release $Name: Release_1_6_0 $
+#
+##################################################################
+# This file is for use with mrtg-2.0
+#
+# Note:
+#
+# * Keywords must start at the begin of a line.
+#
+# * Lines which follow a keyword line which do start 
+#   with a blank are appended to the keyword line
+#
+# * Empty Lines are ignored
+#
+# * Lines starting with a # sign are comments.
+#
+##################################################################
+
+##################################################################
+# Sample entry to ping a host named rubycon
+##################################################################
+
+Title[rubycon]: Round Trip Time Analysis
+	for 256k FrameRelay link between Cupertino and Munich
+PageTop[rubycon]: <H1>Round Trip Time Analysis for Cupertino/Munich link</H1>
+	<P>Actually we are measuring the ping time
+	between our web server and rubycon.  Both
+	are lightly loaded Sun workstations.
+
+##################################################################
+# We set MaxBytes to the time in ms that we consider "normal" for
+# an unused link, so that the per-cent values show how much you
+# are off when the line is used more heavily.  you also have to
+# set AbsMax, otherwise values greate than MaxBytes would be
+# ignored.
+
+MaxBytes[rubycon]: 100
+AbsMax[rubycon]: 10000
+
+##################################################################
+# Set gauge, to treat the values gathered from target as absolute
+#	and not as counters.
+Options[rubycon]: gauge
+
+##################################################################
+# Call the ping-probe.  You can include arguments to increase
+#	the packet count or size.
+Target[rubycon]: `/home/wwwadm/mrtg/mrtg-ping-probe rubycon`
+
+##################################################################
+# We have to change all labels of the graph.
+#
+YLegend[rubycon]: round trip time 
+ShortLegend[rubycon]: ms
+Legend1[rubycon]: Maximum Round Trip Time in ms
+Legend2[rubycon]: Minimum Round Trip Time in ms
+Legend3[rubycon]: Maximal 5 Minute Maximum Round Trip Time in ms
+Legend4[rubycon]: Maximal 5 Minute Minimum Round Trip Time in ms
+LegendI[rubycon]: &nbsp;Max:
+LegendO[rubycon]: &nbsp;Min:
+
+##################################################################
+# You might want to include Peaks or not.
+WithPeak[rubycon]: ymwd
+
