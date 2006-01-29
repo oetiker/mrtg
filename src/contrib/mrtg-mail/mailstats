@@ -8,6 +8,9 @@
 # feeds changes on smtp to mrtg.
 #
 # Irix 6.x seems to lack mailstats
+#
+# Usage mailstats [host]
+#  if host is missing, localhost is used
 
 use strict;
 use Socket;
@@ -18,10 +21,10 @@ my($datafile, $source, $sourceport, @mailstatspaths,
 
 # Adjust this to your own mailserver.  Uses local `mailstats` if set
 # to 'localhost'
-$source         = "localhost";
+$source         = $ARGV[0] || "localhost";
 $sourceport     = "7256";
 
-$datafile       = "/tmp/mailstat.old";
+$datafile       = "/tmp/mailstat-$source.old";
 @mailstatspaths = ( "/usr/sbin/mailstats", "/usr/bin/mailstats" );
 
 ($oldfrm, $oldto) = getOldStats($datafile);
@@ -87,5 +90,3 @@ sub putOldStats {
     close(STAT);
     return "1";
 }
--- 
-##>  Petter Reinholdtsen  <##  |  pere@td.org.uit.no

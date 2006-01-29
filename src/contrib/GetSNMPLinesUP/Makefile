@@ -1,9 +1,12 @@
 # 
 #
 
-# $Id$
-# $Source$
-# $Log$
+# $Id: Makefile,v 1.1.1.1 2002/02/26 10:16:30 oetiker Exp $
+# $Source: /home/oetiker/data/cvs-repo/AABM-mrtg/contrib/GetSNMPLinesUP/Makefile,v $
+# $Log: Makefile,v $
+# Revision 1.1.1.1  2002/02/26 10:16:30  oetiker
+# Intial Import
+#
 
 ADMINDIR=/home/mrtg/bin
 

@@ -11,7 +11,7 @@
 #
 # Distributed under the GNU copyleft
 #
-# $Id: cfgmaker,v 2.2 1997/04/24 15:57:01 oetiker Exp oetiker $
+# $Id: atmmaker,v 1.1.1.1 2002/02/26 10:16:31 oetiker Exp $
 #
 use SNMP_Session;
 use BER;

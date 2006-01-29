@@ -8,10 +8,11 @@
 #
 
 $SNMPGet = '/usr/bin/snmpget';
-$TableBase = '/home/mrtg/bin/ModemTable';
+$TableBase = '/store/lib/mrtg/GetSNMPLinesUP/ModemTable';
 $Community = "public";
 $progname = 'GetSNMPLinesUP.pl';
 $Router = $ARGV[0];
+$Table = $ARGV[1] || "$TableBase.$Router";
 
 $MAGICLEN = 20;
 
@@ -19,13 +20,17 @@ $UPTIME = "system.sysUpTime.0";
 $NAME = "system.sysName.0";
 
 if (!$Router) {
-    die "$progname: $progname ROUTER\n";
+    die "$progname: $progname ROUTER [TableFile]\n";
 }
 
 $var = "$UPTIME $NAME "; $varlen = 2;
 $buzy = 0;
 
-open( TABLE, "$TableBase.$Router" );
+if ( ! -r "$Table") {
+       $Table = "$TableBase.$Router";
+}
+
+open( TABLE, "$Table" );
 while (<TABLE>) {
     chop;
     $var = $var . $_ . " "; $varlen++;
@@ -73,7 +78,7 @@ if ($varlen) {
 }
 
 printf "$buzy\n";
-printf "$buzy\n";
+printf "0\n"; # Unused
 printf "$Uptime\n";
 printf "$Name\n";
 

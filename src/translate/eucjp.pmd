@@ -1,0 +1,129 @@
+###### PATCHTAG00 ####################################################
+###      euc-jp
+###      => Fuminori Uematsu <uematsu@kgz.com>
+###### PATCHTAG10 ####################################################
+  &eucjp
+###### PATCHTAG20 ####################################################
+  'eucjp'        => \&eucjp,
+  'euc-jp'       => \&eucjp, 
+###### PATCHTAG30 ####################################################
+# eucjp/euc-jp
+   'eucjp' =>
+   "  <HR>
+  <FONT SIZE=2>日本語訳(EUC-JP)作成
+  <A HREF=\"http://www.kgz.com/~uematsu/\">植松 文徳</A>
+  <A HREF=\"mailto:uematsu\@kgz.com\">&lt;uematsu\@kgz.com&gt;</A></FONT>
+",
+###### PATCHTAG40 ####################################################
+$credits::LOCALE{'euc-jp'}=$credits::LOCALE{'eucjp'};
+###### PATCHTAG50 ####################################################
+# eucjp
+
+sub eucjp
+{
+  my $string = shift;
+return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+  # charset=iso-2022-jp
+
+  %translations =
+  (  
+     'charset=iso-8859-1'                     => 'charset=euc-jp',
+     'Maximal 5 Minute Incoming Traffic'      => '最大受信量(5分間平均)',
+     'Maximal 5 Minute Outgoing Traffic'      => '最大送信量(5分間平均)',
+     'the device'                             => 'デバイス',
+     'The statistics were last updated(.*)'   => '最終更新日時$1',
+     ' Average\)</B><BR>'                     => '平均)</B><BR>',
+     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>平均値$1',
+     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>最大値$1',
+     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>現在値$1',
+     'version'                                => 'version',
+     '<B>`Daily\' Graph \((.*) Minute'        => '<B>一日グラフ($1分間',
+     '<B>`Weekly\' Graph \(30 Minute'         => '<B>週間グラフ(30分間',
+     '<B>`Monthly\' Graph \(2 Hour'           => '<B>月間グラフ(2時間',
+     '<B>`Yearly\' Graph \(1 Day'             => '<B>年間グラフ(1日',
+     'Incoming Traffic in (\S+) per Second'   => '受信量($1/秒)',
+     'Outgoing Traffic in (\S+) per Second'   => '送信量($1/秒)',
+     'at which time (.*) had been up for(.*)' => '$1の稼働時間$2',
+     '([kMG]?)([bB])/s'                       => '$1$2/秒',
+     '([kMG]?)([bB])/min'                     => '$1$2/分',
+     '([kMG]?)([bB])/h'                       => '$1$2/時間',
+     'Bits'                                   => 'ビット',
+     'Bytes'                                  => 'バイト',
+     '&nbsp;In:</FONT>'                       => '&nbsp;受信:</FONT>',
+     '&nbsp;Out:</FONT>'                      => '&nbsp;送信:</FONT>',
+     '&nbsp;Percentage</FONT>'                => '&nbsp;割合:</FONT>',
+     'Ported to OpenVMS Alpha by'             => 'OpenVMS Alpha版作成',
+     'Ported to WindowsNT by'                 => 'WindowsNT版作成',
+     'and'                                    => 'and',
+     '^GREEN'                                 => '緑',
+     'BLUE'                                   => '青',
+     'DARK GREEN'                             => '暗い緑',
+     'MAGENTA'                                => 'マゼンタ',
+     'AMBER'                                  => '黄色'
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => '(日)', #'Sun' => 'Sun',
+      'Monday'    => '(月)', #'Mon' => 'Mon',
+      'Tuesday'   => '(火)', #'Tue' => 'Tue',
+      'Wednesday' => '(水)', #'Wed' => 'Wed',
+      'Thursday'  => '(木)', #'Thu' => 'Thu',
+      'Friday'    => '(金)', #'Fri' => 'Fri',
+      'Saturday'  => '(土)', #'Sat' => 'Sat'
+    );
+
+%month = 
+    (
+      'January'   => '1月',    'February' => '2月',
+      'March'     => '3月',    'April'    => '4月',
+      'May'       => '5月',    'June'     => '6月',
+      'July'      => '7月',    'August'   => '8月',
+      'September' => '9月',    'October'  => '10月',
+      'November'  => '11月',   'December' => '12月',
+#     'Jan'   => 'Jan',    'Feb'     => 'Feb',     'Mar'    => 'Mar',
+#     'Apr'   => 'Apr',    'May'     => 'May',     'Jun'    => 'Jun',
+#     'Jul'   => 'Jul',    'Aug'     => 'Aug',     'Sep'    => 'Sep', 
+#     'Oct'   => 'Oct',    'Nov'     => 'Nov',     'Dec'    => 'Dec' 
+    );
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+) (.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+    {
+	if($foo[3]=~(/(.*)at(.*)/))
+      { 
+        @quux=split(/ at /,$foo[3]);
+        $foo[3]=$quux[1].", ".$quux[0]."年"; 
+      };
+      return "$foo[3]$month{$foo[2]}$foo[1]日$wday{$foo[0]}"; 
+    };
+
+#
+# handle two different time/date formats:  
+# return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
+#
+
+# handle nontranslated strings which ought to be translated
+# print STDERR "$_\n" or print DEBUG "not translated $_";
+# but then again we might not want/need to translate all strings
+  
+  return $string;
+
+  };

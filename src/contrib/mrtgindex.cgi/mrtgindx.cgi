@@ -92,7 +92,7 @@ while(@config_files > 0){
 	next unless /^Title\[(.*)\]:\s*(.+)$/; # Look for a title keyword
 
 	$router = lc $1;
-	Stat("$router-day.gif");
+	Stat("$router-day.png");
 	@$router = ($st_mtime, $2); # Save the mod date and title
 	push @routers, $router; # Remember the router name so we can find above info
 	$gifdone = $st_mtime if $st_mtime > $gifdone; # Find the newest file
@@ -163,7 +163,7 @@ for $index (0..$#routers){
 		TR(td({-align=>"left",-width=>"20\%"}, "$mv_up $mv_dn"),
 		   td({-align=>"left"}, b($$router[1]), " $time")));
 
-    print a({-href=>"$router.html"}, img{-src=>"$router-day.gif"});
+    print a({-href=>"$router.html"}, img{-src=>"$router-day.png"});
 
 }
 
