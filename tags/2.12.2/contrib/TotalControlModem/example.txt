@@ -1,0 +1,100 @@
+From webmaster@hiway.com.br Fri Feb 16 23:24:20 2001
+From: Fernando Braghetto - Webmaster Hiway <webmaster@hiway.com.br>
+To: oetiker@ee.ethz.ch
+Date: Thu, 15 Feb 2001 09:51:27 -0300
+Subject: [Contribution] TCH Modem
+
+
+    [ Part 1.1, Text/PLAIN  86 lines. ]
+    [ Unable to print this part. ]
+
+Tobias,
+ 
+    I want to contrib with the MRTG.
+    I do not have time for add this to indexmaker / cfgmaker. Sorry!
+   
+    Actually I'm found some very good Objects IDs for the Total Control
+Modem Racks (3Com).
+ 
+    To make management for the number of users connected in a HyperARC
+card (with HyperDSP modem) or Netserver card (with Quad-Modens and
+DualPri card) use this cfg:
+    (sorry for my bad english)
+ 
+
+# Example of configuration by
+# Fernando Braghetto/Brazil - braghetto@hiway.com.br
+# created in Feb/15 2001
+ 
+# TotalControl Temperature
+# change the IP Address 10.0.0.1 with the IP of Hyper NMC card (Network
+Management Card)
+#
+Target[TCTemp]:
+1.3.6.1.4.1.429.1.2.2.5.0&1.3.6.1.4.1.429.1.2.2.5.0:public@10.0.0.1
+MaxBytes[TCTemp]: 36
+Title[TCTemp]: Temperature
+ShortLegend[TCTemp]: ºC
+Unscaled[TCTemp]: ymwd
+YLegend[TCTemp]: Temperature
+LegendI[TCTemp]: &nbsp;System Temp&nbsp;
+LegendO[TCTemp]: &nbsp;System Temp&nbsp;
+Options[TCTemp]: gauge
+PageTop[TCTemp]:
+      <font face="Verdana">
+      <H2>Temperatura do TotalControl E1</H2>
+ 
+ 
+ 
+# TotalControl Connected Users in HyperARC (using HyperDSP E1 modens)
+# change the IP Address 10.0.0.2 with the IP of Hyper ARC card (Routing
+Card)
+#
+Target[TCHDSP]:
+1.3.6.1.4.1.429.4.2.1.10.0&1.3.6.1.4.1.429.4.2.1.10.0:public@10.0.0.2:
+MaxBytes[TCHDSP]: 420
+Title[TCHDSP]: Connected Users
+ShortLegend[TCHDSP]: Users
+YLegend[TCHDSP]: Users
+LegendI[TCHDSP]: &nbsp;Connected Users&nbsp;
+LegendO[TCHDSP]: &nbsp;Connected Users&nbsp;
+Options[TCHDSP]: gauge
+PageTop[TCHDSP]:
+      <font face="Verdana">
+ <H2>Number of Connected Users</H2>
+ 
+ 
+ 
+# TotalControl Connected Users in Netserver Card (using Quad modens and
+Dual Pri Card)
+# change the IP Address 10.0.0.3 with the IP of Netserver card (Routing
+Card)
+#
+Target[TCNetserver]: 1.3.6.1.2.1.2.1.0&1.3.6.1.2.1.2.1.0:public@10.0.0.3
+MaxBytes[TCNetserver]: 56
+Title[TCNetserver]: Connected Users
+ShortLegend[TCNetserver]: Users
+Unscaled[TCNetserver]: ymwd
+YLegend[TCNetserver]: Users
+Legend1[TCNetserver]: Users
+Legend2[TCNetserver]: Users
+Legend3[TCNetserver]: Users
+Legend4[TCNetserver]: Users
+LegendI[TCNetserver]: &nbsp;Digital Connections&nbsp;
+LegendO[TCNetserver]: &nbsp;Analog Connections&nbsp;
+Options[TCNetserver]: gauge
+PageTop[TCNetserver]:
+      <font face="Verdana">
+ <H2>Number of Connected Users</H2>
+ 
+ 
+Sincerly,
+Fernando Braghetto
+IT Manager, Network Admin, Webmaster
+Hiway Internet Provider - Brazil
+[IMAGE] 
+
+
+    [ Part 2, Image/GIF  7.6KB. ]
+    [ Unable to print this part. ]
+

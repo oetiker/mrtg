@@ -1,0 +1,121 @@
+MRTG-FORUM(1)                  mrtg                 MRTG-FORUM(1)
+
+
+
+NNAAMMEE
+       mrtg-forum - Interactive Help for MRTG users
+
+SSYYNNOOPPSSIISS
+       There is a lot of written documentation for mrtg, but nev-
+       ertheless you may have a problem where you can't find the
+       solution.  In this case some Human Help may be necessary.
+       With MRTG there are several ways to get Humans to help
+       you.
+
+MMAAIILLIINNGG--LLIISSTT
+       There are three mailing lists for MRTG available.
+
+       mrtg
+           for discussion among mrtg users.
+
+       mrtg-announce
+           for announcements regarding new versions of mrtg
+           related software.
+
+       mrtg-developers
+           for discussion among people who write software in con-
+           nection with mrtg or who hack mrtg itself.
+
+       TTHHEE RRUULLEESS
+
+       Please note that the memebers of the mrtg mailinglist
+       value politeness highly. This means behave in a way you
+       would like others to behave towards you.
+
+       +o   No shouting. (NO CAPS)
+
+       +o   No rude language
+
+       +o   No demands. everybody is on the list out of their own
+           free will. If you do not get an answer to your ques-
+           tion, chances are high that you did not give sufficent
+           details about the nature of your problem or that the
+           answer to your problem is in the documentation.
+
+       +o   If you do not follow the rules you will be unsub-
+           scribed from the list with no further questions asked.
+
+       +o   Decisions about your unsubscription from the list will
+           be taken by
+
+            Alex van den Bogaerdt <alex at ergens.op.het.net>
+            Paul C. Williamson    <pwilliamson at MANDTBANK.COM>
+
+           If you feel that you have been treated unfairly, you
+           may send mail to me and explain the situation.
+
+            Tobi Oetiker <oetiker@ee.ethz.ch>
+
+       SSUUBBSSCCRRIIBBIINNGG
+
+       These lists are managed by a mailing-list management pro-
+       gram (listar).  It allows you to subscribe to these lists
+       by sending a message with the subject: ssuubbssccrriibbee to the
+       following address:
+
+        listname-request@list.ee.ethz.ch
+
+       You will then get a message asking you to confirm your
+       subscription.
+
+       For posting to the lists use the following address
+
+        listname@list.ee.ethz.ch
+
+       Note that only people who are subscribed to the list can
+       post.
+
+       Further information about the usage of the mailing lists
+       is available by sending a message with the subject line
+       hheellpp to either one of the request addresses.
+
+       For past activity there is also a mailing list archive
+       available:
+
+        http://www.ee.ethz.ch/~slist/mrtg
+
+       There is also a web interface to manage your mailing-list
+       subscription.
+
+        http://www.ee.ethz.ch/~slist/lsg2.cgi
+
+NNEEWWSSGGRROOUUPP
+       For discussion of MRTG or related topics on the Usenet,
+       please send your posts to:
+
+        news:comp.dcom.net-management
+
+       Many MRTG users are in this forum and will help you. You
+       can also find an archive of past activity from this News-
+       group on:
+
+        http://groups.google.com
+
+MMRRTTGG JJaappaann
+       There is a special Mailinglist for MRTG Users in Japan. It
+       carries translations of the traffic from MRTG-ANNOUNCE as
+       well as updates on the Japanese Translation of the MRTG
+       documentation. Go to http://www.mrtg.jp/info/ml.html for
+       further Information. Note that the list is in Japanese.
+
+MMRRTTGG TTrrkkiiyyee
+       There is a special Mailinglist for MRTG Users in Turkey.
+       Go to http://groups.yahoo.com/group/mrtg-turkiye/ for more
+       information.
+
+AAUUTTHHOORR
+       Tobias Oetiker <oetiker@ee.ethz.ch> and many contributors
+
+
+
+2.12.2                      2005-06-19              MRTG-FORUM(1)

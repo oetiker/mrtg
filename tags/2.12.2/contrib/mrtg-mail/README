@@ -1,0 +1,260 @@
+                       Using Mailstats with MRTG
+
+# 17/04/97:  These files are based on a post 
+# made to the MRTG discussion list.
+
+# I was then asked if I would contribute them to the distribution.
+# Now I've cleaned up one or two minor things, but the message below
+# is essentially the same as the distribution I have contributed.
+
+# I also posted this to comp.mail.sendmail some time back.
+
+# rachel polanskis   <r.polanskis@nepean.uws.edu.au>
+
+
+
+
+This is some experimenting I have done using sendmail and mrtg.
+
+Currently I am using Solaris 2.5.1 as the mailhost, and then plotting
+the goodies using mrtg-2.0 on Linux 1.2.13 and displaying the graphs 
+on the linux box.
+
+There are some caveats on my method for plotting these charts:
+
+1:  I use a previously undefined port and run the Solaris
+    /bin/mailstats program out of inetd.  
+    For this reason, I can only assume the mailstat on Solaris 
+    works - I have tried no other platforms.
+
+*   Q:  Is there a security risk involved in running Solaris Mailstat
+        out of inetd? 
+
+2:  You must have Perl-5.002 or better installed on the plotting host.
+
+3:  You must have MRTG-2.0 installed - you must know how to use it!
+
+4:  I am only interested in SMTP connections, and my scripts only 
+    plot In and Out, since mrtg can only plot 2 lines per graph.
+    If you want any more than that - experiment!  And then tell me 
+    since I am only learning.
+
+Here goes:
+
+1:  Ensure you have "/bin/mailstat" on your system.
+
+2:  Enable "/etc/mail/sendmail.st"
+    To do this you can just make sure the entry for "sendmail.st" in
+    "sendmail.cf" is uncommented, and then do the command:
+   
+	# touch /etc/mail/sendmail.st
+
+    And restart sendmail:
+
+	# /etc/init.d/sendmail stop
+	# /etc/init.d/sendmail start
+
+
+3:  Create the following shell-script:
+
+	#!/bin/sh
+	# smtp-stats:  exec Solaris mailstats
+	#
+	if [ -x "/bin/mailstats" ]
+	then
+	exec /bin/mailstats -f/etc/mail/sendmail.st 
+	fi
+	
+I run this out of /opt/local/bin, and call it "smtp-stats"
+
+4:  Now add the following to /etc/services:
+
+	# /etc/services
+	#
+	smtp-stats      7256/tcp                        # smtp-stats
+
+I used port 7256 as it was undefined.  You might like to select something 
+else.
+
+5:  Add the following to /etc/inetd.conf:
+
+	# /etc/inetd.conf
+	#
+	smtp-stats      stream  tcp     nowait root \
+	/opt/local/bin/smtp-stats smtp-stats
+
+
+***Ensure that the above is all on *one* line.  The sample above
+is broken on 2 lines for legibility!!
+
+
+6:  Restart inetd
+
+
+7:  Test the port.  you should see the following:
+
+# telnet localhost 7256
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+Statistics from Thu Feb 27 01:12:47 1997
+ M msgsfr bytes_from  msgsto   bytes_to  Mailer
+ 0      0          0K     96        393K  prog
+ 3     34         94K      0          0K  local
+ 5     93        474K     31         47K  esmtp
+========================================
+ T    127        568K    127        440K
+Connection closed by foreign host.
+
+
+OK!!
+
+The line we are interested in is line 5:  The "esmtp"  line.
+This is the line we will use to get our stats.
+
+You might want to adjust this depending on how many mailer progs
+you use...
+
+I find the Totals to be useless, since it includes a lot of filtering 
+from procmail.  I am only interested in SMTP connections...
+
+####################################
+Stage 2:  MRTG
+
+
+Here is a perl script I wrote to glom the values of the "esmtp" line (5)
+and massage them into something mrtg understands.
+
+A file called "mailstats.old" is written to /tmp
+to allow for doing my sums.  
+
+I am a Perl Newbie - please don't be offended at my code.
+I would like it if someone can help me with better methods one day!
+
+#!/usr/bin/perl 
+#
+# rachel polanskis - 240297
+# this script relies on the sendmail.st file being activated.
+# the data is called via "mailstats" which comes with SunOS/Solaris.
+# mailstats is run out of inetd, on port 7256.
+# 
+require 5.002;
+use strict;
+use Socket;
+
+my ($remote, $port, $iaddr, $paddr, $proto, $line, $count, $oldfrm, $oldto, $curfrm, $curto, $msgsfrm, $msgsto, $a, $b, $c, $d);
+
+##
+# open the old stats file for reading - we use this to get the differences
+#
+open (OLD,"</tmp/mailstat.old") or die "can't open file!\n";
+
+# read the old data 
+#
+while (<OLD>) {
+   if ($. == "1") {
+      $count = $_;
+    }
+   ($oldfrm, $oldto) = split (' ',$count);
+}
+close (OLD);
+
+##
+# Straight out of the blue Camel - pp. 349
+#
+# Change these next 2 lines to suit yourself.
+#
+$remote = "juno";
+$port = "7256";
+
+#
+if ($port =~ /\D/) {$port = getservbyname ($port, 'tcp')}
+die "No port" unless $port;
+
+$iaddr = inet_aton($remote) or die "no host: $remote";
+$paddr = sockaddr_in($port, $iaddr);
+
+$proto = getprotobyname ('tcp');
+
+socket (SOCK, PF_INET, SOCK_STREAM, $proto) or die "socket: $!";
+connect (SOCK, $paddr) or die "connect: $!";
+
+##
+# munge the output data
+#
+while (<SOCK>) {
+
+   if ($. == "5" ) {
+   $line = $_;
+   ($a, $curfrm, $b, $curto, $c, $d) = split(' ',$line);
+
+# do some sums
+$msgsfrm = $curfrm - $oldfrm;
+$msgsto = $curto - $oldto;
+chomp $msgsfrm;
+chomp $msgsto;
+
+# open the old file for overwrite
+open (OLD,">/tmp/mailstat.old") or die "can't open file!\n";
+
+# print the data for mrtg
+  print "$msgsfrm\n$msgsto\n1\njuno\n";
+
+# print the data to the old file
+  print OLD "$curfrm $curto\n";
+
+    } #endif
+
+}
+
+close (SOCK) or die "close: $!";
+exit;
+
+
+##########################
+
+Now,  Here is my mrtg.cfg file for mail.
+I call it "mail.cfg"
+I run mrtg from cron on my Linux box every 10 minutes to plot the stats.
+It is up to the individual what they do with their own setup.
+
+#
+# Mail:  MRTG.cfg file for sendmail stats on mailhost.
+#
+
+WorkDir: /usr/local/etc/httpd/htdocs/stats/mrtg
+Interval: 10 
+#---------------------------------------------------------------
+Target[mail]: `/usr/local/bin/mrtg/mailstats`
+MaxBytes[mail]: 150
+Options[mail]: gauge
+Title[mail]: Juno Sendmail Statistics
+PageTop[mail]: Juno Sendmail Statistics</H1>
+XSize[mail]: 500
+Supress[mail]: my
+YSize[mail]: 200
+WithPeak[mail]: dwmy
+YLegend[mail]: No. of messages
+ShortLegend[mail]: messages
+LegendI[mail]: &nbsp;Incoming:
+LegendO[mail]: &nbsp;Outgoing:
+
+
+
+That's it!!
+
+You should have no problems running this stuff if you follow my
+instructions.
+
+Any comments, advice or interesting suggestions 
+would be much appreciated.
+
+Do with my little hack as you like, as long as the developers
+of sendmail, perl, and mrtg get some credit, as well as lil ol me 
+for dreaming this up!!!
+
+
+have fun...
+
+rachel polanskis <r.polanskis@nepean.uws.edu.au>  17/04/97
+
