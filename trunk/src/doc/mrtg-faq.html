@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>doc/mrtg-faq</title>
+<link rev="made" href="mailto:dws@ee.ethz.ch" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+<!--
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#faq">FAQ</a></li>
+	<ul>
+
+		<li><a href="#why_is_there_no_______my_native_language__version_of_mrtg">Why is there no ``@#$%'' (my native language) version of MRTG?</a></li>
+		<li><a href="#i_need_a_script_to_make_mrtg_work_with_my_xyz_device_">I need a script to make mrtg work with my xyz device.</a></li>
+		<li><a href="#how_does_this_snmp_thing_work">How does this SNMP thing work</a></li>
+		<li><a href="#the_images_created_by_mrtg_look_very_strange_">The images created by MRTG look very strange.</a></li>
+		<li><a href="#what_is_my_community_name">What is my Community Name?</a></li>
+		<li><a href="#my_graphs_show_a_flat_line_during_an_outage__why_">My graphs show a flat line during an outage. Why ?</a></li>
+	</ul>
+
+	<li><a href="#author">AUTHOR</a></li>
+</ul>
+-->
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>mrtg-help - How to get help if you have problems with MRTG</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>MRTG seems to raise a lot of questions. There are a number of resources
+apart from the documentation where you can find help for mrtg.</p>
+<p>
+</p>
+<hr />
+<h1><a name="faq">FAQ</a></h1>
+<p>Alex van den Bogaerdt &lt;<a href="mailto:alex@ergens.op.Het.Net">alex@ergens.op.Het.Net</a>&gt; maintains the
+MRTG FAQ website on</p>
+<pre>
+ <a href="http://faq.mrtg.org">http://faq.mrtg.org</a></pre>
+<p>In the following sections you'll find some additonal Frequently Asked Questions, with Answers.</p>
+<p>
+</p>
+<h2><a name="why_is_there_no_______my_native_language__version_of_mrtg">Why is there no ``@#$%'' (my native language) version of MRTG?</a></h2>
+<p>Nobody has contributed a <em>@#$%.pmd</em> file yet. Go into the
+<em>mrtg-2.10.15/translate</em> directory and create your own translation file.
+When you are happy with it send it to me for inclusion with the next mrtg
+release.</p>
+<p>
+</p>
+<h2><a name="i_need_a_script_to_make_mrtg_work_with_my_xyz_device_">I need a script to make mrtg work with my xyz device.</a></h2>
+<p>Probably this has already been done. Check the stuff in the
+<em>mrtg-2.10.15/contrib</em> directory. There is a file called <em>00INDEX</em> in
+that directory which tells what you can find in there.</p>
+<p>
+</p>
+<h2><a name="how_does_this_snmp_thing_work">How does this SNMP thing work</a></h2>
+<p>There are many resources on the net that explain SNMP.
+Take a look at this article from the Linux Journal by David Guerrero</p>
+<pre>
+ <a href="http://www.develnet.es/~david/papers/snmp/">http://www.develnet.es/~david/papers/snmp/</a></pre>
+<p>And at this rather long document from CISCO.</p>
+<pre>
+ <a href="http://www.cisco.com/univercd/cc/td/doc/cisintwk/ito_doc/snmp.htm">http://www.cisco.com/univercd/cc/td/doc/cisintwk/ito_doc/snmp.htm</a></pre>
+<p>
+</p>
+<h2><a name="the_images_created_by_mrtg_look_very_strange_">The images created by MRTG look very strange.</a></h2>
+<p>Remove the *-{week,day,month,year}.png files and start MRTG
+again.  Using MRTG for the first time, you might have to do this
+twice. This will also help when you introduce new routers into the cfg
+file.</p>
+<p>
+</p>
+<h2><a name="what_is_my_community_name">What is my Community Name?</a></h2>
+<p>Ask the person in charge of your Router or try 'public', as this is the
+default Community Name.</p>
+<p>
+</p>
+<h2><a name="my_graphs_show_a_flat_line_during_an_outage__why_">My graphs show a flat line during an outage. Why ?</a></h2>
+<p>Well, the short answer is that when an SNMP query goes out
+and a response doesn't come back, MRTG has to assume something to put
+in the graph, and by default it assumes that the last answer we got
+back is probably closer to the truth than zero.  This assumption is
+not perfect (as you have noticed).  It's a trade-off that happens to
+fail during a total outage.</p>
+<p>If this is an unacceptable trade-off, use the <strong>unknaszero</strong> option.</p>
+<p>You may want to know what you're trading off, so in the spirit of
+trade-offs, here's the long answer:</p>
+<p>The problem is that MRTG doesn't know *why* the data didn't come back, all
+it knows is that it didn't come back.  It has to do something, and it
+assumes it's a stray lost packet rather than an outage.</p>
+<p>Why don't we always assume the circuit is down and use zero, which will
+(we think) be more nearly right?  Well, it turns out that you may be
+taking advantage of MRTG's ``assume last'' behaviour without being aware of
+it.</p>
+<p>MRTG uses SNMP (Simple Network Management Protocol) to collect data, and
+SNMP uses UDP (User Datagram Protocol) to ship packets around.  UDP is
+connectionless (not guaranteed) unlike TCP where packets are tracked and
+acknowledged and, if needed, retransmitted.  UDP just throws
+packets at the network and hopes they arrive.  Sometimes they don't.</p>
+<p>One likely cause of lost SNMP data is congestion; another is busy routers.
+Other possibilities include transient telecommunications problems, router
+buffer overflows (which may or may not be congestion-related), ``dirty
+lines'' (links with high error rates), and acts of God.  These things
+happen all the time; we just don't notice because many interactive
+services are TCP-based and the lost packets get retransmitted
+automatically.</p>
+<p>In the above cases where some SNMP packets are lost but traffic is
+flowing, assuming zero is the wrong thing to do - you end up with a graph
+that looks like it's missing teeth whenever the link fills up.  MRTG
+interpolates the lost data to produce a smoother graph which is more
+accurate in cases of intermittent packet loss.  But with V2.8.4 and above,
+you can use the ``unknaszero'' option to produce whichever graph is best
+under the conditions typical for your network.</p>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Tobias Oetiker &lt;<a href="mailto:oetiker@ee.ethz.ch">oetiker@ee.ethz.ch</a>&gt;</p>
+
+</body>
+
+</html>

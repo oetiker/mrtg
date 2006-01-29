@@ -44,6 +44,7 @@ RRDtool perl module <em>RRDs.pm</em>. To enable RRDtool support in mrtg
 you have to add the line</p>
 <pre>
  LogFormat: rrdtool</pre>
+<p>to your mrtg config file.</p>
 <p>MRTG needs access to both the RRDtool perl module <strong>RRDs.pm</strong> and to the
 <strong>rrdtool</strong> executable.</p>
 <p>If these two items are not installed in locations where perl can find them
@@ -89,7 +90,7 @@ graphs and webpages on demand by using a cgi script.</p>
 <p>At the moment there is no <strong>official</strong> script to do this, but two
 contributers have created such scripts:</p>
 <ol>
-<li><strong><a name="item_all%2ecgi"><strong>14all.cgi</strong></a></strong><br />
+<li><strong><a name="item_all_2ecgi"><strong>14all.cgi</strong></a></strong><br />
 </li>
 This was the first program to take over the webpage creation and graphing task.
 It has been developed by Rainer&nbsp;Bawidamann
@@ -99,23 +100,23 @@ on Rainers website:
  <a href="http://my14all.sourceforge.net/">http://my14all.sourceforge.net/</a></pre>
 <p>The program comes with its own documentation</p>
 <p></p>
-<dt><strong><a name="item_routers%2ecgi%2c_servers%2ecgi_and_generic%2ecgi"><strong>routers.cgi</strong>, <strong>servers.cgi</strong> and <strong>generic.cgi</strong></a></strong><br />
+<dt><strong><a name="item_routers_2ecgi_2c_servers_2ecgi_and_generic_2ecgi"><strong>routers.cgi</strong>, <strong>servers.cgi</strong> and <strong>generic.cgi</strong></a></strong><br />
 </dt>
 <dd>
 These are other cgi frontends to mrtg running with rrdtool. The main difference
 between this and 14all is that the web pages it creates are much more stylish than the
 ones from mrtg. These tools have been written by Steve&nbsp;Shipway
-&lt;<a&nbsp;href="mailto:steve.shipway@adsweu.com">steve.shipway@adsweu.com</a>&gt;. You can find a copy in
+&lt;<a&nbsp;href="mailto:steve@steveshipway.org">steve@steveshipway.org</a>&gt;. You can find a copy in
 </dd>
 <dd>
 <pre>
- <a href="http://www.cheshire.demon.co.uk/pub/">http://www.cheshire.demon.co.uk/pub/</a></pre>
+ <a href="http://www.steveshipway.org/software/">http://www.steveshipway.org/software/</a></pre>
 </dd>
 <dd>
 <p>The scripts comes with their own installation instructions.</p>
 </dd>
 <p></p>
-<dt><strong><a name="item_mrtg%2drrd"><strong>mrtg-rrd</strong></a></strong><br />
+<dt><strong><a name="item_mrtg_2drrd"><strong>mrtg-rrd</strong></a></strong><br />
 </dt>
 <dd>
 The mrtg-rrd script is a CGI/FastCGI application by Jan ``Yenya'' Kasprzak for

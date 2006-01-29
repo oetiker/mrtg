@@ -2,7 +2,7 @@
 package MRTG_lib;
 
 ###################################################################
-# MRTG 2.9.29  Support library MRTG_lib.pm
+# MRTG 2.10.15  Support library MRTG_lib.pm
 ###################################################################
 # Created by Tobias Oetiker <oetiker@ee.ethz.ch>
 #            and Dave Rand <dlr@bungi.com>
@@ -17,8 +17,9 @@ package MRTG_lib;
 
 require 5.005;
 use strict;
-use SNMP_util "0.93";
-use vars qw($OS $SL $PS @EXPORT @ISA $VERSION %mrtgrules);
+use SNMP_util "1.04";
+use vars qw($OS $SL $PS @EXPORT @ISA $VERSION %timestrpospattern);
+my %mrtgrules;
 
 BEGIN {
     # Automatic OS detection ... do NOT touch
@@ -26,11 +27,19 @@ BEGIN {
         $OS = 'NT';
         $SL = '\\';
         $PS = ';';
+    } elsif ( $^O =~ /^NetWare$/i ) {
+	$OS = 'NW';
+	$SL = '/';
+	$PS = ';';
     } elsif ( $^O =~ /^VMS$/i ) {
         $OS = 'VMS';
         $SL = '.';
         $PS = ':';
-    } else {
+    } elsif ( $^O =~ /^os2$/i ) {
+	$OS = 'OS2';
+	$SL = '/';
+	$PS = ';';
+    }  else {
         $OS = 'UNIX';
         $SL = '/';
         $PS = ':';
@@ -42,10 +51,19 @@ require Exporter;
 @EXPORT = qw(readcfg cfgcheck setup_loghandlers
 	     datestr expistr ensureSL timestamp
              create_pid demonize_me debug log2rrd storeincache
-	     populateconfcache readconfcache writeconfcache);
+	     populateconfcache readconfcache writeconfcache
+	     v4onlyifnecessary);
 
-$VERSION = 2.090026;
+$VERSION = 2.100015;
 
+%timestrpospattern =
+      (
+       'NO' => 0,
+       'LU' => 1,
+       'RU' => 2,
+       'LL' => 3,
+       'RL' => 4
+      );
 
 %mrtgrules =
       (                         # General CFG
@@ -62,14 +80,17 @@ $VERSION = 2.090026;
        [sub{$_[0] && (-d $_[0] )}, sub{"Log directory $_[0] does not exist"}],
 
        'forks' =>
-       [sub{$_[0] && (int($_[0]) > 0 && $MRTG_lib::OS eq 'UNIX')},
+       [sub{$_[0] && (int($_[0]) > 0 and $MRTG_lib::OS eq 'UNIX')},
         sub{"Less than 1 fork or not running on Unix/Linux"}],
 
        'refresh' => 
        [sub{int($_[0]) >= 300}, sub{"$_[0] should be 300 seconds or more"}],
 
+       'enableipv6' =>
+       [sub{((lc($_[0])) eq 'yes' or (lc($_[0])) eq 'no')}, sub{"$_[0] must be yes or no"}],
+
        'interval' => 
-       [sub{int($_[0]) >= 1 && int($_[0]) <= 60}, sub{"$_[0] should be at least 1 Minute and no more than 60 Minutes"}], 
+       [sub{int($_[0]) >= 1 and int($_[0]) <= 60}, sub{"$_[0] should be at least 1 Minute and no more than 60 Minutes"}], 
 
        'writeexpires' =>  
        [sub{1}, sub{"Internal Error"}],
@@ -107,6 +128,13 @@ $VERSION = 2.090026;
        'runasdaemon' =>
        [sub{1}, sub{"Internal Error"}],
 
+       'nodetach' =>
+       [sub{1}, sub{"Internal Error"}],
+
+       'maxage' =>
+       [sub{(($_[0] =~ /^[0-9]+$/) and ($_[0] > 0)) },
+        sub{"$_[0] must be a Number bigger than 0"}],
+
        'nospacechar' =>
        [sub{length($_[0]) == 1}, sub{"$_[0] must be one character long"}],
 
@@ -114,11 +142,17 @@ $VERSION = 2.090026;
        [sub{ eval( '{'.$_[0].'}' ); return not $@},
         sub{"Must have the format \"OptA => Number, OptB => 'String', ... \""}],
 
+       'conversioncode' =>
+       [sub{-r $_[0]}, sub{"Cannot read conversion code file $_[0]"}],
+
        # Per Router CFG
        'target[]' => 
        [sub{1}, sub{"Internal Error"}], #will test this later
 
        'routeruptime[]' => 
+       [sub{1}, sub{"Internal Error"}], #will test this later
+
+       'routername[]' => 
        [sub{1}, sub{"Internal Error"}], #will test this later
 
        'maxbytes[]' => 
@@ -132,6 +166,9 @@ $VERSION = 2.090026;
        'maxbytes2[]' =>
        [sub{(($_[0] =~ /^[0-9]+$/) && ($_[0] > 0))},
         sub{"$_[0] must a number bigger than 0"}],
+
+       'ipv4only[]' =>
+       [sub{((lc($_[0])) eq 'yes' or (lc($_[0])) eq 'no')}, sub{"$_[0] must be yes or no"}],
 
        'absmax[]' => 
        [sub{($_[0] =~ /^[0-9]+$/)}, sub{"$_[0] must be a Number"}],
@@ -209,6 +246,9 @@ $VERSION = 2.090026;
        'kmg[]' =>
        [sub{1}, sub{"Internal Error"}],
 
+       'pngtitle[]' =>
+       [sub{1}, sub{"Internal Error"}],
+
        'ylegend[]' =>
        [sub{1}, sub{"Internal Error"}],
 
@@ -284,7 +324,13 @@ $VERSION = 2.090026;
        [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'threshprogoko[]' =>
-       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}]
+       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
+
+       'timestrpos[]' => 
+       [sub{$_[0] =~ /^(no|[lr][ul])$/i}, sub{"Must be a string of NO, LU, RU, LL, RL"}],
+
+       'timestrfmt[]' => 
+       [sub{1}, sub{"Internal Error"}] #what ever the user chooses.
 );
 
 # config file reading
@@ -376,7 +422,7 @@ sub readcfg ($$$$;$$) {
                 $$rcfg{$first}{$second} = $post{$first};
                 delete $defaulted{$first}{$second};
             } else {
-                $$rcfg{$first}{$second} .= ( defined $$cfg{nospacechar} && $post{$first} =~ /(.*)\Q$$cfg{nospacechar}\E$/) ? $1 : " ".$post{$first} ;
+                $$rcfg{$first}{$second} .= ( defined $$cfg{nospacechar} and $post{$first} =~ /(.*)\Q$$cfg{nospacechar}\E$/) ? $1 : " ".$post{$first} ;
             }
         }
 
@@ -532,17 +578,21 @@ sub quickcheck ($$$$$$) {
 sub cfgcheck ($$$$) {
     my ($routers, $cfg, $rcfg, $target) = @_;
     my ($rou, $confname, $one_option);
+    # Target index hash. Keys are "int:community@router" target definition
+    # strings and values are indices of the @$target array. Used to avoid
+    # duplicate entries in @$target.
+    my $targIndex = { };
     my $error="no";
     my(@known_options) = qw(growright bits noinfo absolute gauge nopercent avgpeak
 			    integer perhour perminute transparent dorelpercent 
 			    unknaszero withzeroes noborder noarrow noi noo
-			    nobanner nolegend);
+			    nobanner nolegend pngdate printrouter);
 
     snmpmapOID('hrSystemUptime' => '1.3.6.1.2.1.25.1.1');
 
     if (defined $$cfg{workdir}) {
         die ("ERROR: WorkDir must not contain spaces when running on Windows. (Yeat another reason to get Linux)\n")
-                if $OS eq 'NT' and $$cfg{workdir} =~ /\s/;
+                if ($OS eq 'NT' or $OS eq 'OS2') and $$cfg{workdir} =~ /\s/;
         ensureSL(\$$cfg{workdir});
         $$cfg{logdir}=$$cfg{htmldir}=$$cfg{imagedir}=$$cfg{workdir};
         if (not -d $$cfg{workdir}){
@@ -619,14 +669,14 @@ sub cfgcheck ($$$$) {
      $$cfg{logformat} = 'rateup' unless defined $$cfg{logformat};
 
     if($$cfg{logformat} eq 'rrdtool') {
-        my $name = $MRTG_lib::OS eq 'NT'? 'rrdtool.exe':'rrdtool';
+        my $name = ($MRTG_lib::OS eq 'NT' or $MRTG_lib::OS eq 'OS2')? 'rrdtool.exe':'rrdtool';
         foreach my $path (split /\Q${MRTG_lib::PS}\E/, $ENV{PATH}) {
             ensureSL(\$path);
             -f "$path$name" && do { 
                 $$cfg{'rrdtool'} = "$path$name";
                 last;}
         };
-        die "ERROR: could not find $name. Use PathAdd: im mrtg.cfg to help mrtg find rrdtool\n" 
+        die "ERROR: could not find $name. Use PathAdd: in mrtg.cfg to help mrtg find rrdtool\n" 
                 unless defined $$cfg{rrdtool};
         debug ('rrd',"found rrdtool in $$cfg{rrdtool}");
         my $found;
@@ -653,6 +703,18 @@ sub cfgcheck ($$$$) {
         if ($$cfg{interval} < 5) {
             die "ERROR: CFG Error in \"Interval\": should be at least 5 Minutes (unless you use rrdtool)";
         }
+    }
+
+    # Check for a Conversion Code file and evaluate its contents, which
+    # should consist of one or more subroutine definitions. The code goes
+    # into the MRTGConversion name space.
+    if( exists $cfg->{ conversioncode } ) {
+        open CONV, $cfg->{ conversioncode }
+            or die "ERROR: Can't open file $cfg->{ conversioncode }\n";
+        my $code = "package MRTGConversion;\n". join( '', <CONV> ) . "1;\n";
+        close CONV;
+        die "ERROR: File $cfg->{ conversioncode } conversion code evaluation failed\n$@\n"
+            unless eval $code;
     }
 
     foreach $rou (@$routers) {
@@ -757,7 +819,19 @@ sub cfgcheck ($$$$) {
         if (defined $$rcfg{"target"}{$rou}) {
             $$rcfg{targorig}{$rou} = $$rcfg{target}{$rou};
 	    debug ('tarp',"Starting $rou -> $$rcfg{target}{$rou}");
-	    $$rcfg{target}{$rou} = targparser($$rcfg{target}{$rou},$target)
+            # Decide whether to turn on IPv6 support for this target.
+            # IPv6 support is turned on only if the EnableIPv6 global
+            # setting is yes and the IPv4Only per-target setting is no.
+            # If IPv6 is disabled, we set IPv4Only to true for all
+            # targets, thus disabling all IPv6-related code.
+            my $ipv4only = 1;
+            if ($$cfg{enableipv6} and $$cfg{enableipv6} eq 'yes') {
+                # IPv4Only is off by default
+                $ipv4only = 0
+                  unless (defined $$rcfg{ipv4only}{$rou}) && (lc($$rcfg{ipv4only}{$rou}) eq 'yes');
+            }
+		( $$rcfg{target}{$rou}, $$rcfg{uniqueTarget}{$rou} ) =
+			targparser( $$rcfg{target}{$rou}, $target, $targIndex, $ipv4only );
         } else {
             warn ("WARNING: I can't find a \"target[$rou]\" definition\n");
             $error = "yes";
@@ -856,6 +930,12 @@ sub cfgcheck ($$$$) {
         if (! defined $$rcfg{'yscale'}{$rou}) {
             $$rcfg{'yscale'}{$rou} = 1.0;
         }
+        if (! defined $$rcfg{'timestrpos'}{$rou}) {
+            $$rcfg{'timestrpos'}{$rou} = 'NO';
+        }
+        if (! defined $$rcfg{'timestrfmt'}{$rou}) {
+            $$rcfg{'timestrfmt'}{$rou} = "%Y-%m-%d %H:%M";
+        }
         if ($error eq "yes") {
             die "ERROR: Please fix the error(s) in your config file\n";
         }
@@ -864,6 +944,7 @@ sub cfgcheck ($$$$) {
 
 # make sure string ends with a slash.
 sub ensureSL($) {
+#  return;
   my $ref = shift;
   return if $$ref eq "";
   debug('dir',"ensure path IN:  '$$ref'");
@@ -922,7 +1003,7 @@ sub expistr ($) {
 
 sub create_pid ($) {
     my $pidfile = shift;
-    return if $OS eq 'NT';
+    return if ($OS eq 'NT' );
     return if -e $pidfile;
     if ( open(PIDFILE,">$pidfile")) {
          close PIDFILE;
@@ -933,6 +1014,7 @@ sub create_pid ($) {
 
 sub demonize_me ($) {
     my $pidfile = shift;
+    my $cfgfile = shift;
     print "Daemonizing MRTG ...\n";
     if ( $OS eq 'NT' ) {
         print "Do Not close this window. Or MRTG will die\n";
@@ -943,12 +1025,24 @@ sub demonize_me ($) {
 #            $CONSOLE->Free();
 #            $CONSOLE->Alloc();
 #            $CONSOLE->Mode()
+    }
+    elsif( $OS eq 'OS2')
+    {
+     require OS2::Process;
+     if (my_type() eq 'VIO'){
+        $main::Cleanfile3 = $pidfile;
+
+        print "MRTG detached. PID=".system(P_DETACH,$^X." ".$0." ".$cfgfile);
+        exit;
+     }
     } else {
            # Check out if there is another mrtg running before forking
-           if (defined $pidfile && open(READPID, "<$pidfile")) {
-               chomp(my $input = <READPID>);    # read process id in pidfile
-               if ($input && kill 0 => $input) {# oops - the pid actually exists
-                   die "ERROR: I Quit! Another copy of mrtg seems to be running. Check $pidfile\n";
+           if (defined $pidfile && open(READPID, "<$pidfile")){
+               if (not eof READPID) {
+                   chomp(my $input = <READPID>);    # read process id in pidfile
+                   if ($input && kill 0 => $input) {# oops - the pid actually exists
+                        die "ERROR: I Quit! Another copy of mrtg seems to be running. Check $pidfile\n";
+                   }
                }
                close READPID;
            }
@@ -967,217 +1061,353 @@ sub demonize_me ($) {
                    }
               }
               require 'POSIX.pm';
-              &POSIX::setsid or die "Can't start a new session: $!";
+              POSIX::setsid() or die "Can't start a new session: $!";
               open STDOUT,'>/dev/null' or die "ERROR: Redirecting STDOUT to /dev/null: $!";
               open STDIN, '</dev/null' or die "ERROR: Redirecting STDIN from /dev/null: $!";
       }
    }
 }
 
-# walk amd analyze the target string.
-# return modifed target string, update target array
-sub targparser ($$) {
-    my $string = shift;
-    my $target = shift;
-    my $idx=scalar @$target;
-
-    my $ifsel =  '([a-z0-9]+|'.                 # alphanumeric MIB names
-                 ' [a-z0-9]*(?:\.\d+)*?'.       # or some combination 
-	         ')'.
-                 '(?:     ()   |'.              # just a name maybe
-                 '   \.   (\d+)|'.              # interface number
-	         '   /    (\d+(?:\.\d+)+)|'.    # ip interface sclector
-	         '   !    ([0-9a-f]+(?:-[0-9a-f]+)+)|'. # ethernet interface
-	         '   \\\\ ((?:\\\\[:& ]|[^\s:&])+)|'. # if description (perm \: \& \ )
-	         '   %    (\d+)|'.                # if Type
-	         '   \#   ((?:\\\\[:& ]|[^\s:&])+)'. # if name (perm \: \& \ )
-	         ')';
-    # programm targets
-    while (
-	   $string =~ s< `               # initiate program target
-  	              ((?:\\`|[^`])+)    # contents (\` allowed)
-	                 `               # end program target
-	               >< \$\$target[$idx]{\$mode} >ix ) {
-	my %targ;
-	$targ{Methode} = 'EXEC';
-	$targ{Command} = $1;
-	# dequote
-	$targ{Command} =~ s/\\(`)/$1/g;
-	debug ('tarp',"Found ($idx) EXEC: '$targ{Command}'");
-	$$target[$idx++]=\%targ;
-    };
-
-    # complex OID targets
-    while (
-        $string =~ s< ${ifsel}
-       	                 &              # separator
-	                 ${ifsel}
-         	         :               # separator
- 	                 ((?:\\[@ ]|[^\s@])+) # community string ('\@' and '\ ' allowed)
-                 	 @              # separator
-	                 ([-a-z0-9_]+(?:\.[-a-z0-9_]+)*) # hostname
-                         ((?::[\da-z]*)*) # SNMP session configuration
-	               >< \$\$target[$idx]{\$mode} >ix ) {
-	my %targ;
-        $targ{Methode}   = 'SNMP';
-	$targ{OID}[0]      = $1;
-	$targ{OID}[1]      = $9;
-	$targ{Community} = $17;
-	$targ{Host}      = $18;
-	$targ{SnmpOpt}      = $19;
-
-	if (defined $2) {
-	    $targ{IfSel}[0] = 'None';
-	    $targ{Key}[0]    = '';
-	} elsif (defined $3) {
-	    $targ{IfSel}[0] = 'If';
-	    $targ{Key}[0]    = $3;
-	} elsif (defined $4) {
-	    $targ{IfSel}[0] = 'Ip';
-	    $targ{Key}[0]    = $4;
-	} elsif (defined $5) {
-	    $targ{IfSel}[0] = 'Eth';
-	    $targ{Key}[0]    = join "-", map {sprintf "%02x", hex $_} split /-/, $5;
-	} elsif (defined $6) {
-	    $targ{IfSel}[0] = 'Descr';
-	    $targ{Key}[0]    = $6;
-	} elsif (defined $7) {
-	    $targ{IfSel}[0] = 'Type';
-	    $targ{Key}[0]    = $7;
-	} elsif (defined $8) {
-	    $targ{IfSel}[0] = 'Name';
-	    $targ{Key}[0]    = $8;
-	} else {
-            die "ERROR: Could not properly parse '$&'. ($2,$3,$4,$5,$6,$7)\n";
-        }
-
-	if (defined $10) {
-	    $targ{IfSel}[1] = 'None';
-	    $targ{Key}[1]    = '';
-	} elsif (defined $11) {
-	     $targ{IfSel}[1] = 'If';
-	    $targ{Key}[1]    = $11;
-	} elsif (defined $12) {
-	    $targ{IfSel}[1] = 'Ip';
-	    $targ{Key}[1]    = $12;
-	} elsif (defined $13) {
-	    $targ{IfSel}[1] = 'Eth';
-	    $targ{Key}[1]    = join "-", map {sprintf "%02x", hex $_} split /-/, $13;
-	} elsif (defined $14) {
-	    $targ{IfSel}[1] = 'Descr';
-	    $targ{Key}[1]    = $14;
-	} elsif (defined $15) {
-	    $targ{IfSel}[1] = 'Type';
-	    $targ{Key}[1]    = $15;
-	} elsif (defined $16) {
-	    $targ{IfSel}[1] = 'Name';
-	    $targ{Key}[1]    = $16;
-	}  else {
-            die "ERROR: Could not properly parse '$&'. ($9,$10,$11,$12,$13,$14)\n";
-        }
-
-        # dequote
-	$targ{Community} =~ s/\\([ @])/$1/g;
-        $targ{Key}[0] =~ s/\\([ :&])/$1/g if $targ{IfSel}[0] eq 'Descr' or $targ{IfSel}[0] eq 'Name';
-	$targ{Key}[1] =~ s/\\([ :&])/$1/g if $targ{IfSel}[1] eq 'Descr' or $targ{IfSel}[1] eq 'Name';
-        $targ{Key}[0] =~ s/[\0- ]+$//; # no trailing space
-        $targ{Key}[1] =~ s/[\0- ]+$//; # no trailing space
-	debug ('tarp',"Found ($idx) Complex:".
-	       " Comu:".$targ{Community}.
-	       " Host:".$targ{Host}.
-	       " Opt:".$targ{SnmpOpt}."\n               ".
-	       " IfS0:".$targ{IfSel}[0].
-	       " Key0:".$targ{Key}[0].
-	       " OID0:".$targ{OID}[0]."\n               ".
-	       " IfS1:".$targ{IfSel}[1].
-	       " Key1:".$targ{Key}[1].
-	       " OID1:".$targ{OID}[1]);
-	$$target[$idx++]=\%targ
-    };
-    # simple targets
-    while (
-        $string =~ s< (-?)               # should In and Out get swapped ?
-                      (?:   (\d+)|       # interface number
-	                 /  (\d+(?:\.\d+)+)|  # ip interface sclector
-	                 !  ([0-9a-f]+(?:-[0-9a-f]+)+)|   # ethernet interface selector
-	                 \\ ((?:\\[&: ]|[^\s:&])+)| # description if selector ('\:' and '\ ' allowed)
-           	         %  (\d+)|                 # if Type
-	                 \# ((?:\\[&: ]|[^\s:&])+)  # name if selector ('\:' and '\ ' allowed)
-                       )
-	               :               # separator
-	               ((?:\\[@ ]|[^\s@])+) # community string ('\@' and '\ ' allowed)
-	               @              # separator
-	               ([-a-z0-9_]+(?:\.[-a-z0-9_]+)*) # hostname
-	               ((?::[\da-z]*)*) # SNMP session configuration
-	             >< \$\$target[$idx]{\$mode} >ix )
-    {
-	my %targ;
-        $targ{Methode}   = 'SNMP';
-	$targ{Community} = $8;
-	$targ{Host}      = $9;
-	$targ{SnmpOpt}      = $10;
-	my $snmpv = $10;
-	my $i0 = 0;
-	my $i1 = 1;
-        if ($1 eq '-') {
-	    $i1 = 0; $i0 =1;
+# Create a new SNMP target entry for the @$target array and return a
+# reference to it
+sub newSnmpTarg( $$ ) {
+	my $t = shift;		# target string
+	my $if = shift;		# interface match strings
+	my $targ = { };		# New target closure
+	$targ->{ Methode }		= 'SNMP';
+	$targ->{ Community }	= $if->{ComStr};
+	$targ->{ Host }			= ( defined $if->{HostIPv6} ) ? $if->{HostIPv6} : $if->{HostName};
+	$targ->{ SnmpOpt }		= $if->{SnmpInfo};
+	$targ->{ Conversion }	= ( defined $if->{ConvSub} ) ? $if->{ConvSub} : '';
+	for my $i( 0..1 ) {
+		die 'ERROR: Malformed ', $i ? 'output ' : 'input ', "ifSpec in '$t'\n"
+			if not defined $if->{OID}[$i] and not defined $if->{Alt}[$i];
+		$targ->{OID}[$i]				= $if->{OID}[$i];
+		if( defined $if->{Alt}[$i] ) {
+			if( defined $if->{Num}[$i] ) {
+				$targ->{IfSel}[$i]		= 'If';
+				$targ->{Key}[$i]		= $if->{Num}[$i];
+			} elsif( defined $if->{IP}[$i] ) {
+				$targ->{IfSel}[$i]		= 'Ip';
+				$targ->{Key}[$i]		= $if->{IP}[$i];
+			} elsif( defined $if->{Desc}[$i] ) {
+				$targ->{IfSel}[$i]		= 'Descr';
+				$targ->{Key}[$i]		= $if->{Desc}[$i];
+			} elsif( defined $if->{Name}[$i] ) {
+				$targ->{IfSel}[$i]		= 'Name';
+				$targ->{Key}[$i]		= $if->{Name}[$i];
+			} elsif( defined $if->{Eth}[$i] ) {
+				$targ->{IfSel}[$i]		= 'Eth';
+				$targ->{Key}[$i]		= join( '-', map( { sprintf '%02x', hex $_ } split( /-/, $if->{Eth}[$i] ) ) );
+			} elsif( defined $if->{Type}[$i] ) {
+				$targ->{IfSel}[$i]		= 'Type';
+				$targ->{Key}[$i]		= $if->{Type}[$i];
+			} else {
+				die "ERROR: Internal error parsing ifSpec in '$t'\n";
+			}
+		} else {
+			$targ->{IfSel}[$i]			= 'None';
+			$targ->{Key}[$i]			= '';
+		}
+		# Remove escaped characters and trailing space from Descr or Name Key
+		$targ->{Key}[$i] =~ s/\\([\s:&@])/$1/g
+			if $targ->{IfSel}[$i] eq 'Descr' or $targ->{IfSel}[$i] eq 'Name';
+		$targ->{Key}[$i] =~ s/[\0- ]+$//;
 	}
-	if ($2) {
-	    $targ{IfSel}[$i0] = 'If';
-	    $targ{Key}[$i0]    = $2;
-	    $targ{IfSel}[$i1] = 'If';
-	    $targ{Key}[$i1]    = $2;
-	} elsif ($3) {
-	    $targ{IfSel}[$i0] = 'Ip';
-	    $targ{Key}[$i0]    = $3;
-	    $targ{IfSel}[$i1] = 'Ip';
-	    $targ{Key}[$i1]    = $3;
-	} elsif ($4) {
-	    $targ{IfSel}[$i0] = 'Eth';
-	    $targ{Key}[$i0]    = join "-", map {sprintf "%02x", hex $_} split /-/, $4;
-	    $targ{IfSel}[$i1] = 'Eth';
-	    $targ{Key}[$i1]    = join "-", map {sprintf "%02x", hex $_} split /-/, $4;
-	} elsif ($5) {
-	    $targ{IfSel}[$i0] = 'Descr';
-	    $targ{Key}[$i0]    = $5;
-	    $targ{IfSel}[$i1] = 'Descr';
-	    $targ{Key}[$i1]    = $5;
-	} elsif ($6) {
-	    $targ{IfSel}[$i0] = 'Type';
-	    $targ{Key}[$i0]    = $6;
-	    $targ{IfSel}[$i1] = 'Type';
-	    $targ{Key}[$i1]    = $6;
-	} elsif ($7) {
-	    $targ{IfSel}[$i0] = 'Name';
-	    $targ{Key}[$i0]    = $7;
-	    $targ{IfSel}[$i1] = 'Name';
-	    $targ{Key}[$i1]    = $7;
-	}
-	$targ{Community} =~ s/\\([ \@])/$1/g;
-        $targ{Key}[0] =~ s/\\([ :&])/$1/g if $targ{IfSel}[0] eq 'Descr' or $targ{IfSel}[0] eq 'Name';
-	$targ{Key}[1] =~ s/\\([ :&])/$1/g if $targ{IfSel}[1] eq 'Descr' or $targ{IfSel}[1] eq 'Name';
-        $targ{Key}[0] =~ s/[\0- ]+$//; # no trailing space
-        $targ{Key}[1] =~ s/[\0- ]+$//; # no trailing space
-        if ($snmpv && $snmpv =~ m/(?::[^:]*){4}:2c?/i) {
-	    $targ{OID}[$i0]      = "ifHCInOctets";
-	    $targ{OID}[$i1]      = "ifHCOutOctets";
-        } else {
-	    $targ{OID}[$i0]      = "ifInOctets";
-	    $targ{OID}[$i1]      = "ifOutOctets";
-	}
-	debug ('tarp',"Found ($idx) Simple:".
-	       " Comu:".$targ{Community}.
-	       " Host:".$targ{Host}.
-	       " Opt:".$targ{SnmpOpt}.
-	       " IfS:".$targ{IfSel}[0].
-	       " Key:".$targ{Key}[0]."\n              ".
-	       " InOID:".$targ{OID}[0].
-	       " OutOID:".$targ{OID}[1]);
-	$$target[$idx++]=\%targ;
-    }
+	# Remove escaped characters from community
+	$targ->{ Community } =~ s/\\([ @])/$1/g;
+	return $targ;	# Return new target closure
+}
 
+# ( $string, $unique ) = targparser( $string, $target, $targIndex, $ipv4only )
+# Walk amd analyze the target string $string. $target is a reference to the
+# array of targets being built. $targIndex is a reference to a hash of targets
+# previously encountered indexed by target string. When $ipv4only is nonzero,
+# only IPv4 is in use. Returns the modifed target string and the index of the
+# @$target array to which the target refers if that index is unique. If the
+# index is not unique, i.e. the target definition is a calculation involving
+# two or more different targets, then the value -1 is returned for $unique.
+# Targparser updates the target array avoiding duplicate targets. The goal is
+# to substitute all target definitions with strings of the form
+# "$t1$thisTarg$t2", where $thisTarg is the target index, and $t1 and $t2 are
+# as defined below. The intended result is a target string that can be eval'ed
+# in its entirety later on when monitoring data has been collected. This
+# evaluation occurs in sub getcurrent in the main mrtg script.
 
-    return $string;
+# Note: In the regular expressions in &targparser, we have avoided m/.../i
+# and the variables &`, $&, and $'. Use of these makes regex processing less
+# efficient. See Friedl, J.E.F. Mastering Regular Expressions. O'Reilly.
+# p. 273
+
+sub targparser( $$$$ ) {
+	# Target string (int:community@router, etc.)
+	my $string = shift;
+	# Reference to target array
+	my $target = shift;
+	# Reference to target index hash
+	my $targIndex = shift;
+	# Nonzero if only IPv4 is in use
+	my $ipv4only = shift;
+
+	# Next available index in the @$target array
+	my $idx = @$target;
+	# Common match strings: pre-target, target, post-target
+	my( $pre, $t, $post );
+	# Portion of string already parsed
+	my $parsed = '';
+	# Initialize $unique to undefined. It will take on the $targIndex value
+	# of the first target encountered. $otherTargCount will count the
+	# number of other targets (targets with different values of $targIndex)
+	# encountered during the parse. $unique will be returned as undef
+	# unless $otherTargCount remains 0.
+	my $unique = -1;
+	my $otherTargCount = 0;
+
+	# Components of the target expression that are substituted into the
+	# target string each time a target is identified. The substitution
+	# string is the interpolated value of "$t1$targIndex$t2". At present
+	# $t1 and $t2 are set to create a new BigFloat object.
+#	my $t1 = ' Math::BigFloat->new($target->[';
+#	my $t2 = ']{$mode}) ';
+        # this gives problems with perl 5.005 so bigfloat is introduces in mrtg itself
+	my $t1 = ' $target->[';
+	my $t2 = ']{$mode} ';
+
+	# Find and substitute all external program targets
+	while( ( $pre, $t, $post ) = $string =~ m<
+		^(.*?)					# capture pre-target string
+		`						# beginning of program target
+		((?:\\`|[^`])+)			# capture target contents (\` allowed)
+		`						# end of program target
+		(.*)$					# capture post-target string
+	>x ) {						# Total of 3 captures
+		my $thisTarg;
+		if( exists $targIndex->{ $t } ) {
+			# This program target has been encountered previously
+			$thisTarg = $targIndex->{ $t };
+			debug( 'tarp', "Existing program target [$thisTarg]" );
+		} else {
+			# A new program target is needed
+			my $targ = { };
+			$targ->{ Methode } = 'EXEC';
+			$targ->{ Command } = $t;
+			# Remove escaped backticks
+			$targ->{ Command } =~ s/\\\`/\`/g;
+			$target->[ $idx ] = $targ;
+			$thisTarg = $idx++;
+			$targIndex->{ $t } = $thisTarg;
+			debug( 'tarp', "New program target [$thisTarg] '$t'" );
+		}
+		$parsed .= "$pre$t1$thisTarg$t2";
+		$string = $post;
+		if( $unique < 0 ) {
+			$unique = $thisTarg;
+		} else {
+			$otherTargCount++ unless $thisTarg == $unique;
+		}
+	};
+	# Reset $string for new target type search
+	$string = $parsed . $string;
+	$parsed = '';
+	debug( 'tarp', "&targparser external done: '$string'" );
+
+	# Common interface specification regex components
+
+	# Simple interface specification regex component. Matches interface
+	# specification by IPv4 address, description, name, Ethernet address, or
+	# type.
+	my $ifSimple =
+		'       (\d+)|' .				# by number ($if->{Num})
+		'  /    (\d+(?:\.\d+)+)|' .		# by IPv4 address ($if->{IP})
+		'  \\\\ ((?:\\\\[\s:&@]|[^\s:&@])+)|' . # by description (allow \  \: \& \@) ($if->{Desc})
+		'  \#   ((?:\\\\[\s:&@]|[^\s:&@])+)|' . # by name (allow \  \: \& \@) ($if->{Name})
+		'  !    ([a-fA-F0-9]+(?:-[a-fA-F0-9]+)+)|' . # by Ethernet address ($if->{Eth})
+		'  %    (\d+)'; 				# by type ($if->{Type})
+
+	# Complex interface specification regex component. Note that a null string
+	# will match. Therefore the match must be postprocessed to check that
+	# $ifOID and $ifAlt are not both null.
+	my $ifComplex =
+		'([a-zA-Z0-9]*(?:\.\d+)*?)' .	# OID possibly starting with a MIB name ($if->{OID})
+		'(' .							# Interface specification alternatives: ($if->{Alt})
+			'\.' .						#  separator
+			$ifSimple .					#  simple alternatives (6 variables)
+		')?';							#  maybe none of the above
+
+	# Community-host interface specification regex component.
+	my $ifComHost =
+		'((?:\\\\[@ ]|[^\s@])+)' .		# community string ('\@' and '\ ' allowed) ($if->{ComStr})
+			'@' .						# separator
+		'(?:(\[[a-fA-F0-9:]*\])|' .		# hostname as IPv6 address ($if->{HostIPv6})
+		'([-\w]+(?:\.[-\w]+)*))' .		# or DNS name ($if->{HostName})
+		'((?::[\d.]*)*)' .				# SNMP session configuration ($if->{SnmpInfo})
+		'(?:\|([a-zA-Z_][\w]*))?';		# numeric conversion subroutine ($if->{ConvSub})
+
+	# Match strings for simple and complex interface specifications. Entries
+	# are of the form $if->{k1}[i], where k1 is OID, Alt, Num, IP, Desc,
+	# Name, Eth, or Type, and i is 0 or 1 (input or output). Entries may also
+	# have the form $if->{k1}, where k1 is Rev, ComStr, HostIPv6, HostName,
+	# SnmpInfo, or ConvSub, with no [i] in these cases.
+	my $if;
+
+	# Find and substitute all complex OID targets
+
+	while( ( $pre, $t, $if->{OID}[0], $if->{Alt}[0], $if->{Num}[0],
+	$if->{IP}[0], $if->{Desc}[0], $if->{Name}[0], $if->{Eth}[0],
+	$if->{Type}[0], $if->{OID}[1], $if->{Alt}[1], $if->{Num}[1],
+	$if->{IP}[1], $if->{Desc}[1], $if->{Name}[1], $if->{Eth}[1],
+	$if->{Type}[1], $if->{ComStr}, $if->{HostIPv6}, $if->{HostName},
+	$if->{SnmpInfo}, $if->{ConvSub}, $post ) = $string =~ m<
+		^(.*?)					# capture pre-target string
+		(						# capture entire target
+			${ifComplex}		# input interface specification (8 captures)
+				&				# separator
+			${ifComplex}		# output interface specification (8 captures)
+				:				# separator
+			${ifComHost}		# community-host specification (5 captures)
+		)						# end of entire target capture
+		(.*)$					# capture post-target string
+	>x ) {						# Total of 24 captures
+		my $thisTarg;
+		# Exception: skip and try to parse later as a simple target if
+		# $if->{Desc}[0], $if->{Name}[0], $if->{Desc}[1], or $if->{Name}[1]
+		# ends with a backslash character
+		if( ( defined $if->{Desc}[0] and $if->{Desc}[0] =~ m<\\$> ) or
+			( defined $if->{Name}[0] and $if->{Name}[0] =~ m<\\$> ) or
+			( defined $if->{Desc}[1] and $if->{Desc}[1] =~ m<\\$> ) or
+			( defined $if->{Name}[1] and $if->{Name}[1] =~ m<\\$> ) ) {
+			$parsed .= "$pre$t";
+			$string = $post;
+			next;
+		}
+		if( exists $targIndex->{ $t } ) {
+			# This complex target has been encountered previously
+			$thisTarg = $targIndex->{ $t };
+			debug( 'tarp', "Existing complex target [$thisTarg]" );
+		} else {
+			# A new complex target is needed
+			my $targ = newSnmpTarg( $t, $if );
+			$targ->{ ipv4only } = $ipv4only;
+			$target->[ $idx ] = $targ;
+			$thisTarg = $idx++;
+			$targIndex->{ $t } = $thisTarg;
+			debug( 'tarp', "New complex target [$thisTarg] '$t':\n" .
+				"  Comu:  $targ->{Community}, Host: $targ->{Host}\n" .
+				"  Opt:   $targ->{SnmpOpt}, IPv4: $targ->{ipv4only}\n" .
+				"  Conv:  $targ->{Conversion}\n" .
+				"  OID:   $targ->{OID}[0], $targ->{OID}[1]\n" .
+				"  IfSel: $targ->{IfSel}[0], $targ->{IfSel}[1]\n" .
+				"  Key:   $targ->{Key}[0], $targ->{Key}[1]" );
+		}
+		$parsed .= "$pre$t1$thisTarg$t2";
+		$string = $post;
+		if( $unique < 0 ) {
+			$unique = $thisTarg;
+		} else {
+			$otherTargCount++ unless $thisTarg == $unique;
+		}
+	}
+	# Reset $string and $parsedfor new target type search
+	$string = $parsed . $string;
+	$parsed = '';
+	debug( 'tarp', "&targparser complex done: '$string'" );
+
+	# Find and substitute all simple targets
+
+	while( ( $pre, $t, $if->{Rev}, $if->{Num}[0], $if->{IP}[0],
+	$if->{Desc}[0], $if->{Name}[0], $if->{Eth}[0], $if->{Type}[0],
+	$if->{ComStr}, $if->{HostIPv6}, $if->{HostName}, $if->{SnmpInfo},
+	$if->{ConvSub}, $post ) = $string =~ m<
+		^(.*?)					# capture pre-target string
+		(						# capture entire target
+			(-)?				# capture direction reversal
+			(?: ${ifSimple} )	# simple interface specification (6 captures)
+				:				# separator
+			${ifComHost}		# community-host specification (5 captures)
+		)						# end of entire target capture
+		(.*)$					# capture post-target string
+	>x ) {						# Total of 15 captures
+		my $thisTarg;
+		if( exists $targIndex->{ $t } ) {
+			# This simple target has been encountered previously
+			$thisTarg = $targIndex->{ $t };
+			debug( 'tarp', "Existing simple target [$thisTarg]" );
+		} else {
+			# A new simple target is needed
+			# Reverse interface directions if indicated by $if->{Rev}.
+			# The sense of $d1 and $d2 is 0 for input and 1 for output
+			my $d1 = ( defined $if->{Rev} and $if->{Rev} eq '-' ) ? 1 : 0;
+			my $d2 = 1 - $d1;
+			# Set the OIDs depending on whether SNMPv2 has been specified
+			# and on the direction
+			if( $if->{SnmpInfo} =~ m/(?::[^:]*){4}:2[Cc]?/ ) {
+				$if->{OID}[$d1] = 'ifHCInOctets';
+				$if->{OID}[$d2] = 'ifHCOutOctets';
+			} else {
+				$if->{OID}[$d1] = 'ifInOctets';
+				$if->{OID}[$d2] = 'ifOutOctets';
+			}
+			# Give $if->{Alt}[i] an arbitrary defined value so that
+			# &newSnmpTarg works correctly
+			$if->{Alt}[0]	= 1;
+			$if->{Alt}[1]	= 1;
+			# Copy input specification to output
+			$if->{Num}[1]	= $if->{Num}[0];
+			$if->{IP}[1]	= $if->{IP}[0];
+			$if->{Desc}[1]	= $if->{Desc}[0];
+			$if->{Name}[1]	= $if->{Name}[0];
+			$if->{Eth}[1]	= $if->{Eth}[0];
+			$if->{Type}[1]	= $if->{Type}[0];
+			my $targ = newSnmpTarg( $t, $if );
+			$targ->{ ipv4only } = $ipv4only;
+			$target->[ $idx ] = $targ;
+			$thisTarg = $idx++;
+			$targIndex->{ $t } = $thisTarg;
+			debug( 'tarp', "New simple target [$thisTarg] '$t':\n" .
+				"  Comu:  $targ->{Community}, Host: $targ->{Host}\n" .
+				"  Opt:   $targ->{SnmpOpt}, IPv4: $targ->{ipv4only}\n" .
+				"  Conv:  $targ->{Conversion}\n" .
+				"  OID:   $targ->{OID}[0], $targ->{OID}[1]\n" .
+				"  IfSel: $targ->{IfSel}[0], $targ->{IfSel}[1]\n" .
+				"  Key:   $targ->{Key}[0], $targ->{Key}[1]" );
+		}
+		$parsed .= "$pre$t1$thisTarg$t2";
+		$string = $post;
+		if( $unique < 0 ) {
+			$unique = $thisTarg;
+		} else {
+			$otherTargCount++ unless $thisTarg == $unique;
+		}
+	}
+	# Assemble string to be returned
+	$string = $parsed . $string;
+	# Set $unique undefined if more than one target is referred to in the
+	# target string
+	$unique = -1 if $otherTargCount;
+	debug( 'tarp', "&targparser simple done: '$string'" );
+	debug( 'tarp', "&targparser returning: unique = $unique" );
+	return ( $string, $unique );
+}
+
+# Display of &targparser intermediate values for debugging purposes. Call as
+# showMatch( $string, $pre, $t, $post, $if ) from within &targparser.
+sub showMatch( $$$$$ ) {
+	my( $string, $pre, $t, $post, $if ) = @_;
+	warn "# Matching on string '$string'\n";
+	warn "# Prematch:  '$pre'\n";
+	warn "# Target:    '$t'\n";
+	warn "# Postmatch: '$post'\n";
+	warn "# Captured:\n";
+	foreach my $k( keys %$if ) {
+		if( ref( $if->{$k} ) eq 'ARRAY' ) {
+			warn "#  \$if->{$k}[0,1]: '",
+				( defined $if->{$k}[0] ) ? $if->{$k}[0] : 'undef', "', '",
+				( defined $if->{$k}[1] ) ? $if->{$k}[1] : 'undef', "'\n";
+		} else {
+			warn "#  \$if->{$k}:      '",
+				( defined $if->{$k} ) ? $if->{$k} : 'undef', "'\n";
+		}
+	}
 }
 
 sub readconfcache ($) {
@@ -1208,7 +1438,7 @@ sub writeconfcache ($$) {
         @hosts = @{$$confcache{___updated}} ;
         delete $$confcache{___updated};
     } else {
-        @hosts = keys %{$confcache}
+        @hosts = grep !/^___/, keys %{$confcache}
     }
     foreach my $host (sort @hosts) {
         foreach my $method (sort keys %{$$confcache{$host}}) {
@@ -1241,13 +1471,14 @@ sub storeincache ($$$$$){
 
 }
 
-sub populateconfcache ($$$$) {
+sub populateconfcache ($$$$$) {
     my $confcache = shift;
     my $host = shift;
+    my $ipv4only = shift;
     my $reread = shift;
     my $snmpoptions = shift || {};
     return if defined $$confcache{$host} and not $reread;
-
+    
     my $snmp_errlevel = $SNMP_Session::suppress_warnings;
     $SNMP_Session::suppress_warnings = 3;    
 
@@ -1259,10 +1490,13 @@ sub populateconfcache ($$$$) {
 		   ifName  => 'Name',
 		   ifType  => 'Type',
 		   ipAdEntIfIndex => 'Ip' );
-
-    foreach my $node ( keys %tables ) {
+    my @nodes = qw (ifName ifDescr ifType ipAdEntIfIndex);
+    # it seems that some devices only give back sensible data if their tables
+    # are walked in the right ordere ....
+    foreach my $node (@nodes) {
+	next if $confcache->{___deadhosts}{$host} and time - $confcache->{___deadhosts}{$host} < 300;
 	$SNMP_Session::errmsg = undef;
-	@ret = snmpwalk($host, $snmpoptions, $node);
+	@ret = snmpwalk(v4onlyifnecessary($host, $ipv4only), $snmpoptions, $node);
 	unless ( $SNMP_Session::errmsg){
 	    foreach my $ret (@ret)
 	      {
@@ -1276,11 +1510,17 @@ sub populateconfcache ($$$$) {
 		  }
 	      };
 	} else {
+  	    $confcache->{___deadhosts}{$host} = time
+		if $SNMP_Session::errmsg =~ /no response received/;
 	    debug('snpo',"Skipping $node scanning because $host does not seem to support it");
 	}
     }
+    if ($confcache->{___deadhosts}{$host} and time - $confcache->{___deadhosts}{$host} < 300){
+	$SNMP_Session::suppress_warnings = $snmp_errlevel;
+	return;
+    }
     $SNMP_Session::errmsg = undef;
-    @ret = snmpwalk($host, $snmpoptions, "ifPhysAddress");
+    @ret = snmpwalk(v4onlyifnecessary($host, $ipv4only), $snmpoptions, "ifPhysAddress");
     unless ( $SNMP_Session::errmsg){
 	foreach my $ret (@ret)
 	  {
@@ -1454,6 +1694,7 @@ RRD
     addarch(6,'AVERAGE','in','out',\%store,\%first_step,\$rrd);
     addarch(24,'AVERAGE','in','out',\%store,\%first_step,\$rrd);
     addarch(288,'AVERAGE','in','out',\%store,\%first_step,\$rrd);
+    addarch(1,'MAX','maxin','maxout',\%store,\%first_step,\$rrd);
     addarch(6,'MAX','maxin','maxout',\%store,\%first_step,\$rrd);
     addarch(24,'MAX','maxin','maxout',\%store,\%first_step,\$rrd);
     addarch(288,'MAX','maxin','maxout',\%store,\%first_step,\$rrd);
@@ -1461,7 +1702,7 @@ RRD
 </rrd>
 RRD
         
-    if ( $OS eq 'NT' ) {
+    if ( $OS eq 'NT'  or $OS eq 'OS2') {
        open (R, "|$$cfg{rrdtool} restore - $$cfg{logdir}$$rcfg{'directory'}{$router}$router.rrd");
     } else {
        open (R, "|-") or exec "$$cfg{rrdtool}","restore","-","$$cfg{logdir}$$rcfg{'directory'}{$router}$router.rrd";
@@ -1599,6 +1840,25 @@ sub setup_loghandlers ($){
     }
 }    
 
+# Adds the v4only attribute to a target if the caller requests it.
+# (this includes targets specified using numeric IPv6 addresses...)
+sub v4onlyifnecessary ($$) {
+    my $target = shift;
+    my $add = shift;
+    my ($v6addr, $temptarget);
+
+    if($add) {
+	# Catch numeric IPv6 addresses
+	if ( $target =~ /(\[[\w:]*\])(.*)/) {
+	    ($v6addr, $temptarget) = ($1,$2);
+	} else {
+	    $temptarget = $target;
+	}
+	return $target.(":" x (5 - ($temptarget =~ tr/://))).":v4only";
+    } else {
+	return $target;
+    }
+}
 __END__
 
 =pod
@@ -1666,7 +1926,7 @@ The target config hash has the structure
 
  $targetcfg{configoption}{targetname} = 'value'
 
-See L<reference> for more information about the MRTG configuration syntax.
+See L<mrtg-reference> for more information about the MRTG configuration syntax.
 
 C<readcfg> can take two additional arguments to extend the config file
 syntax. This allows programs to put their configuration into the mrtg config

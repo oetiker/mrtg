@@ -18,6 +18,8 @@ you have to add the line
 
  LogFormat: rrdtool
 
+to your mrtg config file.
+
 MRTG needs access to both the RRDtool perl module B<RRDs.pm> and to the
 B<rrdtool> executable.
 
@@ -96,9 +98,9 @@ The program comes with its own documentation
 These are other cgi frontends to mrtg running with rrdtool. The main difference
 between this and 14all is that the web pages it creates are much more stylish than the
 ones from mrtg. These tools have been written by S<Steve Shipway
-E<lt>steve.shipway@adsweu.comE<gt>>. You can find a copy in
+E<lt>steve@steveshipway.orgE<gt>>. You can find a copy in
 
- http://www.cheshire.demon.co.uk/pub/
+ http://www.steveshipway.org/software/
 
 The scripts comes with their own installation instructions.
 

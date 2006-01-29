@@ -1,5 +1,5 @@
 /*
- MRTG 2.9.29  -- Rateup
+ MRTG 2.10.15  -- Rateup
  *********************
 
  Rateup is a fast add-on to the great MRTG Traffic monitor.  It makes
@@ -34,13 +34,8 @@
 #include <string.h>
 /* VC++ does not have unistd.h */
 #ifndef WIN32
-  #include "../config.h"
-  /* maybe this will make rateup.c compile on HPUX */
-  #if !defined(HAVE_STRTOLL) && defined(HAVE___STRTOLL)
-     #ifdef HAVE_INTTYPES_H
-       #include <inttypes.h>
-     #endif
-     #define strtoll __strtoll
+  #ifndef NETWARE
+    #include "../config.h"
   #endif
   #include <unistd.h>
 #endif
@@ -61,9 +56,20 @@
 /* MSVCRT.DLL does not know %ll in printf */ 
 #ifdef __MINGW32_VERSION
 #define LLD "%I64d"
-#else
-#define LLD "%lld"
+#define LLD_FORMAT "I64d"
 #endif
+
+#ifdef __EMX__  /* OS/2 */
+#define strtoll _strtoll
+#define LLD "%Ld" /* EMX lib use %Ld for long long */
+#define LLD_FORMAT "Ld"
+#endif
+
+#ifndef LLD
+#define  LLD "%lld"
+#define  LLD_FORMAT "lld"
+#endif
+
 
 /* WATCOM C/C++ 10.6 under Win95/NT */
 /* VC++ 6.0 under Win95/NT */
@@ -77,7 +83,7 @@
 #include <gd.h>
 #include <gdfonts.h>
 
-char *VERSION = "2.9.29";
+char *VERSION = "2.10.15";
 char *program,*router,*routerpath;
 int histvalid;
 
@@ -91,12 +97,17 @@ short options = 0;
 #define OPTION_NOARROW		0x0020	/* noarrow */
 #define OPTION_NO_I		0x0040	/* ignore 'I' (first) variable */
 #define OPTION_NO_O		0x0080	/* ignore 'O' (second) variable */
+#define OPTION_PNGDATE		0x0100	/* show date & time in graph */
+#define OPTION_PRINTROUTER		0x0200	/* show title in graph */
 
 time_t NOW;
 
 char *short_si[] = {"","k","M","G","T"};
 char *longup = NULL;
 char *shortup = NULL;
+char *pngtitle = NULL;
+char *pngdate = NULL;
+char *rtimezone = NULL;
 char weekformat = 'W';			/* strftime() fmt char for week #  */
 
 #define DAY_COUNT (600)			/* 400 samples is 33.33 hours */
@@ -151,8 +162,12 @@ struct LAST {
     char in[MAXL],out[MAXL];
 } last;
 
-#define max(a,b) ((a) > (b) ? (a) : (b))
-#define min(a,b) ((a) < (b) ? (a) : (b))
+#ifndef max
+ #define max(a,b) ((a) > (b) ? (a) : (b))
+#endif
+#ifndef min
+ #define min(a,b) ((a) < (b) ? (a) : (b))
+#endif
 
 /*
 
@@ -211,7 +226,7 @@ for debuging
       } while (n < histvalid && nextnow < history[n].time);\
 \
       if (avc != steptime) {\
-       fprintf(stderr,"ERROR: StepTime does not match Avc %8llu. Please Report this.\n", avc);\
+       fprintf(stderr,"ERROR: StepTime does not match Avc %8" LLD_FORMAT ". Please Report this.\n", avc);\
       }\
 \
       inr /= avc; outr /= avc;\
@@ -219,7 +234,7 @@ for debuging
   }
 
  
-static void image(file,maxvi,maxvo,maxx,maxy,xscale,yscale,growright,step, bits, ytics, yticsf, peak)
+static void image(file,maxvi,maxvo,maxx,maxy,xscale,yscale,growright,step, bits, ytics, yticsf, peak, currdatetimeformat, currdatetimepos)
 char *file;
 long long  maxvi,maxvo;
 long maxx;
@@ -228,6 +243,8 @@ double xscale,yscale;
 int ytics; /* number of tics on the y axis*/
 double yticsf; /* scale everything on the y axis with this factor*/
 int peak;
+char *currdatetimeformat;
+int currdatetimepos;
 {
     FILE *fo;
     int i,x,y,n,type;
@@ -237,17 +254,28 @@ int peak;
     double inr, outr,muli, interval;
     time_t now,onow,nextnow;
     struct tm tm2, *tm=&tm2;
+    struct tm tm3, *tmtz=&tm3;
     char **graph_label;
     char ylab[30];
     /* scaling helpers */
     long long maxv_q;
     long long valsamp,maxin,maxout,digits,maxpercent=0;
-    long long sca_ten,sca_hun,nmax_q;
+    long long sca_ten,sca_hun;
+    double nmax_q;
     double avmxin,avmxout, avin, avout,latestout=0,latestin=0,nmax,avpercent=0,latestpercent=0;
     double nex_ten,nex_hun,nex_rnd;
     double sca_max_q,dummy;
     double percent;
     char *short_si_out;
+    char currdatetimestr[256];
+    time_t currdatetime;
+    int currdatetimepos_x, currdatetimepos_y;
+
+#define NO_TIMESTAMPSTR (0)
+#define LU_CORNER (1)
+#define RU_CORNER (2)
+#define LL_CORNER (3)
+#define RL_CORNER (4)
     
 
     struct HISTORY *lhist;
@@ -260,6 +288,8 @@ int peak;
     /* translate x/y coord into graph coord */
 #define xtr(x) (long)((growright) ? (maxx*xscale+81-((x)*xscale)) : (81+((x)*xscale))) 
     /* ################################################# */ 
+
+
 
     /* GD LIB declarations */
     /* Declare the image */
@@ -366,7 +396,7 @@ int peak;
     printf("" LLD "\n",(long long)(avmxin/(long long)muli+.5));
     printf("" LLD "\n",(long long)(avmxout/(long long)muli+.5));
     
-    if (maxv < 0 || (unsigned long) maxv < maxs) {maxv = maxs;}
+    if (maxv < 0 || maxv < maxs) {maxv = maxs;}
       
     now = onow;
 
@@ -401,8 +431,7 @@ int peak;
        /* yes this should be kilo, but then the log and pow bits below
           should be base 'kilo' as well and not base 10 */
            
-       while (number >= (double)1000 && digits<(unsigned long) kMGnumber*3) {
-          number /= (double) 1000;
+       while (number >= (double)1000 && digits<(long long) kMGnumber*3) {          number /= (double) 1000;
           digits += 3;
        }
        sca_max_q = (double) ( (int) (  ( (double)100.*(double)number )/
@@ -426,7 +455,7 @@ int peak;
         short_si_out = short_si[min((signed) (digits/3), kMGnumber)];
      }
       
-    if (maxv_q) {
+    if (maxv_q*yticsf >= 1) {
 /*    	digits = log10((double)maxv_q); */
     	digits = log10((double)maxv_q*yticsf);
     } else {
@@ -554,19 +583,19 @@ int peak;
 	lhist[x].out = y;
 	y = ((double)inmax/nmax) * maxy;
 	if (y >= maxy) y = maxy;
-	if (x && (unsigned long) y < (lhist[x-1].inmax)) {
+	if (x && (long long) y < (lhist[x-1].inmax)) {
 	  y += (lhist[x-1].inmax); y /= 2;
 	}
         lhist[x].inmax = y;
 	y = ((double)outmax/nmax) * maxy;
 	if (y >= maxy) y = maxy;
-	if (x && (unsigned long) y < (lhist[x-1].outmax)) {
+	if (x && (long long) y < (lhist[x-1].outmax)) {
 	  y += (lhist[x-1].outmax); y /= 2;
 	}
         lhist[x].outmax = y;
 
 	if (options & OPTION_DORELPERCENT) {
-	   if (outr != (unsigned long)0) {
+	   if (outr != (long long)0) {
               percent = (double)inr/(double)outr;
 	   }
 	   else {
@@ -599,15 +628,17 @@ int peak;
     }
     gdImageInterlace(graph, 1); 
     
+    /* do NOT delete the out variables. they are dummies, but the actual color
+       allocation for the brush is essential */
     i_major = gdImageColorAllocate(graph,c_major);
     i_in = gdImageColorAllocate(graph,col_in[0], col_in[1], col_in[2]);
-    i_out = gdImageColorAllocate(brush_out,col_out[0], col_out[1], col_out[2]);
+    i_out = gdImageColorAllocate(brush_out,col_out[0], col_out[1], col_out[2]);        
     i_grid = gdImageColorAllocate(graph,c_grid );
     i_inm = gdImageColorAllocate(graph,col_inm[0], col_inm[1], col_inm[2]);
     i_outm = gdImageColorAllocate(brush_outm,col_outm[0], col_outm[1], col_outm[2]);
     i_outp = gdImageColorAllocate(brush_outp,col_outp[0], col_outp[1], col_outp[2]);
     i_outpg = gdImageColorAllocate(graph,col_outp[0], col_outp[1], col_outp[2]);
-    
+        
     /* draw the image border */
    if (!(options & OPTION_NOBORDER)) {
     gdImageLine(graph,0,0,XSIZE-1,0,i_light);
@@ -660,6 +691,38 @@ int peak;
 		  gdBrushed);
    }
  
+   /* print the graph title */ 
+     if ( pngtitle != NULL ) {	
+       gdImageString(graph, gdFontSmall,81, 1,
+         (unsigned char*)pngtitle, i_grid);
+     } else {
+       if ( options & OPTION_PRINTROUTER ) {
+        gdImageString(graph, gdFontSmall,81, 1,
+         (unsigned char*)router, i_grid);
+       }
+     }
+  
+   /* print the date & time */ 
+    if (   options & OPTION_PNGDATE  ) {	 
+      pngdate = (char *)calloc(1,100);
+	  tmtz=localtime(&NOW);
+	  if ( rtimezone == NULL ) {
+	  	strftime(pngdate, 18, "%b %d %Y %H:%M", tmtz); 
+      } else  {
+	  	strftime(pngdate, 19, "%b %d %Y %H:%M ", tmtz); 
+		if ( ((size_t) strlen(pngdate)+strlen(rtimezone)) < 100 ) {
+	      strcat(pngdate, rtimezone); 
+        } else {
+			fprintf(stderr,"Rateup ERROR: date + timezone string too long\n");
+            exit(1);
+		}
+
+      }
+	  gdImageString(graph, gdFontSmall,
+              (81+maxx*xscale)-gdFontSmall->w*strlen(pngdate), 1,
+		      (unsigned char*)pngdate, i_grid);
+ 	} 
+  
     /* draw the graph border */
     gdImageRectangle(graph,xtr(0),ytr(0),xtr(maxx),ytr(maxy),i_grid);
     
@@ -760,6 +823,31 @@ int peak;
     gdImageLine(graph, xtr(-3),ytr(0),xtr(-3),ytr(0), i_major);
    }
 
+    if (currdatetimepos > NO_TIMESTAMPSTR) {
+      currdatetime=time(NULL);
+      strftime(currdatetimestr,250,currdatetimeformat,localtime(&currdatetime));
+      switch ( currdatetimepos ) {
+        case LL_CORNER:
+          currdatetimepos_x = 3;
+          currdatetimepos_y = YSIZE - gdFontSmall->h - 3;
+          break;
+        case RL_CORNER:
+          currdatetimepos_x = XSIZE - strlen(currdatetimestr) * gdFontSmall->w - 3;
+          currdatetimepos_y = YSIZE - gdFontSmall->h - 3;
+          break;
+        case LU_CORNER :
+          currdatetimepos_x = 3;
+          currdatetimepos_y = 1;
+          break;
+        case RU_CORNER:
+        default:
+          currdatetimepos_x = XSIZE - strlen(currdatetimestr) * gdFontSmall->w - 3;
+          currdatetimepos_y = 1;
+      };
+      gdImageString(graph, gdFontSmall,
+          currdatetimepos_x, currdatetimepos_y,
+          currdatetimestr, i_grid);
+    }
 
     if ((fo = fopen(file,"wb")) == NULL) {
       perror(program);
@@ -774,6 +862,7 @@ int peak;
     gdImageDestroy(brush_outp);
     free(lhist);
     free(graph_label);
+
 }
 
 	    
@@ -800,20 +889,22 @@ char *a,*b;
     r1[1] = 0;	/* Null terminate result */
     c = 0;
     for (x=0; x<m; x++) {
-	if (a1 >= a && b1 >= b) {
-	    *r1 = ((*a1 - c) - *b1) + '0';
-	} else if (a1 >= a) {
-	    *r1 = (*a1 - c);
-	} else {
-	    *r1 = ('0' - *b1 - c) + '0';
-	}
-	if (*r1 < '0') {
-	    *r1 += 10; 
-	    c=1;
-	} else {
-	    c=0;
-	}
-	a1--;b1--;r1--;
+        /* we want to avoid reading off the edge of the string */
+        char save_a,save_b;
+        save_a = ( a1 >= a) ? *a1 : '0';
+        save_b = ( b1 >= b) ? *b1 : '0';
+        *r1 = save_a - save_b - c + '0';
+        if (*r1 < '0') {
+            *r1 += 10;
+            c=1;
+        } else
+          if (*r1 > '9') { /* 0 - 10 */
+            *r1 -= 10;
+            c=1;            
+          } else {
+            c=0;
+        }
+        a1--;b1--;r1--;
     }
     if (c) {
 	r1 = &res[m+1];
@@ -840,12 +931,14 @@ char *file;
     struct HISTORY *hist;
     long long rd[5];
     time_t cur;
+    long lasttime;    
 
     if ((fi = fopen(file,"r")) != NULL) {
-	if (fscanf(fi,"%ld %s %s\n",(long int *)&last.time,&last.in[0],&last.out[0]) != 3){
+	if (fscanf(fi,"%ld %s %s\n",&lasttime,&last.in[0],&last.out[0]) != 3){
            fprintf(stderr,"Read Error: File %s lin 1\n",file);
 	   retcode = 1;
 	}
+	last.time = lasttime;
         cur = last.time;
 	x = histvalid=0;
 	hist = history;
@@ -1203,21 +1296,23 @@ char **argv;
     int x,argi,used,initarg;
 
     program = argv[0];
-    if (argc < 2) {
-	fprintf(stderr,"%s for mrtg %s\n"
-		"Usage: %s directory basename [sampletime] [t sampletime] "
-		"[-(t)ransparent] [-(b)order]"
-		"[u|a|g|h|m in out abs_max] "
-		"[i/p file maxvi maxvo maxx maxy growright step bits]\n",
-		program,VERSION,program);
-	return(1);
+
+    if (argc < 3) {
+        fprintf(stderr,"%s for mrtg %s\n"
+            "Usage: %s directory basename [sampletime] [t sampletime] "
+            "[-(t)ransparent] [-(b)order]"
+            "[u|a|g|h|m in out abs_max] "
+            "[i/p file maxvi maxvo maxx maxy growright step bits]\n",
+            program,VERSION,program);
+        return(1);
     }
+
     routerpath = argv[1];
     /* this is for NT compatibility, because it does not seem to like
        rename across directories */
     if (chdir(routerpath)) {
-    	fprintf(stderr,"Rateup ERROR: Chdir to %s failed ...\n",routerpath);
-    	return(1);
+        fprintf(stderr,"Rateup ERROR: Chdir to %s failed ...\n",routerpath);
+        return(1);
     }
 
     /* Initialiase the colour variables  - should be overwritten */
@@ -1227,12 +1322,11 @@ char **argv;
     init_colour(&col_outm[0], c_outm);
     init_colour(&col_outp[0], c_outp);
 
-    if ((history = calloc(1,sizeof(struct HISTORY)*(MAX_HISTORY + 1))) 
-	== NULL) {
-      fprintf(stderr,"Rateup ERROR: Out of memory in main\n");
-      exit(1);
+    if ((history = calloc(1,sizeof(struct HISTORY)*(MAX_HISTORY + 1))) == NULL) {
+        fprintf(stderr,"Rateup ERROR: Out of memory in main\n");
+        exit(1);
     }
-#ifdef __WATCOMC__
+#if defined(__WATCOMC__) || defined(NETWARE)
      memset(history,0,sizeof(struct HISTORY)*(MAX_HISTORY + 1));
 #endif
 
@@ -1240,21 +1334,27 @@ char **argv;
 
     router = argv[2];
     
-    NOW = atol(argv[3]);
-
     /* from  mrtg-2.x with x>5 rateup calling syntax changed to
        to support time properly ... this is for backward compat
        we check if now is remotely reasonable ... 
        */
 
-    if (NOW > 10*365*24*60*60) {
-      initarg=4;
+    if (argc > 3) {
+        NOW = atol(argv[3]);
+        if (NOW > 10*365*24*60*60) {
+            initarg = 4;
+        } else {
+            initarg = 3;
+            time(&NOW);
+        }
     } else {
-      initarg=3;
-      time(&NOW);
+        initarg = 3;
+        time(&NOW);
     }
+
     readfile();
     used = 1;
+
     for (argi = initarg; argi < argc; argi += used) {
 	switch(argv[argi][0]) {
            case '-':   /* -options */
@@ -1275,6 +1375,10 @@ char **argv;
 		       options &= ~OPTION_NOBORDER;
 		       used = 1;
 		       break;
+	 	   case 'd':   /* Print date in image */
+		       options |= OPTION_PNGDATE;
+		       used = 1;
+		       break;
 	 	   case 'i':   /* Do not graph the I variable */
 		       options |= OPTION_NO_I;
 		       used = 1;
@@ -1289,6 +1393,9 @@ char **argv;
 		       break;
 		   case 'O':   /* Graph the O variable */
 		       options &= ~OPTION_NO_O;
+		       used = 1;
+		   case 'p':   /* print router name in image */
+		       options |= OPTION_PRINTROUTER;
 		       used = 1;
 		       break;
                    case 't':   /* Transparent Image */
@@ -1329,8 +1436,10 @@ char **argv;
 		    atol(argv[argi+10]), /* bits */
 		    atol(argv[argi+11]), /* ytics */
 		    atof(argv[argi+12]), /* yticsfactor */
-		    0);
-	      used = 13;
+		    0,
+		    argv[argi+13],
+		    atol(argv[argi+14]));
+	      used = 15;
 	      break;
 	    case 'p':	/* Create PPM Image record with Peak values*/
 		image(argv[argi+1],
@@ -1345,8 +1454,10 @@ char **argv;
 	   	      atol(argv[argi+10]), /* bits */
 		      atol(argv[argi+11]), /* ytics */
 		      atof(argv[argi+12]), /* yticsfactor */
-		      1);
-		used = 13;
+		      1,
+		      argv[argi+13],
+		      atol(argv[argi+14]));
+		used = 15;
 		break;
 	    case 'r':	/* Create random records, then update */
 		for (x=0; x<histvalid; x++) {
@@ -1430,8 +1541,13 @@ char **argv;
                 kMGcopy = calloc(strlen(argv[argi+1])+1, sizeof(char));               
 		used = 2;
 		break;
-            case 'l':  /* YLegend - rewritten by Oliver Haid */
+	    case 'Z':	/* Timezone name */
+		rtimezone = argv[argi+1];
+		used = 2;
+		break;
+        case 'l':  /* YLegend - rewritten by Oliver Haidi, re-rewritten by Jon Barber */
                 { int i, j, k, loop = 1;
+              int start=1, got_esc=0, append_ok;
                   char* qstr;
                   longup = (char *)calloc(1,100);
                   *longup = 0;
@@ -1440,79 +1556,137 @@ char **argv;
                      passing .... or because we don't know
                      better. Under Unix we just would say.  if
                      ((sscanf(argv[argi+1],"[%[^]]]", longup); */
-                  for (i=1; (i<argc) && loop; i++)   /* check all args delimited by '[' and ']' */
-                  { qstr = argv[argi+i];
-                    /* fprintf(stderr, "qstr = \"%s\"\n", qstr); */
-                    for (j=0; ((size_t) j<strlen(qstr)) && loop; j++)   /* check arg */
-                    { if (qstr[j] == '[')   /* beginning of YLegend-string */
-                      { j++;        /* skip '[' */
-                        *longup = 0;   /* clear */
-                      }
-                      if (strlen(qstr+j) >= 2)   /* check for escapes... */
-                      { if (qstr[j] == ']')   /* end of YLegend-string */
-                        { loop = 0;   /* exit */
-                        }
-                        else if (qstr[j] == '\\')   /* escape character '\' found */
-                        { j++;   /* skip '\' */
-                          if (qstr[j+1] == 0)   /* end of qstr reached */
-                          { fprintf(stderr, "Rateup ERROR: YLegend: bad escape \"\\\"! Use \"\\\\\" for \"\\\", \"\\[\" for \"[\" or \"\\]\" for \"]\".\n");
+              /* at start, check 1st char must be [ */
+              if ( argv[argi+1][0] !=  '[' ) {
+                 fprintf(stderr, "Rateup ERROR: YLegend: Option must be passed with '[' at start and  ']' at end (these will not be printed).\n");
                             return(1);
                           }
-                          if ((qstr[j] == '[') ||
-                              (qstr[j] == '\\') ||
-                              (qstr[j] == ']'))
-                          { /* escape okay -> append qstr[j] */
-                            k = strlen(longup);
-                            if ((size_t) (k + 1) > 99)
-                            { fprintf(stderr, "1: Rateup ERROR: YLegend to long ... !\n");
+              for (i=1; (i<argc) && loop; i++) {   /* check all args until unescaped ']'  */ 
+                qstr = argv[argi+i];
+                for (j=start; ((size_t) j<strlen(qstr)) && loop; j++) {
+                  start=0; /* 1st char in 1st arg already checked */ 
+                  append_ok=1; /* OK to append unless we find otherwise */
+                  if ( qstr[j] == '\\' ) {
+                    if  ( ++got_esc == 1 ) {
+                      append_ok = 0; /* don't append 1st '/' */
+                    } else { 
+                      got_esc = 0; /* 2nd '/' in a row, i.e. '//' */
+                    }
+                  }
+                  if ( qstr[j] == ']' ) { /* is this the end? */
+                    if ( got_esc == 1 ) {
+                      if ( strlen(qstr+j) >=2 ) {
+                        append_ok=1; 
+                        got_esc=0;
+                      } else {
+                        fprintf(stderr, "1: rateup ERROR: YLegend:  use \"\\]\" for \"]\" or \"\\\\\" for \"\\\".\n"); 
+                        return(1);
+                      }
+                    } else {
+                      if ( strlen(qstr+j) >=2 ) { 
+                        fprintf(stderr, "2: rateup ERROR: YLegend:  use \"\\]\" for \"]\" or \"\\\\\" for \"\\\".\n"); 
                               return(1);
                             }
-                            longup[k] = qstr[j];
-                            longup[k + 1] = 0;
+                      loop = 0;
+                      append_ok=0;
                           }
-                          else   /* bad escape */
-                          { fprintf(stderr, "2: Rateup ERROR: YLegend: bad escape \"\\%c\"! Use \"\\\\\" for \"\\\", \"\\[\" for \"[\" or \"\\]\" for \"]\".\n", qstr[j]);
-                            return(1);
-                          }
-                        }
-                        else   /* append qstr[j] */
-                        { k = strlen(longup);
-                          if ((size_t) (k + 1) > 99)
-                          { fprintf(stderr, "3: Rateup ERROR: YLegend to long ... !\n");
-                            return(1);
-                          }
-                          longup[k] = qstr[j];
-                          longup[k + 1] = 0;
-                        }
-                      }
-                      else   /* handle last character */
-                      { if (qstr[j] == ']')   /* end of YLegend-string */
-                        { loop = 0;   /* exit */
-                        }
-                        else   /* append last character */
-                        { if ((strlen(longup) + strlen(qstr+j)) > (size_t)99)
-                          { fprintf(stderr, "4: Rateup ERROR: YLegend to long ... !\n");
-                            return(1);
-                          }
-                          strcat(longup, qstr+j);
-                        }
-                      }
-                    }   /* for (j=0; (j<strlen(qstr)) && loop; j++) */
+                  } 
+                  if ( append_ok == 1 ) {
                     k = strlen(longup);
-                    if ((size_t) (k + 1) > 99)
-                    { fprintf(stderr, "5: Rateup ERROR: YLegend to long ... !\n");
+                    if ((size_t) (k + 1) > 99 ) {
+                      fprintf(stderr, "3: rateup ERROR: YLegend too long\n");
+                            return(1);
+                          }
+                    longup[k]=qstr[j];
+                    longup[k+1] = 0;
+                        }
+                } /* for (j=start...)   */
+                /* append space */
+                k = strlen(longup);
+                if ((size_t) (k + 1) > 99 ) { 
+                  fprintf(stderr, "4: rateup ERROR: YLegend too long\n");
+                            return(1);
+                          }
+                longup[k] = ' ' ;
+                longup[k + 1]= 0;
+              } /* for (i =1 ... */
+              used=i;	
+                        }
+            /* remove trailing space */
+            longup[max(0, (signed) strlen(longup)-1)] = 0;
+            shortup = longup;
+            /* fprintf(stderr, "YLegend = \"%s\"\n", longup);  */
+            break; 
+        case 'T':  /* pngTitle - based on YLegend */
+            { int i, j, k, loop = 1;
+              int start=1, got_esc=0, append_ok;
+              char* qstr;
+              pngtitle = (char *)calloc(1,100);
+              *pngtitle = 0;
+              /* this rather twisty argument scanning is necesary
+                 because NT command.coms rather dumb argument
+                 passing .... or because we don't know
+                 better. Under Unix we just would say.  if
+                 ((sscanf(argv[argi+1],"[%[^]]]", pngtitle); */
+              /* at start, check 1st char must be [ */
+              if ( argv[argi+1][0] !=  '[' ) {
+                 fprintf(stderr, "Rateup ERROR: YLegend: Option must be passed with '[' at start and  ']' at end (these will not be printed).\n");
+                 return(1);
+                      }
+              for (i=1; (i<argc) && loop; i++) {   /* check all args until unescaped ']'  */ 
+                qstr = argv[argi+i];
+                for (j=start; ((size_t) j<strlen(qstr)) && loop; j++) {
+                  start=0; /* 1st char in 1st arg already checked */ 
+                  append_ok=1; /* OK to append unless we find otherwise */
+                  if ( qstr[j] == '\\' ) {
+                    if  ( ++got_esc == 1 ) {
+                      append_ok = 0; /* don't append 1st '/' */
+                    } else { 
+                      got_esc = 0; /* 2nd '/' in a row, i.e. '//' */
+                    }
+                  }
+                  if ( qstr[j] == ']' ) { /* is this the end? */
+                    if ( got_esc == 1 ) {
+                      if ( strlen(qstr+j) >=2 ) {
+                        append_ok=1; 
+                        got_esc=0;
+                      } else {
+                        fprintf(stderr, "1: rateup ERROR: YLegend:  use \"\\]\" for \"]\" or \"\\\\\" for \"\\\".\n"); 
+                        return(1);
+                        }
+                    } else {
+                      if ( strlen(qstr+j) >=2 ) { 
+                        fprintf(stderr, "2: rateup ERROR: YLegend:  use \"\\]\" for \"]\" or \"\\\\\" for \"\\\".\n"); 
+                            return(1);
+                          }
+                      loop = 0;
+                      append_ok=0;
+                        }
+                      }
+                  if ( append_ok == 1 ) {
+                    k = strlen(pngtitle);
+                    if ((size_t) (k + 1) > 99 ) {
+                      fprintf(stderr, "3: rateup ERROR: YLegend too long\n");
                       return(1);
                     }
-                    /* strcat (longup," "); */
-                    longup[k] = ' ';   /* append space */
-                    longup[k + 1] = 0;
-                  }   /* for (i=1; (i<argc) && loop; i++) */
-                  used = i;
+                    pngtitle[k]=qstr[j];
+                    pngtitle[k+1] = 0;
                 }
-                /* remove the last space in longup: */
-                longup[max(0, (signed) strlen(longup)-1)] = 0;
-                shortup = longup;
-                /* fprintf(stderr, "YLegend = \"%s\"\n", longup); */
+                } /* for (j=start...)   */
+                /* append space */
+                k = strlen(pngtitle);
+                if ((size_t) (k + 1) > 99 ) { 
+                  fprintf(stderr, "4: rateup ERROR: YLegend too long\n");
+                  return(1);
+                }
+                pngtitle[k] = ' ' ;
+                pngtitle[k + 1]= 0;
+              } /* for (i =1 ... */
+              used=i;	
+            }
+            /* remove trailing space */
+            pngtitle[max(0, (signed) strlen(pngtitle)-1)] = 0;
+            /* fprintf(stderr, "YLegend = \"%s\"\n", pngtitle);  */
                 break;
 	    default:
 	        fprintf(stderr,"Rateup ERROR: Can't cope with %s, sorry!\n",argv[argi]);
@@ -1521,3 +1695,5 @@ char **argv;
     }
     return(0);
 }
+
+

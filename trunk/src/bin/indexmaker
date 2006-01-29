@@ -1,7 +1,7 @@
 #! /usr/bin/perl -w
 # -*- mode: Perl -*-
 ##################################################################
-# MRTG 2.9.29  --- Index Generator
+# MRTG 2.10.15  --- Index Generator
 ##################################################################
 #
 # This reads a mrtg.cfg file form std input or cmdline argument
@@ -31,6 +31,10 @@ BEGIN {
         $main::OS = 'NT';
         $main::SL = '\\';
         $main::PS = ';';
+    } elsif ( $^O =~ /^NetWare$/i ) {
+        $main::OS = 'NW';
+        $main::SL = '/';
+        $main::PS = ';';
     } elsif ( $^O =~ /^VMS$/i ) {
         $main::OS = 'VMS';
         $main::SL = '.';
@@ -46,7 +50,7 @@ use FindBin;
 use lib "${FindBin::Bin}";
 use lib "${FindBin::Bin}${main::SL}..${main::SL}lib${main::SL}mrtg2";
 
-use MRTG_lib "2.090017";
+use MRTG_lib "2.100015";
 use Getopt::Long;
 use Pod::Usage;
 
@@ -108,7 +112,7 @@ sub main {
         $opt{headoff} = $opt{boldoff};
     }
 	if ($opt{sidebyside}) {
-		$opt{div} = 'TD';
+		$opt{div} = 'td';
 	}
 	
     # slurp config files
@@ -116,8 +120,10 @@ sub main {
     my %cfg;
     my @target;
     my @routers;
+    my $cfgfile;
+    my %files;
     while (@ARGV) {
-	    my $cfgfile = shift @ARGV;
+           $cfgfile = shift @ARGV;
 	    readcfg($cfgfile,\@routers,\%cfg,\%rcfg);
 	    if (($opt{sectionhost}) or ($opt{perhost})) {
 	    	#We need to cache the "hostname" as appeared in cfgfile,
@@ -132,6 +138,11 @@ sub main {
 	    	}
 	    }
 	    cfgcheck(\@routers, \%cfg, \%rcfg, \@target);
+           for my $targ (@routers) {
+               if (! defined $files{$targ}) {
+                    $files{$targ}=substr($cfgfile,rindex($cfgfile,'/')+1);
+               }
+           }
 	    if ($opt{autoprefix}) {
 		    $rcfg{prefixes} = {} if (!defined $rcfg{prefixes});
 	        my $pref = subpath($cfg{htmldir},$opt{output});
@@ -142,7 +153,7 @@ sub main {
 		}
     }
     # generate index page
-    genindex(\@routers, \%cfg, \%rcfg, \%opt);
+    genindex(\@routers, \%cfg, \%rcfg, \%opt, \%files);
 }
 
 sub cleanurl ($) {
@@ -186,7 +197,9 @@ sub genindex ($$$$) {
     my $cfg = shift;
     my $rcfg = shift;
     my $opt = shift;
+    my $cfgfile = shift;
     my $index;
+    my $metaCmdLine;
     # -----------------------------------------------------------
     # keep only the items our users want (--filter)
     # -----------------------------------------------------------
@@ -260,35 +273,63 @@ sub genindex ($$$$) {
                || /^year$/     && 86400
                || $refresh ;
     }
+
+if ($$opt{optlog}) {
+    $metaCmdLine = $argz;
+} else {
+    $metaCmdLine = "<suppressed>";
+}
+
+$metaCmdLine =~ s/&/&amp;/g;   # Must be first, otherwise it will affect the following changes
+$metaCmdLine =~ s/"/&quot;/g;
+$metaCmdLine =~ s/</&lt;/g;
+$metaCmdLine =~ s/>/&gt;/g;
+    my $headeradd = $$opt{headeradd} || "";
     $index = <<ECHO;
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
     <TITLE>$$opt{title}</TITLE>
+    <!-- Command line is easier to read using "View Page Properties" of your browser -->
+    <!-- But not all browsers show that information. :-(                             -->
+    <META NAME="Command-Line" CONTENT="$metaCmdLine">
     <META HTTP-EQUIV="Refresh" CONTENT="$refresh">
     <META HTTP-EQUIV="Cache-Control" content="no-cache">
     <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
     <META HTTP-EQUIV="Expires" CONTENT="$expiration">
+    $headeradd
 ECHO
     $index .= <<ECHO if ($$opt{addhead});
     $$opt{addhead}
 ECHO
+    $index .= <<ECHO if ($$opt{optlog});
+<style type="text/css">
+<!--
+/* commandline was: $argz */
+/* sorry, no style, just abusing this to place the commandline and pass validation */
+-->
+</style>
+ECHO
+
     $index .= <<ECHO;
 </HEAD>
 
 <BODY $$opt{bodyopt}>
 ECHO
-    $index .= <<ECHO if ($$opt{optlog});
-<!-- commandline was: $argz -->
-ECHO
-
     $index .= <<ECHO;
 
 $$opt{pagetop}
 $$opt{headon}$$opt{title}$$opt{headoff}
+ECHO
+
+    $index .= <<ECHO if $$opt{subtitle};
+<p>$$opt{subtitle}</p>
+ECHO
+    
+    $index .= <<ECHO;
 
 <TABLE BORDER=0 CELLPADDING=0 CELLSPACING=$$opt{cellspacing}>
-<TR>
+<tr>
 ECHO
 
     # -----------------------------------------------------------
@@ -298,21 +339,21 @@ ECHO
     my $first = $order[0];
     my $host = $$rcfg{host}{$first} || '';
     
-    $index .= "<tr><td>$$opt{headon}Interfaces of $host $$opt{headoff}</td></tr>" if $$opt{perhost};
+    $index .= "<a NAME=\"$host\"></a><tr><td>$$opt{headon}Interfaces of $host $$opt{headoff}</td></tr>" if $$opt{perhost};
     foreach my $item (@order) {
 
 	if ($$opt{perhost}) {
 		my $newhost = $$rcfg{host}{$item};
 		if (!($host eq $newhost)) {
 			$host = $newhost;
-		    $index .= "<tr><td>$$opt{headon}Interfaces of $host $$opt{headoff}</td></tr>";
-			$index .= "</TR>\n<TR>\n";
+		        $index .= "<tr><td>$$opt{headon}Interfaces of $host $$opt{headoff}</td></tr>\n";
+			$index .= "<tr>\n";
 			$itemnr=0;
 		}
 	}
     $$opt{prefix} = $$rcfg{prefixes}->{$item} if ($$opt{autoprefix});
 	$itemnr++;
-	$index .= "<TD>";
+	$index .= "<td>";
         my $dirrel = "../" x ($$rcfg{'directory_web'}{$item} =~ tr|/|/|);
 
 	# --- produce graph section title ---
@@ -337,25 +378,20 @@ ECHO
 	      };
             /^descr(iption)?$/ &&
               do{
-		  $$rcfg{setenv}{$item} =~ /\bMRTG_INT_DESCR="([^"]*)"/;
-		  if ($$rcfg{pagetop}{$item} =~ 
-		   m,<td>Description:</td>\S*<td>($1)\s*([^<]+)?\s+(?=</td>),i) {
-		      $section = $2 || $1;
-                      last;
-                  } else {
-                      die "ERROR: no Description: line PageTop property in $item section\n";
-                  }
+                  $section = "No Description for $item";
+		  $$rcfg{setenv}{$item} =~ /MRTG_INT_DESCR="([^"]+)"/  #"
+                        and $section = $1;
+                  $$rcfg{pagetop}{$item} =~ 
+   		          m,<td>Description:</td>\S*<td>\Q$section\E\s*([^< ][^<]*?)\s*</td>,i
+                        and $section = $1;
+                  last;
               };
              /^portname$/ && 
                do{
-                 if ($$rcfg{pagetop}{$item} =~
-                     m,<TR><TD>Port Name:</TD>\s*<TD>([^<]+)</TD>,i ) {
-                      $section = $1;
-                      last;
-                 } else {
-                      warn "ERROR: no Port Name: PageTop property in $item section\n";
-                      $section = $item; last;
-                 }
+                 $section = "No Portname for $item";
+                 $$rcfg{pagetop}{$item} =~ m,<TR><TD>Port Name:</TD>\s*<TD>([^<]+)</TD>,i
+                      and  $section = $1;
+                 last;
                };
             die "ERROR: unknown sectioning type $_\n";
 	};
@@ -401,9 +437,9 @@ ECHO
 		    	# figure show name for rrd viewer
 			    if ($$cfg{logformat} eq 'rrdtool') {
                my $sep = $$opt{rrdviewer} =~ /\?/ ? '&' : '?'; 
-               $index .= "<A HREF=\"$$opt{rrdviewer}".$sep."log=$item\">".
+               $index .= "<A HREF=\"$$opt{rrdviewer}".$sep."log=$item&cfg=$$cfgfile{$item}\">".
 		                          "<IMG BORDER=$$opt{imgborder} ALT=\"$item Traffic Graph\" ".
-                         "SRC=\"$$opt{rrdviewer}".$sep."log=$item&png=$$opt{show}.".
+ "SRC=\"$$opt{rrdviewer}".$sep."log=$item&cfg=$$cfgfile{$item}&png=$$opt{show}.".
 					  "s&small=1\"></A>"
 			    } else {
 				$index .= "<A HREF=\"".cleanurl($$opt{prefix}.
@@ -431,11 +467,11 @@ ECHO
 	}
 
 	$index .= "</$$opt{div}>" if (!$$opt{sidebyside});
-	$index .= "\n</TD>";
+	$index .= "\n</td>";
 
 	# --- new table column if necessary ----
 	if (($itemnr) % $$opt{columns} == 0) {
-	    $index .= "</TR>\n<TR>\n";
+	    $index .= "</tr>\n<tr>\n";
 	}
     }
     # -----------------------------------------------------------
@@ -444,17 +480,18 @@ ECHO
 
     my $gifPath = '';
 
-    if (defined $$cfg{icondir}) {
-        $gifPath = $$cfg{icondir};
+    if ($$cfg{icondir} || $$opt{icondir}) {
+        $gifPath = $$opt{icondir} || $$cfg{icondir};
         #lets make sure there is a trailing path separator
         $gifPath =~ s|/*$|/|;
     } else {
         $gifPath = "$$cfg{imagehtml}";
     }
 
-    my $VERSION = "2.9.29";
+    my $VERSION = "2.10.15";
     $index .= <<ECHO;
-</TR>
+<td></td>
+</tr>
 </TABLE>
 ECHO
 
@@ -516,8 +553,9 @@ sub options ($) {
 	       'man',
 	       'output=s',
 	       'filter=s@',
-          'addhead=s',
+           'addhead=s',
 	       'title=s',
+           'subtitle=s',        
 	       'bodyopt=s',
 	       'pagetopend=s',
 	       'pagetop=s',
@@ -530,8 +568,9 @@ sub options ($) {
 	       'height=i',
 	       'show=s',
 	       'section=s',
-               'version',
+           'version',
 	       'prefix=s',
+               'headeradd=s',
 	       'clicktext!',
 	       'optlog!',
 	       'compact!',
@@ -542,6 +581,7 @@ sub options ($) {
 	       'nolegend',
 	       'autoprefix!',
 	       'sectionhost!',
+           'icondir=s',
 	       'rrdviewer=s');
 
 	#generate --option-file from --option
@@ -557,7 +597,7 @@ sub options ($) {
 	$$opt{prefix} .= '/';
 	$$opt{prefix} =~ s|/+$|/|;
     }
-    die ("Indexmaker for mrtg-2.9.29\n") if $$opt{version};
+    die ("Indexmaker for mrtg-2.10.15\n") if $$opt{version};
     pod2usage(-exitval => 1, -verbose => 2) if $$opt{man};
     pod2usage(-verbose => 1) if not @ARGV;
     
@@ -587,7 +627,7 @@ __END__
 
 =head1 NAME
 
-indexmaker - Creates index files for mrtg web sites (mrtg-2.9.29)
+indexmaker - Creates index files for mrtg web sites (mrtg-2.10.15)
 
 =head1 SYNOPSIS
 
@@ -603,6 +643,7 @@ indexmaker [options] mrtg.cfg [other.cfg ...]
 
  --addhead=text      insert this text between </TITLE> and </HEAD>
  --title=text        set title of generated index file
+ --subtitle=text     add a subtitle to the generated index file
  --bodyopt=text      set body tag options
  --headlevel=number  use <Hnumber> at top of page (default: 1)
  --pagetop=text      insert this text between <BODY> and <H1>...</H1>
@@ -643,7 +684,9 @@ indexmaker [options] mrtg.cfg [other.cfg ...]
  --sectionhost       Try to prepend the host to the section heading if missing
 
  --rrdviewer=path    path to rrdviewer (default: /cgi-bin/14all.cgi)
+ --icondir=path      path to icondir
  --prefix=path       path from the location of the index.html to the graphs
+ --headeradd=string  add string to the html page header
  --autoprefix        try to set prefix automatically
  
  --<opt>-file=file   read string argument for option <opt> from file

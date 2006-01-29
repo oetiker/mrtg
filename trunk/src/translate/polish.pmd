@@ -11,7 +11,7 @@
    'polish' =>
    "  <HR NOSHADE>
     Polska lokalizacja
-    <NOBR><A HREF=\"http://www.po.opole.pl/~lcj\">Lukasz Jokiel</A>
+  <NOBR><A HREF=\"http://www.klonex.com.pl/~lcj\">Lukasz Jokiel</A>
   <A HREF=\"mailto:Lukasz.Jokiel\@klonex.com.pl\">
   &lt;Lukasz.Jokiel\@klonex.com.pl&gt;</A></NOBR>",
 ###### PATCHTAG 40 ###################################################
@@ -96,7 +96,7 @@ foreach $i (keys %translations)
       'Jan'       => 'Sty',          'Feb'       => 'Lut',         'Mar'       => 'Mar',
       'April'     => 'Kwietnia',     'May'       => 'Maja',        'June'      => 'Czerwca', 
       'Apr'       => 'Kwi',          'May'       => 'Maj',         'Jun'       => 'Cze',
-      'July'      => 'Lipica',       'August'    => 'Sierpnia',    'September' => 'Wrzesnia', 
+      'July'      => 'Lipca',        'August'    => 'Sierpnia',    'September' => 'Wrze¶nia', 
       'Jul'       => 'Lip',          'Aug'       => 'Sie',         'Sep'       => 'Wrz', 
       'October'   => 'Pa¼dziernika', 'November'  => 'Listopada',   'December'  => 'Grudnia', 
       'Oct'       => 'Pa¼',          'Nov'       => 'Lis',         'Dec'       => 'Gru' 

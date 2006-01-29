@@ -20,6 +20,8 @@ RRRRDDTTOOOOLL IINNTTEEGGRRAATTIIOONN
 
         LogFormat: rrdtool
 
+       to your mrtg config file.
+
        MRTG needs access to both the RRDtool perl module RRRRDDss..ppmm
        and to the rrrrddttooooll executable.
 
@@ -63,8 +65,8 @@ RRRRDDTTOOOOLL IINNTTEEGGRRAATTIIOONN
            and update its _r_r_d databases.
 
        The advantage of whole thing is that the mrtg will become
-       mmuucchh faster. Expect the runtime to drop to 20% of the
-       previous value. (I would like to get some feedback on this
+       mmuucchh faster. Expect the runtime to drop to 20% of the pre-
+       vious value. (I would like to get some feedback on this
        from folks with large installations.)
 
        Mind you, though, while the logging process of RRDtool is
@@ -91,10 +93,10 @@ RRRRDDTTOOOOLL IINNTTEEGGRRAATTIIOONN
            rrdtool. The main difference between this and 14all is
            that the web pages it creates are much more stylish
            than the ones from mrtg. These tools have been written
-           by Steve Shipway <steve.shipway@adsweu.com>. You can
+           by Steve Shipway <steve@steveshipway.org>. You can
            find a copy in
 
-            http://www.cheshire.demon.co.uk/pub/
+            http://www.steveshipway.org/software/
 
            The scripts comes with their own installation instruc-
            tions.
@@ -126,4 +128,4 @@ AAUUTTHHOORR
 
 
 
-2.9.29                      2003-04-12                MRTG-RRD(1)
+2.10.15                     2004-08-08                MRTG-RRD(1)

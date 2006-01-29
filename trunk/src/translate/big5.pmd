@@ -1,8 +1,7 @@
 ###### PATCHTAG 00 ###################################################
 ###      Chinese/中文繁體
 ###      => Tate Chen 陳世偉 <tate@joy-tech.com.tw>
-###      => Ron 黃東隆 <ron@ko.com.tw>
-###          2000/10/7    patch display '\$1\$2/s'  errors	
+###      => Ryan Huang 黃東隆 <ryan@asplord.com>
 ###### PATCHTAG 10 ###################################################
   &big5
 ###### PATCHTAG 20 ###################################################
@@ -17,9 +16,9 @@
   <A HREF=\"mailto:tate\@joy-tech.com.tw\">
   &lt;tate\@joy-tech.com.tw&gt;</A></NOBR>
   and
-  <NOBR><A HREF=\"http://ko.com.tw\">Donlong</A>
-  <A HREF=\"mailto:donlong\@seed.net.tw\">
-  &lt;donlong\@seed.net.tw&gt;</A>  
+  <NOBR><A HREF=\"http://asplord.com\">黃東隆</A>
+  <A HREF=\"mailto:ryan\@asplord.com\">
+  &lt;ryan\@asplord.com&gt;</A>  
   </NOBR>",
 ###### PATCHTAG 40 ###################################################
 $credits::LOCALE{'中文繁體'}=$credits::LOCALE{'big5'};
@@ -29,7 +28,7 @@ $credits::LOCALE{'中文繁體'}=$credits::LOCALE{'big5'};
 sub big5
 {
   my $string = shift;
-return "" unless defined $string;
+  return "" unless defined $string;
   my(%translations,%month,%wday);
 
   my($i,$j);
@@ -57,12 +56,18 @@ return "" unless defined $string;
      '<B>`Yearly\' Graph \(1 Day'             => '<B>每年 圖表 (1 天',
      'Incoming Traffic in (\S+) per Second'   => '每秒流入量 (單位 $1)',
      'Outgoing Traffic in (\S+) per Second'   => '每秒流出量 (單位 $1)',
+     'Incoming Traffic in (\S+) per Minute'   => '每分鐘流入量 (單位 $1)',
+     'Outgoing Traffic in (\S+) per Minute'   => '每分鐘流出量 (單位 $1)',
+     'Incoming Traffic in (\S+) per Hour'     => '每小時流入量 (單位 $1)',
+     'Outgoing Traffic in (\S+) per Hour'     => '每小時流出量 (單位 $1)',
      'at which time (.*) had been up for(.*)' => '設備名稱 $1，已運作時間(UPTIME): $2',
+     '(\S+) per minute'			              => '$1/分',
+     '(\S+) per hour'			              => '$1/小時',    
      '(.+)/s$'                                => '$1/秒',
-     '(.+)/min$'                              => '$1/分',
-     '(.+)/h$'                                => '$1/時',
-    # 'Bits'                                   => 'Bits',
-    # 'Bytes'                                  => 'Bytes'
+     # '(.+)/min$'                              => '$1/分',
+     '(.+)/h$'                                => '$1/小時',
+     # 'Bits'                                   => 'Bits',
+     # 'Bytes'                                  => 'Bytes'
      '&nbsp;In:</FONT>'                       => '&nbsp;流入:</FONT>',
      '&nbsp;Out:</FONT>'                      => '&nbsp;流出:</FONT>',
      '&nbsp;Percentage</FONT>'                => '&nbsp;百分比:</FONT>',
@@ -72,8 +77,8 @@ return "" unless defined $string;
      '^GREEN'                                 => '綠色',
      'BLUE'                                   => '藍色',
      'DARK GREEN'                             => '墨綠色',
-     'MAGENTA'                                => '紫色',
-     'AMBER'                                  => '琥珀色'
+     # 'MAGENTA'                                => '紫色',
+     # 'AMBER'                                  => '琥珀色'
   );
 
 # maybe expansions with replacement of whitespace would be more appropriate
@@ -87,14 +92,13 @@ foreach $i (keys %translations)
 
 %wday =
     (
-      'Sunday'    => '星期天',        'Sun' => '日',
+      'Sunday'    => '星期日',        'Sun' => '日',
       'Monday'    => '星期一',        'Mon' => '一',
       'Tuesday'   => '星期二',        'Tue' => '二',
       'Wednesday' => '星期三',        'Wed' => '三',
       'Thursday'  => '星期四',        'Thu' => '四',
       'Friday'    => '星期五',        'Fri' => '五',
       'Saturday'  => '星期六',        'Sat' => '六'
-
     );
 
 %month =
@@ -107,20 +111,18 @@ foreach $i (keys %translations)
       'Jul'       => '七',     'Aug'       => '八',      'Sep'       => '九',
       'October'   => '十月',   'November'  => '十一月',  'December'  => '十二月',
       'Oct'       => '十',     'Nov'       => '十一',    'Dec'       => '十二'
-
     );
-
 
   @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
   if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
     {
-        @quux=split(/at/,$foo[3]);
 	if($foo[3]=~(/(.*)at(.*)/))
-      { 
-         $foo[3]=$quux[0];
-         $foo[4]=$quux[1];
+      {
+        @quux=split(/at/,$foo[3]);
+        $foo[3]=$quux[0];
+        $foo[4]=$quux[1];
       };
-       return "$foo[3] $month{$foo[2]} $foo[1] 日, $wday{$foo[0]}, $foo[4]";
+      return "$foo[3] 年 $month{$foo[2]} $foo[1] 日 $wday{$foo[0]} $foo[4]";
     };
 
 #

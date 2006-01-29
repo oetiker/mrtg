@@ -44,72 +44,88 @@ for all the details about mrtg.</p>
 <p>Most items are set through the configuration file; command-line options
 are specified here:</p>
 <dl>
-<dt><strong><a name="item_%2d%2duser_username"><strong>--user</strong> <em>username</em></a></strong><br />
+<dt><strong><a name="item__2d_2duser_username_and__2d_2dgroup_groupname"><strong>--user</strong> <em>username</em>  and <strong>--group</strong> <em>groupname</em></a></strong><br />
 </dt>
 <dd>
-Run as the given user (Unix Only)
+Run as the given user and/or group. (Unix Only)
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dgroup_groupname"><strong>--group</strong> <em>groupname</em></a></strong><br />
+<dt><strong><a name="item__2d_2dlock_2dfile_filename"><strong>--lock-file</strong> <em>filename</em></a></strong><br />
 </dt>
 <dd>
-Run as the given group (Unix Only)
+Use an alternate lock-file (the default is to use the configuration-file
+appended with <code>_l</code>).
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2ddaemon"><strong>--daemon</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dconfcache_2dfile_filename"><strong>--confcache-file</strong> <em>filename</em></a></strong><br />
+</dt>
+<dd>
+Use an alternate confcache-file (the default is to use the configuration-file appended with <code>.ok</code>)
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2dlogging_filename_7ceventlog"><strong>--logging</strong> <em>filename</em>|<strong>eventlog</strong></a></strong><br />
+</dt>
+<dd>
+If this is set to writable filename, all output from mrtg (warnings, debug messages, errors)
+will go to <em>filename</em>. If you are running on Win32 you can specify <strong>eventlog</strong> instead of a filename
+which will send all error to the windows event log.
+</dd>
+<dd>
+<p><strong>NOTE:</strong>Note, there is no Message DLL for mrtg. This has the side effect
+that the windows event logger will display a nice message with every entry
+in the event log, complaing about the fact that mrtg has no message dll. If
+any of the Windows folks want to contribute one, they are welcome.</p>
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2ddaemon"><strong>--daemon</strong></a></strong><br />
 </dt>
 <dd>
 Put MRTG into the background, running as a daemon. This works the same way as
-the config file option, but the switch is required for proper FHS operation
+the config file option, but the switch is required for proper FHS operation  
 (because /var/run is writable only by root)
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dfhs"><strong>--fhs</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dfhs"><strong>--fhs</strong></a></strong><br />
 </dt>
 <dd>
 Configure all mrtg paths to conform to the FHS specification;
 <a href="http://www.pathname.com/fhs/">http://www.pathname.com/fhs/</a>
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dlock%2dfile_filename"><strong>--lock-file</strong> <em>filename</em></a></strong><br />
+<dt><strong><a name="item__2d_2dcheck"><strong>--check</strong></a></strong><br />
 </dt>
 <dd>
-Use an alternate lock-file (the default is to use the 
-configuration-file appended with _l)
+Only check the cfg file for errors. Do not do anything.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dconfcache%2dfile_filename"><strong>--confcache-file</strong> <em>filename</em></a></strong><br />
+<dt><strong><a name="item__2d_2dpid_2dfile_3ds"><strong>--pid-file=s</strong></a></strong><br />
 </dt>
 <dd>
-Use an alternate confcache-file (the default is to use the 
-configuration-file appended with .ok)
+Define the name and path of the pid file for mrtg running as a daemon
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dpid%2dfile_filename"><strong>--pid-file</strong> <em>filename</em></a></strong><br />
+<dt><strong><a name="item__2d_2ddebug_3ds"><strong>--debug=s</strong></a></strong><br />
 </dt>
 <dd>
-Set the location/name of the pid file
+Enable debug options. The argument of the debug option is a comma separated list of debug values:
 </dd>
-<p></p>
-<dt><strong><a name="item_%2d%2dlogging_filename%7ceventlog"><strong>--logging</strong> <em>filename</em>|eventlog</a></strong><br />
-</dt>
 <dd>
-If this is set to writable filename, all output from mrtg (warnings, 
-debug messages, errors) will go to filename. If you are running on Win32
-you can specify eventlog instead of a filename which will send all 
-errors to the windows event log.
+<pre>
+ cfg  - watch the config file reading
+ dir  - directory mangeling
+ base - basic program flow 
+ tarp - target parser
+ snpo - snmp polling 
+ fork - forking view 
+ time - some timing info
+ log  - logging of data via rateup or rrdtool</pre>
 </dd>
-<p></p>
-<dt><strong><a name="item_%2d%2dcheck"><strong>--check</strong></a></strong><br />
-</dt>
 <dd>
-Just check the configuration file, then exit
+<p>Example:</p>
 </dd>
-<p></p>
-<dt><strong><a name="item_%2d%2ddebug_string"><strong>--debug</strong> <em>string</em></a></strong><br />
-</dt>
 <dd>
-Set the debug logging level
+<pre>
+ --debug=&quot;cfg,snpo&quot;</pre>
 </dd>
 <p></p></dl>
 <p>

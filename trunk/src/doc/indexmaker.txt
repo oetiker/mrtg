@@ -4,7 +4,7 @@ INDEXMAKER(1)                  mrtg                 INDEXMAKER(1)
 
 NNAAMMEE
        indexmaker - Creates index files for mrtg web sites
-       (mrtg-2.9.29)
+       (mrtg-2.10.15)
 
 SSYYNNOOPPSSIISS
        indexmaker [options] mrtg.cfg [other.cfg ...]
@@ -18,6 +18,7 @@ OOPPTTIIOONNSS
 
         --addhead=text      insert this text between </TITLE> and </HEAD>
         --title=text        set title of generated index file
+        --subtitle=text     add a subtitle to the generated index file
         --bodyopt=text      set body tag options
         --headlevel=number  use <Hnumber> at top of page (default: 1)
         --pagetop=text      insert this text between <BODY> and <H1>...</H1>
@@ -58,7 +59,9 @@ OOPPTTIIOONNSS
         --sectionhost       Try to prepend the host to the section heading if missing
 
         --rrdviewer=path    path to rrdviewer (default: /cgi-bin/14all.cgi)
+        --icondir=path      path to icondir
         --prefix=path       path from the location of the index.html to the graphs
+        --headeradd=string  add string to the html page header
         --autoprefix        try to set prefix automatically
 
         --<opt>-file=file   read string argument for option <opt> from file
@@ -176,4 +179,4 @@ CCOOPPYYRRIIGGHHTT
 
 
 
-2.9.29                      2003-04-12              INDEXMAKER(1)
+2.10.15                     2004-08-08              INDEXMAKER(1)

@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 # -*- mode: Perl -*-
 ##################################################################
-# MRTG 2.9.29  -- Config file creator
+# MRTG 2.10.15  -- Config file creator
 ##################################################################
 # Created by Tobias Oetiker <oetiker@ee.ethz.ch>
 # this produces an mrtg config file for one router or more routers
@@ -26,6 +26,10 @@ BEGIN {
         $main::OS = 'NT';
         $main::SL = '\\';
         $main::PS = ';';
+    } elsif ( $^O =~ /^NetWare$/i ) {
+        $main::OS = 'NW';
+        $main::SL = '/';
+        $main::PS = ';';
     } elsif ( $^O =~ /^VMS$/i ) {
         $main::OS = 'VMS';
         $main::SL = '.';
@@ -41,9 +45,9 @@ use FindBin;
 use lib "${FindBin::Bin}";
 use lib "${FindBin::Bin}${main::SL}..${main::SL}lib${main::SL}mrtg2";
 
-use MRTG_lib "2.090017";
-use SNMP_util "0.86";
-use SNMP_Session "0.86";
+use MRTG_lib "2.100015";
+use SNMP_util "1.04";
+use SNMP_Session "1.05";
 use Getopt::Long;
 use Pod::Usage;
 use Socket;
@@ -54,6 +58,7 @@ sub main {
     my %opt;
     my %routers;
     my %confcache;
+    my $ipv4only;
     init();
     $opt{fullcmd} = 
 	"$0 ".(join " ",
@@ -61,6 +66,25 @@ sub main {
     $opt{community}="public";
     $opt{interfaces}=1;
     options(\%opt,\%routers);
+
+    # Check for IPv6 libraries if IPv6 is enabled.
+    # If the check fails, IPv6 is disabled.
+    $ipv4only = 1;
+    if ($opt{'enable-ipv6'} == 1) {
+	if ((eval {require Socket6;}) && (eval {require IO::Socket::INET6;})) {
+	    debug ('base',"IPv6 libraries found, IPv6 enabled.");
+	    $ipv4only = 0;
+	} else {
+	    warn "WARNING: IPv6 libraries not found, IPv6 disabled.\n";
+	    $opt{'enable-ipv6'} = 0;
+	}
+    }
+
+    if ($opt{'use-16bit'} == 1) {
+	warn "WARNING: Using 16bit RequestIDs\n";
+	$SNMP_Session::default_use_16bit_request_ids=1;
+    }
+
     foreach my $router
 	(sort
 	 {($routers{$a}{noofrouter}) <=> ($routers{$b}{noofrouter})}
@@ -68,12 +92,21 @@ sub main {
     {
 #        pod2usage(-verbose=>1,-message=>"ERROR: Could not Parse $router\n")
 #                unless  $router =~ /.*\@.*/;
-	debug('base',"Get Device Info on $router");
-	$routers{$router}{deviceinfo} = DeviceInfo($router);
+	debug('base',"Get Device Info on $router");        
+        $routers{$router}{ipv4only} = $ipv4only;
+        if ( my $devinfo = DeviceInfo($router,\%routers) ) {
+        	$routers{$router}{deviceinfo} = $devinfo;
+        } else {
+                warn "WARNING: Skipping $router as no info could be retrieved\n\n";
+                sleep 5;
+                next;
+        }
+
+  
 	if ($opt{interfaces})
 	{
 	    debug('base',"Populating confcache");
-	    populateconfcache(\%confcache,$router,1,{});
+	    populateconfcache(\%confcache,$router,$routers{$router}{ipv4only},1,{});
 	    debug('base',"Get Interface Info");
 	    InterfaceInfo(\%confcache,\%routers,$router,\%opt);
 	}
@@ -91,10 +124,15 @@ sub InterfaceInfo($$$$) {
     my $opt = shift;
     my @Variables = qw (ifIndex ifType ifAdminStatus ifOperStatus);
 
+    my $snmphost = v4onlyifnecessary($router, $routers->{$router}{ipv4only});
+
     if ($routers->{$router}{deviceinfo}{Vendor} eq 'cisco' &&
 	$routers->{$router}{deviceinfo}{sysDescr} =~ m/Version\s+(\d\d\.\d+)/) {
 	push @Variables,  ($1 > 11.0) ? "ifAlias" : "CiscolocIfDescr";
+	if ($1 > 11.2) {push @Variables, "vmVlan";};
     } elsif ( $routers->{$router}{deviceinfo}{Vendor} eq 'juniper') {
+        push @Variables, "ifAlias";
+    } elsif ($routers->{$router}{deviceinfo}{Vendor} eq 'extremenetworks') {
         push @Variables, "ifAlias";
     } elsif ($routers->{$router}{deviceinfo}{Vendor} eq 'foundry') {
         push @Variables, "ifAlias";
@@ -104,11 +142,12 @@ sub InterfaceInfo($$$$) {
     if ($routers->{$router}{deviceinfo}{Vendor} eq 'cisco' &&                                
         $descr =~ m/Catalyst\sOperating\sSystem|Cisco\sSystems\sWS-C2900/ ) {                             
         push @Variables,  "CiscoCatalystPortName";                                 
+	push @Variables, "vmVlan";
     }                                                                            
 
     foreach my $var (@Variables) {
 	debug('base',"Walking $var");
-	foreach my $tuple (snmpwalk($router, $var)){
+	foreach my $tuple (snmpwalk($snmphost, $var)){
 	    my($if,$value) = split /:/, $tuple, 2;
             $value =~ s/[\0- ]+$//; # no trailing space
 	    $routers->{$router}{$if}{$var} = $value;
@@ -121,9 +160,9 @@ sub InterfaceInfo($$$$) {
 
     if ( $snmp_version eq '2' ) {
         debug('base',"Walking ifSpeed");
-        my @ifSpeed = snmpwalk($router, 'ifSpeed');
+        my @ifSpeed = snmpwalk($snmphost, 'ifSpeed');
         debug('base',"Walking ifHighSpeed");
-        my @ifHighSpeed = snmpwalk($router, 'ifHighSpeed');
+        my @ifHighSpeed = snmpwalk($snmphost, 'ifHighSpeed');
         for ( my $i=0; $i<=$#ifHighSpeed; $i++ ) {
                 my ($if,$value) = split /:/, $ifHighSpeed[$i], 2;
                 $value = $value * 1000000;  # highSpeed = contador * 10^6
@@ -135,7 +174,7 @@ sub InterfaceInfo($$$$) {
         }
     } else {
         debug('base',"Walking ifSpeed");
-        foreach my $tuple (snmpwalk($router, 'ifSpeed')){
+        foreach my $tuple (snmpwalk($snmphost, 'ifSpeed')){
         my($if,$value) = split /:/, $tuple, 2;
         $routers->{$router}{$if}{'ifSpeed'} = $value;
         }
@@ -233,6 +272,13 @@ sub GenConf ($$$) {
 
 ECHO
 
+    # Add EnableIPv6 option to configuration file
+    if ($$opt{'enable-ipv6'} == 1) {
+	$conf .= "EnableIPv6: yes\n";
+    } else {
+	$conf .= "EnableIPv6: no\n";
+    }
+
     foreach my $router
 	(sort
 	 {($$routers{$a}{noofrouter}) <=> ($$routers{$b}{noofrouter})}
@@ -252,6 +298,10 @@ ECHO
 	    }
 	}
 
+	# If IPv6 is enabled, add IPv4Only target directive for targets
+	# that do not support SNMP over IPv6.
+	my $ipv4only_directive;
+	my $router_ipv4only = ($$opt{'enable-ipv6'} == 1) && $$router_ref{ipv4only};
 
 	my $syscontact = $$router_dev{sysContact};
 	my $html_syscontact = html_escape($syscontact);
@@ -263,7 +313,7 @@ ECHO
         # make sure embeded newlines do not harm us here
         $comment_sysdescr =~ s/[\n\r]+/\n\#          /g;
         my $community = $$router_ref{community};
-        $community =~s/([@ ])/\\$1/g;
+        $community  =~ s/([@ ])/\\$1/g;
         my $router_connect = "$community\@$$router_ref{routername}$$router_ref{snmpopt_current}";
 	my $html_sysdescr = html_escape($sysdescr);
 	my $router_name =
@@ -347,8 +397,6 @@ ECHO
 		my $default_iftype = 1;  # iftype assumed ok.
 		my $if_ok = 1;           #
 		
-		my $default = $default_iftype && $default_ifstate;
-		
 		my $if_admin = ($$i{ifAdminStatus} == 1);
 		my $if_oper = ($$i{ifOperStatus} == 1);
 		
@@ -387,6 +435,45 @@ ECHO
 		my $if_snmp_alias = $$i{ifAlias};
 		my $if_cisco_descr = $$i{CiscolocIfDescr};
 		my $if_dns_name = $$i{DNSName};
+		my $if_vlan_id = $$i{vmVlan};
+
+               # For Nokia IPSO, find non-ethernet interfaces with IP addresses
+               # and add missing MAC address and Port Speed information to
+               # to the LOGICAL and LOGICAL+VLAN interfaces.
+               if ( $$router_dev{Vendor} eq 'nokiaipsofw' ) {
+                  if ( $$i{ifType} ne "6" &&
+                        $$router_dev{sysDescr} =~ / IPSO / &&
+                        $$i{Ip} =~ /^\d+/ &&
+                       ( $$i{Eth} == undef || 
+                         $$i{ifSpeed} < 10 || 
+                         $$i{ifSpeed} == undef ) 
+                      ) 
+                  {
+                       my $logical_if_name = $$i{Name};
+
+                       # Split the LOGICAL interface name in attempt 
+                       # to match with base PHYSICAL interface detail.
+                       my ($logical_if_HEAD, $logical_if_TAIL) = 
+                            $logical_if_name =~ /^(.*)(c\d+)$/;
+
+                       foreach my $ifindexTMP (sort {int($a) <=> int($b)}
+                             keys %$router_ref) 
+                       {
+                          next unless $ifindexTMP =~ /^\d+$/;
+
+                          my $physical_if_name = $$router_ref{$ifindexTMP};
+
+                          if ( $$physical_if_name{ifType} == 6 && 
+                               $logical_if_HEAD eq $$physical_if_name{Name} )
+                          {
+                             $$i{Eth} = $$physical_if_name{Eth}
+                               if ( $$i{Eth} == undef );
+                             $$i{ifSpeed} = $$physical_if_name{ifSpeed} 
+                               if ( $$i{ifSpeed} == undef || $$i{ifSpeed} < 10 );
+                          }
+                       }
+                   }
+               }
 
 		# First investigate the state of the interface.
 		if (not defined $$router_opt{'no-down'}) {
@@ -408,7 +495,8 @@ ECHO
 			}
 		    }
 		}
-		
+
+
 		# Investigate the type of the interface.
 		
 		if ($$router_dev{Vendor} eq 'cisco' && $$i{ifType} == 18) # by fwo@obsidian.co.za
@@ -438,6 +526,7 @@ ECHO
 		    push @prob, "it is a cisco Null0 interface";
 		    $default_iftype = 0;
 		}
+		my $default = $default_iftype && $default_ifstate;
 
 		# If --if-filter is provided, evalutat that.  If it
 		# returns true, clear @prob.  If it returns false,
@@ -462,8 +551,17 @@ ECHO
 		
 		if ($$i{ifSpeed} == 0 && $$router_dev{Vendor} eq 'foundry' && $$i{ifType} == 194) {
                    # foundry ATM subinterfaces always report 0 speed, make it 155Mbps instead.
-                   $$i{ifSpeed} = 155000000;
+                   $$i{ifSpeed} =  155000000;
                 }
+		elsif ($$i{ifSpeed} == 0 && $$router_dev{Vendor} eq 'foundry' && $$i{ifType} == 135) {
+                   # Foundry virtual Ethernet interfaces always report 0 speed, make it 100Mbps instead.
+                   $$i{ifSpeed} = 12500000;
+                }
+                elsif ($$i{ifSpeed} == 0 && $$router_dev{Vendor} eq '3com' && $$i{Descr} =~ /RMON VLAN (\d+)/ ) {
+		    $$i{ifSpeed} = 100000000;
+                    $if_vlan_id = $1;
+		}
+		
                 elsif ($$i{ifSpeed} == 0) {
 		    push @prob, "has a speed of $$i{ifSpeed} which makes no sense";
 		    $if_ok = 0;
@@ -475,7 +573,10 @@ ECHO
        		    push @prob, "got '$message' from interface when trying to query";
 		    $if_ok = 0;
 		}
-   	        my $router_connect = "$$router_ref{community}\@$$router_ref{routername}$$router_ref{snmpopt_current}";
+                
+                my $community = $$router_ref{community};
+                $community  =~ s/([@ ])/\\$1/g;
+   	        my $router_connect = "$community\@$$router_ref{routername}$$router_ref{snmpopt_current}";
 
 		# determine interface reference
 		my $if_ref;
@@ -546,6 +647,7 @@ ECHO
 		$port_dot =~ s/\//./g;                                                 
 		my $if_port_name = $$router_ref{$port_dot}{CiscoCatalystPortName};  
 		$if_title_desc =~ s/\\([:@\\\/\# ])/$1/g; # unescape
+                $if_title_desc = $if_snmp_name if not $if_title_desc;
 		my $html_if_title_desc = html_escape($if_title_desc);
 		my $html_desc_prefix = html_escape($desc_prefix);
 		
@@ -564,6 +666,7 @@ ECHO
  		my $separator_lines = "\n\n";
 
                 # escape the if reference
+
                 $if_ref =~ s/([& :])/\\$1/g;
 		my $default_target_directive =
 		    "Target[$target_name]: $if_ref:$router_connect";
@@ -575,6 +678,9 @@ ECHO
 		     : "");
 		my $default_maxbytes_directive = 
 		    "MaxBytes[$target_name]: $if_speed";
+
+		$ipv4only_directive = $router_ipv4only ? "IPv4Only[$target_name]: yes" : "";
+
 		my $default_title_directive =
 		    "Title[$target_name]: $html_desc_prefix$html_if_title_desc -- $sysname";
 		my $default_pagetop_directive
@@ -603,6 +709,9 @@ ECHO
 			  ? ($default_directory_directive . "\n")
 			  : "")
 		       . $default_maxbytes_directive . "\n"
+		       . ($ipv4only_directive
+			  ? ($ipv4only_directive . "\n")
+			  : "")
 		       . $default_title_directive . "\n"
 		       . $default_pagetop_directive . "\n");
 
@@ -669,25 +778,30 @@ sub IsCounterBroken ($$) {
     my $old_state = $SNMP_Session::suppress_warnings;
     $$router_ref{snmpopt_current} = $$router_ref{'snmp-options'};
     $SNMP_Session::suppress_warnings = 3;
+
+    my $ipv4only = $$router_ref{ipv4only};
+    my $snmphost = v4onlyifnecessary($router, $ipv4only);
+
     if ($router =~ /:\d*:\d*:\d*:\d*:2$/) {
             # anybody knows why /:(\d*:){4}2$/ does not work ?
-            my $speed = (snmpget($router, 'ifHighSpeed.'.$if))[0];        
-            debug('base',"snmpget $router for ifHighSpeed.$if -> $speed Mb/s");
+            my $speed = (snmpget($snmphost, 'ifHighSpeed.'.$if))[0];        
+            debug('base',"snmpget $snmphost for ifHighSpeed.$if -> $speed Mb/s");
             $SNMP_Session::errmsg = undef;
-            my $counter = (snmpget($router, 'ifHCInOctets.'.$if))[0];
-            debug('base',"snmpget $router for ifHCInOctets.$if -> $counter");
+            my $counter = (snmpget($snmphost, 'ifHCInOctets.'.$if))[0];
+            debug('base',"snmpget $snmphost for ifHCInOctets.$if -> $counter");
             if(not $speed or $counter eq "" or $SNMP_Session::errmsg){
                 $SNMP_Session::errmsg = undef;
                 $$router_ref{snmpopt_current} =~ s/:+2$//;
-                debug('base',"check for HighspeedCounters faild ... Droping back to V1");
+                debug('base',"check for HighspeedCounters failed ... Dropping back to V1");
             } else {
                $SNMP_Session::suppress_warnings = $old_state;
                return 0;
             }
     }
     $router = "$$router_ref{community}\@$$router_ref{routername}$$router_ref{'snmp-options'}";    
+    $snmphost = v4onlyifnecessary($router, $ipv4only);
     if ( $$router_ref{snmpopt_current} !~ /:2/) {
-         snmpget($router, 'ifInOctets.'.$if);
+         snmpget($snmphost, 'ifInOctets.'.$if);
          if (defined $SNMP_Session::errmsg) {
              my $error = $SNMP_Session::errmsg;
              $SNMP_Session::errmsg = undef;
@@ -700,13 +814,32 @@ sub IsCounterBroken ($$) {
     return 0;
 }
 
-sub DeviceInfo ($) {
+# DeviceInfo does fallback between IPv6 and IPv4: if an IPv6 snmpwalk returns
+# undef values (= an error) and the target is a hostname, then it repeats the
+# query using IPv4 in case the target does not support SNMP over IPv6.
+# If DeviceInfo falls back to IPv4, it sets the ipv4only field for the target
+# in the routers hash.
+sub DeviceInfo ($$) {
     my $router=shift;
+    my $routers=shift;
     my @variables = qw(sysDescr sysContact
 		       sysName sysLocation
 		       sysObjectID);
     my %DevInfo;
-    my @variables = snmpwalk($router, '1.3.6.1.2.1.1'); # walk system
+    my $ipv4only = $$routers{$router}{ipv4only};
+
+    my @variables = snmpwalk(v4onlyifnecessary($router, $ipv4only), '1.3.6.1.2.1.1'); # walk system
+    if (!(defined $variables[0])) {
+	# Do we need to fall back to IPv4?
+	my ($commmunity, $host) = ($1, $2) if ($router =~ /^(.*)@([^@]+)$/);
+	if ( ( ! $ipv4only ) && ( $host !=~ /^\[(.*)\]/) ) {
+	    # Not using IPv4, not an IPv6 address, so a hostname
+	    debug ('base',"No response using IPv6 for $router, trying again using IPv4");
+	    $$routers{$router}{ipv4only} = 1;
+	    @variables = snmpwalk(v4onlyifnecessary($router, 1), '1.3.6.1.2.1.1');
+	}
+    }
+
     if ( defined $variables[0] ) {
            my %DevInfo; 
            my %revOIDS = reverse %SNMP_util::OIDS;
@@ -720,12 +853,15 @@ sub DeviceInfo ($) {
             $DevInfo{Vendor} = 'juniper' if /^\Q1.3.6.1.4.1.2636.\E/;
 	    $DevInfo{Vendor} = 'portmaster' if /^\Q1.3.6.1.4.1.307.\E/;
             $DevInfo{Vendor} = 'foundry' if /^\Q1.3.6.1.4.1.1991.\E/;  
+            $DevInfo{Vendor} = '3com' if /^\Q1.3.6.1.4.1.43.\E/;  
+            $DevInfo{Vendor} = 'nokiaipsofw' if /^\Q1.3.6.1.4.1.94.\E/;
+            $DevInfo{Vendor} = 'extremenetworks' if /^\Q1.3.6.1.4.1.1916.\E/;
             debug('base',"Vendor Id: $DevInfo{Vendor}");
 	};
 	return \%DevInfo;
     } else {
 	# we just die because the snmp module has already complained
-	exit 1;
+	return undef;
     }
 }
 
@@ -896,6 +1032,10 @@ sub IfType ($) {
 	  }->{(shift)};
 }
 
+
+
+
+
 sub options ($$) {
    my $opt = shift;
    my $routers = shift;
@@ -950,9 +1090,11 @@ sub options ($$) {
         'version',
 	'output=s',
 	'global=s@',
+	'enable-ipv6',
+	'use-16bit',
 	'<>', $addrouter_ornf) or pod2usage(2);
 
-   die("cfgmaker for mrtg-2.9.29\n") if $$opt{version};
+   die("cfgmaker for mrtg-2.10.15\n") if $$opt{version};
    pod2usage(-exitval => 0, -verbose => 2) if $$opt{man};
    pod2usage(-verbose => 1) if not keys %$routers;
 }
@@ -986,21 +1128,27 @@ sub addrouter() {
 	# proper community, domainname and SNMP options.
 	# Dissect the rawname to find out what it contains.
 
-	# First split the rawname on SNMP options:
-
-	($tmpname,@tmpsnmp) = split ':',$rawname;
-	
-	# Then check for community:
-	
-	if ($tmpname =~ /^(.+)\@([^@]+)$/)
+	# First check for community:
+	if ($rawname =~ /^(.+)\@([^@]+)$/)
 	{
 	    # Community were given explicitly!
 	    $community = $1;
-	    $routername = $2
+	    $tmpname = $2
 	} else {
 	    $community = $$opt{community};
-	    $routername = $tmpname;
+	    $tmpname = $rawname;
 	}
+	# Now separate the router name from the options. We
+	# can't just split on the : character because a numeric
+	# IPv6 address contains a variable number of :'s
+	if( ($tmpname =~ /^(\[.*\]):(.*)$/) || ($tmpname =~ /^(\[.*\])$/) ){
+	    # Numeric IPv6 address between []
+	    ($routername, $snmpopt) = ($1, $2);
+	} else {
+	    # Hostname or numeric IPv4 address
+	    ($routername, $snmpopt) = split(':', $tmpname, 2);
+	}
+	@tmpsnmp = split(':', $snmpopt);
         
         $routername =~ s/\.$//; # if the hostname ends in a '.' remove it
                                 # it seems to cause trouble in some other
@@ -1197,6 +1345,7 @@ sub init () {
   snmpmapOID('sysObjectID' => '1.3.6.1.2.1.1.2.0',
              'CiscolocIfDescr' => '1.3.6.1.4.1.9.2.2.1.1.28',
              'CiscoCatalystPortName' => '1.3.6.1.4.1.9.5.1.4.1.1.4',  
+	     'vmVlan' => '1.3.6.1.4.1.9.9.68.1.2.2.1.2',
 	     'ifAlias' => '1.3.6.1.2.1.31.1.1.1.18');
 }
 
@@ -1204,7 +1353,7 @@ __END__
 
 =head1 NAME
 
-cfgmaker - Creates mrtg.cfg files (for mrtg-2.9.29)
+cfgmaker - Creates mrtg.cfg files (for mrtg-2.10.15)
 
 =head1 SYNOPSIS
 
@@ -1268,6 +1417,12 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
  --community=cmty  Set the default community string to "cmty" instead of
                    "public".
 
+ --enable-ipv6     Enable IPv6 support, if the required libraries are
+                   present. Numeric IPv6 addresses must be enclosed
+                   in square brackets, e.g. public@[2001:760:4::1]:161
+
+ --use-16bit       Use 16bit SNMP request IDs to query all routers.
+
  --snmp-options=:[<port>][:[<tmout>][:[<retr>][:[<backoff>][:<ver>]]]]
 
                    Specify default SNMP options to be appended to all
@@ -1303,7 +1458,7 @@ pulled from a router or another SNMP manageable device.
 I<Community> is the community name of the device you want to create a
 configuration for. If not specified, it defaults to 'B<public>'; you might
 want to try this first if you do not know the community name of a
-device. If you are using the wrong comunity name you will get no
+device. If you are using the wrong community name you will get no
 response from the device.
 
 I<Router> is the DNS name or the IP number of an SNMP-managable device.           
@@ -1320,6 +1475,12 @@ order in which the routers are specified on the command line do matter as
 the same order is used when the configuration file is generated.  The first
 specified router has it's configuration lines genrated first, followed by
 the lines belonging to the next router and so on.
+
+Note that the first line of the generated cfg file will contain all the
+commandline options you used for generating it. This is to allow for the
+easy 'regeneration' in case you want to add newhosts or make some other
+global change.
+
 
 =head2 Configuration
 
@@ -1436,6 +1597,34 @@ L<DETAILS ON TEMPLATES> below.
 Use this to set the community for the routers following on the command
 line to B<community-string>.  Individual routers might overrride this
 community string by using the syntax B<community>B<@>B<router>.
+
+=item B<--enable-ipv6>
+
+This option enables IPv6 support. It requires the appropriate perl
+modules; if they are not found then IPv6 is disabled (see the ipv6
+documentation).
+
+cfgmaker will use IPv6 or IPv4 depending on the target. If the target
+is a numeric address, the protocol depends on the type of address. If the
+target is a hostname, cfgmaker will try to resolve the name first to an
+IPv6 address then to an IPv4 address.
+
+IPv6 numeric addresses must be specified between square braces.
+
+For example:
+
+ cfgmaker --enable-ipv6 [2001:760:4::1]:165:::2
+
+If the target has both an IPv6 address and an IPv4 address with the same
+hostname, cfgmaker first queries the target using IPv6 and falls back to
+IPv4 if it fails. This is useful for targets which don't support SNMP
+over IPv6.
+
+=item B<--use-16bit>
+
+This option forces the use of 16bit SNMP request IDs.  Some broken SNMP
+agents do not accept 32bit request IDs.  Try to avoid this option as much
+as possible, complain to your agent vendor instead.
 
 =item B<--snmp-options>  :[B<port>][:[B<timeout>][:[B<retries>][:[B<backoff>][:B<version>]]]]
 
@@ -1619,8 +1808,6 @@ Here's a list of some of the most common interface types by number:
  117 Gigabit Ethernet
  134 ATM Sub Interface
  
-
-
 =item B<$default>
 
 True if and only if cfgmaker normally should
@@ -1654,7 +1841,7 @@ state.
 A number of variables are also predefined to easily decide if an interface
 belong to a certain cathegory or not.  Below is all those variables listed
 together with which if_type numbers each variable will be true for.  Note
-that some variables refer to other variables as well.
+that some variables refer to other variables as well. 
 
 =over
 
@@ -1699,12 +1886,18 @@ True for software loopback interfaces (nr 24)
 True for Cisco VLAN interfaces (interfaces with the
 word Vlan or VLAN in their ifdescs)
 
+=item B<$if_vlan_id>
+
+Returns the vlan id associated with a specific port
+on Cisco Catalyst switches under both Catalyst OS
+and IOS.  If it is not a vlan interface, will return undef.
+
 =back
 
-Besides of that, all the variables available in cfgmaker is at the scripts
-disposal even if the use of such features is discouraged.  More
-"shortcuts" in the form of variables and functions will be made avaiable in
-the future instead.
+Besides that, you can also use the variables defined for templates below.
+Further, all the variables available in cfgmaker is at the scripts disposal
+even if the use of such features is discouraged.  More "shortcuts" in the
+form of variables and functions will be made avaiable in the future instead.
 
 =head2 Examples on Filters
 
@@ -2263,7 +2456,7 @@ of the ppp-server to be I<ppp-server.B<remote>> .
 
 =head1 SEE ALSO
 
-L<reference>
+L<mrtg-reference>
 
 =head1 AUTHOR
 
