@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>doc/mrtg-mibhelp</title>
+<link rev="made" href="mailto:dws@ee.ethz.ch" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+<!--
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#overview">OVERVIEW</a></li>
+	<li><a href="#mib_list">MIB LIST</a></li>
+	<ul>
+
+		<li><a href="#ifoperstatus">ifOperStatus</a></li>
+		<li><a href="#ifadminstatus">ifAdminStatus</a></li>
+		<li><a href="#ifinoctets">ifInOctets</a></li>
+		<li><a href="#ifinucastpkts">ifInUcastPkts</a></li>
+		<li><a href="#ifinnucastpkts">ifInNUcastPkts</a></li>
+		<li><a href="#ifindiscards">ifInDiscards</a></li>
+		<li><a href="#ifinerrors">ifInErrors</a></li>
+		<li><a href="#ifinunknownprotos">ifInUnknownProtos</a></li>
+		<li><a href="#ifoutoctets">ifOutOctets</a></li>
+		<li><a href="#ifoutucastpkts">ifOutUcastPkts</a></li>
+		<li><a href="#ifoutnucastpkts">ifOutNUcastPkts</a></li>
+		<li><a href="#ifoutdiscards">ifOutDiscards</a></li>
+		<li><a href="#ifouterrors">ifOutErrors</a></li>
+		<li><a href="#ifoutqlen">ifOutQLen</a></li>
+		<li><a href="#frinoctets">frInOctets</a></li>
+		<li><a href="#ifadminhack_and_ifoperhack">ifAdminHack and ifOperHack</a></li>
+		<li><a href="#pseudozero_and_pseudoone">PseudoZero and PseudoOne</a></li>
+	</ul>
+
+	<li><a href="#author">AUTHOR</a></li>
+</ul>
+-->
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>mrtg-mibhelp - A Table of some interesting OIDs</p>
+<p>
+</p>
+<hr />
+<h1><a name="overview">OVERVIEW</a></h1>
+<p>This File Contains a collection of interesting MIB Entries ...
+mrtg knows about their names ... depending on the ASN.1 Syntax
+you may have to put <strong>gauge</strong> into the <strong>Options[]:</strong> parameter.</p>
+<p>For information about how to create a <strong>Target[]:</strong> parameter which
+references these MIB entries, please consult <a href="././mrtg-reference.html">the mrtg-reference manpage</a>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="mib_list">MIB LIST</a></h1>
+<p>
+</p>
+<h2><a name="ifoperstatus">ifOperStatus</a></h2>
+<pre>
+ Descriptor:            ifOperStatus
+ Identifier:            1.3.6.1.2.1.2.2.1.8
+ ASN.1 Syntax:          INTEGER
+ Enumeration:           up 1, down 2, testing 3</pre>
+<p>The current operational state of the interface.
+The <code>testing(3)</code> state indicates that no operational
+packets can be passed.</p>
+<p>
+</p>
+<h2><a name="ifadminstatus">ifAdminStatus</a></h2>
+<pre>
+ Descriptor:            ifAdminStatus
+ Identifier:            1.3.6.1.2.1.2.2.1.7
+ ASN.1 Syntax:          INTEGER
+ Enumeration:           up 1, down 2, testing 3</pre>
+<p>The current administrative state of the interface.
+The <code>testing(3)</code> state indicates that no operational
+packets can be passed.</p>
+<p>
+</p>
+<h2><a name="ifinoctets">ifInOctets</a></h2>
+<pre>
+ Descriptor:            ifInOctets
+ Identifier:            1.3.6.1.2.1.2.2.1.10
+ ASN.1 Syntax:          Counter32</pre>
+<p>The total number of octets received on the
+interface, including framing characters.</p>
+<p>
+</p>
+<h2><a name="ifinucastpkts">ifInUcastPkts</a></h2>
+<pre>
+ Descriptor:            ifInUcastPkts
+ Identifier:            1.3.6.1.2.1.2.2.1.11
+ ASN.1 Syntax:          Counter32</pre>
+<p>The number of subnetwork-unicast packets
+delivered to a higher-layer protocol.</p>
+<p>
+</p>
+<h2><a name="ifinnucastpkts">ifInNUcastPkts</a></h2>
+<pre>
+ Descriptor:            ifInNUcastPkts
+ Identifier:            1.3.6.1.2.1.2.2.1.12
+ ASN.1 Syntax:          Counter32</pre>
+<p>The number of non-unicast (i.e., subnetwork-
+broadcast or subnetwork-multicast) packets
+delivered to a higher-layer protocol.</p>
+<p>
+</p>
+<h2><a name="ifindiscards">ifInDiscards</a></h2>
+<pre>
+ Descriptor:            ifInDiscards
+ Identifier:            1.3.6.1.2.1.2.2.1.13
+ ASN.1 Syntax:          Counter32</pre>
+<p>The number of inbound packets which were chosen
+to be discarded even though no errors had been
+detected to prevent their being deliverable to a
+higher-layer protocol.  One possible reason for
+discarding such a packet could be to free up
+buffer space.</p>
+<p>
+</p>
+<h2><a name="ifinerrors">ifInErrors</a></h2>
+<p><table cellspacing="0" cellpadding="0"><tr><td>Descriptor:             ifInErrors
+<tr><td>Identifier:<td>1.3.6.1.2.1.2.2.1.14
+<tr><td>ASN.1 Syntax:<td>Counter32</table></p>
+<p>The number of inbound packets that contained
+errors preventing them from being deliverable to a
+higher-layer protocol.</p>
+<p>
+</p>
+<h2><a name="ifinunknownprotos">ifInUnknownProtos</a></h2>
+<p><table cellspacing="0" cellpadding="0"><tr><td>Descriptor:             ifInUnknownProtos
+<tr><td>Identifier:<td>1.3.6.1.2.1.2.2.1.15
+<tr><td>ASN.1 Syntax:<td>Counter32</table></p>
+<p>The number of packets received via the interface
+which were discarded because of an unknown or
+unsupported protocol.</p>
+<p>
+</p>
+<h2><a name="ifoutoctets">ifOutOctets</a></h2>
+<p><table cellspacing="0" cellpadding="0"><tr><td>Descriptor:             ifOutOctets
+<tr><td>Identifier:<td>1.3.6.1.2.1.2.2.1.16
+<tr><td>ASN.1 Syntax:<td>Counter32</table></p>
+<p>The total number of octets transmitted out of the
+interface, including framing characters.</p>
+<p>
+</p>
+<h2><a name="ifoutucastpkts">ifOutUcastPkts</a></h2>
+<pre>
+ Descriptor:             ifOutUcastPkts
+ Identifier:            1.3.6.1.2.1.2.2.1.17
+ ASN.1 Syntax:          Counter32</pre>
+<p>The total number of packets that higher-level
+protocols requested be transmitted to a
+subnetwork-unicast address, including those that
+were discarded or not sent.</p>
+<p>
+</p>
+<h2><a name="ifoutnucastpkts">ifOutNUcastPkts</a></h2>
+<pre>
+ Descriptor:             ifOutNUcastPkts
+ Identifier:            1.3.6.1.2.1.2.2.1.18
+ ASN.1 Syntax:          Counter32</pre>
+<p>The total number of packets that higher-level
+protocols requested be transmitted to a non-
+unicast (i.e., a subnetwork-broadcast or
+subnetwork-multicast) address, including those
+that were discarded or not sent.</p>
+<p>
+</p>
+<h2><a name="ifoutdiscards">ifOutDiscards</a></h2>
+<pre>
+ Descriptor:             ifOutDiscards
+ Identifier:            1.3.6.1.2.1.2.2.1.19
+ ASN.1 Syntax:          Counter32</pre>
+<p>The number of outbound packets which were chosen
+to be discarded even though no errors had been
+detected to prevent their being transmitted.  One
+possible reason for discarding such a packet could
+be to free up buffer space.</p>
+<p>
+</p>
+<h2><a name="ifouterrors">ifOutErrors</a></h2>
+<pre>
+ Descriptor:             ifOutErrors
+ Identifier:            1.3.6.1.2.1.2.2.1.20
+ ASN.1 Syntax:          Counter32</pre>
+<p>The number of outbound packets that could not be
+transmitted because of errors.</p>
+<p>
+</p>
+<h2><a name="ifoutqlen">ifOutQLen</a></h2>
+<pre>
+ Descriptor:             ifOutQLen
+ Identifier:            1.3.6.1.2.1.2.2.1.21
+ ASN.1 Syntax:          Unsigned32</pre>
+<p>The length of the output packet queue (in
+packets).</p>
+<p>
+</p>
+<h2><a name="frinoctets">frInOctets</a></h2>
+<p>From: Simon Ferrett &lt;<a href="mailto:simonf@world.net">simonf@world.net</a>&gt;</p>
+<pre>
+ 'frInOctets' =&gt; '1.3.6.1.2.1.10.32.2.1.9'
+ 'frOutOctets' =&gt; '1.3.6.1.2.1.10.32.2.1.7'</pre>
+<p>which when used in the form:</p>
+<pre>
+ frInOctets.pp.dd&amp;frOutOctets.pp.dd:community@cisco.router</pre>
+<p>where pp is the physical port that the frame relay pvc is
+defined on and dd is the DLCI of the pvc gets you the in
+and out octets for just that pvc.</p>
+<p>
+</p>
+<h2><a name="ifadminhack_and_ifoperhack">ifAdminHack and ifOperHack</a></h2>
+<p>The return values of ifAdminStatus and ifOperStatus are not very usefull
+for graphing. Use ifOperHack and ifAdminHack instead. They return 1 for
+UP and 0 otherwise.</p>
+<p>Note these are not real MIB entities but mrtg hacks</p>
+<p>
+</p>
+<h2><a name="pseudozero_and_pseudoone">PseudoZero and PseudoOne</a></h2>
+<p>will return 0 and 1 respectively</p>
+<p>Note these are not real MIB entities but mrtg hacks</p>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Tobias Oetiker &lt;<a href="mailto:oetiker@ee.ethz.ch">oetiker@ee.ethz.ch</a>&gt;</p>
+
+</body>
+
+</html>

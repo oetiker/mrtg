@@ -1,0 +1,77 @@
+#!/bin/bash
+
+grep_it() {
+  value="`cat $TEMP_FILE | head -$1 | tail -1`"
+  color=""
+  if [ ${value:=0} -ge 100 ]
+  then
+    color=" bgcolor=red"
+  elif [ ${value:=0} -ge 85 ]
+  then
+    color=" bgcolor=yellow"
+  elif [ ${value:=0} -le 50 ]
+  then
+    color=" bgcolor=cyan"
+  else
+    color=" bgcolor=lightgreen"
+  fi
+  echo "      <td$color>$value</td>"
+}
+
+###############################################################################
+
+export DIR=/world/mrtg/tcdegree
+export MACH="`echo \"$1\" | sed -e 's/+/_/g'`"
+export MAXB="$2"
+export TEMP_FILE=/tmp/tcnowtemp.$$
+
+###############################################################################
+
+if [ ! -r "$DIR/${MACH}.html" ]
+then
+  exit
+fi
+
+cat "$DIR/${MACH}.html" |   \
+  grep '<\!-- ' |           \
+  grep "out " |              \
+  cut -d' ' -f4 >$TEMP_FILE
+trap "rm -f $TEMP_FILE ; exit" 1 2 15
+
+echo ""
+echo "  <table border>"
+echo "    <tr>"
+echo "      <td></td>"
+echo "      <td align=center>Max</td>"
+echo "      <td align=center>Avg</td>"
+echo "      <td align=center>Now</td>"
+echo "    </tr>"
+echo "    <tr>"
+echo "      <td>Day</td>"
+grep_it 1
+grep_it 2
+grep_it 3
+echo "    </tr>"
+echo "    <tr>"
+echo "      <td>Week</td>"
+grep_it 4
+grep_it 5
+grep_it 6
+echo "    </tr>"
+echo "    <tr>"
+echo "      <td>Month</td>"
+grep_it 7
+grep_it 8
+grep_it 9
+echo "    </tr>"
+echo "    <tr>"
+echo "      <td>Year</td>"
+grep_it 10
+grep_it 11
+grep_it 12
+echo "    </tr>"
+echo "  </table>"
+echo ""
+
+trap - 1 2 15
+rm -f $TEMP_FILE 2>/dev/null

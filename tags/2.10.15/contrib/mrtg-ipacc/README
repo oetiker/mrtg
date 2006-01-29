@@ -1,0 +1,58 @@
+IPacc v0.1
+Using IP accounting kernel rules to feed mrtg.
+
+1. Abstract
+ I am using the old ipfwadm style for doing this for backwards compatibility,
+and because it's enough for my purpose.
+ For those who have kernels higher than 2.0 (using IPchains), like 2.1 or 2.2.
+I have included the ipfwadm-wrapper by Paul Russel.
+So if you if you are running on 2.2 (like me), you should copy this to 
+/sbin/ipfwadm.
+It's a little slow, but it's done with sh.
+
+ With this script you may generate trafic grahs for any IP, any networks or subnetworks.
+ I haven't done support for icmp prot.
+
+2. Syntax
+
+ You use the exact sintax as with ipfwadm 
+ ipacc [mode] [-S source_ip/net_bits [port1 port2 ...]] [-D dest_ip/net_bits [port1 port 2 ...]]
+
+where:
+  mode - is either "in" or "out", if you don't specify any there will be 
+	included 2 rules in this fashion:
+   in -S source_ip/net_bits sport1 sport2 -D dest_ip/net_bits port1 port2
+   out -S dest_ip/net_bits dport1 dport2 -D source_ip/net_bits sport1 sprot2
+
+source_ip & dest_ip - are the dotted ip address of the source and the 
+			destination (IP address not hosts)
+net_bits - are number of bits used by the network+subnetwork if any
+	(that is 24 for a whole class C or 25 for half a C class ...)
+	you don't have to specify any if you are doing it for a host
+portN - the ports where the packet it comming from and is going to
+
+
+3. The printings
+
+  If you are using one way
+   ipacc will print 
+	inbytes, 0, uptime, server_name  for an "in" mode rule
+    or
+        0, outbytes, uptime, server_name  for an "out" mode rule
+    for both ways (in - out)
+     it will print
+         inbytes, outbytes, uptime, server_name
+
+inbytes, outbytes - the numbers read from the ipfwadm command
+uptime - is what the uptime command will print
+server_name - is what you'll write at the server name in the script
+
+So you will add something like
+
+Target[ipaddr]: `ipacc arguments`
+
+
+Cristian Caramida   <brick@bbs.ro>
+		and soon <brick@pcnet.ro>
+
+4. End

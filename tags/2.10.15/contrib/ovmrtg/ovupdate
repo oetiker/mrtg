@@ -1,0 +1,68 @@
+#!/usr/local/bin/perl5
+# -*- mode: Perl -*-
+##################################################################
+# This file controls the creation of all the MRTG config files from OV
+##################################################################
+# Created by Laurie Gellatly <gellatly@one.net.au>
+# See newrtrov.txt for a description of what is performed
+#################################################################
+#
+# Distributed under the GNU copyleft
+#
+# $Id: ovupdate,v 1.1.1.1 2002/02/26 10:16:36 oetiker Exp $
+#
+use Socket;
+use strict;
+use ovmrtg;
+use vars '$DEBUG';
+my $DEBUG = 0;
+my $rundir = "/opt/mrtg/run";
+my $cronfile = "mrtgc";
+my $dnsfile = "ovmrtgc.csv";
+
+
+my($sysncfg,$cnt);
+my(@sysipnms,@sysips,@mrtgc,@sysnms); 
+
+sub main {
+
+   chdir $rundir;
+   $cnt = 0;
+   open (MRTGC,"<".$cronfile);
+   while(<MRTGC>){
+      chomp;
+      if (/mrtg (.*)\.cfg/){
+         $mrtgc[@mrtgc] = $1;
+      }
+   }
+   close (MRTGC);
+   @mrtgc = sort(@mrtgc);
+   for($cnt=0;$cnt<@mrtgc;++$cnt){
+      $sysncfg=$mrtgc[$cnt].".cfg";
+      open (MRTGC,"<".$sysncfg);
+      while(<MRTGC>){
+         if (/^Target/){
+            if (/^Target.*ovcvtfile ([0-9\.]*)/){
+               $sysips[@sysips] = $1;
+               last;
+            }
+            if (/^Target.*\@([0-9\.]*)/){
+               $sysips[@sysips] = $1;
+               last;
+            }
+         }
+      }
+      close (MRTGC);
+   }
+   @sysipnms=ovsysnms @sysips;
+
+   open (DNSFILE,">".$dnsfile);
+   for ($cnt = 0; $cnt < @sysipnms ; $cnt++){
+#      $sysipnms[$cnt] =~ s/ /,/;
+      print DNSFILE "$sysipnms[$cnt]\n";
+   }
+   close (DNSFILE);
+}  
+main;
+exit(0);
+

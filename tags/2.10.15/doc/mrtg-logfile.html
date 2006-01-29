@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>doc/mrtg-logfile</title>
+<link rev="made" href="mailto:dws@ee.ethz.ch" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+<!--
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#overview">OVERVIEW</a></li>
+	<li><a href="#details">DETAILS</a></li>
+	<ul>
+
+		<li><a href="#the_first_line">The first Line</a></li>
+		<li><a href="#the_rest_of_the_file">The rest of the File</a></li>
+	</ul>
+
+	<li><a href="#author">AUTHOR</a></li>
+</ul>
+-->
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>mrtg-logfile - description of the mrtg-2 logfile format</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>This document provides a description of the contents of
+the mrtg-2 logfile.</p>
+<p>
+</p>
+<hr />
+<h1><a name="overview">OVERVIEW</a></h1>
+<p>The logfile consists of two main sections.</p>
+<dl>
+<dt><strong><a name="item_the_first_line">The first Line</a></strong><br />
+</dt>
+<dd>
+It stores the traffic counters from the most recent run of mrtg.
+</dd>
+<p></p>
+<dt><strong><a name="item_the_rest_of_the_file">The rest of the File</a></strong><br />
+</dt>
+<dd>
+Stores past traffic rate averates and maxima at increassing
+intervals.
+</dd>
+<p></p></dl>
+<p>The first number on each line is a unix time stamp. It represents
+the number of seconds since 1970.</p>
+<p>
+</p>
+<hr />
+<h1><a name="details">DETAILS</a></h1>
+<p>
+</p>
+<h2><a name="the_first_line">The first Line</a></h2>
+<p>The first line has 3 numbers which are:</p>
+<dl>
+<dt><strong><a name="item_a">A (1st column)</a></strong><br />
+</dt>
+<dd>
+A timestamp of when MRTG last ran for this interface.  The timestamp is the
+number of non-skip seconds passed since the standard UNIX ``epoch'' of midnight
+on 1st of January 1970 GMT.
+</dd>
+<p></p>
+<dt><strong><a name="item_b">B (2nd column)</a></strong><br />
+</dt>
+<dd>
+The ``incoming bytes counter'' value.
+</dd>
+<p></p>
+<dt><strong><a name="item_c">C (3rd column)</a></strong><br />
+</dt>
+<dd>
+The ``outgoing bytes counter'' value.
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="the_rest_of_the_file">The rest of the File</a></h2>
+<p>The second and remaining lines of the file contains 5 numbers
+which are:</p>
+<dl>
+<dt><strong>A (1st column)</strong><br />
+</dt>
+<dd>
+The Unix timestamp for the point in time the data on this line is relevant.
+Note that the interval between timestamps increases as you prograss through the
+file. At first it is 5 minutes and at the end it is one day between two lines.
+</dd>
+<dd>
+<p>This timestamp may be converted in EXCEL by using the following formula:</p>
+</dd>
+<dd>
+<pre>
+ =(x+y)/86400+DATE(1970,1,1)</pre>
+</dd>
+<dd>
+<p>you can also ask perl to help by typing</p>
+</dd>
+<dd>
+<pre>
+ perl -e 'print scalar localtime(x),&quot;\n&quot;'</pre>
+</dd>
+<dd>
+<p><strong>x</strong> is the unix timestamp and <strong>y</strong> is the offset in seconds
+from UTC. (Perl knows <strong>y</strong>).</p>
+</dd>
+<p></p>
+<dt><strong>B (2nd column)</strong><br />
+</dt>
+<dd>
+The average incoming transfer rate in bytes per second. This is valid
+for the time between the A value of the current line and the A value of the
+previous line.
+</dd>
+<p></p>
+<dt><strong>C (3rd column)</strong><br />
+</dt>
+<dd>
+The average outgoing transfer rate in bytes per second since the previous
+measurement.
+</dd>
+<p></p>
+<dt><strong><a name="item_d">D (4th column)</a></strong><br />
+</dt>
+<dd>
+The maximum incoming transfer rate in bytes per second for the current
+interval. This is calculated from all the updates which have occured in the
+current interval. If the current interval is 1 hour, and updates have
+occured every 5 minutes, it will be the biggest 5 minute transfer rate seen
+during the hour.
+</dd>
+<p></p>
+<dt><strong><a name="item_e">E (5th column)</a></strong><br />
+</dt>
+<dd>
+The maximum outgoing transfer rate in bytes per second for the current interval.
+</dd>
+<p></p></dl>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Butch Kemper &lt;<a href="mailto:kemper@bihs.net">kemper@bihs.net</a>&gt; and
+Tobias Oetiker &lt;<a href="mailto:oetiker@ee.ethz.ch">oetiker@ee.ethz.ch</a>&gt;</p>
+
+</body>
+
+</html>

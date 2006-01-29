@@ -1,0 +1,128 @@
+###### PATCHTAG 00 ###################################################
+###      Slovenian/Slovensko
+###      => Aljosa Us <us@sweet-sorrow.com>
+###### PATCHTAG 10 ###################################################
+  &slovenian
+###### PATCHTAG 20 ###################################################
+  'slovenian' 	 => \&slovenian,
+###### PATCHTAG 30 ###################################################
+# Slovenian/Slovensko
+   'slovenian' =>
+   "  <HR NOSHADE>
+  <TD WIDTH=388 ALIGN=RIGHT><FONT FACE=\"Arial,Helvetica\" SIZE=2>
+  Slovenski prevod pripravil
+    <NOBR>Aljosa Us
+  <A HREF=\"mailto:us\@sweet-sorrow.com\">
+  &lt;us\@sweet-sorrow.com&gt;</A></NOBR>",
+###### PATCHTAG 40 ###################################################
+$credits::LOCALE{'slovenian'}=$credits::LOCALE{'slovenian'};
+###### PATCHTAG 50 ###################################################
+# Slovenian
+
+sub slovenian
+{
+  my $string = shift;
+return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+  # charset=iso-2022-jp
+
+  %translations =
+  (  
+     'charset=iso-8859-1'                     => 'charset=windows-1250',
+     'Maximal 5 Minute Incoming Traffic'      => 'Najvecji petminutni vhodni promet',
+     'Maximal 5 Minute Outgoing Traffic'      => 'Najvecji petminutni izhodni promet',
+     'the device'                             => 'naprava',
+     'The statistics were last updated(.*)'   => 'Zadnja posodobitev podatkov:$1',
+     ' Average\)</B><BR>'                     => ' povprecje)</B><BR>',
+     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Povprecje$1',
+     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Maksimalno$1',
+     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Trenutno$1',
+     'version'                                => 'verzija',
+     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Dnevni graf ($1 min.',
+     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Tedenski graf (30 min.' ,
+     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Mesecni graf (2 urno',
+     '<B>`Yearly\' Graph \(1 Day'             => '<B>Letni graf (1 dnevno', 
+     'Incoming Traffic in (\S+) per Second'   => 'Vhodni promet v $1 na sekundo.',
+     'Outgoing Traffic in (\S+) per Second'   => 'Izhodni promet v $1 na sekundo.',
+     'at which time (.*) had been up for(.*)' => 'Cas od zadnjega restarta sistema $1 : $2',
+     #'([kMG]?)([bB])/s'                       => '\$1\$2/s',
+     #'([kMG]?)([bB])/min'     	      	      => '\$1\$2/min',
+     #'([kMG]?)([bB])/h'                       => '$1$2/h',
+     'Bits'                                   => 'bitov',
+     'Bytes'                                  => 'bytov',
+     '&nbsp;In:</FONT>'                       => '&nbsp;Vhod:</FONT>',
+     '&nbsp;Out:</FONT>'                      => '&nbsp;Izhod:</FONT>',
+     '&nbsp;Percentage</FONT>'                => '&nbsp;Proc.</FONT>',
+     'Ported to OpenVMS Alpha by'             => 'Na OpenVMS portiral', 
+     'Ported to WindowsNT by'                 => 'Na WindowsNT portiral',
+     'and'                                    => 'in',
+     '^GREEN'                                  => 'Zeleno',
+     'BLUE'                                   => 'Modro',
+     'DARK GREEN'                             => 'Temnozeleno',
+     'MAGENTA'                                => 'Vijolicasto',
+     'AMBER'                                  => 'Oranzno'
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => 'Nedelja',		'Sun' => 'Ne',
+      'Monday'    => 'Ponedeljek',	'Mon' => 'Po',
+      'Tuesday'   => 'Torek',		'Tue' => 'To',
+      'Wednesday' => 'Sreda',		'Wed' => 'Sr',
+      'Thursday'  => 'Cetrtek',		'Thu' => 'Ce',
+      'Friday'    => 'Petek',		'Fri' => 'Po',
+      'Saturday'  => 'Sobota',		'Sat' => 'So' 
+    );
+
+%month = 
+    (
+ 'January' => 'Januar', 'February' => 'Februar', 'March'     => 'Marec',
+ 'Jan'     => 'Jan', 'Feb'      => 'Feb', 'Mar'       => 'Mar',
+ 'April'   => 'April',	'May'      => 'Maj',     'June'      => 'Jun',
+ 'Apr'     => 'Apr',  'May'      => 'Maj',     'Jun'       => 'Jun',
+ 'July'    => 'Julij',	'August'   => 'Avgust',  'September' => 'September',
+ 'Jul'     => 'Jul',	'Aug'      => 'Avg',  'Sep'       => 'Sep', 
+ 'October' => 'Oktober','November' => 'November','December'  => 'December', 
+ 'Oct'     => 'Okt','Nov'      => 'Nov','Dec'       => 'Dec' 
+    );
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+    {
+	if($foo[3]=~(/(.*)at(.*)/))
+      { 
+        @quux=split(/at/,$foo[3]);
+        $foo[3]=$quux[0].",".$quux[1]." "; 
+      };
+      return "$wday{$foo[0]} $foo[1]. $month{$foo[2]} $foo[3]"; 
+    };
+
+#
+# handle two different time/date formats:  
+# return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
+#
+
+# handle nontranslated strings which ought to be translated
+# print STDERR "$_\n" or print DEBUG "not translated $_";
+# but then again we might not want/need to translate all strings
+
+  return $string;
+
+}
+#

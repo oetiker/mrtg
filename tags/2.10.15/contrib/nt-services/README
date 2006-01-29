@@ -1,0 +1,59 @@
+This is my Windows NT service for MRTG.
+
+
+Installation:
+
+0) Unzip nt-service.zip
+
+1) Modify 5mrtg.Reg (if You need...)
+
+	Default values:
+
+	MrtgKick-PathName=C:\\MRTG\\Run\\MrtgKick.Cmd
+	Debug=0
+
+2) Run install.cmd as Administrator
+
+=========================================================
+
+Command line options:
+
+5mrtg	-install - install service
+5mrtg	-remove  - remove service
+
+5mrtg	-run     - run as executable for testing (Debug is ON)
+
+
+
+5mrtg	-update  - update service configuration from registry
+5mrtg	-info    - print service configuration
+
+(Interprocess communication via shared memory: must be same executable)
+
+
+Debugging: via OutputDebugString(), run DBGVIEW.EXE from sysinternals.
+
+
+=========================================================
+
+Rudimentary support for crontab
+
+Default: C:\Etc\CronTab
+
+Not true Crontab (see sample),
+if command in crontab is with asterisk '*'
+will be executed when service (or PC) is started
+after this entry time.
+
+My directory C:\Etc in etc.zip
+
+=========================================================
+
+Sorry for my read-only english!
+
+
+
+Miroslaw M. Maczka, 2000-4-11
+
+Miroslaw_Maczka@hotmail.com
+mmm@bze.com.pl

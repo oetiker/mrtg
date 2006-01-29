@@ -1,0 +1,264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>doc/indexmaker</title>
+<link rev="made" href="mailto:dws@ee.ethz.ch" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+<!--
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#options">OPTIONS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#license">LICENSE</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+-->
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>indexmaker - Creates index files for mrtg web sites (mrtg-2.10.15)</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>indexmaker [options] mrtg.cfg [other.cfg ...]</p>
+<p>
+</p>
+<hr />
+<h1><a name="options">OPTIONS</a></h1>
+<pre>
+ --output=filename   set output filename (default: stdout)</pre>
+<pre>
+ --filter title=~regexp  select targets by matching regexp against titles
+ --filter pagetop=~regexp  select targets by matching regexp against pagetop
+ --filter name=~regexp  select targets by matchin regexp against name</pre>
+<pre>
+ --addhead=text      insert this text between &lt;/TITLE&gt; and &lt;/HEAD&gt;
+ --title=text        set title of generated index file
+ --subtitle=text     add a subtitle to the generated index file
+ --bodyopt=text      set body tag options
+ --headlevel=number  use &lt;Hnumber&gt; at top of page (default: 1)
+ --pagetop=text      insert this text between &lt;BODY&gt; and &lt;H1&gt;...&lt;/H1&gt;
+ --pageend=text      insert this text after the main body
+ --pagetopend=text   use this text for pagetop or pageend if undefined
+ --nolegend          do not add the Mrtg legend at the end of the page</pre>
+<pre>
+ --columns=number    show graphs in a table with x columns (default: 2)
+ --perhost           show graphs of the same host on a row
+ --compact           try to make a vertically more compact page
+ --optlog            log the used command line in the page (default: log)</pre>
+<pre>
+ --sort=title        sort graphs by title
+ --sort=name         sort graphs by their name
+ --sort=descr        sort graphs by their description
+ --sort=original     leave as is (default)</pre>
+<pre>
+ --enumerate         add a sequence number to the title of each graph</pre>
+<pre>
+ --picfirst          place pictures before text (default: text first)
+ --width=number      set width of graphs (default: not set)
+ --height=number
+ --sidebyside        place text / pictures side by side (default: above/below)
+ --bold              use bold text (default: bold)
+ --clicktext         make the text link to the inner page (like the image)</pre>
+<pre>
+ --show=day          pick which graph to show in the index (default)
+ --show=week
+ --show=month
+ --show=year
+ --show=none</pre>
+<pre>
+ --section=h1        h1 tag from pagetop as section heading (default)
+ --section=title     title as section headings for graphs
+ --section=name      graph name as section heading
+ --section=descr     graph description as section heading
+ --section=portname  port name entry in pagetop as section heading
+ --sectionhost       Try to prepend the host to the section heading if missing</pre>
+<pre>
+ --rrdviewer=path    path to rrdviewer (default: /cgi-bin/14all.cgi)
+ --icondir=path      path to icondir
+ --prefix=path       path from the location of the index.html to the graphs
+ --headeradd=string  add string to the html page header
+ --autoprefix        try to set prefix automatically
+ 
+ --&lt;opt&gt;-file=file   read string argument for option &lt;opt&gt; from file</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><strong>Indexmaker</strong> can create web pages which display the status of an
+array of mrtg interface status pages.</p>
+<dl>
+<dt><strong><a name="item__2d_2doutput_filename"><strong>--output</strong> <em>filename</em></a></strong><br />
+</dt>
+<dd>
+set output filename (default: stdout)
+</dd>
+<p></p>
+<dt><strong><a name="item_filter"><strong>--filter</strong> (<strong>title</strong>|<strong>pagetop</strong>|<strong>name</strong>)(<strong>=~</strong>|<strong>!~</strong>)<em>regexp</em></a></strong><br />
+</dt>
+<dd>
+Several filters may get set.  Each filter can match agains the contents
+of a specific section of the mrtg config file. <strong>Name</strong> refers to the
+bit in square brackets (option[name]: bla).
+</dd>
+<dd>
+<p>Depending on the match operator chosen (<strong>=~</strong> or <strong>!~</strong>) the match will be
+positive or negative.</p>
+</dd>
+<dd>
+<p>Note that some shells consider <strong>!</strong> a special character.  It may be
+necessary to type <strong>\!~</strong> instead.</p>
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2dtitle_text"><strong>--title</strong> <em>text</em></a></strong><br />
+</dt>
+<dd>
+Set title of generated index file (default: regexp)
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2dbodyopt_text"><strong>--bodyopt</strong> <em>text</em></a></strong><br />
+</dt>
+<dd>
+The value of this argument gets appended to
+the &lt;BODY&gt; tag. This allows to set document colors.
+By default this option is set to
+</dd>
+<dd>
+<pre>
+ bgcolor=&quot;#ffffff&quot; text=&quot;#000000&quot; link=&quot;#000000&quot; vlink=&quot;#000000&quot; alink=&quot;#000000&quot;</pre>
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2dcolumns_number"><strong>--columns</strong> <em>number</em></a></strong><br />
+</dt>
+<dd>
+Display graphs in a table with <em>number</em> columns (default: 2)
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2dsort_title_7cname_7cdescr_7coriginal"><strong>--sort</strong> <strong>title</strong>|<strong>name</strong>|<strong>descr</strong>|<strong>original</strong></a></strong><br />
+</dt>
+<dd>
+Sort the graphs in the page either by <strong>title</strong>, by <strong>name</strong>, by interface
+<strong>descr</strong>iption, or leave them as is.
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2denumerate"><strong>--enumerate</strong></a></strong><br />
+</dt>
+<dd>
+Add a sequence number to the title of each graph
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2dwidth_number"><strong>--width</strong> <em>number</em></a></strong><br />
+</dt>
+<dd>
+Set width of graphs
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2dheight_number"><strong>--height</strong> <em>number</em></a></strong><br />
+</dt>
+<dd>
+Set the height of the graphs
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2dshow_day_7cweek_7cmonth_7cyear_7cnone"><strong>--show</strong> <strong>day</strong>|<strong>week</strong>|<strong>month</strong>|<strong>year</strong>|<strong>none</strong></a></strong><br />
+</dt>
+<dd>
+Select which graph to show in the index page. You can supress images
+completely with <strong>--show=none</strong>.
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2dsection_h1_7ctitle_7cname_7cdescription_7cpo"><strong>--section</strong> <strong>h1</strong>|<strong>title</strong>|<strong>name</strong>|<strong>description</strong>|<strong>portname</strong></a></strong><br />
+</dt>
+<dd>
+Select what to use as the title for each graph in the page.  <strong>h1</strong> is
+the H1 section from pagetop, <strong>title</strong> is the graph title, <strong>name</strong> is
+the bit in square brackets (option[name]: bla), and <strong>descr</strong> or
+<strong>description</strong> is the text from the Description field of the PageTop
+(the Cisco description text if it's available, otherwise just the
+interface description). <strong>portname</strong> is the <code>Port Name:</code> from pagetop.
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2dsectionhost"><strong>--sectionhost</strong></a></strong><br />
+</dt>
+<dd>
+Extract the hostname from the target line (this does not work if the 
+target is a mathematial expression). Prepend the hostname (and a colon)
+to the section if not already present.
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2drrdviewer_path"><strong>--rrdviewer</strong> <em>path</em></a></strong><br />
+</dt>
+<dd>
+If you have set the <strong>LogFormat: rrdtool</strong> property in the mrtg.cfg
+file, the index will take this into account. The only thing you must
+tell it is the path to your grapher cgi. (default: /cgi-bin/14all.cgi)
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2dprefix_path"><strong>--prefix</strong> <em>path</em></a></strong><br />
+</dt>
+<dd>
+By  default we assume    that  the file generated by indexmaker is stored in
+<em>WorkDir</em>.  If you want to  store it somewhere   else, specify how to reach
+<em>WorkDir</em>  from  the place where the Index is stored. Note that you have to
+use '/' as path separator as this will be used in urls. Speaking of which,
+you can even enter a whole url.
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2dautoprefix_path"><strong>--autoprefix</strong> <em>path</em></a></strong><br />
+</dt>
+<dd>
+Requires --output.
+Try to generate the prefix automatically by comparision of the path to the
+output file set with --output and the Htmldir set in the configuration files.
+Particulary useful when multiple configuration files are specified, with
+different Htmldir settings.
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2doptlog"><strong>--optlog</strong></a></strong><br />
+</dt>
+<dd>
+Default is logging in the generated page the command line, suppress with
+--nooptlog . Useful if the commandline contains a complex --pagetop=string
+which could confuse simple browsers.
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2dsomeoption_2dfile_filename"><strong>--someoption-file</strong> <em>filename</em></a></strong><br />
+</dt>
+<dd>
+For any someoption which takes a <em>string</em> as parameter you can read the
+string from a file by adding &lt;-file&gt; to the option keyword. The whole 
+content of the file will be read and used as the <em>string</em>. The file must
+exist.
+</dd>
+<p></p></dl>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Tobias Oetiker &lt;<a href="mailto:tobi@oetiker.ch">tobi@oetiker.ch</a>&gt;</p>
+<p>
+</p>
+<hr />
+<h1><a name="license">LICENSE</a></h1>
+<p>GNU General Public License</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>2000-2001 Tobias Oetiker &lt;<a href="mailto:tobi@oetiker.ch">tobi@oetiker.ch</a>&gt;</p>
+
+</body>
+
+</html>

@@ -1,0 +1,90 @@
+#!/usr/bin/perl
+
+# ipchainacc version 1.0.2
+# Author: John Lange, john@darkcore.net
+	  Ilya Konstantinov, mrtg-ipchains@future.galanet.net
+# Date: Sep 06, 2000
+#
+# This script was written to provide output for MRTG
+#  (multi router traffic grapher) via ipchains.
+#
+# http://ee-staff.ethz.ch/~oetiker/webtools/mrtg/mrtg.html
+#
+## USAGE EXAMPLE (line from mrtg.conf)
+#
+# Target[traffic]: /usr/local/mrtg-2/bin/ipchainacc 0 0
+#
+# The arguments 0 0 mean it should report the bytes count
+# for the 1st (1st is 0, 2st is 1 and so on) rule in
+# the 'acctin' chain (supposed to be the incoming traffic)
+# and the 1st rule in the 'acctout' chain.
+#
+## Changelog
+# v1.0.2 Made it actually account bytes instead of packages.
+#	 Now ipchainacc requires 2 command-line arguments.
+#	 This allows having more than one rule in the accounting
+# 	 chains, so you could have traffic cuts by protocol
+#	 or IP blocks which match your rules.
+# v1.0.1 added -x to ipchains to expand byte counters
+# v1.0.0 Inital Release
+#
+#
+#   This command must return 4 lines of output:
+#     Line 1 : current state of the 'incoming bytes counter'
+#     Line 2 : current state of the 'outgoing bytes counter'
+#     Line 3 : string, telling the uptime of the target.
+#     Line 4 : string, telling the name of the target.  
+
+# This script relies on you having setup your ipchains rules beforehand
+
+## edit for your system
+
+$ipchains='/sbin/ipchains';   # path to ipchains
+$host=`/bin/hostname --fqdn`;  # local hostname (for information only)
+
+# if you use the ipchains rules above, you don't have to change these
+$inrule='acctin';  # name of input accounting rule
+$outrule='acctout'; # name of output accounting rule
+
+
+## -- don't edit below here ----
+
+# get command line params
+my ($in_rule,$out_rule) = @ARGV;
+
+# fetch the status from ipchains
+@rules=`$ipchains -L $inrule -v -n -x`;
+splice @rules, 0, 2;
+@in_bytes=split(' ',$rules[$in_rule]);
+
+@rules=`$ipchains -L $outrule -v -n -x`;
+splice @rules, 0, 2;
+@out_bytes = split(' ',$rules[$out_rule]);
+print "$out_line";    # just for debugging
+
+#$c=1;
+#foreach $value (@in_bytes) {
+#  printf "$c: $value\n";
+#  $c++;
+#};
+
+# uptime of the machine
+my $upTimeLine = `uptime`;
+my $upTime;
+if ($upTimeLine =~ /\s+?.*?\s+?up (\d+ days,\s+.*?),/)
+{
+        $upTime = $1;
+}
+
+# 4 lines of output only.
+if (!$in_bytes[1]) { $in_bytes[1] = 0; }
+if (!$out_bytes[1]) { $out_bytes[1] = 0; }
+
+print	"$in_bytes[1]\n",
+	"$out_bytes[1]\n",
+	"$upTime\n$host";
+	
+
+#print ($in_bytes[1] ne ''?$in_bytes[1]:'0'),"\n",
+#      ($out_bytes[1] ne ''?$out_bytes[1]:'0'),"\n",
+#	"$upTime\n$host";
