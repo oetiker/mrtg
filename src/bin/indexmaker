@@ -1,7 +1,7 @@
 #! /usr/bin/perl -w
 # -*- mode: Perl -*-
 ##################################################################
-# MRTG 2.11.1  --- Index Generator
+# MRTG 2.12.2  --- Index Generator
 ##################################################################
 #
 # This reads a mrtg.cfg file form std input or cmdline argument
@@ -389,7 +389,7 @@ ECHO
              /^portname$/ && 
                do{
                  $section = "No Portname for $item";
-                 $$rcfg{pagetop}{$item} =~ m,<TR><TD>Port Name:</TD>\s*<TD>([^<]+)</TD>,i
+                 $$rcfg{pagetop}{$item} =~ m,<td>Port Name:</td>\s*<td>([^<]+)</td>,i
                       and  $section = $1;
                  last;
                };
@@ -488,7 +488,7 @@ ECHO
         $gifPath = "$$cfg{imagehtml}";
     }
 
-    my $VERSION = "2.11.1";
+    my $VERSION = "2.12.2";
     $index .= <<ECHO;
 <td></td>
 </tr>
@@ -597,7 +597,7 @@ sub options ($) {
 	$$opt{prefix} .= '/';
 	$$opt{prefix} =~ s|/+$|/|;
     }
-    die ("Indexmaker for mrtg-2.11.1\n") if $$opt{version};
+    die ("Indexmaker for mrtg-2.12.2\n") if $$opt{version};
     pod2usage(-exitval => 1, -verbose => 2) if $$opt{man};
     pod2usage(-verbose => 1) if not @ARGV;
     
@@ -627,7 +627,7 @@ __END__
 
 =head1 NAME
 
-indexmaker - Creates index files for mrtg web sites (mrtg-2.11.1)
+indexmaker - Creates index files for mrtg web sites (mrtg-2.12.2)
 
 =head1 SYNOPSIS
 

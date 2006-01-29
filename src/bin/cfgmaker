@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 # -*- mode: Perl -*-
 ##################################################################
-# MRTG 2.11.1  -- Config file creator
+# MRTG 2.12.2  -- Config file creator
 ##################################################################
 # Created by Tobias Oetiker <oetiker@ee.ethz.ch>
 # this produces an mrtg config file for one router or more routers
@@ -14,7 +14,8 @@
 # DEBUG TARGETS
 # base - basic program flow
 # snpo - SNMP Polling
-@main::DEBUG=qw(base snpo);
+# snpd - SNMP Detail
+@main::DEBUG=qw(base snpo coca);
 #@main::DEBUG=qw();
 
 require 5.005;
@@ -46,8 +47,7 @@ use lib "${FindBin::Bin}";
 use lib "${FindBin::Bin}${main::SL}..${main::SL}lib${main::SL}mrtg2";
 
 use MRTG_lib "2.100015";
-use SNMP_util "1.04";
-use SNMP_Session "1.05";
+use SNMP_util;
 use Getopt::Long;
 use Pod::Usage;
 use Socket;
@@ -128,7 +128,7 @@ sub InterfaceInfo($$$$) {
         $routers->{$router}{deviceinfo}{sysDescr} =~ m/Version\s+(\d\d\.\d+)/) {
         push @Variables,  ($1 > 11.0) ? "ifAlias" : "CiscolocIfDescr";
         if ($1 > 11.2) {push @Variables, "vmVlan";};
-    } elsif ( $routers->{$router}{deviceinfo}{Vendor} =~ /(?:juniper|foundry|dellLan)/) {
+    } elsif ( $routers->{$router}{deviceinfo}{Vendor} =~ /(?:juniper|foundry|dellLan|force10|extremenetworks)/) {
         push @Variables, "ifAlias";
     }
 
@@ -145,6 +145,7 @@ sub InterfaceInfo($$$$) {
             my($if,$value) = split /:/, $tuple, 2;
             $value =~ s/[\0- ]+$//; # no trailing space
             $routers->{$router}{$if}{$var} = $value;
+	    debug('snpd',"  $router -> $if -> $var = $value");
         }
     }
 
@@ -155,6 +156,7 @@ sub InterfaceInfo($$$$) {
     if ( $snmp_version eq '2' ) {
         debug('base',"Walking ifSpeed");
         my @ifSpeed = snmpwalk($snmphost, 'ifSpeed');
+	debug('snpd',"\@ifSpeed = @ifSpeed\n");
         debug('base',"Walking ifHighSpeed");
         my @ifHighSpeed = snmpwalk($snmphost, 'ifHighSpeed');
         for ( my $i=0; $i<=$#ifHighSpeed; $i++ ) {
@@ -181,6 +183,7 @@ sub InterfaceInfo($$$$) {
         foreach my $tuple (snmpwalk($snmphost, 'ifSpeed')){
             my($if,$value) = split /:/, $tuple, 2;
             $routers->{$router}{$if}{'ifSpeed'} = $value;
+	    debug('snpd',"  $router -> $if -> ifSpeed = $value");
         }
     }
 
@@ -221,9 +224,11 @@ sub InterfaceInfo($$$$) {
     }
 
     # match confcache info into tree
-    foreach my $method (keys %{$$confcache{$router}}) {
-        foreach my $key (keys %{$$confcache{$router}{$method}}) {
-            my $if = $$confcache{$router}{$method}{$key};
+    my $cachekey = cleanhostkey $router;
+
+    foreach my $method (keys %{$$confcache{$cachekey}}) {
+        foreach my $key (keys %{$$confcache{$cachekey}{$method}}) {
+            my $if = readfromcache($confcache,$router,$method,$key);
             next unless $if =~ /^\d+$/;
             $routers->{$router}{$if}{$method} = $key;
             for ($method) {
@@ -451,7 +456,7 @@ ECHO
 
                         # Split the LOGICAL interface name in attempt 
                         # to match with base PHYSICAL interface detail.
-                        my ($logical_if_HEAD, $logical_if_TAIL) = 
+                        my ($logical_if_HEAD, $logical_if_TAIL) =
                             $logical_if_name =~ /^(.*)(c\d+)$/;
 
                         foreach my $ifindexTMP (sort {int($a) <=> int($b)}
@@ -480,17 +485,18 @@ ECHO
                         push @prob, "it is in administrative TEST mode";
                         $default_ifstate = 0;
                     }
-            
+                 
                     if (not defined $$router_opt{'show-op-down'}) {
-                        if ($$i{ifOperStatus} == 2) {           
-                            push @prob, "it is operationally DOWN";
-                            $default_ifstate = 0;
-                        } elsif ($$i{ifOperStatus} == 3) {
-                            push @prob, "it is in operational TEST mode";
-                            $default_ifstate = 0;
-                        }
+                       if ($$i{ifOperStatus} == 2) {           
+                          push @prob, "it is operationally DOWN";
+                          $default_ifstate = 0;
+                       } elsif ($$i{ifOperStatus} == 3) {
+                           push @prob, "it is in operational TEST mode";
+                          $default_ifstate = 0;
+                      }
                     }
-                }
+                 }
+                
     
                 # Investigate the type of the interface.
                 if ($$router_dev{Vendor} eq 'cisco' && $$i{ifType} == 18) { # by fwo@obsidian.co.za
@@ -532,12 +538,36 @@ ECHO
                 # Do some futher investigation if the interface makes
                 # sense to collect on
             
+		# I debated whether to insert the zero-speed check before
+		# or after the "will always be zero" sections below.
+		# I settled on before since I'll assume the user knows
+		# what speed the zero-speed interfaces should be better
+		# than the simple logic below.
+		if ($$i{ifSpeed} == 0 && $$router_opt{'zero-speed'}) {
+		    # Set all interfaces with zero speed to the value specified
+		    # by the --zero-speed= command line option.
+
+		    # Be sure the value specified is a valid integer.
+		    # It seems like this could be done once when
+		    # $$router_opt is set, but I didn't see any example
+		    # of input validation in that part of cfgmaker,
+		    # so it gets done here, more times than are
+		    # really necessary.  ;-)
+		    unless ($$router_opt{'zero-speed'} =~ /^\d+$/) {
+		         die "ERROR: zero-speed specified with non-integer speed: $$router_opt{'zero-speed'}";
+		    }
+		    $$i{ifSpeed} = $$router_opt{'zero-speed'};
+		}
+
                 if ($$i{ifSpeed} == 0 && $$router_dev{Vendor} eq 'foundry' && $$i{ifType} == 194) {
                     # foundry ATM subinterfaces always report 0 speed, make it 155Mbps instead.
                     $$i{ifSpeed} =  155000000;
                 } elsif ($$i{ifSpeed} == 0 && $$router_dev{Vendor} eq 'foundry' && $$i{ifType} == 135) {
                     # Foundry virtual Ethernet interfaces always report 0 speed, make it 100Mbps instead.
                     $$i{ifSpeed} = 12500000;
+                } elsif ($$i{ifSpeed} == 0 && $$router_dev{Vendor} eq 'cisco' && $$i{sysDescr} == /FWSM-Firewall / )  {
+                    # Cisco PIX Firewall Switch Modules have effective backplane speed of 600 Megs
+		    $$i{ifSpeed} = 600000000;
                 } elsif ($$i{ifSpeed} == 0 && $$router_dev{Vendor} eq '3com' && $$i{Descr} =~ /RMON VLAN (\d+)/ ) {
                     $$i{ifSpeed} = 100000000;
                     $if_vlan_id = $1;
@@ -587,7 +617,7 @@ ECHO
                     map {$problem_lines .= "### * $_\n"} @prob;
                     $if_ok = 0;
                 }
-        
+
                 # generate Target name
                 my $trim_if_ref = $if_ref;
                 $trim_if_ref =~ s/[\#!\/\\:\s\@%]+/_/g;
@@ -600,6 +630,11 @@ ECHO
                 my $if_type_desc = IfType($$i{ifType});
                 my $html_if_type_desc = html_escape($if_type_desc);
                 my $desc_prefix = 'Traffic Analysis for ';
+
+                my $port_dot = $$i{Name};
+                $port_dot =~ s/\//./g;
+                my $if_port_name = $$router_ref{$port_dot}{CiscoCatalystPortName};
+
                 if (defined $$router_opt{ifdesc}) {
                     $desc_prefix = '';
                     for ($$router_opt{ifdesc}) {
@@ -610,21 +645,19 @@ ECHO
                                      "$$i{Descr} $$i{ifAlias} $$i{CiscolocIfDescr}";
                                     last};
                         /^name$/ && do {$if_title_desc = "#".$$i{Name} if $$i{Name}; last};
+                        /^catname$/ && do {$if_title_desc = "$if_port_name"; last};
                         /^type$/ && do {$if_title_desc = "%".$$i{Type} if $$i{Type}; last};
                         /^nr$/ && do {$if_title_desc = "Interface $ifindex"; last};
-                        /^$/ && do {$if_title_desc = $if_type_desc; 
+                        /^$/ && do {$if_title_desc = $if_type_desc;
                                 $if_title_desc =~ s/^$/$$i{Descr}/;
                                 last};
                         die "ERROR: Invalid value for --ifdesc: '$$router_opt{ifdesc}'\n";
                     }
                 }
-        
-                # Now setup a large number of variables needed for the 
+
+                # Now setup a large number of variables needed for the
                 # generation of the configuration lines.
-            
-                my $port_dot = $$i{Name};                                             
-                $port_dot =~ s/\//./g;                                                 
-                my $if_port_name = $$router_ref{$port_dot}{CiscoCatalystPortName};  
+
                 $if_title_desc =~ s/\\([:@\\\/\# ])/$1/g; # unescape
                 $if_title_desc = $if_snmp_name if not $if_title_desc;
                 my $html_if_title_desc = html_escape($if_title_desc);
@@ -641,7 +674,7 @@ ECHO
         
                 my $head_lines = "### Interface $ifindex >> Descr: '$if_snmp_descr' |".
                                  " Name: '$if_snmp_name' | Ip: '$if_ip' | Eth: '$$i{Eth}' ###\n";
-            
+
                 my $target_lines = "";
                 my $separator_lines = "\n\n";
     
@@ -656,18 +689,47 @@ ECHO
     
                 my $default_title_directive = "Title[$target_name]: $html_desc_prefix$html_if_title_desc -- $sysname";
                 my $default_pagetop_directive =
-                "PageTop[$target_name]: <H1>$html_desc_prefix$html_if_title_desc -- $sysname</H1>
- <TABLE>
-   <TR><TD>System:</TD>     <TD>$sysname in $html_syslocation</TD></TR>
-   <TR><TD>Maintainer:</TD> <TD>$html_syscontact</TD></TR>
-   <TR><TD>Description:</TD><TD>$html_if_description</TD></TR>
-   <TR><TD>ifType:</TD>     <TD>$html_if_type_desc ($if_type_num)</TD></TR>
-   <TR><TD>ifName:</TD>     <TD>$html_if_snmp_name</TD></TR>
-";
-                $default_pagetop_directive .= "   <TR><TD>Port Name:</TD>  <TD>$if_port_name</TD></TR>\n" if defined $if_port_name;
-                $default_pagetop_directive .= "   <TR><TD>Max Speed:</TD>  <TD>$if_speed_str</TD></TR>\n";
-                $default_pagetop_directive .= "   <TR><TD>Ip:</TD>         <TD>$if_ip ($if_dns_name)</TD></TR>\n" if $if_ip;
-                $default_pagetop_directive .= " </TABLE>";
+                "PageTop[$target_name]: <h1>$html_desc_prefix$html_if_title_desc -- $sysname</h1>
+		<div id=\"sysdetails\">
+			<table>
+				<tr>
+					<td>System:</td>
+					<td>$sysname in $html_syslocation</td>
+				</tr>
+				<tr>
+					<td>Maintainer:</td>
+					<td>$html_syscontact</td>
+				</tr>
+				<tr>
+					<td>Description:</td>
+					<td>$html_if_description</td>
+				</tr>
+				<tr>
+					<td>ifType:</td>
+					<td>$html_if_type_desc ($if_type_num)</td>
+				</tr>
+				<tr>
+					<td>ifName:</td>
+					<td>$html_if_snmp_name</td>
+				</tr>";
+                $default_pagetop_directive .= "
+				<tr>
+					<td>Port Name:</td>
+					<td>$if_port_name</td>
+				</tr>\n" if defined $if_port_name;
+                $default_pagetop_directive .= "
+				<tr>
+					<td>Max Speed:</td>
+					<td>$if_speed_str</td>
+				</tr>\n";
+                $default_pagetop_directive .= "
+				<tr>
+					<td>Ip:</td>
+					<td>$if_ip ($if_dns_name)</td>
+				</tr>\n" if $if_ip;
+                $default_pagetop_directive .= "
+			</table>
+		</div>";
     
                 my $default_target_lines =
                     ("\n"
@@ -821,6 +883,7 @@ sub DeviceInfo ($$) {
             '1.3.6.1.4.1.674.10895.' => 'dellLan',
             '1.3.6.1.4.1.1916.' =>      'extremenetworks',
             '1.3.6.1.4.1.1991.' =>      'foundry',
+            '1.3.6.1.4.1.6027.' =>      'force10',
             '1.3.6.1.4.1.2636.' =>      'juniper',
             '1.3.6.1.4.1.94.' =>        'nokiaipsofw',
             '1.3.6.1.4.1.307.' =>       'portmaster'
@@ -1063,9 +1126,10 @@ sub options ($$) {
         'global=s@',
         'enable-ipv6',
         'use-16bit',
+	'zero-speed=s',
         '<>', $addrouter_ornf) or pod2usage(2);
 
-    die("cfgmaker for mrtg-2.11.1\n") if $$opt{version};
+    die("cfgmaker for mrtg-2.12.2\n") if $$opt{version};
     pod2usage(-exitval => 0, -verbose => 2) if $$opt{man};
     pod2usage(-verbose => 1) if not keys %$routers;
 } # end options
@@ -1300,7 +1364,7 @@ sub html_escape ($) {
 sub init () {
   snmpmapOID('sysObjectID' => '1.3.6.1.2.1.1.2.0',
              'CiscolocIfDescr' => '1.3.6.1.4.1.9.2.2.1.1.28',
-             'CiscoCatalystPortName' => '1.3.6.1.4.1.9.5.1.4.1.1.4',  
+             'CiscoCatalystPortName' => '1.3.6.1.4.1.9.5.1.4.1.1.4',
              'vmVlan' => '1.3.6.1.4.1.9.9.68.1.2.2.1.2',
              'ifAlias' => '1.3.6.1.2.1.31.1.1.1.18');
 } # end init
@@ -1309,7 +1373,7 @@ __END__
 
 =head1 NAME
 
-cfgmaker - Creates mrtg.cfg files (for mrtg-2.11.1)
+cfgmaker - Creates mrtg.cfg files (for mrtg-2.12.2)
 
 =head1 SYNOPSIS
 
@@ -1329,6 +1393,7 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
  --ifdesc=eth                       ... uses Ethernet Number
  --ifdesc=descr                     ... uses Interface Description
  --ifdesc=name                      ... uses Interface Name
+ --ifdesc=catname                   ... uses CatOS Interface Name
  --ifdesc=alias                     ... uses Interface Alias
  --ifdesc=type                      ... uses Interface Type
 
@@ -1362,6 +1427,10 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
  --no-down         do not look at admin or opr status of interfaces
 
  --show-op-down    show interfaces which are operatively down
+
+ --zero-speed=spd  use this speed in bits-per-second as the interface
+                   speed for all interfaces that return a speed of 0
+                   via ifSpeed/ifHighSpeed.  100Mbps = 100000000
 
  --subdirs=format  give each router its own subdirectory, naming each per 
                    "format", in which HOSTNAME and SNMPNAME will be 
@@ -1621,6 +1690,14 @@ switch you get them all.
 =item B<--show-op-down>
 
 Include interfaces which are operatively down.
+
+=item B<--zero-speed> I<speed>
+
+Assign this speed in bits-per-second to all interfaces which return 0
+for ifSpeed and ifHighSpeed.  Some switches, notably Foundry equipment,
+return a speed of zero for some interfaces.  For example, to have
+all interfaces reporting zero set to 100Mbps, use
+--zero-speed=100000000.
 
 =item B<--subdirs> I<format>
 
@@ -2252,29 +2329,55 @@ interface happens to be rejected.
    $target_lines .= <<ECHO;
  MaxBytes[$target_name]: $if_speed
  Title[$target_name]: $html_desc_prefix$html_if_title_desc -- $sysname
- PageTop[$target_name]: <H1>$html_desc_prefix$html_if_title_desc -- $sysname</H1>
-  <TABLE>
-    <TR><TD>System:</TD>     <TD>$sysname in $html_syslocation</TD></TR>
-    <TR><TD>Maintainer:</TD> <TD>$html_syscontact</TD></TR>
-    <TR><TD>Description:</TD><TD>$html_if_description</TD></TR>
-    <TR><TD>ifType:</TD>     <TD>$html_if_type_desc ($if_type_num)</TD></TR>
-    <TR><TD>ifName:</TD>     <TD>$html_if_snmp_name</TD></TR>
+ PageTop[$target_name]: <h1>$html_desc_prefix$html_if_title_desc -- $sysname</h1>
+		<div id="sysdetails">
+			<table>
+				<tr>
+					<td>System:</td>
+					<td>$sysname in $html_syslocation</td>
+				</tr>
+				<tr>
+					<td>Maintainer:</td>
+					<td>$html_syscontact</td>
+				</tr>
+				<tr>
+					<td>Description:</td>
+					<td>$html_if_description</td>
+				</tr>
+				<tr>
+					<td>ifType:</td>
+					<td>$html_if_type_desc ($if_type_num)</td>
+				</tr>
+				<tr>
+					<td>ifName:</td>
+					<td>$html_if_snmp_name</td>
+				</tr>
  ECHO
  
    $target_lines .= <<ECHO if defined $if_port_name;
-    <TR><TD>Port Name:</TD>  <TD>$if_port_name</TD></TR>
+				<tr>
+					<td>Port Name:</td>
+					<td>$if_port_name</td>
+				</tr>
  ECHO
  
    $target_lines .= <<ECHO;
-    <TR><TD>Max Speed:</TD>  <TD>$if_speed_str</TD></TR>
+				<tr>
+					<td>Max Speed:</td>
+					<td>$if_speed_str</td>
+				</tr>
  ECHO
  
    $target_lines .= <<ECHO if $if_ip;
-    <TR><TD>Ip:</TD>         <TD>$if_ip ($if_dns_name)</TD></TR>
+				<tr>
+					<td>Ip:</td>
+					<td>$if_ip ($if_dns_name)</td>
+				</tr>
  ECHO
  
    $target_lines .= <<ECHO;
-  </TABLE>
+			</table>
+		</div>
  ECHO
  } else {
    $head_lines="";
@@ -2328,13 +2431,27 @@ Below is an example of a host template.
  Options[$target_name]: growright, gauge, nopercent
  Title[$target_name]: $router_name CPU load
  Target[$target_name]: 1.3.6.1.4.1.9.2.1.58.0&1.3.6.1.4.1.9.2.1.58.0:$router_connect
- PageTop[$target_name]: <H1>$router_name CPU load</H1>
-   <TABLE>
-     <TR><TD>System:</TD><TD>$router_name in $html_syslocation</TD></TR>
-     <TR><TD>Maintainer:</TD><TD>$html_syscontact</TD></TR>
-     <TR><TD VALIGN="top">Description:</TD><TD>$html_sysdescr</TD></TR>
-     <TR><TD>Resource:</TD><TD>CPU.</TD></TR>
-   </TABLE>
+ PageTop[$target_name]: <h1>$router_name CPU load</h1>
+		<div>
+			<table>
+				<tr>
+					<td>System:</td>
+					<td>$router_name in $html_syslocation</td>
+				</tr>
+				<tr>
+					<td>Maintainer:</td>
+					<td>$html_syscontact</td>
+				</tr>
+				<tr>
+					<td>Description:</td>
+					<td>$html_sysdescr</td>
+				</tr>
+				<tr>
+					<td>Resource:</td>
+					<td>CPU.</td>
+				</tr>
+			</table>
+		</div>
  ECHO
 
 

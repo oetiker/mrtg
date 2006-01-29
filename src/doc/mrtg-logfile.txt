@@ -52,10 +52,13 @@ DDEETTAAIILLSS
            At first it is 5 minutes and at the end it is one day
            between two lines.
 
-           This timestamp may be converted in EXCEL by using the
-           following formula:
+           This timestamp may be converted in OpenOffice Calc or
+           MS Excel by using the following formula
 
-            =(x+y)/86400+DATE(1970,1,1)
+            =(x+y)/86400+DATE(1970;1;1)
+
+           (instead of ";" it may be that you have to use ","
+           this depends on the context and your locale settings)
 
            you can also ask perl to help by typing
 
@@ -91,4 +94,4 @@ AAUUTTHHOORR
 
 
 
-2.11.1                      2005-01-06            MRTG-LOGFILE(1)
+2.12.2                      2005-06-19            MRTG-LOGFILE(1)

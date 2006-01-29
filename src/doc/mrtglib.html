@@ -294,6 +294,15 @@ muliple times, the retrieved value else.</p>
 <p>Preload the confcache from a file.</p>
 </dd>
 <p></p>
+<dt><strong><a name="item_readfromconfcache"><code>readfromconfcache</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_writeconfcache"><code>writeconfcache($confcache,$file)</code></a>
+</dd>
+<dd>
+<p>Store the current confcache into a file.</p>
+</dd>
+<p></p>
 <dt><strong><a name="item_writeconfcache"><code>writeconfcache</code></a></strong><br />
 </dt>
 <dd>
@@ -303,6 +312,24 @@ muliple times, the retrieved value else.</p>
 <p>Store the current confcache into a file.</p>
 </dd>
 <p></p>
+<dt><strong><a name="item_storeincache"><code>storeincache</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_storeincache"><code>storeincache($confcache,$host,$method,$key,$value)</code></a>
+</dd>
+<p></p>
+<dt><strong><a name="item_readfromcache"><code>readfromcache</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_readfromcache"><code>readfromcache($confcache,$host,$method,$key)</code></a>
+</dd>
+<p></p>
+<dt><strong><a name="item_clearfromcache"><code>clearfromcache</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_clearfromcache"><code>clearfromcache($confcache,$host)</code></a>
+</dd>
+<p></p>
 <dt><strong><a name="item_debug"><code>debug</code></a></strong><br />
 </dt>
 <dd>
@@ -310,9 +337,7 @@ muliple times, the retrieved value else.</p>
 </dd>
 <dd>
 <p>Prints the <em>message</em> on STDERR if debugging is enabled for type <em>type</em>.
-A debug type is enabled if <em>type</em> is in array @main::DEBUG.
-
-</p>
+A debug type is enabled if <em>type</em> is in array @main::DEBUG.</p>
 </dd>
 <p></p></dl>
 <p>

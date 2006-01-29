@@ -16,7 +16,7 @@ TTRRAANNSSLLAATTIIOONNSS
        MRTG messages have been translated to a number of lan-
        guages but there are still many which have not been cov-
        ered yet. If you want to add yours, go into the
-       _m_r_t_g_-_2_._1_1_._1_/_t_r_a_n_s_l_a_t_e directory and follow the instruc-
+       _m_r_t_g_-_2_._1_2_._2_/_t_r_a_n_s_l_a_t_e directory and follow the instruc-
        tions given in the _R_E_A_D_M_E file.
 
 DDOOCCUUMMEENNTTAATTIIOONN
@@ -62,4 +62,4 @@ AAUUTTHHOORR
 
 
 
-2.11.1                      2005-01-06            MRTG-CONTRIB(1)
+2.12.2                      2005-06-19            MRTG-CONTRIB(1)

@@ -96,4 +96,4 @@ AAUUTTHHOORR
 
 
 
-2.11.1                      2005-01-06              MRTG-SQUID(1)
+2.12.2                      2005-06-19              MRTG-SQUID(1)

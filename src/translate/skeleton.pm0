@@ -64,11 +64,9 @@ $VERSION = '0.07';
   (
 # default
    'default' =>
-   "<HR NOSHADE>
-    Prepared for localization by
-    <NOBR><A HREF=\"http://www.ipt.dtu.dk\">Morten S. Nielsen</A>
-  <A HREF=\"mailto:msn\@ipt.dtu.dk\">
-  &lt;msn\@ipt.dtu.dk&gt;</A></NOBR>",
+   "Prepared for localization by
+				<a href=\"http://www.ipt.dtu.dk\">Morten S. Nielsen</a>
+				<a href=\"mailto:msn\@ipt.dtu.dk\">&lt;msn\@ipt.dtu.dk&gt;</a>",
 ###### PATCHTAG40 ###################################################
   );
 

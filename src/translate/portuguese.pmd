@@ -8,11 +8,9 @@
 ###### PATCHTAG 30 ###################################################
 # Português/portuguese 
    'portuguese' =>
-   "  <HR NOSHADE>
-    Traduzido por 
-    <NOBR><A HREF=\"http://sweet.ua.pt/~etdgomes\">Diogo Gomes</A>
-  <A HREF=\"mailto:etdgomes\@ua.pt\">
-  etdgomes\@ua.pt</A></NOBR>",
+   "Traduzido por 
+				<a href=\"http://sweet.ua.pt/~etdgomes\">Diogo Gomes</>
+				<a href=\"mailto:etdgomes\@ua.pt\">&lt;etdgomes\@ua.pt&gt;</a>",
 ###### PATCHTAG 40 ###################################################
 $credits::LOCALE{'portuguese'}=$credits::LOCALE{'portuguese'};
 ###### PATCHTAG 50 ###################################################
@@ -34,26 +32,26 @@ return "" unless defined $string;
   %translations =
   (  
      #'charset=iso-8859-1'                     => 'charset=iso-8859-1',
-     'Maximal 5 Minute Incoming Traffic'      => 'Tráfego Maximal Recebido em 5 minutos',
-     'Maximal 5 Minute Outgoing Traffic'      => 'Tráfego Maximal Enviado em 5 minutos',
+     'Maximal 5 Minute Incoming Traffic'      => 'Tr&aacute;fego Maximal Recebido em 5 minutos',
+     'Maximal 5 Minute Outgoing Traffic'      => 'Tr&aacute;fego Maximal Enviado em 5 minutos',
      'the device'                             => 'o dispositivo',
-     'The statistics were last updated(.*)'   => 'As Estatísticas foram actualizadas pela última vez na $1',
+     'The statistics were last updated(.*)'   => 'As Estat&iacute;sticas foram actualizadas pela &uacute;ltima vez na $1',
      ' Average\)</B><BR>'                     => '',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Média$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max.$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Actual$1',
-     'version'                                => 'Versão',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Gráfico Diário (em intervalos de $1 Minutos)</B><BR>',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Gráfico Semanal</B><BR>' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Gráfico Mensal</B><BR>',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Gráfico Anual</B><BR>', 
-     'Incoming Traffic in (\S+) per Second'   => 'Tráfego recebido em  $1/segundo',
-     'Outgoing Traffic in (\S+) per Second'   => 'Tráfego enviado em $1/segundo',
-     'Incoming Traffic in (\S+) per Minute'   => 'Tráfego recebido em $1/minuto',
-     'Outgoing Traffic in (\S+) per Minute'   => 'Tráfego enviado em $1/minuto',
-     'Incoming Traffic in (\S+) per Hour'     => 'Tráfego recebido em $1/hora',
-     'Outgoing Traffic in (\S+) per Hour'     => 'Tráfego recebido em $1/hora',
-     'at which time (.*) had been up for(.*)' => 'quando o $1, tinha um <I>uptime</I> de $2',
+     'Average'                                => 'M&eacute;dia',
+     'Max'                                    => 'Max.',
+     'Current'                                => 'Actual',
+     'version'                                => 'Vers&atilde;o',
+     '`Daily\' Graph \((.*) Minute'           => 'Gr&aacute;fico Di&aacute;rio (em intervalos de $1 Minutos)</B><BR>',
+     '`Weekly\' Graph \(30 Minute'            => 'Gr&aacute;fico Semanal (em intervalos de 30 Minutos)' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Gr&aacute;fico Mensal (em intervalos de 2 horas)',
+     '`Yearly\' Graph \(1 Day'                => 'Gr&aacute;fico Anual (em intervalos de 24 horas)', 
+     'Incoming Traffic in (\S+) per Second'   => 'Tr&aacute;fego recebido em  $1/segundo',
+     'Outgoing Traffic in (\S+) per Second'   => 'Tr&aacute;fego enviado em $1/segundo',
+     'Incoming Traffic in (\S+) per Minute'   => 'Tr&aacute;fego recebido em $1/minuto',
+     'Outgoing Traffic in (\S+) per Minute'   => 'Tr&aacute;fego enviado em $1/minuto',
+     'Incoming Traffic in (\S+) per Hour'     => 'Tr&aacute;fego recebido em $1/hora',
+     'Outgoing Traffic in (\S+) per Hour'     => 'Tr&aacute;fego recebido em $1/hora',
+     'at which time (.*) had been up for(.*)' => 'quando o $1, tinha um <em>uptime</em> de $2',
      '(\S+) per minute'			      => '$1/minuto',
      '(\S+) per hour'			      => '$1/hora',    
      '(.+)/s$'                                 => '$1/s',
@@ -64,9 +62,9 @@ return "" unless defined $string;
      #'([kMG]?)([bB])/h'                       => '$1$2/h',
      # 'Bits'                                => 'Bits',
      # 'Bytes'                               => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Rec.:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Env.:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Perc.:</FONT>',
+     'In'                                     => 'Rec.',
+     'Out'                                    => 'Env.',
+     'Percentage'                             => 'Perc.',
      'Ported to OpenVMS Alpha by'             => 'Portado para OpenVMS Alpha por', 
      'Ported to WindowsNT by'                 => 'Portado para WindowsNT por',
      'and'                                    => 'e',
@@ -90,16 +88,16 @@ foreach $i (keys %translations)
     (
       'Sunday'    => 'Domingo',     'Sun' => 'Dom',
       'Monday'    => 'Segunda-Feira',      'Mon' => 'Seg',
-      'Tuesday'   => 'Terça-Feira',    'Tue' => 'Ter',
+      'Tuesday'   => 'Ter&ccedil;a-Feira',    'Tue' => 'Ter',
       'Wednesday' => 'Quarta-Feira',    'Wed' => 'Qua',
       'Thursday'  => 'Quinta-Feira',  'Thu' => 'Qui',
       'Friday'    => 'Sexta-Feira',     'Fri' => 'Sex',
-      'Saturday'  => 'Sábado',     'Sat' => 'Sab' 
+      'Saturday'  => 'S&aacute;bado',     'Sat' => 'Sab' 
     );
 
 %month = 
     (
-      'January'   => 'Janeiro',    'February'  => 'Fevereiro' ,    'March'     => 'Março',
+      'January'   => 'Janeiro',    'February'  => 'Fevereiro' ,    'March'     => 'Mar&ccedil;o',
       'Jan'       => 'Jan',       'Feb'       => 'Fev',         'Mar'       => 'Mar',
       'April'     => 'Abril',     'May'       => 'Maio',         'June'      => 'Junho', 
       'Apr'       => 'Abr',       'May'       => 'Mai',         'Jun'       => 'Jun',

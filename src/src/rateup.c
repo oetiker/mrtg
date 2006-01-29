@@ -1,5 +1,5 @@
 /*
- MRTG 2.11.1  -- Rateup
+ MRTG 2.12.2  -- Rateup
  *********************
 
  Rateup is a fast add-on to the great MRTG Traffic monitor.  It makes
@@ -83,7 +83,7 @@
 #include <gd.h>
 #include <gdfonts.h>
 
-char *VERSION = "2.11.1";
+char *VERSION = "2.12.2";
 char *program, *router, *routerpath;
 int histvalid;
 
@@ -258,9 +258,11 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
   int i, x, n, type;
 
   long long maxv;
-  long long origmaxvi, origmaxvo, maxs, avc, inmax, outmax;
+  double origmaxvi, origmaxvo;
+  long long maxs, avc, inmax, outmax;
+  long long ytrmax;
   double y, lmx1, lmx2, mea1, mea2, temp;
-  double inr, outr, muli, interval;
+  double inr, outr, muli = 1, interval;
   time_t now, onow, nextnow;
   struct tm tm2, *tm = &tm2;
   struct tm tm3, *tmtz = &tm3;
@@ -316,12 +318,17 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
     }
 
   /* multiplicator for bits/bytes */
-  muli = 7 * bits + 1;
-  maxvi *= muli;
-  maxvo *= muli;
-  origmaxvi = maxvi < (long long) 0 ? -maxvi : maxvi;
-  origmaxvo = maxvo < (long long) 0 ? -maxvo : maxvo;
   maxv = (long long) max (maxvi, maxvo);
+  maxvi = maxvi < (long long) 0 ? -maxvi : maxvi;
+  maxvo = maxvo < (long long) 0 ? -maxvo : maxvo;
+  origmaxvi = maxvi;
+  origmaxvo = maxvo;
+  if (bits)
+    {
+      muli = 8;
+      maxvi *= muli;
+      maxvo *= muli;
+    }
   if (step > MONTH_SAMPLE)
     {
       type = 4;
@@ -667,6 +674,7 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	}
 
       NEXT (step);
+
       /*scale with muli */
       inr *= muli;
       outr *= muli;
@@ -716,6 +724,8 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 
       now -= step;
     }
+  origmaxvi = (origmaxvi * muli / nmax ) * maxy;
+  origmaxvo = (origmaxvo * muli / nmax ) * maxy;
 
   /* Log and second-mean scaling added by Benjamin Despres, 2004-10-13 */
   if ((options & OPTION_LOGGRAPH) || (options & OPTION_MEANOVER))
@@ -743,6 +753,11 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	    (lhist[x].in + lhist[x].out + lhist[x].inmax +
 	     lhist[x].outmax) / 4.0;
 	}
+      if (origmaxvi < 1.0)
+	origmaxvi = 1.0;
+      if (origmaxvo < 1.0)
+	origmaxvo = 1.0;
+
       mea1 /= (double) maxx;
       if (options & OPTION_MEANOVER)
 	{
@@ -779,6 +794,8 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	      lhist[x].inmax = log (lhist[x].inmax);
 	      lhist[x].outmax = log (lhist[x].outmax);
 	    }
+	  origmaxvi = log (origmaxvi);
+	  origmaxvo = log (origmaxvo);
 	}
       for (x = 0; x < maxx; x++)
 	{
@@ -800,6 +817,9 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	  lhist[x].inmax *= lmx2;
 	  lhist[x].outmax *= lmx2;
 	}
+      origmaxvi *= lmx2;
+      origmaxvo *= lmx2;
+
       if (options & OPTION_MEANOVER)
 	sca_max_q *= ((float) mea2 / (float) maxy);
     }				/* end of primary log and second-mean scaling code (more below) */
@@ -1058,26 +1078,26 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	gdImageLine (graph, xtr (x), ytr (0), xtr (x), ytr (maxy), i_major);
     }
 
+  ytrmax = ytr (origmaxvi);
+
   /* draw line at peak In value in i_major color */
   /* only draw the line if it's within the graph ... */
-  if (ytr (maxy) < ytr (((double) origmaxvi / nmax) * maxy))
+  if (ytr (maxy) < ytrmax)
     {
       styleDotted[0] = i_major;
       gdImageSetStyle (graph, styleDotted, 3);
-      gdImageLine (graph, xtr (0), ytr (((double) origmaxvi / nmax) * maxy),
-		   xtr (maxx), ytr (((double) origmaxvi / nmax) * maxy),
-		   gdStyled);
+      gdImageLine (graph, xtr (0), ytrmax, xtr (maxx), ytrmax, gdStyled);
     }
 
   /* draw line at peak Out value in i_major color */
   /* only draw the line if it's within the graph ... */
-  if (ytr (maxy) < ytr (((double) origmaxvo / nmax) * maxy))
+  ytrmax = ytr (origmaxvo);
+
+  if (ytr (maxy) < ytrmax)
     {
       styleDotted[0] = i_major;
       gdImageSetStyle (graph, styleDotted, 3);
-      gdImageLine (graph, xtr (0), ytr (((double) origmaxvo / nmax) * maxy),
-		   xtr (maxx), ytr (((double) origmaxvo / nmax) * maxy),
-		   gdStyled);
+      gdImageLine (graph, xtr (0), ytrmax, xtr (maxx), ytrmax, gdStyled);
     }
 
   /* draw a red arrow a 0,0 */
@@ -1754,6 +1774,45 @@ init_colour (int *colmap, int c0, int c1, int c2)
   *colmap = c2;
 }
 
+/* Constants for readparm option */
+#define LENGTH_OF_BUFF  (2048)
+#define NUMBER_OF_PARM   (100)
+
+char buff[LENGTH_OF_BUFF + 1];
+char *program;
+
+static int
+readparam (char const *file)
+{
+  FILE *fp = NULL;
+  int cbuf;
+
+  /* Open the file */
+  if ((fp = fopen (file, "r")) == NULL)
+    {
+      fprintf (stderr, "%s ERROR: Can't open parameters file: %s\n", program,
+	       file);
+      return (1);
+    }
+  /* Check we actually got something */
+  if (!(cbuf = fread (buff, 1, LENGTH_OF_BUFF, fp)))
+    {
+      fprintf (stderr, "%s ERROR: Parameters file empty\n", program);
+      return (1);
+    }
+  fclose (fp);
+  buff[cbuf] = '\0';
+
+/* #define READPARAM_INFO */
+#ifdef READPARAM_INFO
+
+  fprintf (stderr, "%s INFO: Read: %d bytes from File: '%s'\n", program, cbuf,
+	   file);
+
+#endif
+
+  return (0);
+}
 
 int
 main (argc, argv)
@@ -1764,14 +1823,98 @@ main (argc, argv)
 
   program = argv[0];
 
+  /* Is Argv[1] a path/file to passed parameters? */
+  if ((argc > 1) && (strncasecmp (argv[1], "-F", 2) == 0))
+    {
+      char *b, *c, *l;
+      if (readparam (argv[2]))
+	{
+	  return (1);
+	}
+      /* Parse buffer into argv[] */
+      argv = calloc (NUMBER_OF_PARM + 1, sizeof (char *));
+      argc = 0;
+      b = buff;
+      l = b + strlen (b);
+      while (b < l)
+	{
+	  if (b[0] == '"')
+	    {
+	      b++;
+	      c = strstr (b, "\"");
+	      if (c != NULL)
+		{
+		  *c = '\0';
+		  argv[argc] = b;
+		  argc++;
+		  b = c + 2;
+		}
+	      else
+		{
+		  fprintf (stderr,
+			   "Rateup ERROR: Parameter %d [%s] missing quote\n",
+			   argc, b);
+		  break;
+		}
+	    }
+	  else
+	    {
+	      c = strstr (b, " ");
+	      if (c != NULL)
+		{
+		  *c = '\0';
+		  argv[argc] = b;
+		  argc++;
+		  b = c + 1;
+		}
+	      else
+		{
+		  argv[argc] = b;
+		  argc++;
+		  b = l;
+		}
+	    }
+	  if (argc == NUMBER_OF_PARM)
+	    {
+	      break;
+	    }
+	}
+      /* Check we didn't fill argv[] */
+      if (argc == NUMBER_OF_PARM)
+	{
+	  fprintf (stderr, "Rateup ERROR: Too many parameters read: %d\n",
+		   argc);
+	  return (1);
+	}
+
+      /* Check we didn't end early */
+      if (b < l)
+	{
+	  return (1);
+	}
+
+      /* Mark End of argv[] */
+      argv[argc] = NULL;
+
+#ifdef READPARAM_DEBUG
+
+      for (i = 0; i < argc; i++)
+	{
+	  printf ("ParameterX %2d : '%s'\n", i, argv[i] ? argv[i] : "<null>");
+	}
+
+#endif
+    }
+
   if (argc < 3)
     {
-      fprintf (stderr, "%s for mrtg %s\n"
-	       "Usage: %s directory basename [sampletime] [t sampletime] "
+      fprintf (stderr, "%s for MRTG %s\n"
+	       "Usage: %s -f <parameter file>\n"
+	       "       %s directory basename [sampletime] [t sampletime] "
 	       "[-(t)ransparent] [-(b)order]"
 	       "[u|a|g|h|m in out abs_max] "
 	       "[i/p file maxvi maxvo maxx maxy growright step bits]\n",
-	       program, VERSION, program);
+	       program, VERSION, program, program);
       return (1);
     }
 

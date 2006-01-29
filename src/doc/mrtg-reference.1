@@ -129,9 +129,9 @@
 .\" ========================================================================
 .\"
 .IX Title "MRTG-REFERENCE 1"
-.TH MRTG-REFERENCE 1 "2005-01-06" "2.11.1" "mrtg"
+.TH MRTG-REFERENCE 1 "2005-06-19" "2.12.2" "mrtg"
 .SH "NAME"
-mrtg\-reference \- MRTG 2.11.1 configuration reference
+mrtg\-reference \- MRTG 2.12.2 configuration reference
 .SH "OVERVIEW"
 .IX Header "OVERVIEW"
 The runtime behaviour of \s-1MRTG\s0 is governed by a configuration file. Run\-of\-
@@ -466,11 +466,7 @@ Example:
 .Sh "LogFormat"
 .IX Subsection "LogFormat"
 Setting LogFormat to 'rrdtool' in your mrtg.cfg file enables rrdtool mode.
-In rrdtool mode, mrtg relies on \fBrrdtool\fR to do its logging. Graphs and html
-pages will be generated on the fly by the 14all.cgi which can be found in
-the contrib section together with a short readme ... This feature has been
-contributed by Rainer\ Bawidamann\ <bawidama@users.sourceforge.net>. Please check his
-website for more information: http://www.wh\-hms.uni\-ulm.de/~widi/14all/
+In rrdtool mode, mrtg relies on \fBrrdtool\fR to do its logging. See mrtg-rrd.
 .PP
 Example:
 .PP
@@ -994,13 +990,12 @@ Also read the section on \fIAbsMax\fR for further info.
 The \fIMaxBytes\fR value is also used in calculating the Y range
 for unscaled graphs (see the section on \fIUnscaled\fR).
 .PP
-Since most links are rated in bits per second, you need to divide
-their maximum bandwidth (in bits) by eight (8) in order to get
-bytes per second.  This is very important to make your
-unscaled graphs display realistic information.
-T1 = 193000, 56K = 7000, Ethernet = 1250000. The \fIMaxBytes\fR
-value will be used by mrtg to decide whether it got a
-valid response from the router.
+Since most links are rated in bits per second, you need to divide their
+maximum bandwidth (in bits) by eight (8) in order to get bytes per second. 
+This is very important to make your unscaled graphs display realistic
+information. T1 = 193000, 56K = 7000, 10 \s-1MB\s0 Ethernet = 1250000, 100 \s-1MB\s0
+Ethernet = 12500000. The \fIMaxBytes\fR value will be used by mrtg to decide
+whether it got a valid response from the router.
 .PP
 If you need two different MaxBytes values for the two monitored
 variables, you can use MaxBytes1 and MaxBytes2 instead of MaxBytes.
@@ -1877,12 +1872,13 @@ Define the name and path of the pid file for mrtg running as a daemon
 .IX Item "--debug=s"
 Enable debug options. The argument of the debug option is a comma separated list of debug values:
 .Sp
-.Vb 8
+.Vb 9
 \& cfg  - watch the config file reading
 \& dir  - directory mangeling
 \& base - basic program flow 
 \& tarp - target parser
 \& snpo - snmp polling 
+\& coca - confcache operations
 \& fork - forking view 
 \& time - some timing info
 \& log  - logging of data via rateup or rrdtool

@@ -3,7 +3,7 @@ MRTG-REFERENCE(1)              mrtg             MRTG-REFERENCE(1)
 
 
 NNAAMMEE
-       mrtg-reference - MRTG 2.11.1 configuration reference
+       mrtg-reference - MRTG 2.12.2 configuration reference
 
 OOVVEERRVVIIEEWW
        The runtime behaviour of MRTG is governed by a configura-
@@ -309,13 +309,7 @@ OOPPTTIIOONNAALL GGLLOOBBAALL KKEEYYWWOORRDDSS
 
        Setting LogFormat to 'rrdtool' in your mrtg.cfg file
        enables rrdtool mode.  In rrdtool mode, mrtg relies on
-       rrrrddttooooll to do its logging. Graphs and html pages will be
-       generated on the fly by the 14all.cgi which can be found
-       in the contrib section together with a short readme ...
-       This feature has been contributed by Rainer Baw-
-       idamann <bawidama@users.sourceforge.net>. Please check his
-       website for more information:
-       http://www.wh-hms.uni-ulm.de/~widi/14all/
+       rrrrddttooooll to do its logging. See mrtg-rrd.
 
        Example:
 
@@ -331,6 +325,9 @@ OOPPTTIIOONNAALL GGLLOOBBAALL KKEEYYWWOORRDDSS
        Example:
 
         LibAdd: /usr/local/rrdtool/lib/perl/
+
+
+
 
        PPaatthhAAdddd
 
@@ -395,6 +392,8 @@ OOPPTTIIOONNAALL GGLLOOBBAALL KKEEYYWWOORRDDSS
 
        this will make mrtg run but without detaching it from the
        terminal.
+
+
 
        CCoonnvveerrssiioonnCCooddee
 
@@ -843,9 +842,10 @@ PPEERR TTAARRGGEETT CCOONNFFIIGGUURRAATTIIOONN
        divide their maximum bandwidth (in bits) by eight (8) in
        order to get bytes per second.  This is very important to
        make your unscaled graphs display realistic information.
-       T1 = 193000, 56K = 7000, Ethernet = 1250000. The _M_a_x_B_y_t_e_s
-       value will be used by mrtg to decide whether it got a
-       valid response from the router.
+       T1 = 193000, 56K = 7000, 10 MB Ethernet = 1250000, 100 MB
+       Ethernet = 12500000. The _M_a_x_B_y_t_e_s value will be used by
+       mrtg to decide whether it got a valid response from the
+       router.
 
        If you need two different MaxBytes values for the two mon-
        itored variables, you can use MaxBytes1 and MaxBytes2
@@ -1766,6 +1766,7 @@ CCOOMMMMAANNDD LLIINNEE OOPPTTIIOONNSS
             base - basic program flow
             tarp - target parser
             snpo - snmp polling
+            coca - confcache operations
             fork - forking view
             time - some timing info
             log  - logging of data via rateup or rrdtool
@@ -1775,10 +1776,12 @@ CCOOMMMMAANNDD LLIINNEE OOPPTTIIOONNSS
             --debug="cfg,snpo"
 
 EEXXAAMMPPLLEESS
+
+
+
+
+
        MMiinniimmaall mmrrttgg..ccffgg
-
-
-
 
         WorkDir: /usr/tardis/pub/www/stats/mrtg
         Target[r1]: 2:public@myrouter.somplace.edu
@@ -1818,4 +1821,4 @@ AAUUTTHHOORR
 
 
 
-2.11.1                      2005-01-06          MRTG-REFERENCE(1)
+2.12.2                      2005-06-19          MRTG-REFERENCE(1)

@@ -9,11 +9,9 @@
 ###### PATCHTAG30 ####################################################
 # iso2022jp/iso-2022-jp
    'iso2022jp' =>
-   "  <HR>
-  <FONT SIZE=2>\e\$BF|K\\8lLu\e(B(ISO-2022-JP)\e\$B:n\@.\e(B
-  <A HREF=\"http://www.kgz.com/~uematsu/\">\e\$B?\">>\e(B \e\$BJ8FA\e(B</A>
-  <A HREF=\"mailto:uematsu\@kgz.com\">&lt;uematsu\@kgz.com&gt;</A></FONT>
-",
+   "\e\$BF|K\\8lLu\e(B(ISO-2022-JP)\e\$B:n\@.\e(B
+				<a href=\"http://www.kgz.com/~uematsu/\">\e\$B?\">>\e(B \e\$BJ8FA\e(B</a>
+				<a href=\"mailto:uematsu\@kgz.com\">&lt;uematsu\@kgz.com&gt;</a>",
 ###### PATCHTAG40 ####################################################
 $credits::LOCALE{'iso-2022-jp'}=$credits::LOCALE{'iso2022jp'};
 ###### PATCHTAG50 ####################################################
@@ -34,20 +32,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=iso-2022-jp',
+     'iso-8859-1'                             => 'iso-2022-jp',
      'Maximal 5 Minute Incoming Traffic'      => "\e\\\$B:GBg\\\$N\e(B5\e\\\$BJ,4V\\\$N<u?.NL\e(B",
      'Maximal 5 Minute Outgoing Traffic'      => "\e\\\$B:GBg\\\$N\e(B5\e\\\$BJ,4V\\\$NAw?.NL\e(B",
      'the device'                             => "\e\\\$B%G%P%\\\$%9\e(B",
      'The statistics were last updated(.*)'   => "\e\\\$B99?7F|;~\e(B\$1",
-     ' Average\)</B><BR>'                     => "\e\\\$B\\\$NJ?6Q\e(B)</B><BR>",
-     '<TD ALIGN=right><SMALL>Average(.*)'     => "<TD ALIGN=right><SMALL>\e\\\$BJ?6QCM\e(B\$1",
-     '<TD ALIGN=right><SMALL>Max(.*)'         => "<TD ALIGN=right><SMALL>\e\\\$B:GBgCM\e(B\$1",
-     '<TD ALIGN=right><SMALL>Current(.*)'     => "<TD ALIGN=right><SMALL>\e\\\$B8=:_CM\e(B\$1",
+     ' Average\)'                             => "\e\\\$B\\\$NJ?6Q\e(B)",
+     'Average'                                => "\e\\\$BJ?6QCM\e(B",
+     'Max'                                    => "\e\\\$B:GBgCM\e(B",
+     'Current'                                => "\e\\\$B8=:_CM\e(B",
      'version'                                => 'version',
-     '<B>`Daily\' Graph \((.*) Minute'        => "<B>\e\\\$BF|4V%0%i%U\e(B(\$1\e\\\$BJ,4V\e(B",
-     '<B>`Weekly\' Graph \(30 Minute'         => "<B>\e\\\$B=54V%0%i%U\e(B(30\e\\\$BJ,4V\e(B",
-     '<B>`Monthly\' Graph \(2 Hour'           => "<B>\e\\\$B7n4V%0%i%U\e(B(2\e\\\$B;~4V\e(B",
-     '<B>`Yearly\' Graph \(1 Day'             => "<B>\e\\\$BG/4V%0%i%U\e(B(1\e\\\$BF|\e(B",
+     '`Daily\' Graph \((.*) Minute'           => "\e\\\$BF|4V%0%i%U\e(B(\$1\e\\\$BJ,4V\e(B",
+     '`Weekly\' Graph \(30 Minute'            => "\e\\\$B=54V%0%i%U\e(B(30\e\\\$BJ,4V\e(B",
+     '`Monthly\' Graph \(2 Hour'              => "\e\\\$B7n4V%0%i%U\e(B(2\e\\\$B;~4V\e(B",
+     '`Yearly\' Graph \(1 Day'                => "\e\\\$BG/4V%0%i%U\e(B(1\e\\\$BF|\e(B",
      'Incoming Traffic in (\S+) per Second'   => "\e\\\$B<u?.NL\e(B(\$1/\e\\\$BIC\e(B)",
      'Incoming Traffic in (\S+) per Minute'   => "\e\\\$B<u?.NL\e(B(\$1/\e\\\$BJ,\e(B)",
      'Incoming Traffic in (\S+) per Hour'     => "\e\\\$B<u?.NL\e(B(\$1/\e\\\$B;~\e(B)",
@@ -55,18 +53,18 @@ return "" unless defined $string;
      'Outgoing Traffic in (\S+) per Minute'   => "\e\\\$BAw?.NL\e(B(\$1/\e\\\$BJ,\e(B)",
      'Outgoing Traffic in (\S+) per Hour'     => "\e\\\$BAw?.NL\e(B(\$1/\e\\\$B;~\e(B)",
      'at which time (.*) had been up for(.*)' => "\$1 \e\\\$B\\\$N2TF/;~4V\e(B\$2",
-     'Average max 5 min values for `Daily\' Graph \((.*) Minute interval\):&nbsp;&nbsp;' => "\e\\\$BF|4V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(\$1\e\\\$BJ,Kh\e(B)\e\\\$B\\\$NJ?6Q\e(B:&nbsp;&nbsp;",
-     'Average max 5 min values for `Weekly\' Graph \(30 Minute interval\):&nbsp;&nbsp;' => "\e\\\$B=54V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(30\e\\\$BJ,Kh\e(B)\e\\\$B\\\$NJ?6Q\e(B:&nbsp;&nbsp;",
-     'Average max 5 min values for `Monthly\' Graph \(2 Hour interval\):&nbsp;&nbsp;' => "\e\\\$B7n4V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(2\e\\\$B;~4VKh\e(B)\e\\\$B\\\$NJ?6Q\e(B:&nbsp;&nbsp;",
-     'Average max 5 min values for `Yearly\' Graph \(1 Day interval\):&nbsp;&nbsp;' => "\e\\\$BG/4V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(1\e\\\$BF|Kh\e(B)\e\\\$B\\\$NJ?6Q\e(B:&nbsp;&nbsp;",
+     'Average max 5 min values for `Daily\' Graph \((.*) Minute interval\):' => "\e\\\$BF|4V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(\$1\e\\\$BJ,Kh\e(B)\e\\\$B\\\$NJ?6Q\e(B:",
+     'Average max 5 min values for `Weekly\' Graph \(30 Minute interval\):' => "\e\\\$B=54V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(30\e\\\$BJ,Kh\e(B)\e\\\$B\\\$NJ?6Q\e(B:",
+     'Average max 5 min values for `Monthly\' Graph \(2 Hour interval\):' => "\e\\\$B7n4V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(2\e\\\$B;~4VKh\e(B)\e\\\$B\\\$NJ?6Q\e(B:",
+     'Average max 5 min values for `Yearly\' Graph \(1 Day interval\):' => "\e\\\$BG/4V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(1\e\\\$BF|Kh\e(B)\e\\\$B\\\$NJ?6Q\e(B:",
      '([kMG]?)([bB])/s'                       => "\$1\$2/\e\\\$BIC\e(B",
      '([kMG]?)([bB])/min'                     => "\$1\$2/\e\\\$BJ,\e(B",
      '([kMG]?)([bB])/h'                       => "\$1\$2/\e\\\$B;~\e(B",
      'Bits'                                   => "\e\\\$B%S%C%H\e(B",
      'Bytes'                                  => "\e\\\$B%P%\\\$%H\e(B",
-     '&nbsp;In:</FONT>'                       => "&nbsp;\e\\\$B<u?.\e(B:</FONT>",
-     '&nbsp;Out:</FONT>'                      => "&nbsp;\e\\\$BAw?.\e(B:</FONT>",
-     '&nbsp;Percentage</FONT>'                => "&nbsp;\e\\\$BHfN(\e(B:</FONT>",
+     'In'                                     => "\e\\\$B<u?.\e(B",
+     'Out'                                    => "\e\\\$BAw?.\e(B",
+     'Percentage'                             => "\e\\\$BHfN(\e(B",
      'Ported to OpenVMS Alpha by'             => "OpenVMS Alpha\e\\\$B\\\$X\\\$N0\\\\?\"\e(B",
      'Ported to WindowsNT by'                 => "WindowsNT\e\\\$B\\\$X\\\$N0\\\\?\"\e(B",
      'and'                                    => 'and',

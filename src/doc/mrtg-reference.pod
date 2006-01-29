@@ -1,6 +1,6 @@
 =head1 NAME
 
-mrtg-reference - MRTG 2.11.1 configuration reference
+mrtg-reference - MRTG 2.12.2 configuration reference
 
 =head1 OVERVIEW
 
@@ -341,11 +341,7 @@ Example:
 =head2 LogFormat
 
 Setting LogFormat to 'rrdtool' in your mrtg.cfg file enables rrdtool mode.
-In rrdtool mode, mrtg relies on B<rrdtool> to do its logging. Graphs and html
-pages will be generated on the fly by the 14all.cgi which can be found in
-the contrib section together with a short readme ... This feature has been
-contributed by S<Rainer Bawidamann E<lt>bawidama@users.sourceforge.netE<gt>>. Please check his
-website for more information: http://www.wh-hms.uni-ulm.de/~widi/14all/
+In rrdtool mode, mrtg relies on B<rrdtool> to do its logging. See L<mrtg-rrd>.
 
 Example:
 
@@ -845,13 +841,12 @@ Also read the section on I<AbsMax> for further info.
 The I<MaxBytes> value is also used in calculating the Y range
 for unscaled graphs (see the section on I<Unscaled>).
 
-Since most links are rated in bits per second, you need to divide
-their maximum bandwidth (in bits) by eight (8) in order to get
-bytes per second.  This is very important to make your
-unscaled graphs display realistic information.
-T1 = 193000, 56K = 7000, Ethernet = 1250000. The I<MaxBytes>
-value will be used by mrtg to decide whether it got a
-valid response from the router.
+Since most links are rated in bits per second, you need to divide their
+maximum bandwidth (in bits) by eight (8) in order to get bytes per second. 
+This is very important to make your unscaled graphs display realistic
+information. T1 = 193000, 56K = 7000, 10 MB Ethernet = 1250000, 100 MB
+Ethernet = 12500000. The I<MaxBytes> value will be used by mrtg to decide
+whether it got a valid response from the router.
 
 If you need two different MaxBytes values for the two monitored
 variables, you can use MaxBytes1 and MaxBytes2 instead of MaxBytes.
@@ -1758,6 +1753,7 @@ Enable debug options. The argument of the debug option is a comma separated list
  base - basic program flow 
  tarp - target parser
  snpo - snmp polling 
+ coca - confcache operations
  fork - forking view 
  time - some timing info
  log  - logging of data via rateup or rrdtool

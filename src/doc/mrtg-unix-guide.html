@@ -28,7 +28,7 @@
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
-<p>mrtg-unix-guide - Instructions for running MRTG 2.11.1 on a Unix Box</p>
+<p>mrtg-unix-guide - Instructions for running MRTG 2.12.2 on a Unix Box</p>
 <p>
 </p>
 <hr />
@@ -196,8 +196,8 @@ following material should actually be written on a single line.
 <p>Ok, now everything is ready for the mrtg compilation.</p>
 <pre>
  cd /usr/local/src
- gunzip -c mrtg-2.11.1.tar.gz | tar xvf -
- cd mrtg-2.11.1</pre>
+ gunzip -c mrtg-2.12.2.tar.gz | tar xvf -
+ cd mrtg-2.12.2</pre>
 <p>If all the libraries have been preinstalled on your system you can
 configure mrtg by doing a simple:</p>
 <pre>
@@ -295,7 +295,7 @@ documentation of your system to make sure you get this right.</p>
 <p>A <strong>minimal</strong> script to put into <em>init.d</em> might look like this:</p>
 <pre>
  #! /bin/sh
- cd /usr/local/mrtg-2.11.1/bin &amp;&amp; ./mrtg --user=mrtg-user \
+ cd /usr/local/mrtg-2.12.2/bin &amp;&amp; ./mrtg --user=mrtg-user \
        /home/httpd/mrtg/mrtg.cfg  --logging /var/log/mrtg.log</pre>
 <p>Note that this will only work with <strong>RunAsDaemon: Yes</strong> in your
 mrtg.cfg file.</p>

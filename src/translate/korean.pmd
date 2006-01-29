@@ -9,11 +9,9 @@
 ###### PATCHTAG30 ####################################################
 # korean
    ,'korean' =>
-   "  <HR NOSHADE>
-    한글메시지 번역:
-    <NOBR><A HREF=\"mailto:lovesh\@static.co.kr\">황건순</A>
-    ,<A HREF=\"mailto:cjh\@kr.FreeBSD.org\">최준호</A>
-  </NOBR>",
+   "한글메시지 번역:
+				<a href=\"mailto:lovesh\@static.co.kr\">황건순</a>,
+				<a href=\"mailto:cjh\@kr.FreeBSD.org\">최준호</a>",
 ###### PATCHTAG40 ####################################################
 $credits::LOCALE{'korean'}=$credits::LOCALE{'korean'};
 ###### PATCHTAG50 ####################################################
@@ -34,20 +32,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=\"euc-kr\"',
+     'iso-8859-1'                             => 'euc-kr',
      'Maximal 5 Minute Incoming Traffic'      => '5분간 최대 수신',
      'Maximal 5 Minute Outgoing Traffic'      => '5분간 최대 송신',
      'the device'                             => '장치',
      'The statistics were last updated(.*)'   => '최종 갱신 일시: $1',
-     ' Average\)</B><BR>'                     => ' 평균값 기준)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>평균$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>최대$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>현재$1',
+     ' Average\)'                             => ' 평균값 기준)',
+     'Average'                                => '평균',
+     'Max'                                    => '최대',
+     'Current'                                => '현재',
      'version'                                => '버전',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>일간 그래프 ($1 분 단위',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>주간 그래프 (30 분 단위' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>월간 그래프 (2 시간 단위',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>연간 그래프 (1 일 단위', 
+     '`Daily\' Graph \((.*) Minute'           => '일간 그래프 ($1 분 단위',
+     '`Weekly\' Graph \(30 Minute'            => '주간 그래프 (30 분 단위' ,
+     '`Monthly\' Graph \(2 Hour'              => '월간 그래프 (2 시간 단위',
+     '`Yearly\' Graph \(1 Day'                => '연간 그래프 (1 일 단위', 
      'Incoming Traffic in (\S+) per Second'   => '초당 수신된 트래픽 ($1)',
      'Outgoing Traffic in (\S+) per Second'   => '초당 송신된 트래픽 ($1)',
      'at which time (.*) had been up for(.*)' => '$1의 가동 시간: $2',
@@ -56,9 +54,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/시',
      'Bits'                                   => '비트',
      'Bytes'                                  => '바이트',
-     '&nbsp;In:</FONT>'                       => '&nbsp;수신:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;송신:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;퍼센트:</FONT>',
+     'In'                                     => '수신',
+     'Out'                                    => '송신',
+     'Percentage'                             => '퍼센트',
      'Ported to OpenVMS Alpha by'             => 'OpenVMS Alpha 포팅', 
      'Ported to WindowsNT by'                 => 'WindowsNT 포팅',
      'and'                                    => '와',

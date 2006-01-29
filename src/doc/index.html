@@ -9,7 +9,7 @@
      SRC="mrtg-ti.png"
      HEIGHT="160" WIDTH="479"></P>
 <!-- mirror-specific-text -->
-<P ALIGN="CENTER">Latest Release: MRTG 2.11.1</P>
+<P ALIGN="CENTER">Latest Release: MRTG 2.12.2</P>
 <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="4" summary="">
 <TR><TD>&nbsp;</TD></TR>
 <TR><TD BGCOLOR="silver">
@@ -43,9 +43,12 @@
       <A HREF="http://www.mrtg.cz">www.mrtg.cz</A><!--Martin Och <martin@och.cz>-->,
       <A HREF="http://mrtg.magaltavor.com">Lebanon</A><!--MaGaLtAvOr <admin@magaltavor.com> -->,
       <A HREF="http://mrtg.planetmirror.com">AU</A><!-- jason andrade <jason@dstc.edu.au> -->,
-      <A HREF="http://mrtg.keznet.co.uk/">UK</A><!--Graeme Fowler <graeme@graemef.net>-->,
+      <A HREF="http://mrtg.mirror.graemef.net/">UK</A><!--Graeme Fowler <graeme@graemef.net>-->,
+      <A HREF="http://www.mrtg.ca/">www.mrtg.ca</A><!-- Chris Phillips BChosting.com -->,
       <A HREF="http://mrtg.histeria.pl">PL</A><!-- Kowalski Pawel <argail@histeria.pl> -->,
       <A HREF="http://ftp.ankara.edu.tr/mrtg">TR</A><!-- Levent YILDIRIM <levent@ankara.edu.tr> -->,
+       <A HREF="http://www.bigwebmaster.com/mrtg/">US</A><!-- Bigwebmaster <listing@bigwebmaster.com> -->,
+       <A HREF="http://mrtg.trexle.com">US</A><!-- Hossam Hossny <hossam@trexle.com> -->,
       <A HREF="http://www.mrtg.it/">www.mrtg.it</A><!--Vicki Vinci root@power.it -->,
       <A HREF="http://mrtg.allhostings.com">Thailand</A><!--Pakorn Chutinimitkul <pakorn@allhostings.com> -->,
   </TD>
@@ -61,14 +64,16 @@
       <A HREF="ftp://ftp2.cscnet.cz/pub/mirror/mrtg/">CZ</A><!-- Martin Och <martin@och.cz> -->,
       <A HREF="ftp://ftp.jaquet.dk/pub/mrtg">DK</a><!-- Rasmus Andersen <rasmus@jaquet.dk>-->,
       <A HREF="ftp://ftp.ankara.edu.tr/mrtg">TR</a><!-- Levent YILDIRIM <levent@ankara.edu.tr>-->,
-      <A HREF="ftp://ftp.idilis.ro/mirrors/mrtg/">RO</a><!-- Dragos Nitu <dragos.nitu@idilis.net>-->.
+      <A HREF="ftp://ftp.idilis.ro/mirrors/mrtg/">RO</a><!-- Dragos Nitu <dragos.nitu@idilis.net>-->,
+      <A HREF="http://www.bigwebmaster.com/mrtg/pub">US</A><!-- Bigwebmaster <listing@bigwebmaster.com> -->.
   </TD>
 </TR><TR>
 <TD VALIGN="top">Translations:</TD>
   <TD>
 <A HREF="pt/">Portugese by Vicente Sloboda vicentesloboda@yahoo.com.br</A><!--Vicente Sloboda <vicentesloboda@yahoo.com.br> -->,
 <a href="es_es/">Espa&ntilde;ol (ES) [2.9.21] by Daniel Palomo Ortega dpalomo@zruspas.org</a>,
-<A HREF="pub/contrib/MRTG_turkish_tutorial.pdf">Turkish Tutorial by Celal UNALP celak@ttnet.net.tr</a><!-- Celal UNALP <celak@ttnet.net.tr> -->.
+<A HREF="pub/contrib/MRTG_turkish_tutorial.pdf">Turkish Tutorial by Celal UNALP celak@ttnet.net.tr</a><!-- Celal UNALP <celak@ttnet.net.tr> -->,
+<A HREF="http://www.seyhan.biz/seyhan/default.asp?PG=40">Turkish Tutorial by Seyhan Tekelioglu seyhan@hotmail.com</a>.
  </TD></TR>
 </TABLE>
 <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="4" summary="">
@@ -119,22 +124,20 @@ who have shown their appreciation for my work. For example by <A HREF="http://pe
 <TR><TD BGCOLOR="silver">
 <A NAME="GET"></A><FONT SIZE="5"><B>Start Using MRTG</B></FONT></TD></TR></TABLE>
 <table border="0" cellpadding="0" cellspacing="0" summary="">
-<tr><td colspan="2"><A HREF="pub/"><B>Download MRTG</B></A><img src="imgdot-1x1-transp-ffffff.gif" alt="" width="10" height="1" align="bottom" border="0">
-   <!--#config timefmt="%e&nbsp;%b&nbsp;%Y" -->(<!--#flastmod virtual="pub/"-->)
+<tr><td colspan="2"><A HREF="http://people.ee.ethz.ch/oetiker/webtools/mrtg/pub/"><B>Download MRTG</B></A><img src="imgdot-1x1-transp-ffffff.gif" alt="" width="10" height="1" align="bottom" border="0">
 </TD>
 </TR>
 <TR><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
     <TD> Get the
 latest Version of MRTG as <A
-SRC="pub/"> Unix source or as
+SRC="http://people.ee.ethz.ch/oetiker/webtools/mrtg/pub"> Unix source or as
 precompiled for Win32</A>.
 </TD>
 </TR>
 </TABLE>
 <BR>
 <table border="0" cellpadding="0" cellspacing="0" summary="">
-<tr><td colspan="2"><A HREF="pub/CHANGES"><B>What is NEW</B></A><img src="imgdot-1x1-transp-ffffff.gif" alt="" width="10" height="1" align="bottom" border="0">
-   <!--#config timefmt="%e&nbsp;%b&nbsp;%Y" -->(<!--#flastmod virtual="pub/CHANGES"-->)
+<tr><td colspan="2"><A HREF="http://people.ee.ethz.ch/oetiker/webtools/mrtg/pub/CHANGES"><B>What is NEW</B></A><img src="imgdot-1x1-transp-ffffff.gif" alt="" width="10" height="1" align="bottom" border="0">
 </TD>
 </TR>
 <TR><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -164,18 +167,25 @@ explain all the details about compiling and configuring the system.
 </TR>
 <TR><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
     <TD>
-A fair number of people run MRTG successfully on Windows NT and 2k
-platforms. This guide shows you how this is done. If you insist on running
-MRTG on the Windows 95/98/ME spawns make friends with Jeff Liebermann or
-rather his <A HREF="http://www.cruzio.com/~jeffl/mrtg/docs/w95mrtg.htm">
-MRTG for Windows 95, 98, and ME</A> webpage.
+A fair number of people run MRTG successfully on Windows platforms. This guide shows you how this is done.
 </TD>
 </TR>
 </TABLE>
 <BR>
 <table border="0" cellpadding="0" cellspacing="0" summary="">
-<tr><td colspan="2"><A HREF="compat.html"><B>MRTG Compatibility Charts</B></A><img src="imgdot-1x1-transp-ffffff.gif" alt="" width="10" height="1" align="bottom" border="0">
-   <!--#config timefmt="%e&nbsp;%b&nbsp;%Y" -->(<!--#flastmod virtual="compat.html"-->)
+<tr><td colspan="2"><A HREF="mrtg-nw-guide.html"><B>Netware MRTG Installation Guide</B></A><img src="imgdot-1x1-transp-ffffff.gif" alt="" width="10" height="1" align="bottom" border="0">
+   <!--#config timefmt="%e&nbsp;%b&nbsp;%Y" -->(<!--#flastmod virtual="mrtg-nw-guide.html"-->)
+</TD>
+</TR>
+<TR><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+    <TD>
+This guide is intended to aid in the installation and configuration of MRTG on a NetWare server.
+</TD>
+</TR>
+</TABLE>
+<BR>
+<table border="0" cellpadding="0" cellspacing="0" summary="">
+<tr><td colspan="2"><A HREF="http://people.ee.ethz.ch/oetiker/webtools/mrtg/compat.html"><B>MRTG Compatibility Charts</B></A><img src="imgdot-1x1-transp-ffffff.gif" alt="" width="10" height="1" align="bottom" border="0">
 </TD>
 </TR>
 <TR><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -186,8 +196,7 @@ A list of devices and Operating-Systems known to work with mrtg.
 </TABLE>
 <BR>
 <table border="0" cellpadding="0" cellspacing="0" summary="">
-<tr><td colspan="2"><A HREF="links.html"><B>MRTG Companion Sites / Links</B></A><img src="imgdot-1x1-transp-ffffff.gif" alt="" width="10" height="1" align="bottom" border="0">
-   <!--#config timefmt="%e&nbsp;%b&nbsp;%Y" -->(<!--#flastmod virtual="links.html"-->)
+<tr><td colspan="2"><A HREF="http://people.ee.ethz.ch/oetiker/webtools/mrtg/links.html"><B>MRTG Companion Sites / Links</B></A><img src="imgdot-1x1-transp-ffffff.gif" alt="" width="10" height="1" align="bottom" border="0">
 </TD>
 </TR>
 <TR><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -199,8 +208,7 @@ or applications of mrtg. Check out this huge list if you want to go further.
 </TABLE>
 <BR>
 <table border="0" cellpadding="0" cellspacing="0" summary="">
-<tr><td colspan="2"><A HREF="users.html"><B>MRTG User Pages</B></A><img src="imgdot-1x1-transp-ffffff.gif" alt="" width="10" height="1" align="bottom" border="0">
-   <!--#config timefmt="%e&nbsp;%b&nbsp;%Y" -->(<!--#flastmod virtual="users.html"-->)
+<tr><td colspan="2"><A HREF="http://people.ee.ethz.ch/oetiker/webtools/mrtg/users.html"><B>MRTG User Pages</B></A><img src="imgdot-1x1-transp-ffffff.gif" alt="" width="10" height="1" align="bottom" border="0">
 </TD>
 </TR>
 <TR><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -250,19 +258,6 @@ The Installation guides above will give you a glimpse at what is
 possible with MRTG. But to get the full picture take a look at the
 configuration reference which explains all the configuration options
 available in MRTG.
-</TD>
-</TR>
-</TABLE>
-<BR>
-<table border="0" cellpadding="0" cellspacing="0" summary="">
-<tr><td colspan="2"><A HREF="mrtg-faq.html"><B>MRTG FAQ</B></A><img src="imgdot-1x1-transp-ffffff.gif" alt="" width="10" height="1" align="bottom" border="0">
-   <!--#config timefmt="%e&nbsp;%b&nbsp;%Y" -->(<!--#flastmod virtual="mrtg-faq.html"-->)
-</TD>
-</TR>
-<TR><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-    <TD>
-Answers to Frequently Asked Questions regarding MRTG. And a pointer to the
-official 'Inofficial MRTG FAQ'
 </TD>
 </TR>
 </TABLE>

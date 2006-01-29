@@ -198,10 +198,24 @@ DDEESSCCRRIIPPTTIIOONN
 
            Preload the confcache from a file.
 
+       "readfromconfcache"
+           "writeconfcache($confcache,$file)"
+
+           Store the current confcache into a file.
+
        "writeconfcache"
            "writeconfcache($confcache,$file)"
 
            Store the current confcache into a file.
+
+       "storeincache"
+           "storeincache($confcache,$host,$method,$key,$value)"
+
+       "readfromcache"
+           "readfromcache($confcache,$host,$method,$key)"
+
+       "clearfromcache"
+           "clearfromcache($confcache,$host)"
 
        "debug"
            "debug($type, $message)"
@@ -220,4 +234,4 @@ AAUUTTHHOORRSS
 
 
 
-2.11.1                      2005-01-06                 MRTGLIB(1)
+2.12.2                      2005-06-19                 MRTGLIB(1)

@@ -102,11 +102,15 @@ Note that the interval between timestamps increases as you prograss through the
 file. At first it is 5 minutes and at the end it is one day between two lines.
 </dd>
 <dd>
-<p>This timestamp may be converted in EXCEL by using the following formula:</p>
+<p>This timestamp may be converted in OpenOffice Calc or MS Excel by using the
+following formula</p>
 </dd>
 <dd>
 <pre>
- =(x+y)/86400+DATE(1970,1,1)</pre>
+ =(x+y)/86400+DATE(1970;1;1)</pre>
+</dd>
+<dd>
+<p>(instead of ``;'' it may be that you have to use ``,'' this depends on the context and your locale settings)</p>
 </dd>
 <dd>
 <p>you can also ask perl to help by typing</p>

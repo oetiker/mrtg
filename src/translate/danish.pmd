@@ -9,11 +9,9 @@
 ###### PATCHTAG30 ####################################################
 # Danish/dansk
    'danish' =>
-   "  <HR NOSHADE>
-    Forberedt for sprog samt oversat til dansk af
-    <NOBR><A HREF=\"http://www.ipt.dtu.dk\">Morten S. Nielsen</A>
-  <A HREF=\"mailto:msn\@ipt.dtu.dk\">
-  &lt;msn\@ipt.dtu.dk&gt;</A></NOBR>",
+   "Forberedt for sprog samt oversat til dansk af
+				<a href=\"http://www.ipt.dtu.dk\">Morten S. Nielsen</a>
+				<a href=\"mailto:msn\@ipt.dtu.dk\">&lt;msn\@ipt.dtu.dk&gt;</a>",
 # the danish string means: "Prepared for languages and translated to danish by"
 ###### PATCHTAG40 ####################################################
 $credits::LOCALE{'dansk'}=$credits::LOCALE{'danish'};
@@ -40,15 +38,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Maksimal udg&aring;ende trafik i 5 minutter',
      'the device'                             => 'enheden',
      'The statistics were last updated(.*)'   => 'Statistikken blev sidst opdateret$1',
-     ' Average\)</B><BR>'                     => ' Middel)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Middel$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Nu$1',
+     ' Average\)'                             => ' Middel)',
+     'Average'                                => 'Middel',
+     'Max'                                    => 'Max',
+     'Current'                                => 'Nu',
      'version'                                => 'version',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>`Daglig\' graf ($1 minuts',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>`Ugentlig\' graf (30 minuts' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>`M&aring;nedlig\' graf (2 times',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>`&Aring;rlig\' graf (1 dags', 
+     '`Daily\' Graph \((.*) Minute'           => '`Daglig\' graf ($1 minuts',
+     '`Weekly\' Graph \(30 Minute'            => '`Ugentlig\' graf (30 minuts' ,
+     '`Monthly\' Graph \(2 Hour'              => '`M&aring;nedlig\' graf (2 times',
+     '`Yearly\' Graph \(1 Day'                => '`&Aring;rlig\' graf (1 dags', 
      'Incoming Traffic in (\S+) per Second'   => 'Indg&aring;ende trafik i $1 per sekund',
      'Outgoing Traffic in (\S+) per Second'   => 'Udg&aring;ende trafik i $1 per sekund',
      'at which time (.*) had been up for(.*)' => 'hvor $1 havde v&aelig;ret oppe i$2',
@@ -57,9 +55,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/t',
      # 'Bits'                                => 'Bits',
      # 'Bytes'                              => 'Bytes'
-     '&nbsp;In:</FONT>'                      => '&nbsp;Ind:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;Ud:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;Procent:</FONT>',
+     'In'                                     => 'Ind',
+     'Out'                                    => 'Ud',
+     'Percentage'                             => 'Procent',
      'Ported to OpenVMS Alpha by'             => 'Port til OpenVMS af', 
      'Ported to WindowsNT by'                 => 'Port til WindowsNT af',
      'and'                                    => 'og',

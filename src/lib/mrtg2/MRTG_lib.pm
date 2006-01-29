@@ -2,7 +2,7 @@
 package MRTG_lib;
 
 ###################################################################
-# MRTG 2.11.1  Support library MRTG_lib.pm
+# MRTG 2.12.2  Support library MRTG_lib.pm
 ###################################################################
 # Created by Tobias Oetiker <oetiker@ee.ethz.ch>
 #            and Dave Rand <dlr@bungi.com>
@@ -17,8 +17,9 @@ package MRTG_lib;
 
 require 5.005;
 use strict;
-use SNMP_util "1.04";
 use vars qw($OS $SL $PS @EXPORT @ISA $VERSION %timestrpospattern);
+use SNMP_util;
+
 my %mrtgrules;
 
 BEGIN {
@@ -48,9 +49,9 @@ BEGIN {
 
 require Exporter;
 @ISA = qw(Exporter);
-@EXPORT = qw(readcfg cfgcheck setup_loghandlers
+@EXPORT = qw(readcfg cfgcheck setup_loghandlers 
 	     datestr expistr ensureSL timestamp
-             create_pid demonize_me debug log2rrd storeincache
+             create_pid demonize_me debug log2rrd storeincache readfromcache clearfromcache cleanhostkey
 	     populateconfcache readconfcache writeconfcache
 	     v4onlyifnecessary);
 
@@ -333,6 +334,7 @@ $VERSION = 2.100015;
        [sub{1}, sub{"Internal Error"}] #what ever the user chooses.
 );
 
+
 # config file reading
 
 sub readcfg ($$$$;$$) {
@@ -575,6 +577,19 @@ sub quickcheck ($$$$$$) {
 
 # complex config checks
 
+sub mkdirhier ($){
+    my @dirs = split /\Q${MRTG_lib::SL}\E+/, shift;
+    my $path = "";
+    while (@dirs){
+	$path .= shift @dirs;
+	$path .= ${MRTG_lib::SL};
+	if (! -d $path){
+                warn ("WARNING: $path did not exist I will create it now\n");
+		mkdir $path, 0777  or die ("ERROR: mkdir $path: $!\n");
+	}
+    }
+}
+
 sub cfgcheck ($$$$) {
     my ($routers, $cfg, $rcfg, $target) = @_;
     my ($rou, $confname, $one_option);
@@ -595,10 +610,7 @@ sub cfgcheck ($$$$) {
                 if ($OS eq 'NT' or $OS eq 'OS2') and $$cfg{workdir} =~ /\s/;
         ensureSL(\$$cfg{workdir});
         $$cfg{logdir}=$$cfg{htmldir}=$$cfg{imagedir}=$$cfg{workdir};
-        if (not -d $$cfg{workdir}){
-           mkdir "$$cfg{workdir}", 0777  or
-            die ("ERROR: mkdir $$cfg{workdir}: $!\n");
-        }
+        mkdirhier "$$cfg{workdir}";
         
     } elsif ( not (defined $$cfg{logdir} or defined $$cfg{htmldir} or defined $$cfg{imagedir})) {
           die ("ERROR: \"WorkDir\" not specified in mrtg config file\n");
@@ -609,30 +621,21 @@ sub cfgcheck ($$$$) {
             $error = "yes";
         } else {
           ensureSL(\$$cfg{logdir});
-          if (not -d $$cfg{logdir}){
-               mkdir "$$cfg{logdir}", 0777  or
-               die ("ERROR: mkdir $$cfg{logdir}: $!\n");
-          }
+          mkdirhier $$cfg{logdir};
         }
         if (! defined $$cfg{htmldir}) {
             warn ("WARNING: \"HtmlDir\" not specified\n");
             $error = "yes";
         } else {
           ensureSL(\$$cfg{htmldir});
-          if (not -d $$cfg{htmldir}){
-               mkdir "$$cfg{htmldir}", 0777  or
-               die ("ERROR: mkdir $$cfg{htmldir}: $!\n");
-          }
+          mkdirhier $$cfg{htmldir};
         }
         if (! defined $$cfg{imagedir}) {
             warn ("WARNING: \"ImageDir\" not specified\n");
             $error = "yes";
         } else {
           ensureSL(\$$cfg{imagedir});
-          if (not -d $$cfg{imagedir}){
-               mkdir "$$cfg{imagedir}", 0777  or
-               die ("ERROR: mkdir $$cfg{imagedir}: $!\n");
-          }
+          mkdirhier $$cfg{imagedir};
         }
     }
     # build relativ path from htmldir to image dir.
@@ -663,10 +666,18 @@ sub cfgcheck ($$$$) {
         $ENV{PATH} = "$$cfg{pathadd}${MRTG_lib::PS}$ENV{PATH}";
     }
     if(defined $$cfg{libadd}){
-        ensureSL(\$$cfg{libadd});        
-        unshift @INC, $$cfg{libadd};
+        ensureSL(\$$cfg{libadd});
+        eval "use lib qw($$cfg{libadd})";
+	my @match;
+	foreach my $dir (@INC){
+		push @match, $dir if -f "$dir/RRDs.pm";
+	}
+	warn "WARN: found several copies of RRDs.pm in your path: ".
+        (join ", ", @match)." I will be using $match[0]. This could ".
+	"be a problem if this is an old copy and you think I would be using a newer one!\n"
+		if $#match > 0;
     }
-     $$cfg{logformat} = 'rateup' unless defined $$cfg{logformat};
+    $$cfg{logformat} = 'rateup' unless defined $$cfg{logformat};
 
     if($$cfg{logformat} eq 'rrdtool') {
         my $name = ($MRTG_lib::OS eq 'NT' or $MRTG_lib::OS eq 'OS2')? 'rrdtool.exe':'rrdtool';
@@ -729,11 +740,7 @@ sub cfgcheck ($$$$) {
             # absent, and the rules for including it are the same).
 	    ensureSL(\$$rcfg{'directory'}{$rou});
             for my $x (qw(imagedir logdir htmldir)) {
-                if (not -d "$$cfg{$x}$$rcfg{directory}{$rou}"){
-                        warn ("WARNING: $$cfg{$x}$$rcfg{directory}{$rou} did not exist I will create it now\n");
-                        mkdir "$$cfg{$x}$$rcfg{directory}{$rou}", 0777 or
-                           die ("ERROR: mkdir $$cfg{$x}$$rcfg{directory}{$rou}: $!\n");
-                }
+                mkdirhier $$cfg{$x}.$$rcfg{directory}{$rou};
             }                   
             $$rcfg{'directory_web'}{$rou} = $$rcfg{'directory'}{$rou};
 	    $$rcfg{'directory_web'}{$rou} =~ s/\Q${MRTG_lib::SL}\E+/\//g;
@@ -907,7 +914,7 @@ sub cfgcheck ($$$$) {
             $$rcfg{'background'}{$rou} = "#ffffff";
         }
         if ($$rcfg{'background'}{$rou} =~ /^(\#[0-9a-f]{6})/i) {
-            $$rcfg{'backgc'}{$rou} = "BGCOLOR=\"$1\"";
+            $$rcfg{'backgc'}{$rou} = "$1";
         } else {
             warn "WARNING: \"background[$rou]: ".
                   "$$rcfg{'background'}{$rou}\" for colour definition\n".
@@ -940,7 +947,7 @@ sub cfgcheck ($$$$) {
         if (! defined $$rcfg{'timestrfmt'}{$rou}) {
             $$rcfg{'timestrfmt'}{$rou} = "%Y-%m-%d %H:%M";
         }
-        if ($error eq "yes") {
+        if ($error eq "yes") {        
             die "ERROR: Please fix the error(s) in your config file\n";
         }
     }
@@ -1421,6 +1428,7 @@ sub readconfcache ($) {
         while (<CFGOK>) {
             chomp;
             next unless /\t/; #ignore odd lines
+	    next if /^\S+:/; #ignore legacy lines
             my ($host,$method,$key,$if) = split (/\t/, $_);
             $key =~ s/[\0- ]+$//; # no trailing whitespace in keys realy !
             $key =~ s/[\0- ]/ /g; # all else becomes a normal space ... get a life
@@ -1444,7 +1452,7 @@ sub writeconfcache ($$) {
     } else {
         @hosts = grep !/^___/, keys %{$confcache}
     }
-    foreach my $host (sort @hosts) {
+    foreach my $host (sort @hosts) {	
         foreach my $method (sort keys %{$$confcache{$host}}) {
             foreach my $key (sort keys %{$$confcache{$host}{$method}}) {
                 if ($cfgfile ne '&STDOUT'){
@@ -1460,20 +1468,50 @@ sub writeconfcache ($$) {
     close CFGOK;
 }
 
+sub cleanhostkey ($){
+    my $host = shift;
+    return undef unless defined $host;
+    $host =~ s/(:\d*)(?:(:\d*)(?:(:\d*)(?:(:\d*)(?:(:\d*)))))$/$1$5/
+        or
+    $host =~ s/(:\d*)(?:(:\d*)(?:(:\d*)(?:(:\d*)?)?)?)$/$1/;
+    $host =~ s/:/_/g; # make sure that double invocations do not kill us
+    return $host;
+}
+
 sub storeincache ($$$$$){
     my($confcache,$host,$method,$key,$value) = @_;
+    $host = cleanhostkey $host;
+    if (not defined $value ){
+	 $$confcache{$host}{$method}{$key} = undef;
+	 return;
+    }
     $value =~ s/[\0- ]/ /g; # all else becomes a normal space ... get a life
     $value =~ s/ +$//; # no trailing spaces
     if (defined $$confcache{$host}{$method}{$key} and 
 	$$confcache{$host}{$method}{$key} ne $value) {
         $$confcache{$host}{$method}{$key} = "Dup";
-	debug('snpo',"confcache $host $method $key --> $value (duplicate)");
+	debug('coca',"store in confcache $host $method $key --> $value (duplicate)");
     } else {
         $$confcache{$host}{$method}{$key} = $value;
-	debug('snpo',"confcache $host $method $key --> $value");
+	debug('coca',"store in confcache $host $method $key --> $value");
     }
 
 }
+
+sub readfromcache ($$$$){
+    my($confcache,$host,$method,$key) = @_;
+    $host = cleanhostkey $host;
+    return $$confcache{$host}{$method}{$key};
+}
+
+
+sub clearfromcache ($$){
+    my($confcache,$host) = @_;
+    $host = cleanhostkey $host;
+    delete $$confcache{$host};
+    debug('coca',"clear confcache $host");
+}
+
 
 sub populateconfcache ($$$$$) {
     my $confcache = shift;
@@ -1481,13 +1519,14 @@ sub populateconfcache ($$$$$) {
     my $ipv4only = shift;
     my $reread = shift;
     my $snmpoptions = shift || {};
-    return if defined $$confcache{$host} and not $reread;
-    
+    my $hostkey = cleanhostkey $host;    
+    return if defined $$confcache{$hostkey} and not $reread;
     my $snmp_errlevel = $SNMP_Session::suppress_warnings;
     $SNMP_Session::suppress_warnings = 3;    
+    debug('coca',"populate confcache $host");
 
     # clear confcache for host;
-    delete $$confcache{$host};
+    delete $$confcache{$hostkey};
 
     my @ret;
     my %tables = ( ifDescr => 'Descr',
@@ -1498,7 +1537,7 @@ sub populateconfcache ($$$$$) {
     # it seems that some devices only give back sensible data if their tables
     # are walked in the right ordere ....
     foreach my $node (@nodes) {
-	next if $confcache->{___deadhosts}{$host} and time - $confcache->{___deadhosts}{$host} < 300;
+	next if $confcache->{___deadhosts}{$hostkey} and time - $confcache->{___deadhosts}{$hostkey} < 300;
 	$SNMP_Session::errmsg = undef;
 	@ret = snmpwalk(v4onlyifnecessary($host, $ipv4only), $snmpoptions, $node);
 	unless ( $SNMP_Session::errmsg){
@@ -1514,12 +1553,12 @@ sub populateconfcache ($$$$$) {
 		  }
 	      };
 	} else {
-  	    $confcache->{___deadhosts}{$host} = time
+  	    $confcache->{___deadhosts}{$hostkey} = time
 		if $SNMP_Session::errmsg =~ /no response received/;
-	    debug('snpo',"Skipping $node scanning because $host does not seem to support it");
+	    debug('coca',"Skipping $node scanning because $host does not seem to support it");
 	}
     }
-    if ($confcache->{___deadhosts}{$host} and time - $confcache->{___deadhosts}{$host} < 300){
+    if ($confcache->{___deadhosts}{$hostkey} and time - $confcache->{___deadhosts}{$hostkey} < 300){
 	$SNMP_Session::suppress_warnings = $snmp_errlevel;
 	return;
     }
@@ -1538,13 +1577,13 @@ sub populateconfcache ($$$$$) {
 	      storeincache($confcache,$host,"Eth",$phys,$oid);
            }
      } else {
-            debug('snpo',"Skipping ifPhysAddress scanning because $host does not seem to support it");
+            debug('coca',"Skipping ifPhysAddress scanning because $host does not seem to support it");
      }
 
      if (ref $$confcache{___updated} ne 'ARRAY') {
         $$confcache{___updated} = []; #init to empty array
      }
-     push @{$$confcache{___updated}}, $host;
+     push @{$$confcache{___updated}}, $hostkey;
 
     $SNMP_Session::suppress_warnings = $snmp_errlevel;    
 }
@@ -1635,7 +1674,11 @@ sub log2rrd ($$$) {
 	    ($next_time,$next{in},$next{out},$next{maxin},$next{maxout});
     }
     close R;
-
+    # lets see if we have rrdtool 1.2 at our hands
+    my $VERSION = '0001';
+    if ($RRDs::VERSION >= 1.2){
+	$VERSION = '0003';
+    }
     my $DST;
     my $pdprepin = (shift @{$store{in}{300}})*($first_step{300});
     my $pdprepout = (shift @{$store{out}{300}})*($first_step{300});
@@ -1663,7 +1706,7 @@ sub log2rrd ($$$) {
     $rrd = <<RRD;
 <!-- MRTG Log converted to RRD -->
 <rrd>
-	<version> 0001 </version>
+	<version> $VERSION </version>
 	<step> 300 </step>
 	<lastupdate> $latest_timestamp </lastupdate>
 
@@ -1726,6 +1769,16 @@ sub addarch($$$$$$$){
     my $rrd = shift;
     my $cdpin = 'NaN';
     my $cdpout = 'NaN';
+
+    my $param_start = '';
+    my $param_end = '';
+    my $extra_ds = '';
+    if ($RRDs::VERSION >= 1.2){
+        $param_start = '<params>';
+        $param_end = '</params>';
+        $extra_ds = '<primary_value> 0.0000000000e+00 </primary_value> <secondary_value> 0.0000000000e+00 </secondary_value>';
+    }
+
     if ($steps != 300) {
 	$cdpin = shift @{$$store{$in}{300*$steps}};
 	$cdpout = shift @{$$store{$out}{300*$steps}};
@@ -1735,11 +1788,10 @@ sub addarch($$$$$$$){
 	<rra>
 		<cf> $cons </cf>
 		<pdp_per_row> $steps </pdp_per_row>
-                <xff> 0.5 </xff>
-
+		$param_start <xff> 0.5 </xff> $param_end
 		<cdp_prep>
-			<ds><value> $cdpin </value>  <unknown_datapoints> 0 </unknown_datapoints></ds>
-			<ds><value> $cdpout </value>  <unknown_datapoints> 0 </unknown_datapoints></ds>
+			<ds>$extra_ds <value> $cdpin </value>  <unknown_datapoints> 0 </unknown_datapoints></ds>
+			<ds>$extra_ds <value> $cdpout </value>  <unknown_datapoints> 0 </unknown_datapoints></ds>
 		</cdp_prep>
 
 		<database>
@@ -2061,11 +2113,29 @@ C<my $confcache = readconfcache($file)>
 
 Preload the confcache from a file.
 
+=item C<readfromconfcache>
+
+C<writeconfcache($confcache,$file)>
+
+Store the current confcache into a file.
+
 =item C<writeconfcache>
 
 C<writeconfcache($confcache,$file)>
 
 Store the current confcache into a file.
+
+=item C<storeincache>
+
+C<storeincache($confcache,$host,$method,$key,$value)>
+
+=item C<readfromcache>
+
+C<readfromcache($confcache,$host,$method,$key)>
+
+=item C<clearfromcache>
+
+C<clearfromcache($confcache,$host)>
 
 =item C<debug>
 

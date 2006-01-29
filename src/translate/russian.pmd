@@ -9,11 +9,9 @@
 ###### PATCHTAG30 ####################################################
 # Russian/Русский
    'russian' =>
-   "  <HR NOSHADE>
-    Перевод на русский язык:
-    <NOBR><A HREF=\"http://mitya.pp.ru/\">Дмитрий Сиваченко</A>
-  <A HREF=\"mailto:mitya\@cavia.pp.ru\">
-  &lt;mitya\@cavia.pp.ru&gt;</A></NOBR>",
+   "Перевод на русский язык:
+				<a href=\"http://mitya.pp.ru/\">Дмитрий Сиваченко</a>
+				<a href=\"mailto:mitya\@cavia.pp.ru\">&lt;mitya\@cavia.pp.ru&gt;</a>",
 ###### PATCHTAG40 ####################################################
 $credits::LOCALE{'Русский'}=$credits::LOCALE{'russian'};
 ###### PATCHTAG50 ####################################################
@@ -36,20 +34,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=koi8-r',
+     'iso-8859-1'                             => 'koi8-r',
      'Maximal 5 Minute Incoming Traffic'      => 'Максимальный входящий трафик за 5 минут',
      'Maximal 5 Minute Outgoing Traffic'      => 'Максимальный исходящий трафик за 5 минут',
      'the device'                             => 'устройство',
      'The statistics were last updated(.*)'   => 'Последнее обновление статистики: $1',
-     ' Average\)</B><BR>'                     => ')</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Средний$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Макс.$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Текущий$1',
+     ' Average\)'                             => ')',
+     'Average'                                => 'Средний',
+     'Max'                                    => 'Макс.',
+     'Current'                                => 'Текущий',
      'version'                                => 'версия',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Суточный трафик (среднее за $1 минут',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Недельный трафик (среднее за 30 минут' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Месячный трафик  (среднее за 2 часа',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Годовой трафик (среднее за 1 день', 
+     '`Daily\' Graph \((.*) Minute'           => 'Суточный трафик (среднее за $1 минут',
+     '`Weekly\' Graph \(30 Minute'            => 'Недельный трафик (среднее за 30 минут' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Месячный трафик  (среднее за 2 часа',
+     '`Yearly\' Graph \(1 Day'                => 'Годовой трафик (среднее за 1 день', 
      'Incoming Traffic in (\S+) per Second'   => 'Входящий трафик в $1 в секунду',
      'Outgoing Traffic in (\S+) per Second'   => 'Исходящий трафик в $1 в секунду',
      'at which time (.*) had been up for(.*)' => 'в это время $1 была включена $2',
@@ -58,9 +56,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/час',
      'Bits'                                  => 'битах',
      'Bytes'                                 => 'байтах',
-     '&nbsp;In:</FONT>'                       => '&nbsp;Вх:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Исх:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Проценты:</FONT>',
+     'In'                                     => 'Вх',
+     'Out'                                    => 'Исх',
+     'Percentage'                             => 'Проценты',
      'Ported to OpenVMS Alpha by'             => 'Адаптировано для OpenVMS Alpha',
      'Ported to WindowsNT by'                 => 'Адаптировано для WindowsNT',
      'and'                                    => 'и',

@@ -49,7 +49,7 @@
      SRC="mrtg-ti.png"
      HEIGHT=160 WIDTH=479></P>
 <!-- mirror-specific-text -->
-<P ALIGN="CENTER">Latest Release: MRTG 2.11.1</P>
+<P ALIGN="CENTER">Latest Release: MRTG 2.12.2</P>
 
 <H2 NAME="CRED">Credits</H2>
 
@@ -82,11 +82,13 @@
       <A HREF="http://www.mrtg.cz">www.mrtg.cz</A><!--Martin Och <martin@och.cz>-->,      
       <A HREF="http://mrtg.magaltavor.com">Lebanon</A><!--MaGaLtAvOr <admin@magaltavor.com> -->,      
       <A HREF="http://mrtg.planetmirror.com">AU</A><!-- jason andrade <jason@dstc.edu.au> -->,
-      <A HREF="http://mrtg.keznet.co.uk/">UK</A><!--Graeme Fowler <graeme@graemef.net>-->,
+      <A HREF="http://mrtg.mirror.graemef.net/">UK</A><!--Graeme Fowler <graeme@graemef.net>-->,
+      <A HREF="http://www.mrtg.ca/">www.mrtg.ca</A><!-- Chris Phillips BChosting.com -->,
 #      <A HREF="http://www.mrtg.jp/en/">www.mrtg.jp</A><!-- Jun Kuriyama (kuriyama@imgsrc.co.jp)-->,
       <A HREF="http://mrtg.histeria.pl">PL</A><!-- Kowalski Pawel <argail@histeria.pl> -->,    
       <A HREF="http://ftp.ankara.edu.tr/mrtg">TR</A><!-- Levent YILDIRIM <levent@ankara.edu.tr> -->,    
-#      <A HREF="http://mrtg.stanford.edu">US</A><!-- todd glassey <todd.glassey@worldnet.att.net> -->,    
+       <A HREF="http://www.bigwebmaster.com/mrtg/">US</A><!-- Bigwebmaster <listing@bigwebmaster.com> -->,    
+       <A HREF="http://mrtg.trexle.com">US</A><!-- Hossam Hossny <hossam@trexle.com> -->,    
 #      <A HREF="http://mrtg.lna.org.cn">CN</A><!-- ChunXin.Lee <lee@lna.org.cn> -->,    
       <A HREF="http://www.mrtg.it/">www.mrtg.it</A><!--Vicki Vinci root@power.it -->,
       <A HREF="http://mrtg.allhostings.com">Thailand</A><!--Pakorn Chutinimitkul <pakorn@allhostings.com> -->,
@@ -105,8 +107,8 @@
       <A HREF="ftp://ftp2.cscnet.cz/pub/mirror/mrtg/">CZ</A><!--  Martin Och <martin@och.cz> -->,
       <A HREF="ftp://ftp.jaquet.dk/pub/mrtg">DK</a><!-- Rasmus Andersen <rasmus@jaquet.dk>-->,
       <A HREF="ftp://ftp.ankara.edu.tr/mrtg">TR</a><!-- Levent YILDIRIM <levent@ankara.edu.tr>-->,
-      <A HREF="ftp://ftp.idilis.ro/mirrors/mrtg/">RO</a><!-- Dragos Nitu <dragos.nitu@idilis.net>-->.
-
+      <A HREF="ftp://ftp.idilis.ro/mirrors/mrtg/">RO</a><!-- Dragos Nitu <dragos.nitu@idilis.net>-->,
+      <A HREF="http://www.bigwebmaster.com/mrtg/pub">US</A><!-- Bigwebmaster <listing@bigwebmaster.com> -->.
   </TD>
 </TR><TR>
 <TD VALIGN=top>Translations:</TD>
@@ -115,7 +117,8 @@
 <A HREF="pt/">Portugese by Vicente Sloboda vicentesloboda@yahoo.com.br</A><!--Vicente Sloboda <vicentesloboda@yahoo.com.br> -->,
 #<A HREF="es/">Espagnol by Luis Carlos Solano lsolano@racsa.co.cr</A><!-- Luis Carlos Solano <lsolano@racsa.co.cr> -->,
 <a href="es_es/">Espa&ntilde;ol (ES) [2.9.21] by Daniel Palomo Ortega  dpalomo@zruspas.org</a>,
-<A HREF="pub/contrib/MRTG_turkish_tutorial.pdf">Turkish Tutorial by Celal UNALP celak@ttnet.net.tr</a><!-- Celal UNALP <celak@ttnet.net.tr> -->.
+<A HREF="pub/contrib/MRTG_turkish_tutorial.pdf">Turkish Tutorial by Celal UNALP celak@ttnet.net.tr</a><!-- Celal UNALP <celak@ttnet.net.tr> -->,
+<A HREF="http://www.seyhan.biz/seyhan/default.asp?PG=40">Turkish Tutorial by Seyhan Tekelioglu seyhan@hotmail.com</a>.
  </TD></TR>
 </TABLE>
 
@@ -152,14 +155,14 @@ who have shown their appreciation for my work. For example by  <A HREF="http://p
 <H2 NAME="GET">Start Using MRTG</H2>
 
 <LINK TITLE="Download MRTG"
-      HREF="pub/"> Get the
+      HREF="http://people.ee.ethz.ch/oetiker/webtools/mrtg/pub/"> Get the
 latest Version of MRTG as <A
-SRC="pub/"> Unix source or as
+SRC="http://people.ee.ethz.ch/oetiker/webtools/mrtg/pub"> Unix source or as
 precompiled for Win32</A>. 
 </LINK>
 
 <LINK TITLE="What is NEW"
-      HREF="pub/CHANGES">
+      HREF="http://people.ee.ethz.ch/oetiker/webtools/mrtg/pub/CHANGES">
 The MRTG CHANGES file will give you all the details.
 </LINK>
 
@@ -171,29 +174,27 @@ explain all the details about compiling and configuring the system.
 
 <LINK TITLE="Win32 MRTG Installation Guide"
       HREF="mrtg-nt-guide.html">
-
-A fair number of people run MRTG successfully on Windows NT and 2k
-platforms. This guide shows you how this is done. If you insist on running
-MRTG on the Windows 95/98/ME spawns make friends with Jeff Liebermann or
-rather his <A HREF="http://www.cruzio.com/~jeffl/mrtg/docs/w95mrtg.htm">
-MRTG for Windows 95, 98, and ME</A> webpage.
-
+A fair number of people run MRTG successfully on Windows platforms. This guide shows you how this is done.
 </LINK>
 
+<LINK TITLE="Netware MRTG Installation Guide"
+      HREF="mrtg-nw-guide.html">
+This guide is intended to aid in the installation and configuration of MRTG on a NetWare server.
+</LINK>
 
 <LINK TITLE="MRTG Compatibility Charts"
-      HREF="compat.html">
+      HREF="http://people.ee.ethz.ch/oetiker/webtools/mrtg/compat.html">
 A list of devices and Operating-Systems known to work with mrtg.
 </LINK>
 
 <LINK TITLE="MRTG Companion Sites / Links"
-      HREF="links.html">
+      HREF="http://people.ee.ethz.ch/oetiker/webtools/mrtg/links.html">
 Many people have setup webpages telling about special configurations
 or applications of mrtg. Check out this huge list if you want to go further.
 </LINK>
 
 <LINK TITLE="MRTG User Pages"
-      HREF="users.html">
+      HREF="http://people.ee.ethz.ch/oetiker/webtools/mrtg/users.html">
 A large number of people are using MRTG all around the world. On this
 page you find a list of companies and individuals admitting to use mrtg.
 </LINK>
@@ -218,12 +219,6 @@ The Installation guides above will give you a glimpse at what is
 possible with MRTG. But to get the full picture take a look at the
 configuration reference which explains all the configuration options
 available in MRTG.
-</LINK>
-
-<LINK TITLE="MRTG FAQ"
-      HREF="mrtg-faq.html">
-Answers to Frequently Asked Questions regarding MRTG. And a pointer to the
-official 'Inofficial MRTG FAQ'
 </LINK>
 
 <LINK TITLE="MRTG Newsgroup and Mailinglist"

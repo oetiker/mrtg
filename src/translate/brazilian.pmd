@@ -10,15 +10,11 @@
 ###### PATCHTAG30 ####################################################
 # Brazil/brazilian
    'brazilian' =>
-   "  <HR NOSHADE>
-    Localiza&ccedil;&atilde;o efetuada por
-    <NOBR><A HREF=\"http://www.encarnacao.com\">Luiz Felipe R E</A>
-  <A HREF=\"mailto:luizfelipe\@encarnacao.com\">
-  &lt;luizfelipe\@encarnacao.com&gt;</A>
-   atualização por
-    <NOBR>Gleydson Mazioli da Silva
-  <A HREF=\"mailto:gleydson\@debian.org\">
-  &lt;gleydson\@debian.org&gt;</A></NOBR>",
+   "Localiza&ccedil;&atilde;o efetuada por
+				<a href=\"http://www.encarnacao.com\">Luiz Felipe R E</a>
+				<a href=\"mailto:luizfelipe\@encarnacao.com\">&lt;luizfelipe\@encarnacao.com&gt;</a><br />
+				atualização por Gleydson Mazioli da Silva
+				<a href=\"mailto:gleydson\@debian.org\">&lt;gleydson\@debian.org&gt;</a>",
 ###### PATCHTAG40 ####################################################
 $credits::LOCALE{'brazil'}=$credits::LOCALE{'brazilian'};
 ###### PATCHTAG50 ####################################################
@@ -44,15 +40,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Tr&aacute;fego M&aacute;ximo de Sa&iacute;da em 5 minutos',
      'the device'                             => 'dispositivo',
      'The statistics were last updated (.*)'  => '&Uacute;ltima atualiza&ccedil;&atilde;o das estat&iacute;sticas: $1',
-     ' Average\)</B><BR>'                     => ' - m&eacute;dia)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>M&eacute;dia$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>M&aacute;x$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Atual$1',
+     ' Average\)'                             => ' - m&eacute;dia)',
+     'Average'                                => 'M&eacute;dia',
+     'Max'                                    => 'M&aacute;x',
+     'Current'                                => 'Atual',
      'version'                                => 'vers&atilde;o',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Gr&aacute;fico `Di&aacute;rio\' ($1 minutos',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Gr&aacute;fico `Semanal\' (30 minutos' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Gr&aacute;fico `Mensal\' (2 horas',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Gr&aacute;fico `Anual\' (1 dia', 
+     '`Daily\' Graph \((.*) Minute'           => 'Gr&aacute;fico `Di&aacute;rio\' ($1 minutos',
+     '`Weekly\' Graph \(30 Minute'            => 'Gr&aacute;fico `Semanal\' (30 minutos' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Gr&aacute;fico `Mensal\' (2 horas',
+     '`Yearly\' Graph \(1 Day'                => 'Gr&aacute;fico `Anual\' (1 dia', 
      'Incoming Traffic in (\S+) per Second'   => 'Tr&aacute;fego de Entrada em $1 por segundo',
      'Outgoing Traffic in (\S+) per Second'   => 'Tr&aacute;fego de Sa&iacute;da em $1 por segundo',
      'at which time (.*) had been up for(.*)' => 'nesta hora $1 estava ativo por $2',
@@ -61,9 +57,9 @@ return "" unless defined $string;
      # '([kMG]?)([bB])/h'                     => '$1$2/t',
      # 'Bits'                                 => 'Bits',
      # 'Bytes'                                => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Entr.:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Sa&iacute;:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Porc.:</FONT>',
+     'In'                                     => 'Entr.',
+     'Out'                                    => 'Sa&iacute;',
+     'Percentage'                             => 'Porc.',
      'Ported to OpenVMS Alpha by'             => 'Adaptado para o Alpha OpenVMS por', 
      'Ported to WindowsNT by'                 => 'Adaptado para o WindowsNT por',
      'and'                                    => 'e',

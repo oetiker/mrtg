@@ -10,11 +10,9 @@
 ###### PATCHTAG 30 ###################################################
 # Chinese/中文简体
    'gb2312' =>
-   "  <HR NOSHADE>
-    中文化作者
-    <NOBR><A HREF=\"http://linux.tcpip.com.cn\">Peter Wong</A>
-  <A HREF=\"mailto:webmaster\@tcpip.com.cn\">
-  &webmaster\@tcpip.com.cn&gt;</A></NOBR>",
+   "中文化作者
+				<a href=\"http://linux.tcpip.com.cn\">Peter Wong</a>
+				<a href=\"mailto:webmaster\@tcpip.com.cn\">&webmaster\@tcpip.com.cn&gt;</a>",
 ###### PATCHTAG 40 ###################################################
 $credits::LOCALE{'中文简体'}=$credits::LOCALE{'gb2312'};
 ###### PATCHTAG 50 ###################################################
@@ -35,20 +33,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=charset=gb2312',
+     'iso-8859-1'                             => 'gb2312',
      'Maximal 5 Minute Incoming Traffic'      => '5分钟最大流入量',
      'Maximal 5 Minute Outgoing Traffic'      => '5分钟最大流出量',
      'the device'                             => '装置',
      'The statistics were last updated(.*)'   => '上次统计更新时间: $1',
-     ' Average\)</B><BR>'                     => ' 平均)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>平均$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>最大$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>目前$1',
+     ' Average\)'                             => ' 平均)',
+     'Average'                                => '平均',
+     'Max'                                    => '最大',
+     'Current'                                => '目前',
      'version'                                => '版本',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>每日 图表 ($1 分钟',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>每周 图表 (30 分钟' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>每月 图表 (2 小时',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>每年 图表 (1 天',
+     '`Daily\' Graph \((.*) Minute'           => '每日 图表 ($1 分钟',
+     '`Weekly\' Graph \(30 Minute'            => '每周 图表 (30 分钟' ,
+     '`Monthly\' Graph \(2 Hour'              => '每月 图表 (2 小时',
+     '`Yearly\' Graph \(1 Day'                => '每年 图表 (1 天',
      'Incoming Traffic in (\S+) per Second'   => '每秒流入量 (单位 $1)',
      'Outgoing Traffic in (\S+) per Second'   => '每秒流出量 (单位 $1)',
      'at which time (.*) had been up for(.*)' => '设备名称 $1，已运作时间(UPTIME): $2',
@@ -57,9 +55,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/时',
     # 'Bits'                                   => 'Bits',
     # 'Bytes'                                  => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;流入:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;流出:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;百分比:</FONT>',
+     'In'                                     => '流入',
+     'Out'                                    => '流出',
+     'Percentage'                             => '百分比',
      'Ported to OpenVMS Alpha by'             => '移植到 OpenVM Alpha 作者',
      'Ported to WindowsNT by'                 => '移植到 WindowsNT 作者',
      'and'                                    => '及',
