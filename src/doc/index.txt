@@ -1,0 +1,278 @@
+
+                      The Multi Router Traffic Grapher
+   
+                        Latest Release: MRTG 2.9.29
+   
+   
+   Credits
+   
+   Programming: [1]Tobias Oetiker [2]<oetiker@ee.ethz.ch>, [3]Dave Rand
+   [4]<dlr@bungi.com>
+   and many contributors from the global Village
+   DNS Reflectors: [5]www.mrtg.org (by [6]Tim Kennedy of [7]YellowBrix,
+   Inc)
+   [8]mrtg.eu.org (by Michel Renfer of [9]LAN Services AG)
+   WWW Mirrors: [10]Swiss Original, [11]AR, [12]FR, [13]HU, [14]mrtg.ca,
+   [15]AU, [16]AU, [17]AT, [18]UK, [19]www.mrtg.jp, [20]JP,
+   [21]www.mrtg.cz, [22]BR, [23]FR, [24]BR, [25]PL, [26]www.mrtg.it,
+   [27]www.mrtg.biz, [28]IE, [29]IL, [30]JP. [31]CN.
+   FTP Mirrors: [32]SE, [33]RU, [34]AU, [35]AU, [36]BR, [37]US, [38]US,
+   [39]US, [40]MX, [41]CZ, [42]IT, [43]IT, [44]IE, [45]TW, [46]JP,
+   [47]JP, [48]PL, [49]PT, (Outdated: [50]NO, [51]US, [52]RO, [53]Poland,
+   [54]DE, [55]US ).
+   Translations: [56]Japanese by Team MTRG-JP e2j@mrtg.jp, [57]Portugese
+   by Vicente Sloboda vicentesloboda@yahoo.com.br, [58]Espagnol by Luis
+   Carlos Solano lsolano@racsa.co.cr, [59]Español (ES) [2.9.21] by Daniel
+   Palomo Ortega dpalomo@zruspas.org.
+   
+   
+   What is the Multi Router Traffic Grapher?
+   
+   The Multi Router Traffic Grapher (MRTG) is a tool to monitor the
+   traffic load on network-links. MRTG generates HTML pages containing
+   graphical images which provide a LIVE visual representation of this
+   traffic. Check [60]http://www.ee.ethz.ch/stats/mrtg/ for an example.
+   MRTG is based on Perl and C and works under UNIX and Windows NT. MRTG
+   is being successfully used on [61]many sites around the net.
+   
+   [62]What is MRTG ()
+          A short overview on what MRTG is, with additional sections on
+   history, and highlights.
+   
+   
+   License & MRTG Appreciators
+   
+   MRTG is freely available under the terms of the
+   [63]GNU General Public License
+   
+   [64]MRTG Appreciators
+          I spend a lot of my time maintaining MRTG, answering user
+   requests and writing other open source software packages. I keep a
+   list of people who have shown their appreciation for my work. For
+   example by [65]ordering CD or DVD media from my wish list.
+   
+   
+   Start Using MRTG
+   
+   [66]Download MRTG
+          Get the latest Version of MRTG as Unix source or as precompiled
+   for Win32. (There are [67]MRTG Linux RPMs by [68]Henri Gomez)
+   
+   [69]What is NEW
+          The MRTG CHANGES file will give you all the details.
+   
+   [70]UNIX MRTG Installation Guide ()
+          If you plan to run mrtg on a unix machine (this is what I do).
+   Then this guide will explain all the details about compiling and
+   configuring the system.
+   
+   [71]Win32 MRTG Installation Guide ()
+          A fair number of people run MRTG successfully on Windows NT and
+   2k platforms. This guide shows you how this is done. If you insist on
+   running MRTG on the Windows 95/98/ME spawns make friends with Jeff
+   Liebermann or rather his [72]MRTG for Windows 95, 98, and ME webpage.
+   
+   [73]MRTG Compatibiliy Charts
+          A list of devices and Operating-Systems known to work with
+   mrtg.
+   
+   [74]MRTG Companion Sites / Links
+          Many people have setup webpages telling about special
+   configurations or applications of mrtg. Check out this huge list if
+   you want to go further.
+   
+   [75]MRTG User Pages
+          A large number of people are using MRTG all around the world.
+   On this page you find a list of companies and individuals admitting to
+   use mrtg.
+   
+   
+   MRTG Documentation Pack
+   
+   [76]CfgMaker Manual ()
+          MRTG configuration files can be generated automatically using
+   the cfgmaker.
+   
+   [77]IndexMaker Manual ()
+          Index maker generates an overview page giving you the big
+   picture on all the targets you are monitoring.
+   
+   [78]MRTG Configuration Reference ()
+          The Installation guides above will give you a glimpse at what
+   is possible with MRTG. But to get the full picture take a look at the
+   configuration reference which explains all the configuration options
+   available in MRTG.
+   
+   [79]MRTG FAQ ()
+          Answers to Frequently Asked Questions regarding MRTG. And a
+   pointer to the official 'Inofficial MRTG FAQ'
+   
+   [80]MRTG Newsgroup and Mailinglist ()
+          Sometimes you just can't seem to find an answer to your MRTG
+   problems even when spending a lot of time reading the documentation.
+   Then it is best ask someone who can help.
+   
+   [81]Somix MRTG Configuration Template Archive
+          Somix has a huge archive of custom templates to get information
+   out of your SNMP manageable devices they probably didn't even know
+   they had before your asked thenm :-).
+   
+   [82]MRTG Implementation Manual by florin.prunoiu@enterastream.com
+          The manual covers all MRTG deployment topics, including the
+   standard MRTG version and also the RRDTOOL/Database integration. This
+   document is geared towards windows, but the configuration parts are
+   not specific to windows.
+   
+   
+   Advanced User Information
+   
+   [83]Contribution Guidelines ()
+          If you plan on contributing code to the MRTG project, please
+   make sure you follow the guide lines listed in this document.
+   
+   [84]RRDtool
+          Want to write your own monitoring application? Need more
+   powerful graphing? Want to store non integer data? Need more speed?
+   Make sure to check out my latest creation: RRDtool.
+   
+   [85]RRDtool Integration ()
+          MRTG can be used together with RRDtool. Lifting it up to a new
+   level of performance and flexibility.
+   
+   [86]MRTG Logfile Format ()
+          Some people want to use the data stored in the mrtg log files
+   with programs of their own. Learn about the format of the MRTG log
+   files.
+   
+   [87]MRTG_lib Perl Module ()
+          Parts of mrtg have been broken out into a Perl module called
+   MRTG_lib.pm. Nothing beautiful, but at least there is some
+   documentation for it. If you want to write something which parses the
+   mrtg configuration file then this might be very useful.
+   
+   [88]MIB Help ()
+          Looking at Traffic rates is interesting, but your router can
+   tell you much more. Use this document to get started.
+   
+   [89]SQUID Monitoring ()
+          An Introduction on Using MRTG to monitor a SQUID web cache
+   
+   [90]Webserver Configuration Hints ()
+          Your web server is vital in making mrtg generated web pages and
+   graphs available to your customers. This document gives some hints on
+   how optimize your web server regarding mrtg.
+   
+   
+   Feedback
+   
+   If you have any questions about this program, or have it up and
+   running,
+   we would like to hear from you:
+   
+   [91]MRTG 
+   
+   [92]Tobias Oetiker [93]<oetiker@ee.ethz.ch>
+   and [94]Dave Rand [95]<dlr@bungi.com>
+
+References
+
+   Visible links
+   1. http://people.ee.ethz.ch/~oetiker
+   2. mailto:oetiker@ee.ethz.ch
+   3. http://www.bungi.com/
+   4. mailto:dlr@bungi.com
+   5. http://www.mrtg.org/
+   6. mailto:tkennedy@yellowbrix.com
+   7. http://www.yellowbrix.com/
+   8. http://mrtg.eu.org/
+   9. http://www.lan.ch/
+  10. http://people.ee.ethz.ch/~oetiker/webtools/mrtg/
+  11. http://mrtg.alverte.com.ar/
+  12. http://mrtg-fr.agarik.com/
+  13. http://mirrors.pmmf.hu/linux/mrtg/
+  14. http://mrtg.ca/
+  15. http://www.mirrors.wiretapped.net/security/network-monitoring/mrtg/
+  16. http://mrtg.planetmirror.com/
+  17. http://mrtg.qeta.net/
+  18. http://mrtg.keznet.co.uk/
+  19. http://www.mrtg.jp/en/
+  20. http://www.ayamura.org/mrtg/
+  21. http://www.mrtg.cz/
+  22. http://mrtg.matrix.com.br/
+  23. http://mrtg.mirrors.ndsoftwarenet.com/
+  24. http://mrtg.pop-mg.com.br/mrtg.html
+  25. http://mrtg.histeria.pl/
+  26. http://www.mrtg.it/
+  27. http://www.mrtg.biz/
+  28. http://ftp.heanet.ie/mirrors/people.ee.ethz.ch/%257Eoetiker/webtools/
+  29. http://mirror.bezeqint.net/mrtg/
+  30. http://mirror.nucba.ac.jp/mrtgwww/
+  31. http://mrtg.openunion.org/
+  32. ftp://ftp.sunet.se/pub/network/monitoring/mrtg/
+  33. ftp://ftp.chg.ru/pub/networking/management/mrtg/
+  34. ftp://ftp.mirrors.wiretapped.net/pub/mrtg/
+  35. ftp://ftp.planetmirror.com/pub/oetiker/webtools/mrtg/
+  36. ftp://mrtg.pop-mg.com.br/pub/mrtg/pub
+  37. ftp://ftp.130th.net/pub/mirror/mrtg
+  38. ftp://ftp.exobit.org/pub/monitoring/mrtg/
+  39. ftp://ftp.ou.edu/mirrors/mrtg/
+  40. ftp://ftp.azc.uam.mx/mirrors/mrtg
+  41. ftp://ftp2.cscnet.cz/pub/mirror/mrtg/
+  42. ftp://ftp.unipi.it/pub/mirror/mrtg
+  43. ftp://venom.ath.cx/mirror/mrtg/
+  44. ftp://ftp.heanet.ie/pub/oetiker/mrtg/
+  45. ftp://ftp.nctu.edu.tw/network/mrtg/
+  46. ftp://ftp.ayamura.org/pub/mrtg/
+  47. ftp://mirror.nucba.ac.jp/mirror/mrtg/
+  48. ftp://sunsite.icm.edu.pl/pub/unix/net/mrtg/
+  49. ftp://net2b.co.pt/pub/mrtg/
+  50. ftp://ftp.ntnu.no/pub/network/monitoring/mrtg
+  51. ftp://mirrors.bigfatpipe.net/pub/mrtg
+  52. ftp://mirror.itcnet.ro/pub/mrtg
+  53. ftp://ftp.onet.pl/pub/unix/network/mrtg/
+  54. ftp://ftp.gigabell.net/pub/mrtg
+  55. ftp://mrtg.hdl.com/
+  56. http://www.mrtg.jp/doc/
+  57. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/pt/
+  58. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/es/
+  59. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/es_es/
+  60. http://www.ee.ethz.ch/stats/mrtg/
+  61. http://people.ee.ethz.ch/~oetiker/webtools/mrtg/users.html
+  62. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/mrtg.html
+  63. http://www.gnu.org/copyleft/gpl.html
+  64. http://people.ee.ethz.ch/~oetiker/webtools/appreciators.txt
+  65. http://people.ee.ethz.ch/~oetiker/wish
+  66. http://people.ee.ethz.ch/~oetiker/webtools/mrtg/pub/
+  67. http://ftp.falsehope.com/home/gomez/
+  68. mailto:hgomez@users.sourceforge.net
+  69. http://people.ee.ethz.ch/~oetiker/webtools/mrtg/pub/CHANGES
+  70. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/unix-guide.html
+  71. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/nt-guide.html
+  72. http://www.cruzio.com/~jeffl/mrtg/docs/w95mrtg.htm
+  73. http://people.ee.ethz.ch/~oetiker/webtools/mrtg/compat.html
+  74. http://people.ee.ethz.ch/~oetiker/webtools/mrtg/links.html
+  75. http://people.ee.ethz.ch/~oetiker/webtools/mrtg/users.html
+  76. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/cfgmaker.html
+  77. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/indexmaker.html
+  78. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/reference.html
+  79. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/faq.html
+  80. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/forum.html
+  81. http://www.somix.com/support/mrtg_repository.php
+  82. http://www.enterastream.com/whitepapers/mrtg/mrtg-manual.html
+  83. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/contrib.html
+  84. http://rrdtool.eu.org/
+  85. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/mrtg-rrd.html
+  86. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/logfile.html
+  87. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/mrtglib.html
+  88. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/mibhelp.html
+  89. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/squid.html
+  90. file://localhost/home/oetiker/data/projects/AABM-mrtg/doc/webserver.html
+  91. http://people.ee.ethz.ch/~oetiker/webtools/mrtg/mrtg.html
+  92. http://people.ee.ethz.ch/~oetiker
+  93. mailto:oetiker@ee.ethz.ch
+  94. http://www.bungi.com/
+  95. mailto:dlr@bungi.com
+
+   Hidden links:
+  96. http://people.ee.ethz.ch/~oetiker/webtools/mrtg/mrtg.html
+  97. http://people.ee.ethz.ch/~oetiker/webtools/mrtg/mrtg.html

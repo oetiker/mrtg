@@ -1,0 +1,15 @@
+From: HERITIER Hervé <hh@handco.org>
+Date: 12 May 2001 18:04:11 -0000
+
+Attached, you find a simple script to capture iptables counter on Linux 2.4,
+to use it, on each computer run iptables, add a pass line into the 
+snmpd.conf to activate access like this : 
+
+pass .1.3.6.1.4.1.2055 /usr/bin/perl /usr/local/iptables_acc_snmp
+
+It can be useful for ISP's to make easly a main accounting and performance 
+monitoring.
+I provide a sample MIB file to implement it into mrtg config file.
+
+Hervé HERITIER
+
