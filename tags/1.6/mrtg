@@ -1,0 +1,732 @@
+#!/usr/local/bin/perl5 -- -*-perl-*-
+##################################################################
+# Multi Router Traffic Grapher
+##################################################################
+# Created by Tobias Oetiker <oetiker@dmu.ac.uk>
+#
+# Contributions by Johannes Demel (demel@edvz.tuwien.ac.at)
+#                  (tricklet, summariser)
+#                  Mike Convey (mike@novell.co.uk)
+#		   (getone, snmpagent ....)
+#
+# Distributed under the GNU copyleft
+#
+# $Id: mrtg,v 1.45 1995/06/29 09:27:51 oetiker Exp $
+#
+# $Log: mrtg,v $
+# Revision 1.45  1995/06/29  09:27:51  oetiker
+# remofed debug messages
+#
+# Revision 1.44  1995/06/27  14:56:50  oetiker
+# more debug
+#
+# Revision 1.43  1995/06/27  14:27:45  oetiker
+# speed
+#
+# Revision 1.42  1995/06/27  14:15:20  oetiker
+# added exernal fix
+#
+# Revision 1.41  1995/06/27  14:13:47  oetiker
+# added * for multy router configs
+#
+# Revision 1.40  1995/06/27  13:47:38  oetiker
+# another maxbytes fix
+#
+# Revision 1.39  1995/06/27  13:47:16  oetiker
+# made maxbytes required
+#
+# Revision 1.38  1995/06/27  13:46:24  oetiker
+# added auto maxbyte calc
+#
+# Revision 1.37  1995/06/27  11:43:41  oetiker
+# getmet - snmpagent
+#
+# Revision 1.36  1995/06/27  11:21:37  oetiker
+# small fixes for new code cfg -> rcfg ...
+#
+# Revision 1.35  1995/06/26  11:28:55  oetiker
+# added summ patch and adapted docs
+#
+# Revision 1.34  1995/06/23  17:20:42  oetiker
+# added community
+# added support for getone and delft
+#
+# Revision 1.33  1995/06/23  15:38:32  oetiker
+# added 8 days
+#
+# Revision 1.32  1995/06/02  06:53:57  oetiker
+# changed temp file to process number
+#
+# Revision 1.31  1995/06/01  13:33:23  oetiker
+# code cleanup
+#
+# Revision 1.30  1995/06/01  13:12:36  oetiker
+# hpefully fixed data loss
+#
+#
+###################################################################
+
+# Colours for the graphics
+
+$c_blank = "\xbf\xbf\xbf";
+$c_major = "\xff\x00\x00";
+$c_in =  "\x00\x00\xff";
+$c_out = "\x00\xff\x00";
+$c_grid ="\x00\x00\x00";
+
+
+
+&readcfg;
+&cfgcheck;
+
+$ENV{'MIBFILE'} = $cfg{"mibfile"};
+chdir ($cfg{"workdir"});
+
+setpriority (0,0,$cfg{"nice"}); # set niceness in case we are not the only
+				# one running on the machine ...
+
+foreach $router (keys %routers) {
+
+
+  &getcurrent;
+#print STDERR "get;\n";
+  &readlast;
+#print STDERR "last;\n";
+  &addoldtraffic;
+#print STDERR "add;\n";
+  &writegraphics;
+#print STDERR "graph;\n";
+  &writehtml;
+#print STDERR "html;\n";
+  &savetraffic;
+#print STDERR "save\n";
+
+}
+
+exit(0);
+
+
+sub readcfg {
+  local($mode,$first,$second);
+  open (CFG, pop(@ARGV)) || &printusage;
+  while (<CFG>) {
+    if (/^([A-Za-z]+)\[(\S+)\]:\s*(.*\S)\s*$/) {
+      $rcfg{lc($1)}{lc($2)} = $3;
+      $routers{lc($2)} = "";
+      $first = $1;
+      $second = $2;
+      $mode = "R";
+      next;
+    }
+    if (/^(\S+):\s*(.*\S)\s*$/) {
+      $cfg{lc($1)} = $2;
+      $first = $1;
+      $mode = "C";
+      next;
+    }
+    if (/^\s+(.*\S)\s*$/) {
+      if ($mode eq "R") {
+	$rcfg{lc($first)}{lc($second)} .= " $1";
+	next;
+      }
+      if ($mode eq "L") {
+	$cfg{lc($first)} .= " $1";
+	next;
+      }
+    }
+    if ((/^\s*\#/ ) || (/^\s*$/)) {
+      next;
+    }
+    die ( "\nLine $. in CFG file doesn't make sense\n" );
+  }
+  close (CFG);
+}
+
+sub cfgcheck {
+  local($rou);
+  local($error)="no";
+  if (($cfg{"workdir"} eq '') || 
+      (not -d $cfg{"workdir"})) {
+    warn ("Config Problem: \"workdir\" not specified or not existant\n");
+    $error = "yes";
+  }
+  if ($cfg{"nice"} !~ /[0-9]+/) {
+    warn ("Config Problem: Process \"nice\" value not specified\n");
+    $error = "yes";
+  }  
+  if (($cfg{"snmpagent"} ne 'cmu') &&
+      ($cfg{"snmpagent"} ne 'delft') &&
+      ($cfg{"snmpagent"} ne 'getone')) {
+    warn ("Config Problem: \"snmpagent\" must be one of cmu|delft|getone\n");
+    $error = "yes";
+  }
+  if ((($cfg{"snmpagent"} eq 'cmu') || ($cfg{"snmpagent"} eq 'delft')) && 
+      (($cfg{"mibfile"} eq '') || (not -f $cfg{"mibfile"}))) {
+    warn ("Config Problem: \"mibfile\" not pointing to a plain file\n");
+    $error = "yes";
+  }
+  if (($cfg{"snmpget"} eq '') || 
+      (not -x $cfg{"snmpget"})) {
+    warn ("Config Problem: \"snmpget\" not pointing to an executable\n");
+    $error = "yes";
+  }
+  if (($cfg{"ppmtogif"} eq '') || 
+      (not -x $cfg{"ppmtogif"})) {
+    warn ("Config Problem: \"ppmtogif\" not pointing to executable\n");
+    $error = "yes";
+  }
+  foreach $rou (keys %routers) {
+    if ($rcfg{"title"}{$rou} eq '') {
+      warn ("Config Problem: \"Title[$rou]\" not specified\n");
+      $error = "yes";
+    }
+    if ($rcfg{"comment"}{$rou} eq '') {
+      warn ("Config Problem: \"Comment[$rou]\" not specified\n");
+      $error = "yes";
+    }
+    if ($rcfg{"maxbytes"}{$rou} eq '') {
+      warn ("Config Problem: \"MaxBytes[$rou]\" not specified\n");
+      $error = "yes";
+    }
+    if ($rcfg{"ip"}{$rou} =~ /,/) {
+      local($srr);
+      local(@subrouters)=split(/\,/,$rcfg{"ip"}{$rou});
+      foreach $srr (@subrouters) {
+	if (($srr !~ s/\*$//) && (! exists $rcfg{"ip"}{$srr})) {
+	  warn ("Config Problem: In Router summary, index \"$srr\" not found");
+	  $error = "yes";
+	} 
+	$rcfg{"ip"}{$rou} =~ s/\*$//g;
+      }
+      next; 
+    } elsif ($rcfg{"ip"}{$rou} eq '') {   
+      warn ("Config Problem: \"ip[$rou]\" not specified\n");
+      $error = "yes";
+    }
+    if ($rcfg{"ifout"}{$rou} eq '') {
+      warn ("Config Problem: \"ifOut[$rou]\" not specified\n");
+      $error = "yes";
+    }
+    if ($rcfg{"ifin"}{$rou} eq '') {
+      warn ("Config Problem: \"ifin[$rou]\" not specified\n");
+      $error = "yes";
+    }
+    if ($rcfg{"community"}{$rou} eq '') {
+      warn ("Config Problem: \"community[$rou]\" not defined (try 'public')\n");
+      $error = "yes";
+    }
+  }
+  if ($error eq "yes") {
+    die ("\n\nPlease fix the error(s) in your config file\n\n");
+  }
+}
+	
+sub cmuget {
+  local(@output,$out,$in);
+  @output= split("\n",
+		 `$cfg{'snmpget'} -v 1 $rcfg{'ip'}{$router} $rcfg{'community'}{$router} $rcfg{'ifout'}{$router} $rcfg{'ifin'}{$router}`);
+  if (! $? == 256) { 
+    die "$cfg{'snmpget'} not successfull\n$output[0]\n$output[1]\n"; }
+  $output[0] =~ /\s(\d+)\s*$/;
+  $out=$1;                    
+  $output[1] =~ /\s(\d+)\s*$/;
+  $in=$1;                    
+  return($in,$out);
+}
+
+sub delftget {
+  local(@output,$out,$in);
+  @output= split("\n",
+    `$cfg{'snmpget'} $rcfg{'ip'}{$router} $rcfg{'community'}{$router}  <<EOI 
+$rcfg{'ifout'}{$router}
+$rcfg{'ifin'}{$router}
+EOI
+  `);
+  if (! $? == 256) {
+    die "$cfg{'snmpget'} not successfull\n$output[0]\n$output[1]\n"; }
+  $output[0] =~ /=(\d+)\s*$/;
+  $out=$1;         
+  $output[1] =~ /=(\d+)\s*$/;
+  $in=$1;
+  return($in,$out);
+}
+
+sub getone {
+  local($value,$i);
+  open(GETONE, "$cfg{'snmpget'} $rcfg{'ip'}{$router} $rcfg{'community'}{$router} ".
+       "$rcfg{'ifout'}{$router} $rcfg{'ifin'}{$router}|") ||
+	 die "$cfg{'snmpget'} not successful\n";
+  $i=0;
+  while (<GETONE>) {
+    $value[$i++] = $1 if /^Value: (.+)$/;
+  }
+  close(GETONE);
+  die "$cfg{'snmpget'} not successful\n$value[0]\n$value[1]\n" unless $i
+    == 2;
+  return($value[0],$value[1]);
+}
+
+sub get {
+  if ($cfg{'snmpagent'} eq "getone") {
+    return &getone;
+  } elsif ($cfg{'snmpagent'} eq "delft") {
+    return &delftget;
+  } elsif ($cfg{'snmpagent'} eq "cmu") {
+    return &cmuget;    
+  }
+}
+
+sub readlast {
+  open (LAST, "$router.last") || return;
+  $inlast = <LAST>;
+  chop ($inlast);
+  $outlast = <LAST>;
+  chop ($outlast);
+  close(LAST);
+}
+
+sub getcurrent {
+  local($x);
+  if (($x=$rcfg{'ip'}{$router}) =~ /,/ ) {
+    local($orouter)=$router;
+    $innew=0;
+    $outnew=0;
+    local(@r)=split(/\,/,$x);
+    foreach $router (@r) {
+      &readlast;
+      $innew+=$inlast;
+      $outnew+=$outlast;
+    }
+    $router=$orouter;
+  }
+  else {
+    ($innew,$outnew) = &get;
+    }
+  $time = time;
+  $inlast = $innew;
+  $outlast = $outnew;
+  &readlast;
+  @times = $time;
+  @inbytes = $innew - $inlast;
+  @outbytes = $outnew - $outlast;
+}
+     
+
+sub getword {
+   local($hand) = @_;
+   $dummy = <$hand>;
+   chop($dummy);
+   return($dummy);
+}
+
+sub addoldtraffic {
+    open (LOG, "$router.log");
+    while (not eof LOG) {
+      push(@times, &getword("LOG"));
+      push(@inbytes, &getword("LOG"));
+      push(@outbytes, &getword("LOG"));
+    }
+    close (LOG);
+    if (($inbytes[0]/($times[0]-$times[1]) > $rcfg{"maxbytes"}{$router}*10)||
+	($inbytes[0] < 0 )) {
+	$inbytes[0] =
+	    $inbytes[1]/($times[1]-$times[2])*($times[0]-$times[1]);
+    }
+    if (($outbytes[0]/($times[0]-$times[1]) > $rcfg{"maxbytes"}{$router}*10)||
+	($outbytes[0] < 0 )) {
+	$outbytes[0] =
+	    $outbytes[1]/($times[1]-$times[2])*($times[0]-$times[1]);
+    }
+}
+
+sub writegraphics {
+    @input=();@output=();@io_times=();
+    $step=5*60;
+    $first = $times[0] - ($times[0] % $step);
+    &filllist($first,$step,31*12+2);
+    &paint("-day.gif", $step,31*12 ,"h");
+    
+    if ((not -e "${router}-week.gif") ||(-M "${router}-week.gif" >= 0.5/24))
+    {
+	@input=();@output=();@io_times=();
+	$step=30*60;
+	$first = $times[0] - ($times[0] % $step);
+	&filllist($first,$step,24*2*8+2);
+	&paint("-week.gif", $step,24*2*8 ,"d");
+    }
+
+    if ((not -e "${router}-month.gif") || ( -M "${router}-month.gif" >= 2/24)) {
+	@input=();@output=();@io_times=();
+	$step=2*60*60;
+	$first = $times[0] - ($times[0] % $step);
+	&filllist($first,$step,31*12+2);
+	&paint("-month.gif", $step,31*12 ,"x");
+    }
+
+    if ((not -e "${router}-year.gif") || ( -M "${router}-year.gif" >= 1)) {
+	@input=();@output=();@io_times=();
+	$step=24*60*60;
+	$first = $times[0] - ($times[0] % $step);
+	&filllist($first,$step,365+2);
+	&paint("-year.gif", $step,365 ,"m");
+    }
+}
+
+sub filllist {
+    local($first,$step,$steps) = @_;
+    local($last);
+    $current = 0;
+    $last =  $first-$step*$steps;
+    for ($pointer = $first; 
+	 $pointer > $last ; 
+	 $pointer -= $step) {
+	$inslice = 0;
+	$outslice = 0;
+	$pointend=$pointer-$step;
+	while (1) {
+	    if ($current >= $#times) {
+		last;
+	    }
+  	    $inrate = $inbytes[$current] /
+		($times[$current]-$times[$current+1]);
+	    $outrate = $outbytes[$current] /
+		($times[$current]-$times[$current+1]);
+	    if ($times[$current] > $pointend &&  
+		$times[$current+1] < $pointer) {
+		$inslice += $inbytes[$current];
+		$outslice += $outbytes[$current];
+		if ($times[$current] > $pointer) {
+		    $inslice -= ($times[$current]-$pointer)*$inrate;
+		    $outslice -= ($times[$current]-$pointer)*$outrate;
+		}
+		if ($times[$current+1] ==  $pointend) {
+		  $current++; last; }
+		if ($times[$current+1] < $pointend) {
+		    $inslice -= ($pointend - $times[$current+1])*$inrate;
+		    $outslice -= ($pointend - $times[$current+1])*$outrate;
+		    last;
+		} 
+	    }
+	    $current++; 
+	}
+	push  @input, $inslice ;
+	push  @io_times, $pointer ;
+	push  @output, $outslice ;
+    }
+}
+
+sub paint {
+  local ($suffix,$step,$xmax,$mark) = @_;
+  local (@hmarks,@mmarks,$min,$hour,$mday,$wday,$yday);
+  open (PPMTOGIF, 
+	"|$cfg{'ppmtogif'} -interlace -transparent ".
+	"'#bfbfbf' >$router$suffix 2>/dev/null ") ||
+	  die ("Can't open $cfg{'ppmtogif'}\n");
+  $ysize= 100;
+  $ymax = $rcfg{'maxbytes'}{$router} * $step;
+  $ystep = $ymax / $ysize;
+  $yss =0;
+  for ($x=0; $x<$xmax; $x++) {
+    ($min,$hour,$wday,$mday,$yday) =
+      (localtime($io_times[$x]))[1,2,6,3,7];
+    
+    if ((($mark eq "h") && 
+	 (0 == $min)) ||
+	(($mark eq "d") && 
+	 (0 == $min) &&
+	 (0 == $hour)) ||
+	(($mark eq "m") &&  
+	 (1  == $mday)) ||
+	(($mark eq "x") &&
+	 ($hour <= 1))) {
+      $hmarks[$x] = 1;
+    }
+    
+    if ((($mark eq "h") && 
+	 (0 == $min) &&
+	 (0 == $hour)) ||
+	(($mark eq "d") && 
+	 (0 == $min) &&
+	 (0 == $hour) &&
+	 (1 == $wday)) ||
+	(($mark eq "m") && 
+	 (0 == $yday)) ||
+	(($mark eq "x") &&  
+	 ($mday <= 1) &&
+	 ($hour <= 1))) {
+      $mmarks[$x] = 1;
+    }
+  }
+  
+  print PPMTOGIF "P6 $xmax $ysize 255\n";
+  
+  for ($y = $ymax ; $y > 0 ; $y -= $ystep) {
+    $yss ++;
+    for ($x=0; $x<$xmax; $x++) {
+      if ($mmarks[$x] == 1) {
+	$current = $c_major;
+      } elsif (($yss % 3 == 0) && 
+	       ($hmarks[$x] == 1)) {
+	$current = $c_grid;
+      } elsif (($yss % 25 == 0) && ($x % 3 == 0)) {
+	$current = $c_grid;
+      } elsif ((($y < $output[$x]+$ystep) 
+		&& ($y >= $output[$x+1])) ||
+	       (($y > $output[$x]-$ystep) && ($y <= $output[$x+1]))) {
+	$current = $c_out;
+      } elsif($y <= $input[$x]) {
+	$current = $c_in; 
+      } else {
+	$current=$c_blank;
+      }
+      print PPMTOGIF $current;
+    }
+  }
+  close PPMTOGIF;
+}
+
+sub savetraffic {
+    @input=(); @output=(); @io_times=();
+
+    $first = $times[0];                        # the first entry must be at ..
+    $last = $times[0] - ($times[0] % (5*60));  # the last one at
+    $step = $first - $last;                    # in between we take steps of ..
+    &filllist($first,$step,1);
+    
+    $step = 5*60; # step size in seconds
+    $first = $times[0] - ($times[0] % $step); # the first reading at ...
+    $rest = ($first % (60*30)) / $step;  #steps to the next bigger interval 
+    $steps = 12*31+$rest;               # number of steps to take
+    &filllist($first,$step,$steps);
+
+    $first -=  $step*$steps;
+    $step = 30*60;
+    $rest = ($first % (60*60*2)) / $step;
+    $steps = 2*24*7+$rest;
+    &filllist($first,$step,$steps);
+
+    $first -=  $step*$steps;
+    $step = 2*60*60;
+    $rest = ($first % (60*60*24)) / $step;
+    $steps = 12*24*24+$rest;
+    &filllist($first,$step,$steps);
+
+    $first -=  $step*$steps;
+    $step = 24*60*60;
+    &filllist($first,$step,735);
+
+    
+    open (LOG, ">$router.log.$$");
+    for (@io_times) {
+      print LOG "$_\n";
+      print LOG shift(@input),"\n";
+      print LOG shift(@output),"\n";
+    }
+    close (LOG);
+
+    open (LAST, ">$router.last.$$") || die ("\nCan't write state");
+    print LAST "$innew\n$outnew\n";
+    close (LAST);      
+
+    # this is just in case, we crash while writing the log file.
+
+    rename "$router.last.$$", "$router.last" ||
+      die "\nError: Can't rename $router.last\n";
+    rename "$router.log.$$", "$router.log" ||
+      die "\nError: Can't rename $router.log\n";
+
+}
+
+sub datestr {
+    local($time) = shift(@_) || return 0;
+    local($wday) = (Sunday,Monday,Tuesday,Wednesday,
+		    Thursday,Friday,Saturday)[(localtime($time))[6]];
+    local($month) = ('January','February' ,'March' ,'April' ,
+                     'May' , 'June' , 'July' , 'August' , 'September' , 
+                     'October' ,
+                     'November' , 'December' )[(localtime($time))[4]];
+    local($mday,$year,$hour,$min) = (localtime($time))[3,5,2,1];
+    if ($min<10) {$min = "0$min";}
+    return "$wday $mday, $month ".($year+1900)." at $hour:$min";
+}
+
+sub writehtml {
+    local($rev,$date,$Today);
+    $Today=datestr(time);
+    '$Revision: 1.45 $ ' =~ /Revision: (\S*)/;
+    $rev=$1;
+    '$Date: 1995/06/29 09:27:51 $ ' =~ /Date: (\S*)/;
+    $date=$1;
+    open (HTML,">$router.html") || die ("\nCan't write $router.html");
+    print HTML <<TRAFFICPAGE;
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Refresh" CONTENT=300>
+<TITLE>
+$rcfg{'title'}{$router}
+</TITLE>
+</HEAD>
+<BODY>
+<H1>$rcfg{'title'}{$router}</H1>
+$rcfg{'comment'}{$router}<P>
+The blue part of the graph is the incoming traffic. The green line 
+is the outgoing traffic.<P>
+The statistics were last updated $Today
+<HR>
+<DL>
+<DT><B>Statistics for the last 31 hours</B><BR>
+<DD>
+<HR>
+$rcfg{'maxbytes'}{$router} Bytes per Second<BR>
+<IMG 
+WIDTH=30 HEIGHT=100 SRC="NOW.gif"><IMG 
+WIDTH=372 HEIGHT=100 SRC="$router-day.gif"><IMG
+WIDTH=30 HEIGHT=100 SRC="31h.gif"><BR>
+0 Bytes per Second<BR>
+<HR>
+The red line marks midnight
+</DL><P>
+
+<DL>
+<DT><B>Statistics for the last 8 days</B><BR>
+<DD>
+<HR>
+$rcfg{'maxbytes'}{$router} Bytes per Second<BR>
+<IMG 
+WIDTH=30 HEIGHT=100 SRC="NOW.gif"><IMG 
+WIDTH=384 HEIGHT=100 SRC="$router-week.gif"><IMG
+WIDTH=30 HEIGHT=100 SRC="8d.gif"><BR>
+0 Bytes per Second<BR>
+<HR>
+The red line marks the start of the week
+</DL><P>
+
+<DL>
+<DT><B>Statistics for the last 31 days</B><BR>
+<DD>
+<HR>
+$rcfg{'maxbytes'}{$router} Bytes per Second<BR>
+<IMG
+WIDTH=30 HEIGHT=100 SRC="NOW.gif"><IMG
+WIDTH=372 HEIGHT=100  SRC="$router-month.gif"><IMG
+WIDTH=30 HEIGHT=100 SRC="31d.gif"><BR>
+0 Bytes per Second<BR>
+<HR>
+The red line marks the start of the month
+</DL><P>
+
+<DL>
+<DT><B>Statistics for the last Year</B><BR>
+<DD>
+<HR>
+$rcfg{'maxbytes'}{$router} Bytes per Second<BR>
+<IMG 
+WIDTH=30 HEIGHT=100 SRC="NOW.gif"><IMG 
+WIDTH=365 HEIGHT=100 SRC="$router-year.gif"><IMG 
+WIDTH=30 HEIGHT=100 SRC="1y.gif"><BR>
+0 Bytes per Second<BR>
+<HR>
+The red line marks the start of the year
+</DL>
+<HR>
+
+Generated by mrtg <I>Multi Router Traffic Grapher</I>, version $rev. 
+Last update $date.<BR> Created by <A HREF="http://engelberg.dmu.ac.uk">
+Tobias Oetiker</A>
+
+</BODY>
+</HTML>
+TRAFFICPAGE
+    close HTML;
+}
+
+sub printusage {
+    print <<USAGEDESC;
+mrtg: Multi Router Traffic Grapher 
+------------------------------------------------------------------------
+Created by Tobias Oetiker <oetiker\@dmu.ac.uk> 
+This program is distributed under the GNU copy-left.
+
+Usage:    mrtg mrtg.cfg
+
+Synopsis: This tool, when started up regularly, through a crontab,
+          creates a daily, weekly, monthly and yearly graph,
+          representing the incoming and outgoing traffic on a snmp
+          manageable router port.  The tool also produces a HTML
+          document around the graphics for easy access on a web
+          server.
+
+Configuration: The operation of the "mrtg" is governed by entries in
+          the configuration file. The filename of the configuration
+          file must be specified as a command line argument when
+          calling "mrtg"
+
+Installation: Adapt the configuration file to your needs. Then put up
+          a crontab which starts "mrtg" every five minutes.  If for
+          some reasons mrtg misses on reading, this doesn't matter, it
+          will automatically take that into account.
+
+Example Config File:
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+# Multi Router Traffic Grapher -- Configuration File
+#######################################################################
+ 
+# General Configuration ###############################################
+#######################################################################
+
+WorkDir: /usr/local/www/data/dept/admin/dld/lin/netcomm/traffic
+
+# how nice shall we be ? (0 is the fastest)
+nice:	10  
+
+# Currently the following 3 "snmpgets" are supported
+# cmu: from cmu-snmp 
+# delft: SNMP distribution by tu-delft
+# getone:   On some systems this is already installed 
+snmpagent:  cmu 
+
+# The path to the "snmpget" utility
+snmpget: /home/oetiker/bin/snmpget
+
+# cmu-snmpget needs to know the path to mib.txt 
+mibfile: /home/oetiker/etc/mib.txt
+
+# The ppm to gif converter from the netpbm package
+ppmtogif: /usr/local/bin/ppmtogif 
+ 
+# Configuration for our CISCO Gateway #################################
+#######################################################################
+ 
+IP[jips]: 146.227.1.248
+Community[jips]: public
+MaxBytes[jips]: 8000   
+Title[jips]: Traffic Analysis for DMU's Internet Gateway
+ 
+Comment[jips]: Our Internet link curently runs over a 64Kb X.25 Link.
+  This gives a maximum throughput of 8 KBytes per Second.
+ 
+ifOut[jips]: interfaces.ifTable.ifEntry.ifOutOctets.6
+ifIn[jips]: interfaces.ifTable.ifEntry.ifInOctets.6 
+
+# More routers can follow .....
+################################
+
+IP[xyz]: 156.222.2.1
+MaxBytes[xyz]: 100000
+...
+
+# Combined Statistic for several Routers
+########################################
+# You DON'T need to specify ifOut, ifIn and Community !
+# Use a * at the end of a name if the router data gets generated externally
+#
+IP[summ]: xyz,jips,slow*
+Comment[summ]: Combined Traffic off all our frinds on the fddi ring
+...
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+USAGEDESC
+    exit(1);
+}
