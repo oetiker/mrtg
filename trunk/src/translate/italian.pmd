@@ -9,11 +9,9 @@
 ###### PATCHTAG 30 ####################################################
 # Italian/Italiano
    'italian' =>
-   "  <HR NOSHADE>
-    Localizzazione effettuata da
-    <NOBR><A HREF=\"http://www.shinystat.it\">Andrea Rossi</A>
-  <A HREF=\"mailto:rouge\@shiny.it\">
-  &lt;rouge\@shiny.it&gt;</A></NOBR>",
+   "Localizzazione effettuata da
+				<a href=\"http://www.shinystat.it\">Andrea Rossi</a>
+				<a href=\"mailto:rouge\@shiny.it\">&lt;rouge\@shiny.it&gt;</a>",
 ###### PATCHTAG 40 ####################################################
 $credits::LOCALE{'italiano'}=$credits::LOCALE{'italian'};
 ###### PATCHTAG 50 ####################################################
@@ -39,15 +37,15 @@ sub italian
      'Maximal 5 Minute Outgoing Traffic'      => 'Traffico massimo in uscita su 5 minuti',
      'the device'                             => 'Il dispositivo',
      'The statistics were last updated(.*)'   => 'Le statistiche l\' ultima volta sono state aggiornate $1',
-     ' Average\)</B><BR>'                     => ' Media)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Media$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Attuale$1',
+     ' Average\)'                             => ' Media)',
+     'Average'                                => 'Media',
+     'Max'                                    => 'Max',
+     'Current'                                => 'Attuale',
      'version'                                => 'versione',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Grafico giornaliero (su $1 minuti :',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Grafico settimanale (su 30 minuti :' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Grafico mensile  (su 2 ore :',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Grafico annuale (su 1 giorno :', 
+     '`Daily\' Graph \((.*) Minute'           => 'Grafico giornaliero (su $1 minuti:',
+     '`Weekly\' Graph \(30 Minute'            => 'Grafico settimanale (su 30 minuti:' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Grafico mensile  (su 2 ore:',
+     '`Yearly\' Graph \(1 Day'                => 'Grafico annuale (su 1 giorno:', 
      'Incoming Traffic in (\S+) per Second'   => 'Traffico in ingresso in $1 per Secondo',
      'Outgoing Traffic in (\S+) per Second'   => 'Traffico in uscita in $1 per Secondo',
      'Incoming Traffic in (\S+) per Minute'   => 'Traffico in ingresso in $1 per Minuto',
@@ -65,9 +63,9 @@ sub italian
      # '([kMG]?)([bB])/h'                     => '$1$2/t',
      # 'Bits'                                 => 'Bits',
      # 'Bytes'                                => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Ingresso:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Uscita:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Percentuale:</FONT>',
+     'In'                                     => 'Ingresso',
+     'Out'                                    => 'Uscita',
+     'Percentage'                             => 'Percentuale',
      'Ported to OpenVMS Alpha by'             => 'Ported su OpenVMS Alpha da',
      'Ported to WindowsNT by'                 => 'Ported su WindowsNT da',
      'and'                                    => 'e',

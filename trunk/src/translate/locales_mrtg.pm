@@ -274,322 +274,231 @@ $VERSION = '0.07';
   (
 # default
    'default' =>
-   "<HR NOSHADE>
-    Prepared for localization by
-    <NOBR><A HREF=\"http://www.ipt.dtu.dk\">Morten S. Nielsen</A>
-  <A HREF=\"mailto:msn\@ipt.dtu.dk\">
-  &lt;msn\@ipt.dtu.dk&gt;</A></NOBR>",
+   "Prepared for localization by
+				<a href=\"http://www.ipt.dtu.dk\">Morten S. Nielsen</a>
+				<a href=\"mailto:msn\@ipt.dtu.dk\">&lt;msn\@ipt.dtu.dk&gt;</a>",
 # Chinese/¤¤¤åÁcÅé
    'big5' =>
-   "  <HR NOSHADE>
-    ¤¤¤å¤Æ§@ªÌ
-    <NOBR><A HREF=\"http://www.joy-tech.com.tw/~tate\">Tate Chen</A>
-  <A HREF=\"mailto:tate\@joy-tech.com.tw\">
-  &lt;tate\@joy-tech.com.tw&gt;</A></NOBR>
-  and
-  <NOBR><A HREF=\"http://asplord.com\">¶ÀªF¶©</A>
-  <A HREF=\"mailto:ryan\@asplord.com\">
-  &lt;ryan\@asplord.com&gt;</A>  
-  </NOBR>",
+   "¤¤¤å¤Æ§@ªÌ
+				<a href=\"http://www.joy-tech.com.tw/~tate\">Tate Chen</a>
+				<a href=\"mailto:tate\@joy-tech.com.tw\">&lt;tate\@joy-tech.com.tw&gt;</a><br />
+				and <a href=\"http://asplord.com\">¶ÀªF¶©</a>
+				<a href=\"mailto:ryan\@asplord.com\">&lt;ryan\@asplord.com&gt;</a>",
 # Brazil/brazilian
    'brazilian' =>
-   "  <HR NOSHADE>
-    Localiza&ccedil;&atilde;o efetuada por
-    <NOBR><A HREF=\"http://www.encarnacao.com\">Luiz Felipe R E</A>
-  <A HREF=\"mailto:luizfelipe\@encarnacao.com\">
-  &lt;luizfelipe\@encarnacao.com&gt;</A>
-   atualização por
-    <NOBR>Gleydson Mazioli da Silva
-  <A HREF=\"mailto:gleydson\@debian.org\">
-  &lt;gleydson\@debian.org&gt;</A></NOBR>",
+   "Localiza&ccedil;&atilde;o efetuada por
+				<a href=\"http://www.encarnacao.com\">Luiz Felipe R E</a>
+				<a href=\"mailto:luizfelipe\@encarnacao.com\">&lt;luizfelipe\@encarnacao.com&gt;</a><br />
+				atualização por Gleydson Mazioli da Silva
+				<a href=\"mailto:gleydson\@debian.org\">&lt;gleydson\@debian.org&gt;</a>",
 # Bulgarian/Áúëãàğñêè
    'bulgarian' =>
-   "  <HR NOSHADE>
-    Ëîêàëèçàöèÿ íà áúëãàğñêè åçèê: 
-    <NOBR><A HREF=\"http://linux.gyuvet.ch/\">Éîâêî Ëàìáğåâ</A>
-  <A HREF=\"mailto:yovko\@sdf.lonestar.org\">
-  &lt;yovko\@sdf.lonestar.org&gt;</A></NOBR>",
+   "Ëîêàëèçàöèÿ íà áúëãàğñêè åçèê: 
+				<a href=\"http://linux.gyuvet.ch/\">Éîâêî Ëàìáğåâ</a>
+				<a href=\"mailto:yovko\@sdf.lonestar.org\">&lt;yovko\@sdf.lonestar.org&gt;</a>",
 # catalan/catalan
     'catalan' =>
-    "  <HR NOSHADE>
-      Preparat per a localització per:
-     <NOBR><A HREF=\"mailto:lluis\@seccat.com\">LLuís Gras</A>
-     </NOBR>",
+    "Preparat per a localització per:
+				<a hre=\"mailto:lluis\@seccat.com\">LLuís Gras</a>",
 # Simplified Chinese/¼òÌåÖĞÎÄ
    'chinese' =>
-   "  <HR NOSHADE>
-    È«ĞÂ¼òÌåÖĞÎÄºº»¯£º
-    <NOBR><A HREF=\"http://www.kingisme.com\">»Æ»ª¶°</A>
-  <A HREF=\"mailto:webmaster\@kingisme.com\">
-  &lt;webmaster\@kingisme.com&gt;</A></NOBR>",
+   "È«ĞÂ¼òÌåÖĞÎÄºº»¯£º
+				<a href=\"http://www.kingisme.com\">»Æ»ª¶°</a>
+				<a href=\"mailto:webmaster\@kingisme.com\">&lt;webmaster\@kingisme.com&gt;</a>",
 # cn/ÖĞÎÄºº×Ö
    'cn' =>
-   "  <HR NOSHADE>
-    MRTGÍêÃÀºº»¯£º
-    <NOBR><A HREF=\"http://horus.kingisme.com\">Àî³¿¹â</A>
-  <A HREF=\"mailto:zurkabsd\@yahoo.com.cn\">
-  &lt;zurkabsd\@yahoo.com.cn&gt;</A></NOBR>",
+   "MRTGÍêÃÀºº»¯£º
+				<a href=\"http://horus.kingisme.com\">Àî³¿¹â</a>
+				<a href=\"mailto:zurkabsd\@yahoo.com.cn\">&lt;zurkabsd\@yahoo.com.cn&gt;</a>",
 # Croatian/hrvatski
    'croatian' =>
-   "  <HR NOSHADE>
-  <TD WIDTH=388 ALIGN=RIGHT><FONT FACE=\"Arial,Helvetica\" SIZE=2>
-  Hrvatska lokalizacija - <NOBR>Dinko Korunic
-  <A HREF=\"mailto:kreator\@fly.srk.fer.hr\">
-  &lt;kreator\@fly.srk.fer.hr&gt;</A></NOBR>",
+   "Hrvatska lokalizacija - 
+				Dinko Korunic
+				<a href=\"mailto:kreator\@fly.srk.fer.hr\">&lt;kreator\@fly.srk.fer.hr&gt;</a>",
 # Czech/Èesky
    'czech' =>
-   "  <HR NOSHADE>
-    Èeskı pøeklad pøipravil
-    <NOBR><A HREF=\"http://www.och.cz\">Martin Och</A>
-  <A HREF=\"mailto:martin\@och.cz\">
-  &lt;martin\@och.cz&gt;</A></NOBR>",
+   "Èeskı pøeklad pøipravil
+				<a href=\"http://www.och.cz\">Martin Och</a>
+				<a href=\"mailto:martin\@och.cz\"> &lt;martin\@och.cz&gt;</a>",
 # Danish/dansk
    'danish' =>
-   "  <HR NOSHADE>
-    Forberedt for sprog samt oversat til dansk af
-    <NOBR><A HREF=\"http://www.ipt.dtu.dk\">Morten S. Nielsen</A>
-  <A HREF=\"mailto:msn\@ipt.dtu.dk\">
-  &lt;msn\@ipt.dtu.dk&gt;</A></NOBR>",
+   "Forberedt for sprog samt oversat til dansk af
+				<a href=\"http://www.ipt.dtu.dk\">Morten S. Nielsen</a>
+				<a href=\"mailto:msn\@ipt.dtu.dk\">&lt;msn\@ipt.dtu.dk&gt;</a>",
 # the danish string means: "Prepared for languages and translated to danish by"
 # Dutch/nederlands
    'dutch' =>
-   "  <HR NOSHADE>
-    Vertaald naar het Nederlands door
-    <NOBR><A HREF=\"http://doema.peterson.nl\">Barry van Dijk</A>
-  <A HREF=\"mailto:barry\@dijk.com\">
-  &lt;barry\@dijk.com&gt;</A>;
+   "Vertaald naar het Nederlands door
+				<a href=\"http://doema.peterson.nl\">Barry van Dijk</a>
+				<a href=\"mailto:barry\@dijk.com\">&lt;barry\@dijk.com&gt;</a><br />;
   Aangepast door Paul Slootman
-  <A HREF=\"mailto:paul\@debian.org\">&lt;paul\@debian.org&gt;</A></NOBR>",
+				<a href=\"mailto:paul\@debian.org\">&lt;paul\@debian.org&gt;</a>",
 # Estonian/Eesti
    'estonian' =>
-   "  <HR NOSHADE>
-  T&otilde;lge eesti keelde 
-    <NOBR><A HREF=\"http://www.linux.ee/~klem\">Klemens Kasemaa</A>
-  <A HREF=\"mailto:klem\@linux.ee\">
-  &lt;klem\@linux.ee&gt;</A></NOBR>",
+   "T&otilde;lge eesti keelde 
+				<a href=\"http://www.linux.ee/~klem\">Klemens Kasemaa</a>
+				<a href=\"mailto:klem\@linux.ee\">&lt;klem\@linux.ee&gt;</a>",
 # the estonian string means: "Translation to estonian by"
 # eucjp/euc-jp
    'eucjp' =>
-   "  <HR>
-  <FONT SIZE=2>ÆüËÜ¸ìÌõ(EUC-JP)ºîÀ®
-  <A HREF=\"http://www.kgz.com/~uematsu/\">¿¢¾¾ Ê¸ÆÁ</A>
-  <A HREF=\"mailto:uematsu\@kgz.com\">&lt;uematsu\@kgz.com&gt;</A></FONT>
+   "ÆüËÜ¸ìÌõ(EUC-JP)ºîÀ®
+				<a href=\"http://www.kgz.com/~uematsu/\">¿¢¾¾ Ê¸ÆÁ</a>
+				<a href=\"mailto:uematsu\@kgz.com\">&lt;uematsu\@kgz.com&gt;</a>
 ",
 # Finnish/Suomi
    'finnish' =>
-   "  <HR NOSHADE>
-    Lokalisoinut
-    <NOBR>Jussi Siponen
-  <A HREF=\"mailto:jussi.siponen\@online.tietokone.fi\">
-  &lt;jussi.siponen\@online.tietokone.fi&gt;</A></NOBR>",
+   "Lokalisoinut
+				Jussi Siponen
+				<a href=\"mailto:jussi.siponen\@online.tietokone.fi\">&lt;jussi.siponen\@online.tietokone.fi&gt;</a>",
 # the Finnish string means: "Localized by"
 # French/francais
    'french' =>
-   "  <HR NOSHADE>
-    Localisation effectu&eacute;e par
-    <NOBR><A HREF=\"http://cache.univ-tlse1.fr/les.personnes/fabrice.prigent\">Fabrice Prigent</A>
-  <A HREF=\"mailto:fabrice.prigent\@univ-tlse1.fr\">
-  &lt;fabrice.prigent\@univ-tlse1.fr&gt;</A></NOBR>",
+   "Localisation effectu&eacute;e par
+				<a href=\"http://cache.univ-tlse1.fr/les.personnes/fabrice.prigent\">Fabrice Prigent</a>
+				<a href=\"mailto:fabrice.prigent\@univ-tlse1.fr\">&lt;fabrice.prigent\@univ-tlse1.fr&gt;</a>",
 # Galician/Galego
    'galician' =>
-   "  <HR NOSHADE>
-    Traducido ao galego por
-    <NOBR>David Garabana Barro
-<A HREF=\"mailto:dgaraban\@arrakis.es\">&lt;dgaraban\@arrakis.es&gt;</A>
-    </NOBR>",
+   "Traducido ao galego por
+				David Garabana Barro
+				<a href=\"mailto:dgaraban\@arrakis.es\">&lt;dgaraban\@arrakis.es&gt;</a>",
 # Chinese/¼òÌåºº×Ö
    'gb' =>
-   "  <HR NOSHADE>
-    ¤¤¤å¤Æ§@ªÌ
-    <NOBR><A HREF=\"http://www.asiainfo.com/~zhanghui\">Hui Zhang</A>
-  <A HREF=\"mailto:zhanghui2\@asiainfo.com\">
-  &lt;zhanghui\@asiainfo.com&gt;</A></NOBR>",
+   "¤¤¤å¤Æ§@ªÌ
+				<a href=\"http://www.asiainfo.com/~zhanghui\">Hui Zhang</a>
+				<a href=\"mailto:zhanghui2\@asiainfo.com\">&lt;zhanghui\@asiainfo.com&gt;</a>",
 # Chinese/ÖĞÎÄ¼òÌå
    'gb2312' =>
-   "  <HR NOSHADE>
-    ÖĞÎÄ»¯×÷Õß
-    <NOBR><A HREF=\"http://linux.tcpip.com.cn\">Peter Wong</A>
-  <A HREF=\"mailto:webmaster\@tcpip.com.cn\">
-  &webmaster\@tcpip.com.cn&gt;</A></NOBR>",
+   "ÖĞÎÄ»¯×÷Õß
+				<a href=\"http://linux.tcpip.com.cn\">Peter Wong</a>
+				<a href=\"mailto:webmaster\@tcpip.com.cn\">&webmaster\@tcpip.com.cn&gt;</a>",
 # German/deutsch
    'german' =>
-   "  <HR NOSHADE>
-    Vorbereitet für die Lokalisation von
-    <NOBR><A HREF=\"http://www.gumblfarz.de/~illsen\">Ilja Pavkovic</A>
-  <A HREF=\"mailto:illsen\@gumblfarz.de\">
-  &lt;illsen\@gumblfarz.de&gt;</A></NOBR>",
+   "Vorbereitet f&uuml;r die Lokalisation von
+				<a href=\"http://www.gumblfarz.de/~illsen\">Ilja Pavkovic</a>
+				<a href=\"mailto:illsen\@gumblfarz.de\">&lt;illsen\@gumblfarz.de&gt;</a>",
 # Greek/Ellinika
    'greek' =>
-   "  <HR NOSHADE>
-    Ğñïåôïéìáóßá óôá åëëçíéêÜ áğü ôï
-    <NOBR><A HREF=\"http://hq.hellug.gr/~nls\">Óßìï Îåíéôİëëç</A>
-  <A HREF=\"mailto:S.Xenitellis\@hellug.gr\">
-  &lt;S.Xenitellis\@hellug.gr&gt;</A></NOBR>",
+   "Ğñïåôïéìáóßá óôá åëëçíéêÜ áğü ôï
+				<a href=\"http://hq.hellug.gr/~nls\">Óßìï Îåíéôİëëç</a>
+				<a href=\"mailto:S.Xenitellis\@hellug.gr\">&lt;S.Xenitellis\@hellug.gr&gt;</a>",
 # Hungarian/magyar
    'hungarian' =>
-   "  <HR NOSHADE>
-    Magyaros&iacute;totta
-    <NOBR>Nagy Levente
-  <A HREF=\"mailto:levinet\@euroweb.hu\">
-  &lt;levinet\@euroweb.hu&gt;</A></NOBR>",
+   "Magyaros&iacute;totta
+				Nagy Levente
+				<a href=\"mailto:levinet\@euroweb.hu\">&lt;levinet\@euroweb.hu&gt;</a>",
 # the hungarian string means: "Prepared for languages and translated to Hungarian by"
 # Icelandic/islenska
    'icelandic' =>
-   "  <HR NOSHADE>
-    &THORN;&yacute;tt yfir &aacute; &iacute;slensku af  
-  <NOBR><A HREF=\"http://www.islandssimi.is\">Halld&oacute;r Karl H&ouml;gnason</A>
-  <A HREF=\"mailto:halldor.hognason\@islandssimi.is\">
-  &lt;halldor.hognason\@islandssimi.is&gt;</A></NOBR>",
+   "&THORN;&yacute;tt yfir &aacute; &iacute;slensku af  
+				<a href=\"http://www.islandssimi.is\">Halld&oacute;r Karl H&ouml;gnason</a>
+				<a href=\"mailto:halldor.hognason\@islandssimi.is\">&lt;halldor.hognason\@islandssimi.is&gt;</a>",
 # Indonesian/Indonesia
    'indonesia' =>
-   "  <HR NOSHADE>
-    Terjemahan ke bahasa Indonesia oleh:
-    <NOBR><A HREF=\"http://www.jamalinux.com\">Jamaludin Ahmad</A>
-  <A HREF=\"mailto:jamaludin_at_jamalinux_dot_com\">
-  &lt;jamaludin\@jamalinux.com&gt;</A></NOBR>",
+   "Terjemahan ke bahasa Indonesia oleh:
+				<a href=\"http://www.jamalinux.com\">Jamaludin Ahmad</a>
+				<a href=\"mailto:jamaludin_at_jamalinux_dot_com\">&lt;jamaludin\@jamalinux.com&gt;</a>",
 # iso2022jp/iso-2022-jp
    'iso2022jp' =>
-   "  <HR>
-  <FONT SIZE=2>\e\$BF|K\\8lLu\e(B(ISO-2022-JP)\e\$B:n\@.\e(B
-  <A HREF=\"http://www.kgz.com/~uematsu/\">\e\$B?\">>\e(B \e\$BJ8FA\e(B</A>
-  <A HREF=\"mailto:uematsu\@kgz.com\">&lt;uematsu\@kgz.com&gt;</A></FONT>
-",
+   "\e\$BF|K\\8lLu\e(B(ISO-2022-JP)\e\$B:n\@.\e(B
+				<a href=\"http://www.kgz.com/~uematsu/\">\e\$B?\">>\e(B \e\$BJ8FA\e(B</a>
+				<a href=\"mailto:uematsu\@kgz.com\">&lt;uematsu\@kgz.com&gt;</a>",
 # Italian/Italiano
    'italian' =>
-   "  <HR NOSHADE>
-    Localizzazione effettuata da
-    <NOBR><A HREF=\"http://www.shinystat.it\">Andrea Rossi</A>
-  <A HREF=\"mailto:rouge\@shiny.it\">
-  &lt;rouge\@shiny.it&gt;</A></NOBR>",
+   "Localizzazione effettuata da
+				<a href=\"http://www.shinystat.it\">Andrea Rossi</a>
+				<a href=\"mailto:rouge\@shiny.it\">&lt;rouge\@shiny.it&gt;</a>",
 # korean
    ,'korean' =>
-   "  <HR NOSHADE>
-    ÇÑ±Û¸Ş½ÃÁö ¹ø¿ª:
-    <NOBR><A HREF=\"mailto:lovesh\@static.co.kr\">È²°Ç¼ø</A>
-    ,<A HREF=\"mailto:cjh\@kr.FreeBSD.org\">ÃÖÁØÈ£</A>
-  </NOBR>",
+   "ÇÑ±Û¸Ş½ÃÁö ¹ø¿ª:
+				<a href=\"mailto:lovesh\@static.co.kr\">È²°Ç¼ø</a>,
+				<a href=\"mailto:cjh\@kr.FreeBSD.org\">ÃÖÁØÈ£</a>",
 # Lithuanian/lietuviğkai
    'lithuanian' =>
-   "  <HR NOSHADE>
-    Paruoğë ir á lietuviø kalbà iğvertë
-    <NOBR><A HREF=\"http://www.hardcore.lt\">ve</A>
-  <A HREF=\"mailto:ve\@hardcore.lt\">
-  &lt;ve\@hardcore.lt&gt;</A></NOBR>",
+   "Paruoğë ir á lietuviø kalbà iğvertë
+				<a href=\"http://www.hardcore.lt\">ve</a>
+				<a href=\"mailto:ve\@hardcore.lt\">&lt;ve\@hardcore.lt&gt;</a>",
 # the lithuanian string means: "Prepared for languages and translated to lithuanian by"
 # Macedonian/makedonski
    'macedonian' =>
-   "  <HR NOSHADE>
-    Makedonska lokalizacija - 
-    <NOBR><A HREF=\"http://www.esmak.com.mk\">Delev D Zoran</A>
-  <A HREF=\"mailto:delevz\@esmak.com.mk\">
-  &lt;delevz\@esmak.com.mk&gt;</A></NOBR>",
+   "Makedonska lokalizacija - 
+				<a href=\"http://www.esmak.com.mk\">Delev D Zoran</a>
+				<a href=\"mailto:delevz\@esmak.com.mk\">&lt;delevz\@esmak.com.mk&gt;</a>",
 # the macedonian string means: "Prepared for languages and translated to macedonian by"
 # Malaysian/Malay
    'malay' =>
-   "  <HR NOSHADE>
-    Terjemahan ke bahasa Malaysia/Indonesia oleh:
-    <NOBR><A HREF=\"http://www.mimos.my\">Assakhof Ab. Satar</A>
-  <A HREF=\"mailto:assakhof\@mimos.my\">
-  &lt;assakhof\@mimos.my&gt;</A></NOBR>",
+   "Terjemahan ke bahasa Malaysia/Indonesia oleh:
+				<a href=\"http://www.mimos.my\">Assakhof Ab. Satar</a>
+				<a href=\"mailto:assakhof\@mimos.my\">&lt;assakhof\@mimos.my&gt;</a>",
 # Danish/dansk
    'norwegian' =>
-   "  <HR NOSHADE>
-    Oversatt til norsk av
-    <NOBR>Knut Grøneng</A>
-  <A HREF=\"mailto:knut.groneng\@merkantildata.no\">
-  &lt;knut.groneng\@merkantildata.no&gt;</A></NOBR>",
+   "Oversatt til norsk av
+				Knut Grøneng
+				<a href=\"mailto:knut.groneng\@merkantildata.no\">&lt;knut.groneng\@merkantildata.no&gt;</a>",
 # the norwegian string means: "Translated to norwegian by"
 # Polish/polski
    'polish' =>
-   "  <HR NOSHADE>
-    Polska lokalizacja
-  <NOBR><A HREF=\"http://www.klonex.com.pl/~lcj\">Lukasz Jokiel</A>
-  <A HREF=\"mailto:Lukasz.Jokiel\@klonex.com.pl\">
-  &lt;Lukasz.Jokiel\@klonex.com.pl&gt;</A></NOBR>",
+   "Polska lokalizacja
+				<a href=\"http://www.klonex.com.pl/~lcj\">Lukasz Jokiel</a>
+				<a href=\"mailto:Lukasz.Jokiel\@klonex.com.pl\">&lt;Lukasz.Jokiel\@klonex.com.pl&gt;</a>",
 # Português/portuguese 
    'portuguese' =>
-   "  <HR NOSHADE>
-    Traduzido por 
-    <NOBR><A HREF=\"http://sweet.ua.pt/~etdgomes\">Diogo Gomes</A>
-  <A HREF=\"mailto:etdgomes\@ua.pt\">
-  etdgomes\@ua.pt</A></NOBR>",
+   "Traduzido por 
+				<a href=\"http://sweet.ua.pt/~etdgomes\">Diogo Gomes</>
+				<a href=\"mailto:etdgomes\@ua.pt\">&lt;etdgomes\@ua.pt&gt;</a>",
 # Romãn/romanian
    'romanian' =>
-   "  <HR NOSHADE>
-    Tradus de
-    <NOBR><A HREF=\"http://szjozsef.go.ro/\">József Szilágyi</A>
-  <A HREF=\"mailto:jozsi\@maxiq.ro\">
-  &lt;jozsi\@maxiq.ro&gt;</A></NOBR>",
+   "Tradus de
+				<a href=\"http://szjozsef.go.ro/\">József Szilágyi</a>
+				<a href=\"mailto:jozsi\@maxiq.ro\">&lt;jozsi\@maxiq.ro&gt;</a>",
 # Russian/òÕÓÓËÉÊ
    'russian' =>
-   "  <HR NOSHADE>
-    ğÅÒÅ×ÏÄ ÎÁ ÒÕÓÓËÉÊ ÑÚÙË:
-    <NOBR><A HREF=\"http://mitya.pp.ru/\">äÍÉÔÒÉÊ óÉ×ÁŞÅÎËÏ</A>
-  <A HREF=\"mailto:mitya\@cavia.pp.ru\">
-  &lt;mitya\@cavia.pp.ru&gt;</A></NOBR>",
+   "ğÅÒÅ×ÏÄ ÎÁ ÒÕÓÓËÉÊ ÑÚÙË:
+				<a href=\"http://mitya.pp.ru/\">äÍÉÔÒÉÊ óÉ×ÁŞÅÎËÏ</a>
+				<a href=\"mailto:mitya\@cavia.pp.ru\">&lt;mitya\@cavia.pp.ru&gt;</a>",
 # Russian1251/Ğóññêèé1251
    'russian1251' =>
-   "  <HR NOSHADE>
-    Ïåğåâîä íà ğóññêèé ÿçûê (êîäèğîâêà 1251):
-    <NOBR><A HREF=\"http://www.irmcity.com\">Àëåêñàíäğ Ğåäşê</A>
-  <A HREF=\"mailto:aredyuk\@irmcity.com\">
-  &lt;aredyuk\@irmcity.com&gt;</A></NOBR>",
+   "Ïåğåâîä íà ğóññêèé ÿçûê (êîäèğîâêà 1251):
+				<a href=\"http://www.irmcity.com\">Àëåêñàíäğ Ğåäşê</a>
+				<a href=\"mailto:aredyuk\@irmcity.com\">&lt;aredyuk\@irmcity.com&gt;</a>",
 # Serbian/Srpski
    'serbian' =>
-   "  <HR NOSHADE>
-  <TD WIDTH=388 ALIGN=RIGHT><FONT FACE=\"Arial,Helvetica\" SIZE=2>
-  Ported to Serbian by / Srpski prevod uradio: 
-    <NOBR>Ratko Buèiæ
-  <A HREF=\"mailto:ratko\@ni.ac.yu\">
-  &lt;ratko\@ni.ac.yu&gt;</A></NOBR>",
+   "Ported to Serbian by / Srpski prevod uradio: 
+				Ratko Buèiæ
+				<a href=\"mailto:ratko\@ni.ac.yu\">&lt;ratko\@ni.ac.yu&gt;</a>",
 # Slovak/Slovensky
    'slovak' =>
-   "  <HR NOSHADE>
-    Slovenskı preklad pripravil
-    <NOBR>Ing. Ladislav Mihok
-  <A HREF=\"mailto:laco\@mrokh.shmu.sk\">
-  &lt;laco\@mrokh.shmu.sk&gt;</A></NOBR>",
+   "Slovenskı preklad pripravil
+				Ing. Ladislav Mihok
+				<a href=\"mailto:laco\@mrokh.shmu.sk\">&lt;laco\@mrokh.shmu.sk&gt;</a>",
 # Slovenian/Slovensko
    'slovenian' =>
-   "  <HR NOSHADE>
-  <TD WIDTH=388 ALIGN=RIGHT><FONT FACE=\"Arial,Helvetica\" SIZE=2>
-  Slovenski prevod pripravil
-    <NOBR>Aljosa Us
-  <A HREF=\"mailto:us\@sweet-sorrow.com\">
-  &lt;us\@sweet-sorrow.com&gt;</A></NOBR>",
+   "Slovenski prevod pripravil
+				Aljosa Us
+				<a href=\"mailto:us\@sweet-sorrow.com\">&lt;us\@sweet-sorrow.com&gt;</a>",
 # Spanish/español
     'spanish' =>
-    "  <HR NOSHADE>
-      Preparado para localización por
-     <NOBR><A HREF=\"mailto:marcelo\@linuxfan.com\">Marcelo Roccasalva</A>
-     </NOBR>",
+    "Preparado para localización por
+				<a href=\"mailto:marcelo\@linuxfan.com\">Marcelo Roccasalva</a>",
 # Swedish/Svenska
    'swedish' =>
-   "  <HR NOSHADE>
-    &Oumlversatt till svenska av
-    <NOBR>Clas Mayer
-  <A HREF=\"mailto:clas\@mayer.se\">
-  &lt;clas\@mayer.se&gt;</A></NOBR>",
+   "&Oumlversatt till svenska av
+				Clas Mayer
+				<a href=\"mailto:clas\@mayer.se\">&lt;clas\@mayer.se&gt;</a>",
 # the Swedish string means: "Prepared for languages and translated to Swedish by"
 # Turkish/Türkçe
     'turkish' =>
-    "  <HR NOSHADE>
-      Türkçeleştiren
-     <NOBR><A HREF=\"mailto:ozgurcd\@koc.net\">Özgür C. Demir</A>
-     </NOBR>",
+    "Türkçeleştiren
+				<a href=\"mailto:ozgurcd\@koc.net\">Özgür C. Demir</a>",
 # Ukrainian/õËÒÁ§ÎÓØËÁ
    'ukrainian' =>
-   "  <HR NOSHADE>
-    ğÅÒÅËÌÁÄ ÎÁ ÕËÒÁ§ÎÓØËÕ ÍÏ×Õ:
-    <NOBR><A HREF=\"http://www.arte-fact.net/~gray/\">óÅÒÇ¦Ê çÕÍ¦Î¦ÌÏ×ÉŞ</A>
-  <A HREF=\"mailto:gray\@arte-fact.net\">
-  &lt;gray\@arte-fact.net&gt;</A></NOBR>",
+   "ğÅÒÅËÌÁÄ ÎÁ ÕËÒÁ§ÎÓØËÕ ÍÏ×Õ:
+				<a href=\"http://www.arte-fact.net/~gray/\">óÅÒÇ¦Ê çÕÍ¦Î¦ÌÏ×ÉŞ</a>
+				<a href=\"mailto:gray\@arte-fact.net\">&lt;gray\@arte-fact.net&gt;</a>",
 # Ukrainian1251/Óêğà¿íñüêà1251
    'ukrainian1251'	=>
-   "  <HR NOSHADE>
-  Ïåğåêëàä óêğà¿íñüêîş (cp1251):
-  <NOBR>Îëåêñàíäğ Êóíèöÿ<A HREF=\"mailto:xakep\@snark.ukma.kiev.ua\">
-  &lt;xakep\@snark.ukma.kiev.ua&gt;</A></NOBR>",
+   "Ïåğåêëàä óêğà¿íñüêîş (cp1251):
+				Îëåêñàíäğ Êóíèöÿ
+				<a href=\"mailto:xakep\@snark.ukma.kiev.ua\">&lt;xakep\@snark.ukma.kiev.ua&gt;</a>",
   );
 
 $credits::LOCALE{'¤¤¤åÁcÅé'}=$credits::LOCALE{'big5'};
@@ -658,20 +567,20 @@ sub big5
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=big5',
+     'iso-8859-1'                             => 'big5',
      'Maximal 5 Minute Incoming Traffic'      => '5¤ÀÄÁ³Ì¤j¬y¤J¶q',
      'Maximal 5 Minute Outgoing Traffic'      => '5¤ÀÄÁ³Ì¤j¬y¥X¶q',
      'the device'                             => '¸Ë¸m',
      'The statistics were last updated(.*)'   => '¤W¦¸²Î­p§ó·s®É¶¡: $1',
-     ' Average\)</B><BR>'                     => ' ¥­§¡)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>¥­§¡$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>³Ì¤j$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>¥Ø«e$1',
+     ' Average\)'                             => ' ¥­§¡)',
+     'Average'                                => '¥­§¡',
+     'Max'                                    => '³Ì¤j',
+     'Current'                                => '¥Ø«e',
      'version'                                => 'ª©¥»',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>¨C¤é ¹Ïªí ($1 ¤ÀÄÁ',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>¨C¶g ¹Ïªí (30 ¤ÀÄÁ' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>¨C¤ë ¹Ïªí (2 ¤p®É',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>¨C¦~ ¹Ïªí (1 ¤Ñ',
+     '`Daily\' Graph \((.*) Minute'           => '¨C¤é ¹Ïªí ($1 ¤ÀÄÁ',
+     '`Weekly\' Graph \(30 Minute'            => '¨C¶g ¹Ïªí (30 ¤ÀÄÁ' ,
+     '`Monthly\' Graph \(2 Hour'              => '¨C¤ë ¹Ïªí (2 ¤p®É',
+     '`Yearly\' Graph \(1 Day'                => '¨C¦~ ¹Ïªí (1 ¤Ñ',
      'Incoming Traffic in (\S+) per Second'   => '¨C¬í¬y¤J¶q (³æ¦ì $1)',
      'Outgoing Traffic in (\S+) per Second'   => '¨C¬í¬y¥X¶q (³æ¦ì $1)',
      'Incoming Traffic in (\S+) per Minute'   => '¨C¤ÀÄÁ¬y¤J¶q (³æ¦ì $1)',
@@ -686,9 +595,9 @@ sub big5
      '(.+)/h$'                                => '$1/¤p®É',
      # 'Bits'                                   => 'Bits',
      # 'Bytes'                                  => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;¬y¤J:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;¬y¥X:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;¦Ê¤À¤ñ:</FONT>',
+     'In'                                     => '¬y¤J',
+     'Out'                                    => '¬y¥X',
+     'Percentage'                             => '¦Ê¤À¤ñ',
      'Ported to OpenVMS Alpha by'             => '²¾´Ó¨ì OpenVM Alpha §@ªÌ',
      'Ported to WindowsNT by'                 => '²¾´Ó¨ì WindowsNT §@ªÌ',
      'and'                                    => '¤Î',
@@ -778,15 +687,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Tr&aacute;fego M&aacute;ximo de Sa&iacute;da em 5 minutos',
      'the device'                             => 'dispositivo',
      'The statistics were last updated (.*)'  => '&Uacute;ltima atualiza&ccedil;&atilde;o das estat&iacute;sticas: $1',
-     ' Average\)</B><BR>'                     => ' - m&eacute;dia)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>M&eacute;dia$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>M&aacute;x$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Atual$1',
+     ' Average\)'                             => ' - m&eacute;dia)',
+     'Average'                                => 'M&eacute;dia',
+     'Max'                                    => 'M&aacute;x',
+     'Current'                                => 'Atual',
      'version'                                => 'vers&atilde;o',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Gr&aacute;fico `Di&aacute;rio\' ($1 minutos',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Gr&aacute;fico `Semanal\' (30 minutos' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Gr&aacute;fico `Mensal\' (2 horas',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Gr&aacute;fico `Anual\' (1 dia', 
+     '`Daily\' Graph \((.*) Minute'           => 'Gr&aacute;fico `Di&aacute;rio\' ($1 minutos',
+     '`Weekly\' Graph \(30 Minute'            => 'Gr&aacute;fico `Semanal\' (30 minutos' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Gr&aacute;fico `Mensal\' (2 horas',
+     '`Yearly\' Graph \(1 Day'                => 'Gr&aacute;fico `Anual\' (1 dia', 
      'Incoming Traffic in (\S+) per Second'   => 'Tr&aacute;fego de Entrada em $1 por segundo',
      'Outgoing Traffic in (\S+) per Second'   => 'Tr&aacute;fego de Sa&iacute;da em $1 por segundo',
      'at which time (.*) had been up for(.*)' => 'nesta hora $1 estava ativo por $2',
@@ -795,9 +704,9 @@ return "" unless defined $string;
      # '([kMG]?)([bB])/h'                     => '$1$2/t',
      # 'Bits'                                 => 'Bits',
      # 'Bytes'                                => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Entr.:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Sa&iacute;:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Porc.:</FONT>',
+     'In'                                     => 'Entr.',
+     'Out'                                    => 'Sa&iacute;',
+     'Percentage'                             => 'Porc.',
      'Ported to OpenVMS Alpha by'             => 'Adaptado para o Alpha OpenVMS por', 
      'Ported to WindowsNT by'                 => 'Adaptado para o WindowsNT por',
      'and'                                    => 'e',
@@ -884,20 +793,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=windows-1251',
+     'iso-8859-1'                             => 'windows-1251',
      'Maximal 5 Minute Incoming Traffic'      => 'Ìàêñèìàëåí âõîäÿù òğàôèê çà 5 ìèíóòè',
      'Maximal 5 Minute Outgoing Traffic'      => 'Ìàêñèìàëåí èçõîäÿù òğàôèê çà 5 ìèíóòè',
      'the device'                             => 'óñòğîéñòâîòî',
      'The statistics were last updated(.*)'   => 'Ñòàòèñòè÷åñêèòå äàííè ñà îò÷åòåíè íà: $1',
-     ' Average\)</B><BR>'                     => ' ñğåäíî)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Ñğåäíî$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Ìàêñ.$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Òåêóùî$1',
+     ' Average\)'                             => ' ñğåäíî)',
+     'Average'                                => 'Ñğåäíî',
+     'Max'                                    => 'Ìàêñ.',
+     'Current'                                => 'Òåêóùî',
      'version'                                => 'âåğñèÿ',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Äíåâíà ãğàôèêà (ïğåç $1 ìèíóòè',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Ñåäìè÷íà ãğàôèêà (ïğåç 30 ìèíóòè' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Ìåñå÷íà ãğàôèêà (ïğåç 2 ÷àñà',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Ãîäèøíà ãğàôèêà (ïğåç 1 äåí', 
+     '`Daily\' Graph \((.*) Minute'           => 'Äíåâíà ãğàôèêà (ïğåç $1 ìèíóòè',
+     '`Weekly\' Graph \(30 Minute'            => 'Ñåäìè÷íà ãğàôèêà (ïğåç 30 ìèíóòè' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Ìåñå÷íà ãğàôèêà (ïğåç 2 ÷àñà',
+     '`Yearly\' Graph \(1 Day'                => 'Ãîäèøíà ãğàôèêà (ïğåç 1 äåí', 
      'Incoming Traffic in (\S+) per Second'   => 'Âõîäÿù òğàôèê â $1 çà ñåêóíäà',
      'Outgoing Traffic in (\S+) per Second'   => 'Èçõîäÿù òğàôèê â $1 çà ñåêóíäà',
      'at which time (.*) had been up for(.*)' => 'â êîåòî âğåìå $1 ğàáîòè îò $2',
@@ -906,9 +815,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/÷',
      'Bits'                                  => 'áèòà',
      'Bytes'                                 => 'áàéòà',
-     '&nbsp;In:</FONT>'                       => '&nbsp;Âõ.:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Èçõ.:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Ïğîöåíò:</FONT>',
+     'In'                                     => 'Âõ.',
+     'Out'                                    => 'Èçõ.',
+     'Percentage'                             => 'Ïğîöåíò',
      'Ported to OpenVMS Alpha by'             => 'Ïîğò çà OpenVMS Alpha îò',
      'Ported to WindowsNT by'                 => 'Ïîğò çà WindowsNT îò',
      'and'                                    => 'è',
@@ -991,20 +900,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=iso-8859-1',
+     #'charset=iso-8859-1'                     => 'charset=iso-8859-1',
      'Maximal 5 Minute Incoming Traffic'      => 'Tr&agrave;fic entrant m&agrave;xim en 5 minuts',
      'Maximal 5 Minute Outgoing Traffic'      => 'Tr&agrave;fic sortint m&agrave;xim en 5 minuts',
      'the device'                             => 'el dispositiu',
      'The statistics were last updated(.*)'   => 'Estad&iacute;stiques actualitzades el $1',
-     ' Average\)</B><BR>'                     => ' Promig)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Promig $1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>M&agrave;xim$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Actual$1',
+     ' Average\)'                             => ' Promig)',
+     'Average'                                => 'Promig',
+     'Max'                                    => 'M&agrave;xim',
+     'Current'                                => 'Actual',
      'version'                                => 'versi&oacute',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Gr&agrave;fic diari ($1 minuts :',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Gr&agrave;fic setmanal (30 minuts :' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Gr&agrave;fic mensual (2 hores :',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Gr&agrave;fic anual (1 dia :', 
+     '`Daily\' Graph \((.*) Minute'           => 'Gr&agrave;fic diari ($1 minuts :',
+     '`Weekly\' Graph \(30 Minute'            => 'Gr&agrave;fic setmanal (30 minuts :' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Gr&agrave;fic mensual (2 hores :',
+     '`Yearly\' Graph \(1 Day'                => 'Gr&agrave;fic anual (1 dia :', 
      'Incoming Traffic in (\S+) per Second'   => 'Tr&agrave;fic entrant en $1 per segon',
      'Outgoing Traffic in (\S+) per Second'   => 'Tr&agrave;fic sortint en $1 per segon',
      'at which time (.*) had been up for(.*)' => '$1 ha estat funcionant durant $2',
@@ -1013,9 +922,9 @@ return "" unless defined $string;
      # '([kMG]?)([bB])/h'                       => '$1$2/t',
      # 'Bits'                                  => 'Bits',
      # 'Bytes'                                 => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Entrant:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Sortint:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Percentatge:</FONT>',
+     'In'                                     => 'Entrant',
+     'Out'                                    => 'Sortint',
+     'Percentage'                             => 'Percentatge',
      'Ported to OpenVMS Alpha by'             => 'Portat a OpenVMS Alpha per',
      'Ported to WindowsNT by'                 => 'Portat a WindowsNT per',
      'and'                                    => 'i',
@@ -1088,20 +997,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=gb2312',
+     'iso-8859-1'                             => 'gb2312',
      'Maximal 5 Minute Incoming Traffic'      => '5·ÖÖÓ×î´óÁ÷ÈëÁ¿',
      'Maximal 5 Minute Outgoing Traffic'      => '5·ÖÖÓ×î´óÁ÷³öÁ¿',
      'the device'                             => 'Éè±¸',
      'The statistics were last updated(.*)'   => '×îºóÍ³¼Æ¸üĞÂÊ±¼ä£º$1',
-     ' Average\)</B><BR>'                     => ' Æ½¾ù)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Æ½¾ù$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>×î´ó$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>µ±Ç°$1',
+     ' Average\)'                             => ' Æ½¾ù)',
+     'Average'                                => 'Æ½¾ù',
+     'Max'                                    => '×î´ó',
+     'Current'                                => 'µ±Ç°',
      'version'                                => '°æ±¾',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Ã¿ÈÕ Í¼±í ($1 ·ÖÖÓ',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Ã¿ÖÜ Í¼±í (30 ·ÖÖÓ' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Ã¿ÔÂ Í¼±í (2 Ğ¡Ê±',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Ã¿Äê Í¼±í (1 Ìì', 
+     '`Daily\' Graph \((.*) Minute'           => 'Ã¿ÈÕ Í¼±í ($1 ·ÖÖÓ',
+     '`Weekly\' Graph \(30 Minute'            => 'Ã¿ÖÜ Í¼±í (30 ·ÖÖÓ' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Ã¿ÔÂ Í¼±í (2 Ğ¡Ê±',
+     '`Yearly\' Graph \(1 Day'                => 'Ã¿Äê Í¼±í (1 Ìì', 
      'Incoming Traffic in (\S+) per Second'   => 'Ã¿ÃëÁ÷ÈëÁ¿ (µ¥Î» $1 )',
      'Outgoing Traffic in (\S+) per Second'   => 'Ã¿ÃëÁ÷³öÁ¿ (µ¥Î» $1 )',
      'at which time (.*) had been up for(.*)' => ' $1 ÒÑÔËĞĞÁË£º $2 ',
@@ -1110,9 +1019,9 @@ return "" unless defined $string;
      '(.+)/h$'                                => '$1/Ê±',
      # 'Bits'                                 => 'Bits',
      # 'Bytes'                                => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Á÷Èë£º</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Á÷³ö£º</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;°Ù·Ö±È£º</FONT>',
+     'In'                                     => 'Á÷Èë£º',
+     'Out'                                    => 'Á÷³ö£º',
+     'Percentage'                             => '°Ù·Ö±È£º',
      'Ported to OpenVMS Alpha by'             => 'ÒÆÖ²µ½ OpenVMS µÄÊÇ', 
      'Ported to WindowsNT by'                 => 'ÒÆÖ²µ½ WindowsNT µÄÊÇ',
      'and'                                    => 'Óë',
@@ -1199,20 +1108,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=gb2312',
+     'iso-8859-1'                             => 'gb2312',
      'Maximal 5 Minute Incoming Traffic'      => '5·ÖÖÓ×î´óÁ÷ÈëÁ¿',
      'Maximal 5 Minute Outgoing Traffic'      => '5·ÖÖÓ×î´óÁ÷³öÁ¿',
      'the device'                             => 'Éè±¸',
      'The statistics were last updated(.*)'   => 'Í³¼Æ×îºó¸üĞÂÊ±¼ä£º$1',
-     ' Average\)</B><BR>'                     => ' Æ½¾ù)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Æ½¾ù$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>×î´ó$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>µ±Ç°$1',
+     ' Average\)'                             => ' Æ½¾ù)',
+     'Average'                                => 'Æ½¾ù',
+     'Max'                                    => '×î´ó',
+     'Current'                                => 'µ±Ç°',
      'version'                                => '°æ±¾',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>"Ã¿ÈÕ" Í¼±í ($1 ·ÖÖÓ',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>"Ã¿ÖÜ" Í¼±í (30 ·ÖÖÓ' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>"Ã¿ÔÂ" Í¼±í (2 Ğ¡Ê±',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>"Ã¿Äê" Í¼±í (1 Ìì', 
+     '`Daily\' Graph \((.*) Minute'           => '"Ã¿ÈÕ" Í¼±í ($1 ·ÖÖÓ',
+     '`Weekly\' Graph \(30 Minute'            => '"Ã¿ÖÜ" Í¼±í (30 ·ÖÖÓ' ,
+     '`Monthly\' Graph \(2 Hour'              => '"Ã¿ÔÂ" Í¼±í (2 Ğ¡Ê±',
+     '`Yearly\' Graph \(1 Day'                => '"Ã¿Äê" Í¼±í (1 Ìì', 
      'Incoming Traffic in (\S+) per Second'   => 'Ã¿ÃëÁ÷Èë $1 Á¿',
      'Outgoing Traffic in (\S+) per Second'   => 'Ã¿ÃëÁ÷³ö $1 Á¿',
      'at which time (.*) had been up for(.*)' => '´ËÊ± $1 ÒÑÔË×÷ÁË£º $2 ',
@@ -1221,9 +1130,9 @@ return "" unless defined $string;
      '(.+)/h$'                                => '$1/Ê±',
      # 'Bits'                                 => 'Bits',
      # 'Bytes'                                => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Á÷Èë£º</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Á÷³ö£º</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;°Ù·Ö±È£º</FONT>',
+     'In'                                     => 'Á÷Èë£º',
+     'Out'                                    => 'Á÷³ö£º',
+     'Percentage'                             => '°Ù·Ö±È£º',
      'Ported to OpenVMS Alpha by'             => 'ÒÆÖ²µ½ OpenVMS Õß', 
      'Ported to WindowsNT by'                 => 'ÒÆÖ²µ½ WindowsNT Õß',
      'and'                                    => 'ºÍ',
@@ -1311,20 +1220,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=iso-8859-2',
+     'iso-8859-1'                             => 'iso-8859-2',
      'Maximal 5 Minute Incoming Traffic'      => 'Maksimalni ulazni promet unutar 5 minuta',
      'Maximal 5 Minute Outgoing Traffic'      => 'Maksimalni izlazni promet unutar 5 minuta',
      'the device'                             => 'ureğaj',
      'The statistics were last updated(.*)'   => 'Statistike su zadnji puta izmijenjene $1',
-     ' Average\)</B><BR>'                     => ' prosjeèna vrijednost)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=left><SMALL>Prosjeèno$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=left><SMALL>Maksimalno$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=left><SMALL>Trenutno$1',
+     ' Average\)'                             => ' prosjeèna vrijednost)',
+     'Average'                                => 'Prosjeèno',
+     'Max'                                    => 'Maksimalno',
+     'Current'                                => 'Trenutno',
      'version'                                => 'verzija',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Dnevne statistike (svakih $1 minuta',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Tjedne statistike (svakih 30 minuta' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Mjeseène statistike (svakih 2 sata',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Godi¹nje statistike (svaki 1 dan', 
+     '`Daily\' Graph \((.*) Minute'           => 'Dnevne statistike (svakih $1 minuta',
+     '`Weekly\' Graph \(30 Minute'            => 'Tjedne statistike (svakih 30 minuta' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Mjeseène statistike (svakih 2 sata',
+     '`Yearly\' Graph \(1 Day'                => 'Godi¹nje statistike (svaki 1 dan', 
      'Incoming Traffic in (\S+) per Second'   => 'Ulazni promet - $1 po sekundi',
      'Outgoing Traffic in (\S+) per Second'   => 'Izlazni promet - $1 po sekundi',
      'at which time (.*) had been up for(.*)' => 'gdje $1 je bio aktivan $2',
@@ -1333,9 +1242,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/g',
      'Bits'                                => 'Bitova',
      'Bytes'                              => 'Bajtova',
-     '&nbsp;In:</FONT>'                      => '&nbsp;Unutra:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;Van:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;Postotak:</FONT>',
+     'In'                                     => 'Unutra',
+     'Out'                                    => 'Van',
+     'Percentage'                             => 'Postotak',
      'Ported to OpenVMS Alpha by'             => 'Port na OpenVMS Alpha od', 
      'Ported to WindowsNT by'                 => 'Post od WindowsNT od',
      'and'                                    => 'i',
@@ -1420,20 +1329,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=windows-1250',
+     'iso-8859-1'                             => 'windows-1250',
      'Maximal 5 Minute Incoming Traffic'      => 'Maximální 5 minutovı pøíchozí tok',
      'Maximal 5 Minute Outgoing Traffic'      => 'Maximální 5 minutovı odchozí tok',
      'the device'                             => 'zaøízení',
      'The statistics were last updated(.*)'   => 'Poslední aktualizace statistiky:$1',
-     ' Average\)</B><BR>'                     => ' prùmìr)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Prùm.$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max.$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Akt.$1',
+     ' Average\)'                             => ' prùmìr)',
+     'Average'                                => 'Prùm.',
+     'Max'                                    => 'Max.',
+     'Current'                                => 'Akt.',
      'version'                                => 'verze',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Denní graf ($1 minutovı',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Tıdenní graf (30 minutovı' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Mìsíèní graf (2 hodinovı',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Roèní graf (1 denní', 
+     '`Daily\' Graph \((.*) Minute'           => 'Denní graf ($1 minutovı',
+     '`Weekly\' Graph \(30 Minute'            => 'Tıdenní graf (30 minutovı' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Mìsíèní graf (2 hodinovı',
+     '`Yearly\' Graph \(1 Day'                => 'Roèní graf (1 denní', 
      'Incoming Traffic in (\S+) per Second'   => 'Pøíchozí tok v $1 za sec.',
      'Outgoing Traffic in (\S+) per Second'   => 'Odchozí tok v $1 za sec.',
      'at which time (.*) had been up for(.*)' => 'od posledního restartu $1 ubìhlo: $2',
@@ -1444,7 +1353,7 @@ return "" unless defined $string;
      'Bytes'                                  => 'bajtech',
      #'&nbsp;In:</FONT>'                       => '&nbsp;In:</FONT>',
      #'&nbsp;Out:</FONT>'                      => '&nbsp;Out:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Proc.</FONT>',
+     'Percentage'                             => 'Proc.',
      'Ported to OpenVMS Alpha by'             => 'Na OpenVMS portoval', 
      'Ported to WindowsNT by'                 => 'Na WindowsNT portoval',
      'and'                                    => 'a',
@@ -1534,15 +1443,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Maksimal udg&aring;ende trafik i 5 minutter',
      'the device'                             => 'enheden',
      'The statistics were last updated(.*)'   => 'Statistikken blev sidst opdateret$1',
-     ' Average\)</B><BR>'                     => ' Middel)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Middel$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Nu$1',
+     ' Average\)'                             => ' Middel)',
+     'Average'                                => 'Middel',
+     'Max'                                    => 'Max',
+     'Current'                                => 'Nu',
      'version'                                => 'version',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>`Daglig\' graf ($1 minuts',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>`Ugentlig\' graf (30 minuts' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>`M&aring;nedlig\' graf (2 times',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>`&Aring;rlig\' graf (1 dags', 
+     '`Daily\' Graph \((.*) Minute'           => '`Daglig\' graf ($1 minuts',
+     '`Weekly\' Graph \(30 Minute'            => '`Ugentlig\' graf (30 minuts' ,
+     '`Monthly\' Graph \(2 Hour'              => '`M&aring;nedlig\' graf (2 times',
+     '`Yearly\' Graph \(1 Day'                => '`&Aring;rlig\' graf (1 dags', 
      'Incoming Traffic in (\S+) per Second'   => 'Indg&aring;ende trafik i $1 per sekund',
      'Outgoing Traffic in (\S+) per Second'   => 'Udg&aring;ende trafik i $1 per sekund',
      'at which time (.*) had been up for(.*)' => 'hvor $1 havde v&aelig;ret oppe i$2',
@@ -1551,9 +1460,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/t',
      # 'Bits'                                => 'Bits',
      # 'Bytes'                              => 'Bytes'
-     '&nbsp;In:</FONT>'                      => '&nbsp;Ind:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;Ud:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;Procent:</FONT>',
+     'In'                                     => 'Ind',
+     'Out'                                    => 'Ud',
+     'Percentage'                             => 'Procent',
      'Ported to OpenVMS Alpha by'             => 'Port til OpenVMS af', 
      'Ported to WindowsNT by'                 => 'Port til WindowsNT af',
      'and'                                    => 'og',
@@ -1643,15 +1552,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Maximaal uitgaand verkeer per 5 minuten',
      'the device'                             => 'het apparaat',
      'The statistics were last updated(.*)'   => 'Statistieken voor het laatst bijgewerkt op$1',
-     ' Average\)</B><BR>'                     => ' gemiddeld)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Gemiddeld$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Actueel$1',
+     ' Average\)'                             => ' gemiddeld)',
+     'Average'                                => 'Gemiddeld',
+     'Max'                                    => 'Max',
+     'Current'                                => 'Actueel',
      'version'                                => 'versie',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>`Dagelijkse\' grafiek ($1 minuten',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>`Wekelijkse\' grafiek (30 minuten' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>`Maandelijkse\' grafiek (2 uur',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>`Jaarlijkse\' grafiek (1 dag', 
+     '`Daily\' Graph \((.*) Minute'           => '`Dagelijkse\' grafiek ($1 minuten',
+     '`Weekly\' Graph \(30 Minute'            => '`Wekelijkse\' grafiek (30 minuten' ,
+     '`Monthly\' Graph \(2 Hour'              => '`Maandelijkse\' grafiek (2 uur',
+     '`Yearly\' Graph \(1 Day'                => '`Jaarlijkse\' grafiek (1 dag', 
      'Incoming Traffic in (\S+) per Second'   => 'Inkomend verkeer in $1 per seconde',
      'Outgoing Traffic in (\S+) per Second'   => 'Uitgaand verkeer in $1 per seconde',
      'at which time (.*) had been up for(.*)' => 'op het moment dat $1 reeds actief was voor$2',
@@ -1661,8 +1570,8 @@ return "" unless defined $string;
      # 'Bits'                                => 'Bits',
      # 'Bytes'                              => 'Bytes'
      # '&nbsp;In:</FONT>'                      => '&nbsp;In:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;Uit:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;Procent:</FONT>',
+     'Out'                                    => 'Uit',
+     'Percentage'                             => 'Procent',
      'Ported to OpenVMS Alpha by'             => 'Ported naar OpenVMS door', 
      'Ported to WindowsNT by'                 => 'Ported naar WindowsNT door',
      'and'                                    => 'en',
@@ -1752,15 +1661,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => '5 minuti maksimaalne v&auml;ljuv liiklus',
      'the device'                             => 'seade',
      'The statistics were last updated(.*)'   => 'Statistikat uuendati viimati$1',
-     ' Average\)</B><BR>'                     => ' keskmine)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Keskmine$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Hetkel$1',
+     ' Average\)'                             => ' keskmine)',
+     'Average'                                => 'Keskmine',
+     #'Max'                                    => 'Max',
+     'Current'                                => 'Hetkel',
      'version'                                => 'versioon',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>`P&auml;evane\' graafik ($1 minuti',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>`N&auml;dala\' graafik (30 minuti' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>`Kuu \' graafik (2 tunni',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>`Aasta\' graafik (1 p&auml;eva', 
+     '`Daily\' Graph \((.*) Minute'           => '`P&auml;evane\' graafik ($1 minuti',
+     '`Weekly\' Graph \(30 Minute'            => '`N&auml;dala\' graafik (30 minuti' ,
+     '`Monthly\' Graph \(2 Hour'              => '`Kuu \' graafik (2 tunni',
+     '`Yearly\' Graph \(1 Day'                => '`Aasta\' graafik (1 p&auml;eva', 
      'Incoming Traffic in (\S+) per Second'   => 'Sisenev liiklus $1 sekundi kohta',
      'Outgoing Traffic in (\S+) per Second'   => 'V&auml;ljuv liiklus $1 sekundi kohta',
      'at which time (.*) had been up for(.*)' => 'kui $1 on katkematult t&ouml;&ouml;tanud$2',
@@ -1769,9 +1678,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/t',
       'Bits'                                => 'bitti',
       'Bytes'                              => 'baiti',
-     '&nbsp;In:</FONT>'                      => '&nbsp;sisse:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;v&auml;lja:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;protsent:</FONT>',
+     'In'                                     => 'sisse',
+     'Out'                                    => 'v&auml;lja',
+     'Percentage'                             => 'protsent',
      'Ported to OpenVMS Alpha by'             => 'portis OpenVMS-le:', 
      'Ported to WindowsNT by'                 => 'portis WindowsNT-le:',
      'and'                                    => 'ja',
@@ -1857,20 +1766,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=euc-jp',
+     'iso-8859-1'                             => 'euc-jp',
      'Maximal 5 Minute Incoming Traffic'      => 'ºÇÂç¤Î5Ê¬´Ö¤Î¼õ¿®ÎÌ',
      'Maximal 5 Minute Outgoing Traffic'      => 'ºÇÂç¤Î5Ê¬´Ö¤ÎÁ÷¿®ÎÌ',
      'the device'                             => '¥Ç¥Ğ¥¤¥¹',
      'The statistics were last updated(.*)'   => '¹¹¿·Æü»ş$1',
-     ' Average\)</B><BR>'                     => '¤ÎÊ¿¶Ñ)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Ê¿¶ÑÃÍ$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>ºÇÂçÃÍ$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>¸½ºßÃÍ$1',
+     ' Average\)'                             => '¤ÎÊ¿¶Ñ)',
+     'Average'                                => 'Ê¿¶ÑÃÍ',
+     'Max'                                    => 'ºÇÂçÃÍ',
+     'Current'                                => '¸½ºßÃÍ',
      'version'                                => 'version',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Æü´Ö¥°¥é¥Õ($1Ê¬´Ö',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>½µ´Ö¥°¥é¥Õ(30Ê¬´Ö',
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>·î´Ö¥°¥é¥Õ(2»ş´Ö',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Ç¯´Ö¥°¥é¥Õ(1Æü',
+     '`Daily\' Graph \((.*) Minute'           => 'Æü´Ö¥°¥é¥Õ($1Ê¬´Ö',
+     '`Weekly\' Graph \(30 Minute'            => '½µ´Ö¥°¥é¥Õ(30Ê¬´Ö',
+     '`Monthly\' Graph \(2 Hour'              => '·î´Ö¥°¥é¥Õ(2»ş´Ö',
+     '`Yearly\' Graph \(1 Day'                => 'Ç¯´Ö¥°¥é¥Õ(1Æü',
      'Incoming Traffic in (\S+) per Second'   => '¼õ¿®ÎÌ($1/ÉÃ)',
      'Incoming Traffic in (\S+) per Minute'   => '¼õ¿®ÎÌ($1/Ê¬)',
      'Incoming Traffic in (\S+) per Hour'     => '¼õ¿®ÎÌ($1/»ş)',
@@ -1878,18 +1787,18 @@ return "" unless defined $string;
      'Outgoing Traffic in (\S+) per Minute'   => 'Á÷¿®ÎÌ($1/Ê¬)',
      'Outgoing Traffic in (\S+) per Hour'     => 'Á÷¿®ÎÌ($1/»ş)',
      'at which time (.*) had been up for(.*)' => '$1 ¤Î²ÔÆ¯»ş´Ö$2',
-     'Average max 5 min values for `Daily\' Graph \((.*) Minute interval\):&nbsp;&nbsp;' => 'Æü´Ö¥°¥é¥Õ¤Ç¤ÎºÇÂç¤Î5Ê¬´Ö($1Ê¬Ëè)¤ÎÊ¿¶Ñ:&nbsp;&nbsp;',
-     'Average max 5 min values for `Weekly\' Graph \(30 Minute interval\):&nbsp;&nbsp;' => '½µ´Ö¥°¥é¥Õ¤Ç¤ÎºÇÂç¤Î5Ê¬´Ö(30Ê¬Ëè)¤ÎÊ¿¶Ñ:&nbsp;&nbsp;',
-     'Average max 5 min values for `Monthly\' Graph \(2 Hour interval\):&nbsp;&nbsp;' => '·î´Ö¥°¥é¥Õ¤Ç¤ÎºÇÂç¤Î5Ê¬´Ö(2»ş´ÖËè)¤ÎÊ¿¶Ñ:&nbsp;&nbsp;',
-     'Average max 5 min values for `Yearly\' Graph \(1 Day interval\):&nbsp;&nbsp;' => 'Ç¯´Ö¥°¥é¥Õ¤Ç¤ÎºÇÂç¤Î5Ê¬´Ö(1ÆüËè)¤ÎÊ¿¶Ñ:&nbsp;&nbsp;',
+     'Average max 5 min values for `Daily\' Graph \((.*) Minute interval\):' => 'Æü´Ö¥°¥é¥Õ¤Ç¤ÎºÇÂç¤Î5Ê¬´Ö($1Ê¬Ëè)¤ÎÊ¿¶Ñ:',
+     'Average max 5 min values for `Weekly\' Graph \(30 Minute interval\):' => '½µ´Ö¥°¥é¥Õ¤Ç¤ÎºÇÂç¤Î5Ê¬´Ö(30Ê¬Ëè)¤ÎÊ¿¶Ñ:',
+     'Average max 5 min values for `Monthly\' Graph \(2 Hour interval\):' => '·î´Ö¥°¥é¥Õ¤Ç¤ÎºÇÂç¤Î5Ê¬´Ö(2»ş´ÖËè)¤ÎÊ¿¶Ñ:',
+     'Average max 5 min values for `Yearly\' Graph \(1 Day interval\):' => 'Ç¯´Ö¥°¥é¥Õ¤Ç¤ÎºÇÂç¤Î5Ê¬´Ö(1ÆüËè)¤ÎÊ¿¶Ñ:',
      '([kMG]?)([bB])/s'                       => '$1$2/ÉÃ',
      '([kMG]?)([bB])/min'                     => '$1$2/Ê¬',
      '([kMG]?)([bB])/h'                       => '$1$2/»ş',
      'Bits'                                   => '¥Ó¥Ã¥È',
      'Bytes'                                  => '¥Ğ¥¤¥È',
-     '&nbsp;In:</FONT>'                       => '&nbsp;¼õ¿®:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Á÷¿®:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;ÈæÎ¨:</FONT>',
+     'In'                                     => '¼õ¿®',
+     'Out'                                    => 'Á÷¿®',
+     'Percentage'                             => 'ÈæÎ¨',
      'Ported to OpenVMS Alpha by'             => 'OpenVMS Alpha¤Ø¤Î°Ü¿¢',
      'Ported to WindowsNT by'                 => 'WindowsNT¤Ø¤Î°Ü¿¢',
      'and'                                    => 'and',
@@ -1983,15 +1892,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'L&auml;htev&auml;n liikenteen maksimi 5 minuutin aikana',
      'the device'                             => 'laite',
      'The statistics were last updated(.*)'   => 'Tiedot p&auml;ivitetty viimeksi $1',
-     ' Average\)</B><BR>'                     => '',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Keskim&auml;&auml;rin$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Maksimi$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>T&auml;ll&auml; hetkell&auml;$1',
+     ' Average\)'                             => '',
+     'Average'                                => 'Keskim&auml;&auml;rin',
+     'Max'                                    => 'Maksimi',
+     'Current'                                => 'T&auml;ll&auml; hetkell&auml;',
      'version'                                => 'versio',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>P&auml;iv&auml;raportti (skaala $1 minuutti(a))</B><BR>',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Viikkoraportti (skaala 30 minuuttia)</B><BR>' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Kuukausiraportti (skaala 2 tuntia)</B><BR>',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Vuosiraportti (skaala 1 vuorokausi)</B><BR>', 
+     '`Daily\' Graph \((.*) Minute'           => 'P&auml;iv&auml;raportti (skaala $1 minuutti(a))',
+     '`Weekly\' Graph \(30 Minute'            => 'Viikkoraportti (skaala 30 minuuttia)' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Kuukausiraportti (skaala 2 tuntia)',
+     '`Yearly\' Graph \(1 Day'                => 'Vuosiraportti (skaala 1 vuorokausi)', 
      'Incoming Traffic in (\S+) per Second'   => 'Tuleva liikenne $1 sekunnissa',
      'Outgoing Traffic in (\S+) per Second'   => 'L&auml;htev&auml; liikenne $1 sekunnissa',
      'Incoming Traffic in (\S+) per Minute'   => 'Tuleva liikenne $1 minuutissa',
@@ -2009,9 +1918,9 @@ return "" unless defined $string;
      #'([kMG]?)([bB])/h'                      => '$1$2/h',
      'Bits'                                   => 'bitti&auml;',
      'Bytes'                                  => 'tavua',
-     '&nbsp;In:</FONT>'                       => '&nbsp;Tuleva:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;L&auml;htev&auml;:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Prosenttia:</FONT>',
+     'In'                                     => 'Tuleva',
+     'Out'                                    => 'L&auml;htev&auml;',
+     'Percentage'                             => 'Prosenttia',
      'Ported to OpenVMS Alpha by'             => 'OpenVMS -j&auml;rjestelm&auml;lle sovittanut', 
      'Ported to WindowsNT by'                 => 'WindowsNT -j&auml;rjestelm&auml;lle sovittanut',
      'and'                                    => 'ja',
@@ -2103,15 +2012,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Trafic maximal en sortie sur 5 minutes',
      'the device'                             => 'le mat&eacute;riel',
      'The statistics were last updated(.*)'   => 'Les statistiques ont &eacute;t&eacute; mises &agrave; jour le $1',
-     ' Average\)</B><BR>'                     => ' Moyenne)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Moyenne$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Actuel$1',
-     'version'                                => 'version',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Graphique quotidien (sur $1 minutes :',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Graphique hebdomadaire (sur 30 minutes :' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Graphique mensuel  (sur 2 heures :',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Graphique annuel (sur 1 jour :', 
+     ' Average\)'                             => ' Moyenne)',
+     'Average'                                => 'Moyenne',
+     '>Max'                                   => 'Max',
+     'Current'                                => 'Actuel',
+     #'version'                                => 'version',
+     '`Daily\' Graph \((.*) Minute'           => 'Graphique quotidien (sur $1 minutes :',
+     '`Weekly\' Graph \(30 Minute'            => 'Graphique hebdomadaire (sur 30 minutes :' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Graphique mensuel  (sur 2 heures :',
+     '`Yearly\' Graph \(1 Day'                => 'Graphique annuel (sur 1 jour :', 
      'Incoming Traffic in (\S+) per Second'   => 'Trafic d\'entr&eacute;e en $1 par seconde',
      'Outgoing Traffic in (\S+) per Second'   => 'Trafic de sortie en $1 par seconde',
      'at which time (.*) had been up for(.*)' => '$1 &eacute;tait alors en marche depuis $2',
@@ -2120,9 +2029,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/t',
      # 'Bits'                                  => 'Bits',
      # 'Bytes'                                 => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Entr&eacute;e:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Sortie:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Pourcentage:</FONT>',
+     'In'                                     => 'Entr&eacute;e',
+     'Out'                                    => 'Sortie',
+     'Percentage'                             => 'Pourcentage',
      'Ported to OpenVMS Alpha by'             => 'Port&eacute; sur OpenVMS Alpha par',
      'Ported to WindowsNT by'                 => 'Port&eacute; sur WindowsNT par',
      'and'                                    => 'et',
@@ -2208,20 +2117,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=iso-8859-1',
+     #'charset=iso-8859-1'                     => 'charset=iso-8859-1',
      'Maximal 5 Minute Incoming Traffic'      => 'Tr&&aacute;fico entrante m&aacute;ximo en 5 minutos',
      'Maximal 5 Minute Outgoing Traffic'      => 'Tr&&aacute;fico sa&iacute;nte m&aacute;ximo en 5 minutos',
      'the device'                             => 'o dispositivo',
      'The statistics were last updated(.*)'   => 'Estas estat&iacute;sticas actualiz&aacute;ronse o $1',
-     ' Average\)</B><BR>'                     => ' de Media)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Media$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>M&aacute;x$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Actual$1',
+     ' Average\)'                             => ' de Media)',
+     'Average'                                => 'Media',
+     'Max'                                    => 'M&aacute;x',
+     'Current'                                => 'Actual',
      'version'                                => 'versi&oacute;n',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Gr&aacute;fica diaria ($1 minutos',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Gr&aacute;fica semanal (30 minutos' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Gr&aacute;fica mensual (2 horas',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Gr&aacute;fica anual (1 d&iacute;a', 
+     '`Daily\' Graph \((.*) Minute'           => 'Gr&aacute;fica diaria ($1 minutos',
+     '`Weekly\' Graph \(30 Minute'            => 'Gr&aacute;fica semanal (30 minutos' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Gr&aacute;fica mensual (2 horas',
+     '`Yearly\' Graph \(1 Day'                => 'Gr&aacute;fica anual (1 d&iacute;a', 
      'Incoming Traffic in (\S+) per Second'   => 'Tr&aacute;fico entrante en $1 por segundo',
      'Outgoing Traffic in (\S+) per Second'   => 'Tr&aacute;fico sa&iacute;nte en $1 por segundo',
      'at which time (.*) had been up for(.*)' => 'nese intre $1 levaba prendida $2',
@@ -2230,9 +2139,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/h',
      # 'Bits'                                => 'Bits',
      # 'Bytes'                              => 'Bytes'
-     '&nbsp;In:</FONT>'                      => '&nbsp;Entrante:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;Sa&iacute;nte:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;Tanto por ciento:</FONT>',
+     'In'                                     => 'Entrante',
+     'Out'                                    => 'Sa&iacute;nte',
+     'Percentage'                             => 'Tanto por ciento',
      'Ported to OpenVMS Alpha by'             => 'Portado a OpenVMS Alpha por', 
      'Ported to WindowsNT by'                 => 'Portado a Windows NT por',
      'and'                                    => 'e',
@@ -2317,20 +2226,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=gb',
+     'iso-8859-1'                             => 'gb',
      'Maximal 5 Minute Incoming Traffic'      => '5·ÖÖÓ×î´óµÄÁ÷Á¿',
      'Maximal 5 Minute Outgoing Traffic'      => '5·ÖÖÓ×î´óµÄÁ÷³öÁ÷Á¿',
      'the device'                             => 'µ±Ç°Éè±¸',
      'The statistics were last updated(.*)'   => 'Í³¼ÆĞÅÏ¢¸üĞÂÓÚ: $1',
-     ' Average\)</B><BR>'                     => 'Æ½¾ù)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Æ½¾ù$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>×î´ó$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>µ±Ç°$1',
+     ' Average\)'                             => 'Æ½¾ù)',
+     'Average'                                => 'Æ½¾ù',
+     'Max'                                    => '×î´ó',
+     'Current'                                => 'µ±Ç°',
      'version'                                => '°æ±¾',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>ÈÕ·ÖÎöÍ¼($1·ÖÖÓ',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>ÖÜ·ÖÎöÍ¼(30·ÖÖÓ'  ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>ÔÂ·ÖÎöÍ¼(2Ğ¡Ê±',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Äê·ÖÎöÍ¼(1Ìì',
+     '`Daily\' Graph \((.*) Minute'           => 'ÈÕ·ÖÎöÍ¼($1·ÖÖÓ',
+     '`Weekly\' Graph \(30 Minute'            => 'ÖÜ·ÖÎöÍ¼(30·ÖÖÓ'  ,
+     '`Monthly\' Graph \(2 Hour'              => 'ÔÂ·ÖÎöÍ¼(2Ğ¡Ê±',
+     '`Yearly\' Graph \(1 Day'                => 'Äê·ÖÎöÍ¼(1Ìì',
      'Incoming Traffic in (\S+) per Second'   => 'Ã¿ÃëµÄÁ÷ÈëÁ÷Á¿(µ¥Î»$1)',
      'Outgoing Traffic in (\S+) per Second'   => 'Ã¿ÃëµÄÁ÷³öÁ÷Á¿(µ¥Î»$1)',
      'at which time (.*) had been up for(.*)' => 'ÆäÊ± $1ÒÑ¾­¸üĞÂ(UPTIME): $2',
@@ -2339,9 +2248,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/h',
     # 'Bits'                                   => 'Bits',
     # 'Bytes'                                  => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Á÷Èë:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Á÷³ö:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;°Ù·Ö±È:</FONT>',
+     'In'                                     => 'Á÷Èë',
+     'Out'                                    => 'Á÷³ö',
+     'Percentage'                             => '°Ù·Ö±È',
      'Ported to OpenVMS Alpha by'             => 'OpenVMSµÄ¶Ë¿Ú',
      'Ported to WindowsNT by'                 => 'WindowsNTµÄ¶Ë¿Ú',
      'and'                                    => 'Óë',
@@ -2429,20 +2338,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=charset=gb2312',
+     'iso-8859-1'                             => 'gb2312',
      'Maximal 5 Minute Incoming Traffic'      => '5·ÖÖÓ×î´óÁ÷ÈëÁ¿',
      'Maximal 5 Minute Outgoing Traffic'      => '5·ÖÖÓ×î´óÁ÷³öÁ¿',
      'the device'                             => '×°ÖÃ',
      'The statistics were last updated(.*)'   => 'ÉÏ´ÎÍ³¼Æ¸üĞÂÊ±¼ä: $1',
-     ' Average\)</B><BR>'                     => ' Æ½¾ù)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Æ½¾ù$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>×î´ó$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Ä¿Ç°$1',
+     ' Average\)'                             => ' Æ½¾ù)',
+     'Average'                                => 'Æ½¾ù',
+     'Max'                                    => '×î´ó',
+     'Current'                                => 'Ä¿Ç°',
      'version'                                => '°æ±¾',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Ã¿ÈÕ Í¼±í ($1 ·ÖÖÓ',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Ã¿ÖÜ Í¼±í (30 ·ÖÖÓ' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Ã¿ÔÂ Í¼±í (2 Ğ¡Ê±',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Ã¿Äê Í¼±í (1 Ìì',
+     '`Daily\' Graph \((.*) Minute'           => 'Ã¿ÈÕ Í¼±í ($1 ·ÖÖÓ',
+     '`Weekly\' Graph \(30 Minute'            => 'Ã¿ÖÜ Í¼±í (30 ·ÖÖÓ' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Ã¿ÔÂ Í¼±í (2 Ğ¡Ê±',
+     '`Yearly\' Graph \(1 Day'                => 'Ã¿Äê Í¼±í (1 Ìì',
      'Incoming Traffic in (\S+) per Second'   => 'Ã¿ÃëÁ÷ÈëÁ¿ (µ¥Î» $1)',
      'Outgoing Traffic in (\S+) per Second'   => 'Ã¿ÃëÁ÷³öÁ¿ (µ¥Î» $1)',
      'at which time (.*) had been up for(.*)' => 'Éè±¸Ãû³Æ $1£¬ÒÑÔË×÷Ê±¼ä(UPTIME): $2',
@@ -2451,9 +2360,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/Ê±',
     # 'Bits'                                   => 'Bits',
     # 'Bytes'                                  => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Á÷Èë:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Á÷³ö:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;°Ù·Ö±È:</FONT>',
+     'In'                                     => 'Á÷Èë',
+     'Out'                                    => 'Á÷³ö',
+     'Percentage'                             => '°Ù·Ö±È',
      'Ported to OpenVMS Alpha by'             => 'ÒÆÖ²µ½ OpenVM Alpha ×÷Õß',
      'Ported to WindowsNT by'                 => 'ÒÆÖ²µ½ WindowsNT ×÷Õß',
      'and'                                    => '¼°',
@@ -2546,15 +2455,15 @@ sub german
      'Maximal 5 Minute Outgoing Traffic'      => 'Maximaler hinausgehender Traffic in 5 Minuten',
      'the device'                             => 'das Gerät',
      'The statistics were last updated(.*)'   => 'Die Statistiken wurden am $1 zuletzt aktualisiert',
-     ' Average\)</B><BR>'                     => '',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Mittel$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Maximal$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Aktuell$1',
+     ' Average\)'                             => '',
+     'Average'                                => 'Mittel',
+     'Max'                                    => 'Maximal',
+     'Current'                                => 'Aktuell',
      'version'                                => 'Version',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Tages&uuml;bersicht (Skalierung $1 Minute(n))</B><BR>',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Wochen&uuml;bersicht (Skalierung 30 Minuten)</B><BR>' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Monats&uuml;bersicht (Skalierung 2 Stunden)</B><BR>',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Jahres&uuml;bersicht (Skalierung 1 Tag)</B><BR>', 
+     '`Daily\' Graph \((.*) Minute'           => 'Tages&uuml;bersicht (Skalierung $1 Minute(n))',
+     '`Weekly\' Graph \(30 Minute'            => 'Wochen&uuml;bersicht (Skalierung 30 Minuten)',
+     '`Monthly\' Graph \(2 Hour'              => 'Monats&uuml;bersicht (Skalierung 2 Stunden)',
+     '`Yearly\' Graph \(1 Day'                => 'Jahres&uuml;bersicht (Skalierung 1 Tag)', 
      'Incoming Traffic in (\S+) per Second'   => 'Hereinkommender Traffic in $1 pro Sekunde',
      'Outgoing Traffic in (\S+) per Second'   => 'Hinausgehender Traffic in $1 pro Sekunde',
      'Incoming Traffic in (\S+) per Minute'   => 'Hereinkommender Traffic in $1 pro Minute',
@@ -2572,9 +2481,9 @@ sub german
      #'([kMG]?)([bB])/h'                       => '$1$2/std',
      # 'Bits'                                => 'Bits',
      # 'Bytes'                               => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Herein:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Hinaus:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Prozent:</FONT>',
+     'In'                                     => 'Herein',
+     'Out'                                    => 'Hinaus',
+     'Percentage'                             => 'Prozent',
      'Ported to OpenVMS Alpha by'             => 'Portierung nach OpenVMS von', 
      'Ported to WindowsNT by'                 => 'Portierung nach WindowsNT von',
      'and'                                    => 'und',
@@ -2661,20 +2570,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=iso-8859-7',
+     'iso-8859-1'                             => 'iso-8859-7',
      'Maximal 5 Minute Incoming Traffic'      => 'Ìİãéóôï Åéóåñ÷üìåíï Öïñôßï óôá 5 ËåğôÜ',
      'Maximal 5 Minute Outgoing Traffic'      => 'Ìİãéóôï Åîåñ÷üìåíï Öïñôßï óôá 5 ËåğôÜ',
      'the device'                             => 'ç óõóêåõŞ',
      'The statistics were last updated(.*)'   => 'Ôá óôáôéóôéêÜ åíçìåñşèçêáí ôåëåõôáßá öïñÜ ôç(í)/ôï $1',
-     ' Average\)</B><BR>'                     => ' Ìİóïò ¼ñïò)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Ìİóïò ¼ñïò$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Ìİãéóôï$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Ôñİ÷ïí$1',
+     ' Average\)'                             => ' Ìİóïò ¼ñïò)',
+     'Average'                                => 'Ìİóïò ¼ñïò',
+     'Max'                                    => 'Ìİãéóôï',
+     'Current'                                => 'Ôñİ÷ïí',
      'version'                                => 'İêäïóç',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>ÇìåñŞóéï ÃñÜöçìá (êÜèå $1 ëåğôÜ :',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Åâäïìáäéáßï ÃñÜöçìá (êÜèå 30 ëåğôÜ :' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Ìçíéáßï ÃñÜöçìá  (êÜèå 2 şñåò :',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>ÅôŞóéï ÃñÜöçìá (êÜèå 1 ìİñá :', 
+     '`Daily\' Graph \((.*) Minute'           => 'ÇìåñŞóéï ÃñÜöçìá (êÜèå $1 ëåğôÜ :',
+     '`Weekly\' Graph \(30 Minute'            => 'Åâäïìáäéáßï ÃñÜöçìá (êÜèå 30 ëåğôÜ :' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Ìçíéáßï ÃñÜöçìá  (êÜèå 2 şñåò :',
+     '`Yearly\' Graph \(1 Day'                => 'ÅôŞóéï ÃñÜöçìá (êÜèå 1 ìİñá :', 
      'Incoming Traffic in (\S+) per Second'   => 'Åéóåñ÷üìåíï Öïñôßï óå $1 áíÜ äåõôåñüëåğôï',
      'Outgoing Traffic in (\S+) per Second'   => 'Åîåñ÷üìåíï Öïñôßï óå $1 áíÜ äåõôåñüëåğôï',
      'at which time (.*) had been up for(.*)' => 'óôïí ïğïßï ÷ñüíï $1 Şôáí åíåñãŞ ãéá $2',
@@ -2683,9 +2592,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/t',
      # 'Bits'                                  => 'Bits',
      # 'Bytes'                                 => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Åéóåñ÷üìåíá:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Åîåñ÷üìåíá:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Ğïóïóôü:</FONT>',
+     'In'                                     => 'Åéóåñ÷üìåíá',
+     'Out'                                    => 'Åîåñ÷üìåíá',
+     'Percentage'                             => 'Ğïóïóôü',
      'Ported to OpenVMS Alpha by'             => 'Ìåôáöåñìİíï óå OpenVMS Alpha áğü',
      'Ported to WindowsNT by'                 => 'Ìåôáöåñìİíï óå WindowsNT áğü',
      'and'                                    => 'êáé',
@@ -2775,15 +2684,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Maxim&aacute;lis kimen&otilde; forgalom 5 perc alatt',
      'the device'                             => 'az eszk&ouml;z',
      'The statistics were last updated(.*)'   => 'A statisztika utols&oacute; friss&iacute;t&eacute;se:$1',
-     ' Average\)</B><BR>'                     => ' &aacute;tlag)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>&Aacute;tlagos$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Maximum$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Pillanatnyi$1',
+     ' Average\)'                             => ' &aacute;tlag)',
+     'Average'                                => '&Aacute;tlagos',
+     'Max'                                    => 'Maximum',
+     'Current'                                => 'Pillanatnyi',
      'version'                                => 'verzi&oacute;',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>`Napi\' grafikon ($1 perces',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>`Heti\' grafikon (30 perces' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>`Havi\' grafikon (2 &oacute;r&aacute;s',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>`&Eacute;ves\' grafikon (1 napos', 
+     '`Daily\' Graph \((.*) Minute'           => '`Napi\' grafikon ($1 perces',
+     '`Weekly\' Graph \(30 Minute'            => '`Heti\' grafikon (30 perces' ,
+     '`Monthly\' Graph \(2 Hour'              => '`Havi\' grafikon (2 &oacute;r&aacute;s',
+     '`Yearly\' Graph \(1 Day'                => '`&Eacute;ves\' grafikon (1 napos', 
      'Incoming Traffic in (\S+) per Second'   => 'Bej&ouml;v&otilde; forgalom $1 per m&aacute;sodpercben',
      'Outgoing Traffic in (\S+) per Second'   => 'Kimen&otilde; forgalom $1 per m&aacute;sodpercben',
      'at which time (.*) had been up for(.*)' => 'amikor a $1 &uuml;zemideje $2 volt.',
@@ -2792,9 +2701,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/t',
      'Bits'                                => 'Bit',
      'Bytes'                              => 'Byte',
-     '&nbsp;In:</FONT>'                      => '&nbsp;be:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;ki:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;sz&aacute;zale&acute;k:</FONT>',
+     'In'                                     => 'be',
+     'Out'                                    => 'ki',
+     'Percentage'                             => 'sz&aacute;zale&acute;k',
      'Ported to OpenVMS Alpha by'             => 'OpenVMS-re portolta', 
      'Ported to WindowsNT by'                 => 'WindowsNT-re portolta',
      'and'                                    => '&eacute;s',
@@ -2884,15 +2793,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'H&aacute;marks 5 m&iacute;n&uacute;tna umfer&eth; &uacute;t',
      'the device'                             => 'tæki&eth;',
      'The statistics were last updated(.*)'   => 'G&ouml;gnin voru s&iacute;&eth;ast uppf&aelig;r&eth;$1',
-     ' Average\)</B><BR>'                     => ' Me&eth;altal)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Me&eth;altal$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>H&aacute;mark',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>N&uacute;$1',
+     ' Average\)'                             => ' Me&eth;altal)',
+     'Average'                                => 'Me&eth;altal',
+     'Max'                                    => 'H&aacute;mark',
+     'Current'                                => 'N&uacute;',
      'version'                                => '&uacute;tg&aacute;fa',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>`Dagleg\' sta&eth;a ($1 m&iacute;n&uacute;tur',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>`Vikuleg\' sta&eth;a (30 m&iacute;n&uacute;tur',
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>`M&aacute;na&eth;arleg\' sta&eth;a (2 klst.',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>`&Aarleg\' sta&eth;a (1 dags', 
+     '`Daily\' Graph \((.*) Minute'           => '`Dagleg\' sta&eth;a ($1 m&iacute;n&uacute;tur',
+     '`Weekly\' Graph \(30 Minute'            => '`Vikuleg\' sta&eth;a (30 m&iacute;n&uacute;tur',
+     '`Monthly\' Graph \(2 Hour'              => '`M&aacute;na&eth;arleg\' sta&eth;a (2 klst.',
+     '`Yearly\' Graph \(1 Day'                => '`&Aarleg\' sta&eth;a (1 dags', 
      'Incoming Traffic in (\S+) per Second'   => 'Umfer&eth; inn &iacute; $1 &aacute; sek&uacute;ndu',
      'Outgoing Traffic in (\S+) per Second'   => 'Umfer&eth; &uacute;t &iacute; $1 &aacute; sek&uacute;ndu',
      'at which time (.*) had been up for(.*)' => '&thorn;egar $1 haf&eth;i veri&eth; uppi &iacute;$2',
@@ -2901,9 +2810,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/klst',
      # 'Bits'                                => 'Bitar',
      # 'Bytes'                              => 'B&aelig;ti'
-     '&nbsp;In:</FONT>'                      => '&nbsp;Inn:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;&Uacute;t:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;Pr&oacute;sent:</FONT>',
+     'In'                                     => 'Inn',
+     'Out'                                    => '&Uacute;t',
+     'Percentage'                             => 'Pr&oacute;sent',
      'Ported to OpenVMS Alpha by'             => 'Sta&eth;f&aelig;rt &aacute; OpenVMS af', 
      'Ported to WindowsNT by'                 => 'Sta&eth;f&aelig;rt &aacute; WindowsNT af',
      'and'                                    => 'og',
@@ -2993,15 +2902,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Trafik Keluar Maksimum dalam 5 Menit',
      'the device'                             => 'device',
      'The statistics were last updated(.*)'   => 'Statistik ini terakhir kali diupdate pada $1',
-     ' Average\)</B><BR>'                     => ')</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Rata-rata $1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Maksimum $1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Sekarang $1',
+     ' Average\)'                             => ')',
+     'Average'                                => 'Rata-rata',
+     'Max'                                    => 'Maksimum',
+     'Current'                                => 'Sekarang',
      'version'                                => 'versi',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Grafik Harian (Rata-rata per $1 menit',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Grafik Mingguan (Rata-rata per 30 menit',
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Grafik Bulanan (Rata-rata per 2 jam',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Grafik Tahunan (Rata-rata per hari',
+     '`Daily\' Graph \((.*) Minute'           => 'Grafik Harian (Rata-rata per $1 menit',
+     '`Weekly\' Graph \(30 Minute'            => 'Grafik Mingguan (Rata-rata per 30 menit',
+     '`Monthly\' Graph \(2 Hour'              => 'Grafik Bulanan (Rata-rata per 2 jam',
+     '`Yearly\' Graph \(1 Day'                => 'Grafik Tahunan (Rata-rata per hari',
      'Incoming Traffic in (\S+) per Second'   => 'Trafik Masuk $1 per detik',
      'Outgoing Traffic in (\S+) per Second'   => 'Trafik Keluar $1 per detik',
      'at which time (.*) had been up for(.*)' => 'Pada saat $1 telah aktif selama $2',
@@ -3010,9 +2919,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/j',
      # 'Bits'                                => 'Bits',
      # 'Bytes'                              => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Masuk</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Keluar</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Persentase:</FONT>',
+     'In'                                     => 'Masuk',
+     'Out'                                    => 'Keluar',
+     'Percentage'                             => 'Persentase',
      'Ported to OpenVMS Alpha by'             => 'Porting ke  OpenVMS Alpha oleh',
      'Ported to WindowsNT by'                 => 'Porting ke WindowsNT oleh',
      'and'                                    => 'dan',
@@ -3096,20 +3005,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=iso-2022-jp',
+     'iso-8859-1'                             => 'iso-2022-jp',
      'Maximal 5 Minute Incoming Traffic'      => "\e\\\$B:GBg\\\$N\e(B5\e\\\$BJ,4V\\\$N<u?.NL\e(B",
      'Maximal 5 Minute Outgoing Traffic'      => "\e\\\$B:GBg\\\$N\e(B5\e\\\$BJ,4V\\\$NAw?.NL\e(B",
      'the device'                             => "\e\\\$B%G%P%\\\$%9\e(B",
      'The statistics were last updated(.*)'   => "\e\\\$B99?7F|;~\e(B\$1",
-     ' Average\)</B><BR>'                     => "\e\\\$B\\\$NJ?6Q\e(B)</B><BR>",
-     '<TD ALIGN=right><SMALL>Average(.*)'     => "<TD ALIGN=right><SMALL>\e\\\$BJ?6QCM\e(B\$1",
-     '<TD ALIGN=right><SMALL>Max(.*)'         => "<TD ALIGN=right><SMALL>\e\\\$B:GBgCM\e(B\$1",
-     '<TD ALIGN=right><SMALL>Current(.*)'     => "<TD ALIGN=right><SMALL>\e\\\$B8=:_CM\e(B\$1",
+     ' Average\)'                             => "\e\\\$B\\\$NJ?6Q\e(B)",
+     'Average'                                => "\e\\\$BJ?6QCM\e(B",
+     'Max'                                    => "\e\\\$B:GBgCM\e(B",
+     'Current'                                => "\e\\\$B8=:_CM\e(B",
      'version'                                => 'version',
-     '<B>`Daily\' Graph \((.*) Minute'        => "<B>\e\\\$BF|4V%0%i%U\e(B(\$1\e\\\$BJ,4V\e(B",
-     '<B>`Weekly\' Graph \(30 Minute'         => "<B>\e\\\$B=54V%0%i%U\e(B(30\e\\\$BJ,4V\e(B",
-     '<B>`Monthly\' Graph \(2 Hour'           => "<B>\e\\\$B7n4V%0%i%U\e(B(2\e\\\$B;~4V\e(B",
-     '<B>`Yearly\' Graph \(1 Day'             => "<B>\e\\\$BG/4V%0%i%U\e(B(1\e\\\$BF|\e(B",
+     '`Daily\' Graph \((.*) Minute'           => "\e\\\$BF|4V%0%i%U\e(B(\$1\e\\\$BJ,4V\e(B",
+     '`Weekly\' Graph \(30 Minute'            => "\e\\\$B=54V%0%i%U\e(B(30\e\\\$BJ,4V\e(B",
+     '`Monthly\' Graph \(2 Hour'              => "\e\\\$B7n4V%0%i%U\e(B(2\e\\\$B;~4V\e(B",
+     '`Yearly\' Graph \(1 Day'                => "\e\\\$BG/4V%0%i%U\e(B(1\e\\\$BF|\e(B",
      'Incoming Traffic in (\S+) per Second'   => "\e\\\$B<u?.NL\e(B(\$1/\e\\\$BIC\e(B)",
      'Incoming Traffic in (\S+) per Minute'   => "\e\\\$B<u?.NL\e(B(\$1/\e\\\$BJ,\e(B)",
      'Incoming Traffic in (\S+) per Hour'     => "\e\\\$B<u?.NL\e(B(\$1/\e\\\$B;~\e(B)",
@@ -3117,18 +3026,18 @@ return "" unless defined $string;
      'Outgoing Traffic in (\S+) per Minute'   => "\e\\\$BAw?.NL\e(B(\$1/\e\\\$BJ,\e(B)",
      'Outgoing Traffic in (\S+) per Hour'     => "\e\\\$BAw?.NL\e(B(\$1/\e\\\$B;~\e(B)",
      'at which time (.*) had been up for(.*)' => "\$1 \e\\\$B\\\$N2TF/;~4V\e(B\$2",
-     'Average max 5 min values for `Daily\' Graph \((.*) Minute interval\):&nbsp;&nbsp;' => "\e\\\$BF|4V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(\$1\e\\\$BJ,Kh\e(B)\e\\\$B\\\$NJ?6Q\e(B:&nbsp;&nbsp;",
-     'Average max 5 min values for `Weekly\' Graph \(30 Minute interval\):&nbsp;&nbsp;' => "\e\\\$B=54V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(30\e\\\$BJ,Kh\e(B)\e\\\$B\\\$NJ?6Q\e(B:&nbsp;&nbsp;",
-     'Average max 5 min values for `Monthly\' Graph \(2 Hour interval\):&nbsp;&nbsp;' => "\e\\\$B7n4V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(2\e\\\$B;~4VKh\e(B)\e\\\$B\\\$NJ?6Q\e(B:&nbsp;&nbsp;",
-     'Average max 5 min values for `Yearly\' Graph \(1 Day interval\):&nbsp;&nbsp;' => "\e\\\$BG/4V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(1\e\\\$BF|Kh\e(B)\e\\\$B\\\$NJ?6Q\e(B:&nbsp;&nbsp;",
+     'Average max 5 min values for `Daily\' Graph \((.*) Minute interval\):' => "\e\\\$BF|4V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(\$1\e\\\$BJ,Kh\e(B)\e\\\$B\\\$NJ?6Q\e(B:",
+     'Average max 5 min values for `Weekly\' Graph \(30 Minute interval\):' => "\e\\\$B=54V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(30\e\\\$BJ,Kh\e(B)\e\\\$B\\\$NJ?6Q\e(B:",
+     'Average max 5 min values for `Monthly\' Graph \(2 Hour interval\):' => "\e\\\$B7n4V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(2\e\\\$B;~4VKh\e(B)\e\\\$B\\\$NJ?6Q\e(B:",
+     'Average max 5 min values for `Yearly\' Graph \(1 Day interval\):' => "\e\\\$BG/4V%0%i%U\\\$G\\\$N:GBg\\\$N\e(B5\e\\\$BJ,4V\e(B(1\e\\\$BF|Kh\e(B)\e\\\$B\\\$NJ?6Q\e(B:",
      '([kMG]?)([bB])/s'                       => "\$1\$2/\e\\\$BIC\e(B",
      '([kMG]?)([bB])/min'                     => "\$1\$2/\e\\\$BJ,\e(B",
      '([kMG]?)([bB])/h'                       => "\$1\$2/\e\\\$B;~\e(B",
      'Bits'                                   => "\e\\\$B%S%C%H\e(B",
      'Bytes'                                  => "\e\\\$B%P%\\\$%H\e(B",
-     '&nbsp;In:</FONT>'                       => "&nbsp;\e\\\$B<u?.\e(B:</FONT>",
-     '&nbsp;Out:</FONT>'                      => "&nbsp;\e\\\$BAw?.\e(B:</FONT>",
-     '&nbsp;Percentage</FONT>'                => "&nbsp;\e\\\$BHfN(\e(B:</FONT>",
+     'In'                                     => "\e\\\$B<u?.\e(B",
+     'Out'                                    => "\e\\\$BAw?.\e(B",
+     'Percentage'                             => "\e\\\$BHfN(\e(B",
      'Ported to OpenVMS Alpha by'             => "OpenVMS Alpha\e\\\$B\\\$X\\\$N0\\\\?\"\e(B",
      'Ported to WindowsNT by'                 => "WindowsNT\e\\\$B\\\$X\\\$N0\\\\?\"\e(B",
      'and'                                    => 'and',
@@ -3222,15 +3131,15 @@ sub italian
      'Maximal 5 Minute Outgoing Traffic'      => 'Traffico massimo in uscita su 5 minuti',
      'the device'                             => 'Il dispositivo',
      'The statistics were last updated(.*)'   => 'Le statistiche l\' ultima volta sono state aggiornate $1',
-     ' Average\)</B><BR>'                     => ' Media)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Media$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Attuale$1',
+     ' Average\)'                             => ' Media)',
+     'Average'                                => 'Media',
+     'Max'                                    => 'Max',
+     'Current'                                => 'Attuale',
      'version'                                => 'versione',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Grafico giornaliero (su $1 minuti :',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Grafico settimanale (su 30 minuti :' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Grafico mensile  (su 2 ore :',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Grafico annuale (su 1 giorno :', 
+     '`Daily\' Graph \((.*) Minute'           => 'Grafico giornaliero (su $1 minuti:',
+     '`Weekly\' Graph \(30 Minute'            => 'Grafico settimanale (su 30 minuti:' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Grafico mensile  (su 2 ore:',
+     '`Yearly\' Graph \(1 Day'                => 'Grafico annuale (su 1 giorno:', 
      'Incoming Traffic in (\S+) per Second'   => 'Traffico in ingresso in $1 per Secondo',
      'Outgoing Traffic in (\S+) per Second'   => 'Traffico in uscita in $1 per Secondo',
      'Incoming Traffic in (\S+) per Minute'   => 'Traffico in ingresso in $1 per Minuto',
@@ -3248,9 +3157,9 @@ sub italian
      # '([kMG]?)([bB])/h'                     => '$1$2/t',
      # 'Bits'                                 => 'Bits',
      # 'Bytes'                                => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Ingresso:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Uscita:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Percentuale:</FONT>',
+     'In'                                     => 'Ingresso',
+     'Out'                                    => 'Uscita',
+     'Percentage'                             => 'Percentuale',
      'Ported to OpenVMS Alpha by'             => 'Ported su OpenVMS Alpha da',
      'Ported to WindowsNT by'                 => 'Ported su WindowsNT da',
      'and'                                    => 'e',
@@ -3336,20 +3245,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=\"euc-kr\"',
+     'iso-8859-1'                             => 'euc-kr',
      'Maximal 5 Minute Incoming Traffic'      => '5ºĞ°£ ÃÖ´ë ¼ö½Å',
      'Maximal 5 Minute Outgoing Traffic'      => '5ºĞ°£ ÃÖ´ë ¼Û½Å',
      'the device'                             => 'ÀåÄ¡',
      'The statistics were last updated(.*)'   => 'ÃÖÁ¾ °»½Å ÀÏ½Ã: $1',
-     ' Average\)</B><BR>'                     => ' Æò±Õ°ª ±âÁØ)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Æò±Õ$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>ÃÖ´ë$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>ÇöÀç$1',
+     ' Average\)'                             => ' Æò±Õ°ª ±âÁØ)',
+     'Average'                                => 'Æò±Õ',
+     'Max'                                    => 'ÃÖ´ë',
+     'Current'                                => 'ÇöÀç',
      'version'                                => '¹öÀü',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>ÀÏ°£ ±×·¡ÇÁ ($1 ºĞ ´ÜÀ§',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>ÁÖ°£ ±×·¡ÇÁ (30 ºĞ ´ÜÀ§' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>¿ù°£ ±×·¡ÇÁ (2 ½Ã°£ ´ÜÀ§',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>¿¬°£ ±×·¡ÇÁ (1 ÀÏ ´ÜÀ§', 
+     '`Daily\' Graph \((.*) Minute'           => 'ÀÏ°£ ±×·¡ÇÁ ($1 ºĞ ´ÜÀ§',
+     '`Weekly\' Graph \(30 Minute'            => 'ÁÖ°£ ±×·¡ÇÁ (30 ºĞ ´ÜÀ§' ,
+     '`Monthly\' Graph \(2 Hour'              => '¿ù°£ ±×·¡ÇÁ (2 ½Ã°£ ´ÜÀ§',
+     '`Yearly\' Graph \(1 Day'                => '¿¬°£ ±×·¡ÇÁ (1 ÀÏ ´ÜÀ§', 
      'Incoming Traffic in (\S+) per Second'   => 'ÃÊ´ç ¼ö½ÅµÈ Æ®·¡ÇÈ ($1)',
      'Outgoing Traffic in (\S+) per Second'   => 'ÃÊ´ç ¼Û½ÅµÈ Æ®·¡ÇÈ ($1)',
      'at which time (.*) had been up for(.*)' => '$1ÀÇ °¡µ¿ ½Ã°£: $2',
@@ -3358,9 +3267,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/½Ã',
      'Bits'                                   => 'ºñÆ®',
      'Bytes'                                  => '¹ÙÀÌÆ®',
-     '&nbsp;In:</FONT>'                       => '&nbsp;¼ö½Å:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;¼Û½Å:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;ÆÛ¼¾Æ®:</FONT>',
+     'In'                                     => '¼ö½Å',
+     'Out'                                    => '¼Û½Å',
+     'Percentage'                             => 'ÆÛ¼¾Æ®',
      'Ported to OpenVMS Alpha by'             => 'OpenVMS Alpha Æ÷ÆÃ', 
      'Ported to WindowsNT by'                 => 'WindowsNT Æ÷ÆÃ',
      'and'                                    => '¿Í',
@@ -3449,20 +3358,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=windows-1257',
+     'iso-8859-1'                             => 'windows-1257',
      'Maximal 5 Minute Incoming Traffic'      => 'Maksimalus 5 minuèiø áeinantis srautas',
      'Maximal 5 Minute Outgoing Traffic'      => 'Maksimalus 5 minuèiø iğeinantis srautas',
      'the device'                             => 'árenginys',
      'The statistics were last updated(.*)'   => 'Statistika atnaujinta$1',
-     ' Average\)</B><BR>'                     => ' vidurkis)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>vid$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>max$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>dabar$1',
+     ' Average\)'                             => ' vidurkis)',
+     'Average'                                => 'vid',
+     'Max'                                    => 'max',
+     'Current'                                => 'dabar',
      'version'                                => 'versija',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>\'dienos\' grafikas ($1 min.',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>\'savaitës\' grafikas (30 min.' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>\'mënesio\' grafikas (2 val.',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>\'metø\' grafikas (1 d.', 
+     '`Daily\' Graph \((.*) Minute'           => '\'dienos\' grafikas ($1 min.',
+     '`Weekly\' Graph \(30 Minute'            => '\'savaitës\' grafikas (30 min.' ,
+     '`Monthly\' Graph \(2 Hour'              => '\'mënesio\' grafikas (2 val.',
+     '`Yearly\' Graph \(1 Day'                => '\'metø\' grafikas (1 d.', 
      'Incoming Traffic in (\S+) per Second'   => 'Áeinantis srautas, $1 per sekundæ',
      'Outgoing Traffic in (\S+) per Second'   => 'Iğeinantis srautas i $1 per sekundæ',
      'at which time (.*) had been up for(.*)' => '$1 veikia jau $2',
@@ -3471,9 +3380,9 @@ return "" unless defined $string;
      # '([kMG]?)([bB])/h'                       => '$1$2/h',
      'Bits'                                => 'bitai',
      'Bytes'                              => 'baitai',
-     '&nbsp;In:</FONT>'                      => '&nbsp;á:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;iğ:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;procentai:</FONT>',
+     'In'                                     => 'á',
+     'Out'                                    => 'iğ',
+     'Percentage'                             => 'procentai',
      'Ported to OpenVMS Alpha by'             => 'Perkëlë á OpenVMS Alpha:', 
      'Ported to WindowsNT by'                 => 'Perkëlë á WindowsNT:',
      'and'                                    => 'ir',
@@ -3563,15 +3472,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Ìàêñèìàëåí 5 ìèíóòåí èçëåçåí ñîîáğàà¼',
      'the device'                             => 'óğåä',
      'The statistics were last updated(.*)'   => 'Ïîñëåäíî àæóğèğàœå íà ïîäàòîöèòå$1',
-     ' Average\)</B><BR>'                     => ' ïğîñåê)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Ïğîñå÷åí$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Ìàêñèìàë$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Ìoìåíò$1',
+     ' Average\)'                             => ' ïğîñåê)',
+     'Average'                                => 'Ïğîñå÷åí',
+     'Max'                                    => 'Ìàêñèìàë',
+     'Current'                                => 'Ìoìåíò',
      'version'                                => 'âåğçè¼à',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>`Äíåâåí\' ãğàô ($1 ìèíóòè',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>`Íåäåëåí\' ãğàô (30 ìèíóòè' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>`Ìåñå÷åí\' ãğàô (2 ÷àñà',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>`Ãîäèøåí\' ãğàô (1 äåí', 
+     '`Daily\' Graph \((.*) Minute'           => '`Äíåâåí\' ãğàô ($1 ìèíóòè',
+     '`Weekly\' Graph \(30 Minute'            => '`Íåäåëåí\' ãğàô (30 ìèíóòè' ,
+     '`Monthly\' Graph \(2 Hour'              => '`Ìåñå÷åí\' ãğàô (2 ÷àñà',
+     '`Yearly\' Graph \(1 Day'                => '`Ãîäèøåí\' ãğàô (1 äåí', 
      'Incoming Traffic in (\S+) per Second'   => 'Âëåçåí ñîîáğàà¼ - $1 âî ñåêóíäà',
      'Outgoing Traffic in (\S+) per Second'   => 'Èçëåçåí ñîîáğàà¼ - $1 âî ñåêóíäà',
      'at which time (.*) had been up for(.*)' => 'Âğåìå íà íåïğåêèíàòî ğàáîòåœå íà ñèñòåìîò $1 : $2',
@@ -3580,9 +3489,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/h',
      # 'Bits'                                => 'Áèòîâè',
      # 'Bytes'                              => 'Áà¼òè'
-     '&nbsp;In:</FONT>'                      => '&nbsp;Âëåç:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;Èçëåç:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;Ïğîöåíò:</FONT>',
+     'In'                                     => 'Âëåç',
+     'Out'                                    => 'Èçëåç',
+     'Percentage'                             => 'Ïğîöåíò',
      'Ported to OpenVMS Alpha by'             => 'Ïîğòèğàíî íà OpenVMS îä', 
      'Ported to WindowsNT by'                 => 'Ïîğòèğàíî íà WindowsNT îä',
      'and'                                    => 'è',
@@ -3671,15 +3580,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Maksimum 5 Minit Trafik Keluar',
      'the device'                             => 'alatan',
      'The statistics were last updated(.*)'   => 'Statistik ini kali terakhir dikemaskini pada $1',
-     ' Average\)</B><BR>'                     => ' secara purata)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Purata $1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Maksimum $1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Kini $1',
+     ' Average\)'                             => ' secara purata)',
+     'Average'                                => 'Purata',
+     'Max'                                    => 'Maksimum',
+     'Current'                                => 'Kini',
      'version'                                => 'versi',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Graf `Harian\' ($1 minit :',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Graf `Mingguan\' (30 minit :' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Graf `Bulanan\' (2 jam :',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Graf `Tahunan\' (1 hari :',
+     '`Daily\' Graph \((.*) Minute'           => 'Graf `Harian\' ($1 minit :',
+     '`Weekly\' Graph \(30 Minute'            => 'Graf `Mingguan\' (30 minit :' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Graf `Bulanan\' (2 jam :',
+     '`Yearly\' Graph \(1 Day'                => 'Graf `Tahunan\' (1 hari :',
      'Incoming Traffic in (\S+) per Second'   => 'Trafik Masuk $1 per saat',
      'Outgoing Traffic in (\S+) per Second'   => 'Traffic Keluar $1 per saat',
      'at which time (.*) had been up for(.*)' => 'Sehingga waktu $1 ia telah aktif selama $2',
@@ -3688,9 +3597,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/j',
      # 'Bits'                                => 'Bits',
      # 'Bytes'                              => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Masuk</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Keluar</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Peratus:</FONT>',
+     'In'                                     => 'Masuk',
+     'Out'                                    => 'Keluar',
+     'Percentage'                             => 'Peratus',
      'Ported to OpenVMS Alpha by'             => 'Pengubahsuaian ke  OpenVMS Alpha oleh',
      'Ported to WindowsNT by'                 => 'Pengubahsuaian ke WindowsNT oleh',
      'and'                                    => 'dan',
@@ -3779,15 +3688,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Maksimal utg&aring;ende trafikk i 5 minutter',
      'the device'                             => 'enhetden',
      'The statistics were last updated(.*)'   => 'Statistikken ble sist oppdatert $1',
-     ' Average\)</B><BR>'                     => ' gjennomsnitt)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Gjennomsnitt$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>N&aring;$1',
+     ' Average\)'                             => ' gjennomsnitt)',
+     'Average'                                => 'Gjennomsnitt',
+     'Max'                                    => 'Max',
+     'Current'                                => 'N&aring;',
      'version'                                => 'versjon',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>`Daglig\' graf ($1 minutts',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>`Ukentlig\' graf (30 minutts' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>`M&aring;nedlig\' graf (2 times',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>`&Aring;rlig\' graf (1 dags', 
+     '`Daily\' Graph \((.*) Minute'           => '`Daglig\' graf ($1 minutts',
+     '`Weekly\' Graph \(30 Minute'            => '`Ukentlig\' graf (30 minutts' ,
+     '`Monthly\' Graph \(2 Hour'              => '`M&aring;nedlig\' graf (2 times',
+     '`Yearly\' Graph \(1 Day'                => '`&Aring;rlig\' graf (1 dags', 
      'Incoming Traffic in (\S+) per Second'   => 'Inng&aring;ende trafikk i $1 per sekund',
      'Outgoing Traffic in (\S+) per Second'   => 'Utg&aring;ende trafikk i $1 per sekund',
      'at which time (.*) had been up for(.*)' => 'hvor $1 hadde v&aelig;rt oppe i $2',
@@ -3796,9 +3705,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/t',
      # 'Bits'                                => 'Bits',
      # 'Bytes'                              => 'Bytes'
-     '&nbsp;In:</FONT>'                      => '&nbsp;Inn:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;Ut:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;Prosent:</FONT>',
+     'In'                                     => 'Inn',
+     'Out'                                    => 'Ut',
+     'Percentage'                             => 'Prosent',
      'Ported to OpenVMS Alpha by'             => 'Port til OpenVMS av', 
      'Ported to WindowsNT by'                 => 'Port til WindowsNT av',
      'and'                                    => 'og',
@@ -3883,20 +3792,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=iso-8859-2',
+     'iso-8859-1'                             => 'iso-8859-2',
      'Maximal 5 Minute Incoming Traffic'      => 'Maksymalny ruch przychodz±cy w ci±gu 5 minut',
      'Maximal 5 Minute Outgoing Traffic'      => 'Maksymalny ruch wychodz±cy w ci±gu 5 minut',
      'the device'                             => 'urz±dzenie',
      'The statistics were last updated(.*)'   => 'Ostatnie uaktualnienie statystyki $1',
-     ' Average\)</B><BR>'                     => ' ¦rednia)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=left><SMALL>¦rednio$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=left><SMALL>Maksymalnie$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=left><SMALL>Aktualnie$1',
+     ' Average\)'                             => ' ¦rednia)',
+     'Average'                                => '¦rednio',
+     'Max'                                    => 'Maksymalnie',
+     'Current'                                => 'Aktualnie',
      'version'                                => 'wersja',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>`Dzienny\' Graf w ci±gu ($1 Minut/y - ',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>`Tygodniowy\' Graf w ci±gu (30 minut - ' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>`Miesiêczny\' Graf w ci±gu (2 Godzin - ',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>`Roczny\' Graf w  ci±gu (1 Dnia - ', 
+     '`Daily\' Graph \((.*) Minute'           => '`Dzienny\' Graf w ci±gu ($1 Minut/y - ',
+     '`Weekly\' Graph \(30 Minute'            => '`Tygodniowy\' Graf w ci±gu (30 minut - ' ,
+     '`Monthly\' Graph \(2 Hour'              => '`Miesiêczny\' Graf w ci±gu (2 Godzin - ',
+     '`Yearly\' Graph \(1 Day'                => '`Roczny\' Graf w  ci±gu (1 Dnia - ', 
      'Incoming Traffic in (\S+) per Second'   => 'Ruch przychodz±cy - $1 na sekundê',
      'Outgoing Traffic in (\S+) per Second'   => 'Ruch wychodz±cy - $1 na sekundê',
      'at which time (.*) had been up for(.*)' => 'gdy $1 by³ w³±czony przez $2',
@@ -3905,9 +3814,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/g',
      'Bits'                                => 'Bity',
      'Bytes'                              => 'Bajty',
-     '&nbsp;In:</FONT>'                      => '&nbsp;Do:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;&nbsp;Z:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;Procent:</FONT>',
+     'In'                                     => 'Do',
+     'Out'                                    => 'Z',
+     'Percentage'                             => 'Procent',
      'Ported to OpenVMS Alpha by'             => 'Port dla OpenVMS Alpha dziêki', 
      'Ported to WindowsNT by'                 => 'Port dla WindowsNT dziêki',
      'and'                                    => 'i',
@@ -3993,26 +3902,26 @@ return "" unless defined $string;
   %translations =
   (  
      #'charset=iso-8859-1'                     => 'charset=iso-8859-1',
-     'Maximal 5 Minute Incoming Traffic'      => 'Tráfego Maximal Recebido em 5 minutos',
-     'Maximal 5 Minute Outgoing Traffic'      => 'Tráfego Maximal Enviado em 5 minutos',
+     'Maximal 5 Minute Incoming Traffic'      => 'Tr&aacute;fego Maximal Recebido em 5 minutos',
+     'Maximal 5 Minute Outgoing Traffic'      => 'Tr&aacute;fego Maximal Enviado em 5 minutos',
      'the device'                             => 'o dispositivo',
-     'The statistics were last updated(.*)'   => 'As Estatísticas foram actualizadas pela última vez na $1',
+     'The statistics were last updated(.*)'   => 'As Estat&iacute;sticas foram actualizadas pela &uacute;ltima vez na $1',
      ' Average\)</B><BR>'                     => '',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Média$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max.$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Actual$1',
-     'version'                                => 'Versão',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Gráfico Diário (em intervalos de $1 Minutos)</B><BR>',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Gráfico Semanal</B><BR>' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Gráfico Mensal</B><BR>',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Gráfico Anual</B><BR>', 
-     'Incoming Traffic in (\S+) per Second'   => 'Tráfego recebido em  $1/segundo',
-     'Outgoing Traffic in (\S+) per Second'   => 'Tráfego enviado em $1/segundo',
-     'Incoming Traffic in (\S+) per Minute'   => 'Tráfego recebido em $1/minuto',
-     'Outgoing Traffic in (\S+) per Minute'   => 'Tráfego enviado em $1/minuto',
-     'Incoming Traffic in (\S+) per Hour'     => 'Tráfego recebido em $1/hora',
-     'Outgoing Traffic in (\S+) per Hour'     => 'Tráfego recebido em $1/hora',
-     'at which time (.*) had been up for(.*)' => 'quando o $1, tinha um <I>uptime</I> de $2',
+     'Average'                                => 'M&eacute;dia',
+     'Max'                                    => 'Max.',
+     'Current'                                => 'Actual',
+     'version'                                => 'Vers&atilde;o',
+     '`Daily\' Graph \((.*) Minute'           => 'Gr&aacute;fico Di&aacute;rio (em intervalos de $1 Minutos)</B><BR>',
+     '`Weekly\' Graph \(30 Minute'            => 'Gr&aacute;fico Semanal (em intervalos de 30 Minutos)' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Gr&aacute;fico Mensal (em intervalos de 2 horas)',
+     '`Yearly\' Graph \(1 Day'                => 'Gr&aacute;fico Anual (em intervalos de 24 horas)', 
+     'Incoming Traffic in (\S+) per Second'   => 'Tr&aacute;fego recebido em  $1/segundo',
+     'Outgoing Traffic in (\S+) per Second'   => 'Tr&aacute;fego enviado em $1/segundo',
+     'Incoming Traffic in (\S+) per Minute'   => 'Tr&aacute;fego recebido em $1/minuto',
+     'Outgoing Traffic in (\S+) per Minute'   => 'Tr&aacute;fego enviado em $1/minuto',
+     'Incoming Traffic in (\S+) per Hour'     => 'Tr&aacute;fego recebido em $1/hora',
+     'Outgoing Traffic in (\S+) per Hour'     => 'Tr&aacute;fego recebido em $1/hora',
+     'at which time (.*) had been up for(.*)' => 'quando o $1, tinha um <em>uptime</em> de $2',
      '(\S+) per minute'			      => '$1/minuto',
      '(\S+) per hour'			      => '$1/hora',    
      '(.+)/s$'                                 => '$1/s',
@@ -4023,9 +3932,9 @@ return "" unless defined $string;
      #'([kMG]?)([bB])/h'                       => '$1$2/h',
      # 'Bits'                                => 'Bits',
      # 'Bytes'                               => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Rec.:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Env.:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Perc.:</FONT>',
+     'In'                                     => 'Rec.',
+     'Out'                                    => 'Env.',
+     'Percentage'                             => 'Perc.',
      'Ported to OpenVMS Alpha by'             => 'Portado para OpenVMS Alpha por', 
      'Ported to WindowsNT by'                 => 'Portado para WindowsNT por',
      'and'                                    => 'e',
@@ -4049,16 +3958,16 @@ foreach $i (keys %translations)
     (
       'Sunday'    => 'Domingo',     'Sun' => 'Dom',
       'Monday'    => 'Segunda-Feira',      'Mon' => 'Seg',
-      'Tuesday'   => 'Terça-Feira',    'Tue' => 'Ter',
+      'Tuesday'   => 'Ter&ccedil;a-Feira',    'Tue' => 'Ter',
       'Wednesday' => 'Quarta-Feira',    'Wed' => 'Qua',
       'Thursday'  => 'Quinta-Feira',  'Thu' => 'Qui',
       'Friday'    => 'Sexta-Feira',     'Fri' => 'Sex',
-      'Saturday'  => 'Sábado',     'Sat' => 'Sab' 
+      'Saturday'  => 'S&aacute;bado',     'Sat' => 'Sab' 
     );
 
 %month = 
     (
-      'January'   => 'Janeiro',    'February'  => 'Fevereiro' ,    'March'     => 'Março',
+      'January'   => 'Janeiro',    'February'  => 'Fevereiro' ,    'March'     => 'Mar&ccedil;o',
       'Jan'       => 'Jan',       'Feb'       => 'Fev',         'Mar'       => 'Mar',
       'April'     => 'Abril',     'May'       => 'Maio',         'June'      => 'Junho', 
       'Apr'       => 'Abr',       'May'       => 'Mai',         'Jun'       => 'Jun',
@@ -4112,25 +4021,25 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=iso-8859-2',
+     'iso-8859-1'                             => 'iso-8859-2',
      'Maximal 5 Minute Incoming Traffic'      => 'Traficul Maxim de intrare pe 5 Minute',
      'Maximal 5 Minute Outgoing Traffic'      => 'Traficul Maxim de iesire pe 5 Minute',
      'the device'                             => 'echipamentul',
      'The statistics were last updated(.*)'   => 'Ultima actualizare :$1',
-     ' Average\)</B><BR>'                     => '',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Medie$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Maxim$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Curent$1',
+     ' Average\)'                             => '',
+     'Average'                                => 'Medie',
+     'Max'                                    => 'Maxim',
+     'Current'                                => 'Curent',
      'version'                                => 'versiunea',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Graficul \'Zilnic\' (medie pe $1 minute)</B><BR>',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Graficul \'Sãptãmânal\' (medie pe 30 de minute)</B><BR>' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Graficul \'Lunar\' (medie pe 2 ore)</B><BR>',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Graficul \'Anual\' (medie pe 1 zi)</B><BR>', 
+     '`Daily\' Graph \((.*) Minute'           => 'Graficul \'Zilnic\' (medie pe $1 minute)',
+     '`Weekly\' Graph \(30 Minute'            => 'Graficul \'Sãptãmânal\' (medie pe 30 de minute)' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Graficul \'Lunar\' (medie pe 2 ore)',
+     '`Yearly\' Graph \(1 Day'                => 'Graficul \'Anual\' (medie pe 1 zi)', 
      'Incoming Traffic in (\S+) per Second'   => 'Traficul de intrare [$1/secundã]',
      'Outgoing Traffic in (\S+) per Second'   => 'Traficul de ieºire [$1/secundã]',
-     'at which time <B>(\S+)</B> had been up for <B>(\S+)</B>' => 'când <B>$1</B> funcşiona de <B>$2</B>',
-     'at which time <B>(\S+)</B> had been up for <B>(\S+) day, (\S+)</B>' => 'când <B>$1</B> funcşiona de <B>$2 zi, $3</B>',
-     'at which time <B>(\S+)</B> had been up for <B>(\S+) days, (\S+)</B>' => 'când <B>$1</B> funcşiona de <B>$2 zile, $3</B>',
+     'at which time <strong>(\S+)</strong> had been up for <strong>(\S+)</strong>' => 'când <strong>$1</strong> funcşiona de <strong>$2</strong>',
+     'at which time <strong>(\S+)</strong> had been up for <strong>(\S+) day, (\S+)</strong>' => 'când <strong>$1</strong> funcşiona de <strong>$2 zi, $3</strong>',
+     'at which time <strong>(\S+)</strong> had been up for <strong>(\S+) days, (\S+)</strong>' => 'când <strong>$1</strong> funcşiona de <strong>$2 zile, $3</strong>',
      #'(.+)/s$'                               => '$1/s',
      #'(.+)/min'                              => '$1/min',
      '(.+)/h$'                                => '$1/ora',
@@ -4139,9 +4048,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/ora',
      'Bits'                                   => 'Bişi',
      'Bytes'                                  => 'Octeşi',
-     '&nbsp;In:</FONT>'                       => '&nbsp;int:&nbsp;</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;ieº:&nbsp;</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;procent:</FONT>',
+     'In'                                     => 'int',
+     'Out'                                    => 'ieº',
+     'Percentage'                             => 'procent',
      'Ported to OpenVMS Alpha by'             => 'Translatat sub OpenVMS de', 
      'Ported to WindowsNT by'                 => 'Translatat sub WindowsNT de',
      'and'                                    => 'ºi',
@@ -4227,20 +4136,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=koi8-r',
+     'iso-8859-1'                             => 'koi8-r',
      'Maximal 5 Minute Incoming Traffic'      => 'íÁËÓÉÍÁÌØÎÙÊ ×ÈÏÄÑİÉÊ ÔÒÁÆÉË ÚÁ 5 ÍÉÎÕÔ',
      'Maximal 5 Minute Outgoing Traffic'      => 'íÁËÓÉÍÁÌØÎÙÊ ÉÓÈÏÄÑİÉÊ ÔÒÁÆÉË ÚÁ 5 ÍÉÎÕÔ',
      'the device'                             => 'ÕÓÔÒÏÊÓÔ×Ï',
      'The statistics were last updated(.*)'   => 'ğÏÓÌÅÄÎÅÅ ÏÂÎÏ×ÌÅÎÉÅ ÓÔÁÔÉÓÔÉËÉ: $1',
-     ' Average\)</B><BR>'                     => ')</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>óÒÅÄÎÉÊ$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>íÁËÓ.$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>ôÅËÕİÉÊ$1',
+     ' Average\)'                             => ')',
+     'Average'                                => 'óÒÅÄÎÉÊ',
+     'Max'                                    => 'íÁËÓ.',
+     'Current'                                => 'ôÅËÕİÉÊ',
      'version'                                => '×ÅÒÓÉÑ',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>óÕÔÏŞÎÙÊ ÔÒÁÆÉË (ÓÒÅÄÎÅÅ ÚÁ $1 ÍÉÎÕÔ',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>îÅÄÅÌØÎÙÊ ÔÒÁÆÉË (ÓÒÅÄÎÅÅ ÚÁ 30 ÍÉÎÕÔ' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>íÅÓÑŞÎÙÊ ÔÒÁÆÉË  (ÓÒÅÄÎÅÅ ÚÁ 2 ŞÁÓÁ',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>çÏÄÏ×ÏÊ ÔÒÁÆÉË (ÓÒÅÄÎÅÅ ÚÁ 1 ÄÅÎØ', 
+     '`Daily\' Graph \((.*) Minute'           => 'óÕÔÏŞÎÙÊ ÔÒÁÆÉË (ÓÒÅÄÎÅÅ ÚÁ $1 ÍÉÎÕÔ',
+     '`Weekly\' Graph \(30 Minute'            => 'îÅÄÅÌØÎÙÊ ÔÒÁÆÉË (ÓÒÅÄÎÅÅ ÚÁ 30 ÍÉÎÕÔ' ,
+     '`Monthly\' Graph \(2 Hour'              => 'íÅÓÑŞÎÙÊ ÔÒÁÆÉË  (ÓÒÅÄÎÅÅ ÚÁ 2 ŞÁÓÁ',
+     '`Yearly\' Graph \(1 Day'                => 'çÏÄÏ×ÏÊ ÔÒÁÆÉË (ÓÒÅÄÎÅÅ ÚÁ 1 ÄÅÎØ', 
      'Incoming Traffic in (\S+) per Second'   => '÷ÈÏÄÑİÉÊ ÔÒÁÆÉË × $1 × ÓÅËÕÎÄÕ',
      'Outgoing Traffic in (\S+) per Second'   => 'éÓÈÏÄÑİÉÊ ÔÒÁÆÉË × $1 × ÓÅËÕÎÄÕ',
      'at which time (.*) had been up for(.*)' => '× ÜÔÏ ×ÒÅÍÑ $1 ÂÙÌÁ ×ËÌÀŞÅÎÁ $2',
@@ -4249,9 +4158,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/ŞÁÓ',
      'Bits'                                  => 'ÂÉÔÁÈ',
      'Bytes'                                 => 'ÂÁÊÔÁÈ',
-     '&nbsp;In:</FONT>'                       => '&nbsp;÷È:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;éÓÈ:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;ğÒÏÃÅÎÔÙ:</FONT>',
+     'In'                                     => '÷È',
+     'Out'                                    => 'éÓÈ',
+     'Percentage'                             => 'ğÒÏÃÅÎÔÙ',
      'Ported to OpenVMS Alpha by'             => 'áÄÁĞÔÉÒÏ×ÁÎÏ ÄÌÑ OpenVMS Alpha',
      'Ported to WindowsNT by'                 => 'áÄÁĞÔÉÒÏ×ÁÎÏ ÄÌÑ WindowsNT',
      'and'                                    => 'É',
@@ -4335,33 +4244,33 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=windows-1251',
+     'iso-8859-1'                             => 'windows-1251',
      'Maximal 5 Minute Incoming Traffic'      => 'Ìàêñèìàëüíûé âõîäÿùèé òğàôèê çà 5 ìèíóò',
      'Maximal 5 Minute Outgoing Traffic'      => 'Ìàêñèìàëüíûé èñõîäÿùèé òğàôèê çà 5 ìèíóò',
      'the device'                             => 'óñòğîéñòâî',
      'The statistics were last updated(.*)'   => 'Âğåìÿ ïîñëåäíåãî îáíîâëåíèÿ: $1',
-     ' Average\)</B><BR>'                     => ')</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD><SMALL>Â ñğåäíåì$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD><SMALL>Ìàêñèìàëüíî$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD><SMALL>Ñåé÷àñ$1',
+     ' Average\)'                             => ')',
+     'Average'                                => 'Â ñğåäíåì',
+     'Max'                                    => 'Ìàêñèìàëüíî',
+     'Current'                                => 'Ñåé÷àñ',
      'version'                                => 'âåğñèÿ',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Ñóòî÷íûé òğàôèê (ñğåäíåå çà $1 ìèíóò',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Íåäåëüíûé òğàôèê (ñğåäíåå çà 30 ìèíóò' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Ìåñÿ÷íûé òğàôèê  (ñğåäíåå çà 2 ÷àñà',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Ãîäîâîé òğàôèê (ñğåäíåå çà 1 äåíü', 
+     '`Daily\' Graph \((.*) Minute'           => 'Ñóòî÷íûé òğàôèê (ñğåäíåå çà $1 ìèíóò',
+     '`Weekly\' Graph \(30 Minute'            => 'Íåäåëüíûé òğàôèê (ñğåäíåå çà 30 ìèíóò' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Ìåñÿ÷íûé òğàôèê  (ñğåäíåå çà 2 ÷àñà',
+     '`Yearly\' Graph \(1 Day'                => 'Ãîäîâîé òğàôèê (ñğåäíåå çà 1 äåíü', 
      'Incoming Traffic in (\S+) per Second'   => 'Âõîäÿùèé òğàôèê â $1 â ñåêóíäó',
      'Outgoing Traffic in (\S+) per Second'   => 'Èñõîäÿùèé òğàôèê â $1 â ñåêóíäó',
-     'at which time <B>(\S+)</B> had been up for <B>(\S+)</B>' => 'âğåìÿ ïîñëå èíèöèàëèçàöèè óñòğîéñòâà <B>$1</B>: <B>$2</B>.',
-     'at which time <B>(\S+)</B> had been up for <B>(\S+) day, (\S+)</B>' => 'âğåìÿ ïîñëå èíèöèàëèçàöèè óñòğîéñòâà <B>$1</B>: <B>$2 ñóòêè</B>, <B>$3</B>.',
-     'at which time <B>(\S+)</B> had been up for <B>(\S+) days, (\S+)</B>' => 'âğåìÿ ïîñëå èíèöèàëèçàöèè óñòğîéñòâà <B>$1</B>: <B>$2 ñóòîê</B>, <B>$3</B>.',
+     'at which time <strong>(\S+)</strong> had been up for <strong>(\S+)</strong>' => 'âğåìÿ ïîñëå èíèöèàëèçàöèè óñòğîéñòâà <strong>$1</strong>: <strong>$2</strong>.',
+     'at which time <strong>(\S+)</strong> had been up for <strong>(\S+) day, (\S+)</strong>' => 'âğåìÿ ïîñëå èíèöèàëèçàöèè óñòğîéñòâà <strong>$1</strong>: <strong>$2 ñóòêè</strong>, <strong>$3</strong>.',
+     'at which time <strong>(\S+)</strong> had been up for <strong>(\S+) days, (\S+)</strong>' => 'âğåìÿ ïîñëå èíèöèàëèçàöèè óñòğîéñòâà <strong>$1</strong>: <strong>$2 ñóòîê</strong>, <strong>$3</strong>.',
      #'([kMG]?)([bB])/s'                      => '$1$1/ñåê',
      #'([kMG]?)([bB])/min'                    => '$1$2/ìèí',
      '([kMG]?)([bB])/h'                       => '$1$2/÷àñ',
      'Bits'                                  => 'áèòàõ',
      'Bytes'                                 => 'áàéòàõ',
-     '&nbsp;In:</FONT>'                       => '&nbsp;Âõ:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Èñõ:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Ïğîöåíòû:</FONT>',
+     'In'                                     => 'Âõ',
+     'Out'                                    => 'Èñõ',
+     'Percentage'                             => 'Ïğîöåíòû',
      'Ported to OpenVMS Alpha by'             => 'Àäàïòèğîâàíî äëÿ OpenVMS Alpha',
      'Ported to WindowsNT by'                 => 'Àäàïòèğîâàíî äëÿ WindowsNT',
      'and'                                    => 'è',
@@ -4445,20 +4354,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=windows-1250',
+     'iso-8859-1'                             => 'windows-1250',
      'Maximal 5 Minute Incoming Traffic'      => 'Najveæi 5 minutni ulazni saobraæaj',
      'Maximal 5 Minute Outgoing Traffic'      => 'Najveæi 5 minutni izlazni saobraæaj',
      'the device'                             => 'uredjaj',
      'The statistics were last updated(.*)'   => 'Poslednje auriranje podataka:$1',
-     ' Average\)</B><BR>'                     => ' prosek)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Proseèni$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Maksimalni$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Trenutni$1',
+     ' Average\)'                             => ' prosek)',
+     'Average'                                => 'Proseèni',
+     'Max'                                    => 'Maksimalni',
+     'Current'                                => 'Trenutni',
      'version'                                => 'verzija',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Dnevni graf ($1 minutni ',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Nedeljni graf (30 minutni ' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Meseèni graf (2 sata ',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Godišnji graf (1 dnevni ', 
+     '`Daily\' Graph \((.*) Minute'           => 'Dnevni graf ($1 minutni ',
+     '`Weekly\' Graph \(30 Minute'            => 'Nedeljni graf (30 minutni ' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Meseèni graf (2 sata ',
+     '`Yearly\' Graph \(1 Day'                => 'Godišnji graf (1 dnevni ', 
      'Incoming Traffic in (\S+) per Second'   => 'Ulazni saobraæaj - $1 u sekundi.',
      'Outgoing Traffic in (\S+) per Second'   => 'Izlazni saobraæaj - $1 u sekundi.',
      'Incoming Traffic in (\S+) per Minute'   => 'Ulazni saobraæaj - $1 u minutu',
@@ -4471,9 +4380,9 @@ return "" unless defined $string;
      #'([kMG]?)([bB])/h'                       => '$1$2/h',
      'Bits'                                   => 'Bita',
      'Bytes'                                  => 'Bajta',
-     '&nbsp;In:</FONT>'                       => '&nbsp;Ulaz:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Izlaz:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Procenat</FONT>',
+     'In'                                     => 'Ulaz',
+     'Out'                                    => 'Izlaz',
+     'Percentage'                             => 'Procenat',
      'Ported to OpenVMS Alpha by'             => 'Na OpenVMS portovao', 
      'Ported to WindowsNT by'                 => 'Na WindowsNT portovao',
      'and'                                    => 'i',
@@ -4558,20 +4467,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=iso-8859-2',
+     'iso-8859-1'                             => 'iso-8859-2',
      'Maximal 5 Minute Incoming Traffic'      => 'Maximálny 5 minútovı prichádzajúci tok',
      'Maximal 5 Minute Outgoing Traffic'      => 'Maximálny 5 minútovı odchádzajúci tok',
      'the device'                             => 'zariadenie',
      'The statistics were last updated(.*)'   => 'Posledná aktualizácia ¹tatistík:$1',
-     ' Average\)</B><BR>'                     => ' priemer)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Priem.$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max.$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Akt.$1',
+     ' Average\)'                             => ' priemer)',
+     'Average'                                => 'Priem.',
+     'Max'                                    => 'Max.',
+     'Current'                                => 'Akt.',
      'version'                                => 'verzia',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Dennı graf ($1 minútovı',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Tı¾dennı graf (30 minútovı' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Mesaènı graf (2 hodinovı',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Roènı graf (1 dennı', 
+     '`Daily\' Graph \((.*) Minute'           => 'Dennı graf ($1 minútovı',
+     '`Weekly\' Graph \(30 Minute'            => 'Tı¾dennı graf (30 minútovı' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Mesaènı graf (2 hodinovı',
+     '`Yearly\' Graph \(1 Day'                => 'Roènı graf (1 dennı', 
      'Incoming Traffic in (\S+) per Second'   => 'Prichádzajúci tok v $1 za sekundu.',
      'Outgoing Traffic in (\S+) per Second'   => 'Odchádzajúci tok v $1 za sekundu.',
      'at which time (.*) had been up for(.*)' => 'Èas od posledného re¹tartu $1 : $2',
@@ -4582,7 +4491,7 @@ return "" unless defined $string;
      'Bytes'                                  => 'bytoch',
      #'&nbsp;In:</FONT>'                       => '&nbsp;In:</FONT>',
      #'&nbsp;Out:</FONT>'                      => '&nbsp;Out:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Perc.</FONT>',
+     'Percentage'                             => 'Perc.',
      'Ported to OpenVMS Alpha by'             => 'Na OpenVMS portoval', 
      'Ported to WindowsNT by'                 => 'Na WindowsNT portoval',
      'and'                                    => 'a',
@@ -4667,20 +4576,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=windows-1250',
+     'iso-8859-1'                             => 'windows-1250',
      'Maximal 5 Minute Incoming Traffic'      => 'Najvecji petminutni vhodni promet',
      'Maximal 5 Minute Outgoing Traffic'      => 'Najvecji petminutni izhodni promet',
      'the device'                             => 'naprava',
      'The statistics were last updated(.*)'   => 'Zadnja posodobitev podatkov:$1',
-     ' Average\)</B><BR>'                     => ' povprecje)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Povprecje$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Maksimalno$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Trenutno$1',
+     ' Average\)'                             => ' povprecje)',
+     'Average'                                => 'Povprecje',
+     'Max'                                    => 'Maksimalno',
+     'Current'                                => 'Trenutno',
      'version'                                => 'verzija',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Dnevni graf ($1 min.',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Tedenski graf (30 min.' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Mesecni graf (2 urno',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Letni graf (1 dnevno', 
+     '`Daily\' Graph \((.*) Minute'           => 'Dnevni graf ($1 min.',
+     '`Weekly\' Graph \(30 Minute'            => 'Tedenski graf (30 min.' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Mesecni graf (2 urno',
+     '`Yearly\' Graph \(1 Day'                => 'Letni graf (1 dnevno', 
      'Incoming Traffic in (\S+) per Second'   => 'Vhodni promet v $1 na sekundo.',
      'Outgoing Traffic in (\S+) per Second'   => 'Izhodni promet v $1 na sekundo.',
      'at which time (.*) had been up for(.*)' => 'Cas od zadnjega restarta sistema $1 : $2',
@@ -4689,9 +4598,9 @@ return "" unless defined $string;
      #'([kMG]?)([bB])/h'                       => '$1$2/h',
      'Bits'                                   => 'bitov',
      'Bytes'                                  => 'bytov',
-     '&nbsp;In:</FONT>'                       => '&nbsp;Vhod:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Izhod:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Proc.</FONT>',
+     'In'                                     => 'Vhod',
+     'Out'                                    => 'Izhod',
+     'Percentage'                             => 'Proc.',
      'Ported to OpenVMS Alpha by'             => 'Na OpenVMS portiral', 
      'Ported to WindowsNT by'                 => 'Na WindowsNT portiral',
      'and'                                    => 'in',
@@ -4775,20 +4684,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=iso-8859-1',
+     #'iso-8859-1'                             => 'iso-8859-1',
      'Maximal 5 Minute Incoming Traffic'      => 'Tr&aacute;fico entrante m&aacute;ximo en 5 minutos',
      'Maximal 5 Minute Outgoing Traffic'      => 'Tr&aacute;fico saliente m&aacute;ximo en 5 minutos',
      'the device'                             => 'el dispositivo',
      'The statistics were last updated(.*)'   => 'Estad&iacute;sticas actualizadas el $1',
-     ' Average\)</B><BR>'                     => ' Promedio)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Promedio $1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>M&aacute;x$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Actual$1',
+     ' Average\)'                             => ' Promedio)',
+     'Average'                                => 'Promedio',
+     'Max'                                    => 'M&aacute;x',
+     'Current'                                => 'Actual',
      'version'                                => 'version',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Gr&aacute;fico diario ($1 minutos :',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Gr&aacute;fico semanal (30 minutos :' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Gr&aacute;fico mensual (2 horas :',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Gr&aacute;fico anual (1 d&iacute;a :', 
+     '`Daily\' Graph \((.*) Minute'           => 'Gr&aacute;fico diario ($1 minutos :',
+     '`Weekly\' Graph \(30 Minute'            => 'Gr&aacute;fico semanal (30 minutos :' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Gr&aacute;fico mensual (2 horas :',
+     '`Yearly\' Graph \(1 Day'                => 'Gr&aacute;fico anual (1 d&iacute;a :', 
      'Incoming Traffic in (\S+) per Second'   => 'Tr&aacute;fico entrante en $1 por segundo',
      'Outgoing Traffic in (\S+) per Second'   => 'Tr&aacute;fico saliente en $1 por segundo',
      'at which time (.*) had been up for(.*)' => '$1 ha estado funcionando durante $2',
@@ -4797,9 +4706,9 @@ return "" unless defined $string;
      # '([kMG]?)([bB])/h'                       => '$1$2/t',
      # 'Bits'                                  => 'Bits',
      # 'Bytes'                                 => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Entrante:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Saliente:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Porcentaje:</FONT>',
+     'In'                                     => 'Entrante:',
+     'Out'                                    => 'Saliente:',
+     'Percentage'                             => 'Porcentaje:',
      'Ported to OpenVMS Alpha by'             => 'Portado a OpenVMS Alpha por',
      'Ported to WindowsNT by'                 => 'Portado a WindowsNT por',
      'and'                                    => 'y',
@@ -4876,15 +4785,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Maximalt utg&aring;ende trafik i 5 minuter',
      'the device'                             => 'enheten',
      'The statistics were last updated(.*)'   => 'Statistiken blev senast uppdaterad$1',
-     ' Average\)</B><BR>'                     => ')</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Medel$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Senaste$1',
+     ' Average\)'                             => ')',
+     'Average'                                => 'Medel',
+     #'Max'                                    => 'Max',
+     'Current'                                => 'Senaste',
      'version'                                => 'version',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Daglig graf (samplingsintervall $1 minut(er)',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Veckovis graf (medelvärde per 30 minuter' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>M&aring;natlig graf (medelvärde per 2 timmar',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>&Aring;rlig graf (medelvärde per dygn', 
+     '`Daily\' Graph \((.*) Minute'           => 'Daglig graf (samplingsintervall $1 minut(er)',
+     '`Weekly\' Graph \(30 Minute'            => 'Veckovis graf (medelvärde per 30 minuter' ,
+     '`Monthly\' Graph \(2 Hour'              => 'M&aring;natlig graf (medelvärde per 2 timmar',
+     '`Yearly\' Graph \(1 Day'                => '&Aring;rlig graf (medelvärde per dygn', 
      'Incoming Traffic in (\S+) per Second'   => 'Inkommande trafik i $1 per sekund',
      'Outgoing Traffic in (\S+) per Second'   => 'Utgående trafik i $1 per sekund',
      'at which time (.*) had been up for(.*)' 		=> 'då $1 varit ig&aring;ng i$2',
@@ -4893,9 +4802,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/t',
      # 'Bits'                                => 'Bits',
      # 'Bytes'                              => 'Bytes',
-     '&nbsp;In:</FONT>'                      => '&nbsp; In:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;Ut:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;Procent:</FONT>',
+     #'In'                                     => 'In',
+     'Out'                                    => 'Ut',
+     'Percentage'                             => 'Procent',
      'Ported to OpenVMS Alpha by'             => 'Portad till OpenVMS av', 
      'Ported to WindowsNT by'                 => 'Portad till WindowsNT av',
      'and'                                    => 'och',
@@ -4980,20 +4889,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-9'                     => 'charset=iso-8859-9',
+     'iso-8859-1'                             => 'iso-8859-9',
      'Maximal 5 Minute Incoming Traffic'      => '5 dakika için en yüksek giriş trafiği',
      'Maximal 5 Minute Outgoing Traffic'      => '5 dakika için en yüksek çıkış trafiği',
      'the device'                             => 'aygıt',
      'The statistics were last updated(.*)'   => 'İstatistiklerin en son güncellenmesi $1',
-     ' Average\)</B><BR>'                     => ' Ortalama)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Ortalama $1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>EnYüksek;x$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>ŞuAnki$1',
+     ' Average\)'                             => ' Ortalama)',
+     'Average'                                => 'Ortalama',
+     'Max'                                    => 'EnYüksek;x',
+     'Current'                                => 'ŞuAnki',
      'version'                                => 'sürüm',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Günlük ($1 dakika :',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Haftalık (30 dakika :' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Aylık (2 saat :',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Yıllık (1 gün :', 
+     '`Daily\' Graph \((.*) Minute'           => 'Günlük ($1 dakika :',
+     '`Weekly\' Graph \(30 Minute'            => 'Haftalık (30 dakika :' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Aylık (2 saat :',
+     '`Yearly\' Graph \(1 Day'                => 'Yıllık (1 gün :', 
      'Incoming Traffic in (\S+) per Second'   => '$1 deki saniyelik giriş trafiği',
      'Outgoing Traffic in (\S+) per Second'   => '$1 deki saniyelik çıkış trafiği',
      'at which time (.*) had been up for(.*)' => '$1 Ne zamandan $2 beri ayakta',
@@ -5002,9 +4911,9 @@ return "" unless defined $string;
      # '([kMG]?)([bB])/h'                       => '$1$2/t',
      # 'Bits'                                  => 'Bit',
      # 'Bytes'                                 => 'Byte'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Giriş:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Çıkış:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Yüzge:</FONT>',
+     'In'                                     => 'Giriş',
+     'Out'                                    => 'Çıkış',
+     'Percentage'                             => 'Yüzge',
      'Ported to OpenVMS Alpha by'             => 'OpenVMS Alpha ya uyarlayan',
      'Ported to WindowsNT by'                 => 'WindowsNT ye uyarlayan',
      'and'                                    => 've',
@@ -5077,20 +4986,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=koi8-u',
+     'iso-8859-1'                             => 'koi8-u',
      'Maximal 5 Minute Incoming Traffic'      => 'íÁËÓÉÍÁÌØÎÉÊ ×È¦ÄÎÉÊ ÔÒÁÆ¦Ë ÚÁ 5 È×ÉÌÉÎ',
      'Maximal 5 Minute Outgoing Traffic'      => 'íÁËÓÉÍÁÌØÎÉÊ ×ÉÈ¦ÄÎÉÊ ÔÒÁÆ¦Ë ÚÁ 5 È×ÉÌÉÎ',
      'the device'                             => 'ĞÒÉÓÔÒ¦Ê',
      'The statistics were last updated(.*)'   => 'ïÓÔÁÎÎ¤ ÏÎÏ×ÌÅÎÎÑ ÓÔÁÔÉÓÔÉËÉ ÂÕÌÏ ×: $1',
-     ' Average\)</B><BR>'                     => ')</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>óÅÒÅÄÎ¦Ê$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>íÁËÓ.$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>ğÏÔÏŞÎÉÊ$1',
+     ' Average\)'                             => ')',
+     'Average'                                => 'óÅÒÅÄÎ¦Ê',
+     'Max'                                    => 'íÁËÓ.',
+     'Current'                                => 'ğÏÔÏŞÎÉÊ',
      'version'                                => '×ÅÒÓ¦Ñ',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>äÏÂÏ×ÉÊ ÔÒÁÆ¦Ë (ÓÅÒÅÄÎ¤ ÚÁ $1 È×ÉÌÉÎ',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>ôÉÖÎÅ×ÉÊ ÔÒÁÆ¦Ë (ÓÅÒÅÄÎ¤ ÚÁ 30 È×ÉÌÉÎ' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>í¦ÓÑŞÎÉÊ ÔÒÁÆ¦Ë  (ÓÅÒÅÄÎ¤ ÚÁ 2 ÇÏÄÉÎÉ',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>ò¦ŞÎÉÊ ÔÒÁÆ¦Ë (ÓÅÒÅÄÎ¤ ÚÁ 1 ÄÅÎØ', 
+     '`Daily\' Graph \((.*) Minute'           => 'äÏÂÏ×ÉÊ ÔÒÁÆ¦Ë (ÓÅÒÅÄÎ¤ ÚÁ $1 È×ÉÌÉÎ',
+     '`Weekly\' Graph \(30 Minute'            => 'ôÉÖÎÅ×ÉÊ ÔÒÁÆ¦Ë (ÓÅÒÅÄÎ¤ ÚÁ 30 È×ÉÌÉÎ' ,
+     '`Monthly\' Graph \(2 Hour'              => 'í¦ÓÑŞÎÉÊ ÔÒÁÆ¦Ë  (ÓÅÒÅÄÎ¤ ÚÁ 2 ÇÏÄÉÎÉ',
+     '`Yearly\' Graph \(1 Day'                => 'ò¦ŞÎÉÊ ÔÒÁÆ¦Ë (ÓÅÒÅÄÎ¤ ÚÁ 1 ÄÅÎØ', 
      'Incoming Traffic in (\S+) per Second'   => '÷È¦ÄÎÉÊ ÔÒÁÆ¦Ë × $1 ÚÁ ÓÅËÕÎÄÕ',
      'Outgoing Traffic in (\S+) per Second'   => '÷ÉÈ¦ÄÎÉÊ ÔÒÁÆ¦Ë × $1 ÚÁ ÓÅËÕÎÄÕ',
      'at which time (.*) had been up for(.*)' => '$1 ÂÕÌÏ ×ËÌÀŞÅÎÏ Ï $2',
@@ -5099,9 +5008,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/ÇÏÄ',
      'Bits'                                  => 'Â¦ÔÁÈ',
      'Bytes'                                 => 'ÂÁÊÔÁÈ',
-     '&nbsp;In:</FONT>'                       => '&nbsp;÷È:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;÷ÉÈ:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;÷¦ÄÓÏÔËÉ:</FONT>',
+     'In'                                     => '÷È',
+     'Out'                                    => '÷ÉÈ',
+     'Percentage'                             => '÷¦ÄÓÏÔËÉ',
      'Ported to OpenVMS Alpha by'             => 'áÄÁĞÔÏ×ÁÎÏ ÄÌÑ OpenVMS Alpha',
      'Ported to WindowsNT by'                 => 'áÄÁĞÔÏ×ÁÎÏ ÄÌÑ WindowsNT',
      'and'                                    => '¦',
@@ -5183,20 +5092,20 @@ return "" unless defined $string;
 
   %translations =
   (
-  'charset=iso-8859-1'				=> 'charset=windows-1251',
+     'iso-8859-1'                             => 'windows-1251',
   'Maximal 5 Minute Incoming Traffic'		=> 'Ìàêñèìàëüíèé âõ³äíèé òğàô³ê çà 5 õâèëèí',
   'Maximal 5 Minute Outgoing Traffic'		=> 'Ìàêñèìàëüíèé âèõ³äíèé òğàô³ê çà 5 õâèëèí',
   'the device'					=> 'ïğèñòğ³é',
   'The statistics were last updated(.*)'	=> 'Îñòàííº îíîâëåííÿ ñòàòèñòèêè: $1',
-  ' Average\)</B><BR>'				=> ')</B><BR>',
-  '<TD ALIGN=right><SMALL>Average(.*)'		=> '<TD ALIGN=right><SMALL>Ñåğåäí³é$1',
-  '<TD ALIGN=right><SMALL>Max(.*)'		=> '<TD ALIGN=right><SMALL>Ìàêñèìàëüíèé$1',
-  '<TD ALIGN=right><SMALL>Current(.*)'		=> '<TD ALIGN=right><SMALL>Ïîòî÷íèé$1',
+     ' Average\)'                             => ')',
+     'Average'                                => 'Ñåğåäí³é',
+     'Max'                                    => 'Ìàêñèìàëüíèé',
+     'Current'                                => 'Ïîòî÷íèé',
   'version'					=> 'âåğñ³ÿ',
-  '<B>`Daily\' Graph \((.*) Minute'		=> '<B>Äåííèé òğàô³ê (â ñåğåäíüîìó çà $1 õâèëèí',
-  '<B>`Weekly\' Graph \(30 Minute'		=> '<B>Òèæíåâèé òğàô³ê (â ñåğåäíüîìó çà 30 õâèëèí' ,
-  '<B>`Monthly\' Graph \(2 Hour'		=> '<B>Ì³ñÿ÷íèé òğàô³ê (â ñåğåäíüîìó çà äâi ãîäèíè',
-  '<B>`Yearly\' Graph \(1 Day'			=> '<B>Ğ³÷íèé òğàô³ê (â ñåğåäíüîìó çà îäèí äåíü', 
+     '`Daily\' Graph \((.*) Minute'           => 'Äåííèé òğàô³ê (â ñåğåäíüîìó çà $1 õâèëèí',
+     '`Weekly\' Graph \(30 Minute'            => 'Òèæíåâèé òğàô³ê (â ñåğåäíüîìó çà 30 õâèëèí' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Ì³ñÿ÷íèé òğàô³ê (â ñåğåäíüîìó çà äâi ãîäèíè',
+     '`Yearly\' Graph \(1 Day'                => 'Ğ³÷íèé òğàô³ê (â ñåğåäíüîìó çà îäèí äåíü', 
   'Incoming Traffic in (\S+) per Second'	=> 'Âõ³äíèé òğàô³ê â $1 çà ñåêóíäó',
   'Outgoing Traffic in (\S+) per Second'	=> 'Âèõ³äíèé òğàô³ê â $1 çà ñåêóíäó',
   'at which time (.*) had been up for(.*)'	=> '$1 â ä³¿: $2',
@@ -5208,9 +5117,9 @@ return "" unless defined $string;
   '([bB])/h'					=> '$1/ãîä',
   'Bits'					=> 'á³òàõ',
   'Bytes'					=> 'áàéòàõ',
-  '&nbsp;In:</FONT>'				=> '&nbsp;âõ³ä:</FONT>',
-  '&nbsp;Out:</FONT>'				=> '&nbsp;âèõ³ä:</FONT>',
-  '&nbsp;Percentage</FONT>'			=> '&nbsp;Â³äñîòîê:</FONT>',
+     'In'                                     => 'âõ³ä',
+     'Out'                                    => 'âèõ³ä',
+     'Percentage'                             => 'Â³äñîòîê',
   'Ported to OpenVMS Alpha by'			=> 'Ïîğòîâàíî íà OpenVMS Alpha',
   'Ported to WindowsNT by'			=> 'Ïîğòîâàíî íà WindowsNT',
   'and'						=> 'òà',

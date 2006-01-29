@@ -9,11 +9,9 @@
 ###### PATCHTAG30 ####################################################
 # Hungarian/magyar
    'hungarian' =>
-   "  <HR NOSHADE>
-    Magyaros&iacute;totta
-    <NOBR>Nagy Levente
-  <A HREF=\"mailto:levinet\@euroweb.hu\">
-  &lt;levinet\@euroweb.hu&gt;</A></NOBR>",
+   "Magyaros&iacute;totta
+				Nagy Levente
+				<a href=\"mailto:levinet\@euroweb.hu\">&lt;levinet\@euroweb.hu&gt;</a>",
 # the hungarian string means: "Prepared for languages and translated to Hungarian by"
 ###### PATCHTAG40 ####################################################
 $credits::LOCALE{'magyar'}=$credits::LOCALE{'hungarian'};
@@ -41,15 +39,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Maxim&aacute;lis kimen&otilde; forgalom 5 perc alatt',
      'the device'                             => 'az eszk&ouml;z',
      'The statistics were last updated(.*)'   => 'A statisztika utols&oacute; friss&iacute;t&eacute;se:$1',
-     ' Average\)</B><BR>'                     => ' &aacute;tlag)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>&Aacute;tlagos$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Maximum$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Pillanatnyi$1',
+     ' Average\)'                             => ' &aacute;tlag)',
+     'Average'                                => '&Aacute;tlagos',
+     'Max'                                    => 'Maximum',
+     'Current'                                => 'Pillanatnyi',
      'version'                                => 'verzi&oacute;',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>`Napi\' grafikon ($1 perces',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>`Heti\' grafikon (30 perces' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>`Havi\' grafikon (2 &oacute;r&aacute;s',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>`&Eacute;ves\' grafikon (1 napos', 
+     '`Daily\' Graph \((.*) Minute'           => '`Napi\' grafikon ($1 perces',
+     '`Weekly\' Graph \(30 Minute'            => '`Heti\' grafikon (30 perces' ,
+     '`Monthly\' Graph \(2 Hour'              => '`Havi\' grafikon (2 &oacute;r&aacute;s',
+     '`Yearly\' Graph \(1 Day'                => '`&Eacute;ves\' grafikon (1 napos', 
      'Incoming Traffic in (\S+) per Second'   => 'Bej&ouml;v&otilde; forgalom $1 per m&aacute;sodpercben',
      'Outgoing Traffic in (\S+) per Second'   => 'Kimen&otilde; forgalom $1 per m&aacute;sodpercben',
      'at which time (.*) had been up for(.*)' => 'amikor a $1 &uuml;zemideje $2 volt.',
@@ -58,9 +56,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/t',
      'Bits'                                => 'Bit',
      'Bytes'                              => 'Byte',
-     '&nbsp;In:</FONT>'                      => '&nbsp;be:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;ki:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;sz&aacute;zale&acute;k:</FONT>',
+     'In'                                     => 'be',
+     'Out'                                    => 'ki',
+     'Percentage'                             => 'sz&aacute;zale&acute;k',
      'Ported to OpenVMS Alpha by'             => 'OpenVMS-re portolta', 
      'Ported to WindowsNT by'                 => 'WindowsNT-re portolta',
      'and'                                    => '&eacute;s',

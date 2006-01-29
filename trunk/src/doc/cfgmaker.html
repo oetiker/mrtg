@@ -64,7 +64,7 @@
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
-<p>cfgmaker - Creates mrtg.cfg files (for mrtg-2.11.1)</p>
+<p>cfgmaker - Creates mrtg.cfg files (for mrtg-2.12.2)</p>
 <p>
 </p>
 <hr />
@@ -87,6 +87,7 @@
  --ifdesc=eth                       ... uses Ethernet Number
  --ifdesc=descr                     ... uses Interface Description
  --ifdesc=name                      ... uses Interface Name
+ --ifdesc=catname                   ... uses CatOS Interface Name
  --ifdesc=alias                     ... uses Interface Alias
  --ifdesc=type                      ... uses Interface Type</pre>
 <pre>
@@ -120,6 +121,10 @@
  --no-down         do not look at admin or opr status of interfaces</pre>
 <pre>
  --show-op-down    show interfaces which are operatively down</pre>
+<pre>
+ --zero-speed=spd  use this speed in bits-per-second as the interface
+                   speed for all interfaces that return a speed of 0
+                   via ifSpeed/ifHighSpeed.  100Mbps = 100000000</pre>
 <pre>
  --subdirs=format  give each router its own subdirectory, naming each per 
                    &quot;format&quot;, in which HOSTNAME and SNMPNAME will be 
@@ -424,6 +429,16 @@ switch you get them all.
 </dt>
 <dd>
 Include interfaces which are operatively down.
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2dzero_2dspeed_speed"><strong>--zero-speed</strong> <em>speed</em></a></strong><br />
+</dt>
+<dd>
+Assign this speed in bits-per-second to all interfaces which return 0
+for ifSpeed and ifHighSpeed.  Some switches, notably Foundry equipment,
+return a speed of zero for some interfaces.  For example, to have
+all interfaces reporting zero set to 100Mbps, use
+--zero-speed=100000000.
 </dd>
 <p></p>
 <dt><strong><a name="item__2d_2dsubdirs_format"><strong>--subdirs</strong> <em>format</em></a></strong><br />
@@ -1156,29 +1171,55 @@ interface happens to be rejected.</p>
    $target_lines .= &lt;&lt;ECHO;
  MaxBytes[$target_name]: $if_speed
  Title[$target_name]: $html_desc_prefix$html_if_title_desc -- $sysname
- PageTop[$target_name]: &lt;H1&gt;$html_desc_prefix$html_if_title_desc -- $sysname&lt;/H1&gt;
-  &lt;TABLE&gt;
-    &lt;TR&gt;&lt;TD&gt;System:&lt;/TD&gt;     &lt;TD&gt;$sysname in $html_syslocation&lt;/TD&gt;&lt;/TR&gt;
-    &lt;TR&gt;&lt;TD&gt;Maintainer:&lt;/TD&gt; &lt;TD&gt;$html_syscontact&lt;/TD&gt;&lt;/TR&gt;
-    &lt;TR&gt;&lt;TD&gt;Description:&lt;/TD&gt;&lt;TD&gt;$html_if_description&lt;/TD&gt;&lt;/TR&gt;
-    &lt;TR&gt;&lt;TD&gt;ifType:&lt;/TD&gt;     &lt;TD&gt;$html_if_type_desc ($if_type_num)&lt;/TD&gt;&lt;/TR&gt;
-    &lt;TR&gt;&lt;TD&gt;ifName:&lt;/TD&gt;     &lt;TD&gt;$html_if_snmp_name&lt;/TD&gt;&lt;/TR&gt;
+ PageTop[$target_name]: &lt;h1&gt;$html_desc_prefix$html_if_title_desc -- $sysname&lt;/h1&gt;
+                &lt;div id=&quot;sysdetails&quot;&gt;
+                        &lt;table&gt;
+                                &lt;tr&gt;
+                                        &lt;td&gt;System:&lt;/td&gt;
+                                        &lt;td&gt;$sysname in $html_syslocation&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                        &lt;td&gt;Maintainer:&lt;/td&gt;
+                                        &lt;td&gt;$html_syscontact&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                        &lt;td&gt;Description:&lt;/td&gt;
+                                        &lt;td&gt;$html_if_description&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                        &lt;td&gt;ifType:&lt;/td&gt;
+                                        &lt;td&gt;$html_if_type_desc ($if_type_num)&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                        &lt;td&gt;ifName:&lt;/td&gt;
+                                        &lt;td&gt;$html_if_snmp_name&lt;/td&gt;
+                                &lt;/tr&gt;
  ECHO
  
    $target_lines .= &lt;&lt;ECHO if defined $if_port_name;
-    &lt;TR&gt;&lt;TD&gt;Port Name:&lt;/TD&gt;  &lt;TD&gt;$if_port_name&lt;/TD&gt;&lt;/TR&gt;
+                                &lt;tr&gt;
+                                        &lt;td&gt;Port Name:&lt;/td&gt;
+                                        &lt;td&gt;$if_port_name&lt;/td&gt;
+                                &lt;/tr&gt;
  ECHO
  
    $target_lines .= &lt;&lt;ECHO;
-    &lt;TR&gt;&lt;TD&gt;Max Speed:&lt;/TD&gt;  &lt;TD&gt;$if_speed_str&lt;/TD&gt;&lt;/TR&gt;
+                                &lt;tr&gt;
+                                        &lt;td&gt;Max Speed:&lt;/td&gt;
+                                        &lt;td&gt;$if_speed_str&lt;/td&gt;
+                                &lt;/tr&gt;
  ECHO
  
    $target_lines .= &lt;&lt;ECHO if $if_ip;
-    &lt;TR&gt;&lt;TD&gt;Ip:&lt;/TD&gt;         &lt;TD&gt;$if_ip ($if_dns_name)&lt;/TD&gt;&lt;/TR&gt;
+                                &lt;tr&gt;
+                                        &lt;td&gt;Ip:&lt;/td&gt;
+                                        &lt;td&gt;$if_ip ($if_dns_name)&lt;/td&gt;
+                                &lt;/tr&gt;
  ECHO
  
    $target_lines .= &lt;&lt;ECHO;
-  &lt;/TABLE&gt;
+                        &lt;/table&gt;
+                &lt;/div&gt;
  ECHO
  } else {
    $head_lines=&quot;&quot;;
@@ -1230,13 +1271,27 @@ reject interfaces, the template below would do the job as well by using
  Options[$target_name]: growright, gauge, nopercent
  Title[$target_name]: $router_name CPU load
  Target[$target_name]: 1.3.6.1.4.1.9.2.1.58.0&amp;1.3.6.1.4.1.9.2.1.58.0:$router_connect
- PageTop[$target_name]: &lt;H1&gt;$router_name CPU load&lt;/H1&gt;
-   &lt;TABLE&gt;
-     &lt;TR&gt;&lt;TD&gt;System:&lt;/TD&gt;&lt;TD&gt;$router_name in $html_syslocation&lt;/TD&gt;&lt;/TR&gt;
-     &lt;TR&gt;&lt;TD&gt;Maintainer:&lt;/TD&gt;&lt;TD&gt;$html_syscontact&lt;/TD&gt;&lt;/TR&gt;
-     &lt;TR&gt;&lt;TD VALIGN=&quot;top&quot;&gt;Description:&lt;/TD&gt;&lt;TD&gt;$html_sysdescr&lt;/TD&gt;&lt;/TR&gt;
-     &lt;TR&gt;&lt;TD&gt;Resource:&lt;/TD&gt;&lt;TD&gt;CPU.&lt;/TD&gt;&lt;/TR&gt;
-   &lt;/TABLE&gt;
+ PageTop[$target_name]: &lt;h1&gt;$router_name CPU load&lt;/h1&gt;
+                &lt;div&gt;
+                        &lt;table&gt;
+                                &lt;tr&gt;
+                                        &lt;td&gt;System:&lt;/td&gt;
+                                        &lt;td&gt;$router_name in $html_syslocation&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                        &lt;td&gt;Maintainer:&lt;/td&gt;
+                                        &lt;td&gt;$html_syscontact&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                        &lt;td&gt;Description:&lt;/td&gt;
+                                        &lt;td&gt;$html_sysdescr&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                        &lt;td&gt;Resource:&lt;/td&gt;
+                                        &lt;td&gt;CPU.&lt;/td&gt;
+                                &lt;/tr&gt;
+                        &lt;/table&gt;
+                &lt;/div&gt;
  ECHO</pre>
 <p>
 </p>

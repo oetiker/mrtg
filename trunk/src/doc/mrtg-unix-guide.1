@@ -129,9 +129,9 @@
 .\" ========================================================================
 .\"
 .IX Title "MRTG-UNIX-GUIDE 1"
-.TH MRTG-UNIX-GUIDE 1 "2005-01-06" "2.11.1" "mrtg"
+.TH MRTG-UNIX-GUIDE 1 "2005-06-19" "2.12.2" "mrtg"
 .SH "NAME"
-mrtg\-unix\-guide \- Instructions for running MRTG 2.11.1 on a Unix Box
+mrtg\-unix\-guide \- Instructions for running MRTG 2.12.2 on a Unix Box
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
 \&\s-1MRTG\s0 comes to you in Source Code. This means that you have to compile
@@ -297,8 +297,8 @@ Ok, now everything is ready for the mrtg compilation.
 .PP
 .Vb 3
 \& cd /usr/local/src
-\& gunzip -c mrtg-2.11.1.tar.gz | tar xvf -
-\& cd mrtg-2.11.1
+\& gunzip -c mrtg-2.12.2.tar.gz | tar xvf -
+\& cd mrtg-2.12.2
 .Ve
 .PP
 If all the libraries have been preinstalled on your system you can
@@ -431,7 +431,7 @@ A \fBminimal\fR script to put into \fIinit.d\fR might look like this:
 .PP
 .Vb 3
 \& #! /bin/sh
-\& cd /usr/local/mrtg-2.11.1/bin && ./mrtg --user=mrtg-user \e
+\& cd /usr/local/mrtg-2.12.2/bin && ./mrtg --user=mrtg-user \e
 \&       /home/httpd/mrtg/mrtg.cfg  --logging /var/log/mrtg.log
 .Ve
 .PP

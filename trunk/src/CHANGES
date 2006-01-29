@@ -1,3 +1,69 @@
+Changes 2.12.2, 2005-06-19
+--------------------------
+
+From: Fabian Uebersax <fabian of uebersax.ch>
+* fix portname math in indexmaker 
+
+From: Andrej Ota <andrej.ota of siol.si>
+* accept extreme networks switches for ifAlias in cfgmaker
+
+From: Jeff Woolsey <jlw with jlw.com>
+* set unknown values to 0 for threshold checking if unknonwnaszero is set
+
+From: NormW <normw location bocnet.com.au>
+* updated NetWare integration
+
+Changes 2.12.1, 2005-05-16
+--------------------------
+From: tobi
+* max maxbytes work again (rateup.c)
+
+From: Jeremy Chadwick <mrtg@jdc.parodius.com>
+* css fix ... do not specify the graph size this is flexible
+
+From: Peter W. Osel <pwo@infineon.com>
+* fix background color setting in new css code
+
+Changes 2.12.0, 2005-05-15
+--------------------------
+From: Benjamin Gufler <benjamin.gufler with lugbz.org>
+* make mrtg produce propper xhtml output
+
+From: tobi
+* do not maintain separate confcache entries for different timeout settings
+* make mrtg work with rrdtool 1.2 (note that this does not mean that you
+  graphing frontend will necesarily work with rrdtool 1.2.x too)
+* Fix location of maxbytes line in log scale mode
+* do not die when encountering a bad rrd ... only warn 
+* stop mrtg from popping up windows whenever rateup runs by using the
+  Win32::SetChildShowWindow(0);
+
+From: Erek Dyskant <erek with nbtsc.org>
+* give derive precendence when when setting the
+  update mode.
+
+From: Miloslav Trmac <mitr in redhat.com>
+* call tzset when running on unix after setting TZ to cater for
+  multithreaded perl
+
+From: "Bruijn de, Pascal" <pmjdebruijn in gmail.com>
+* added make CatOS if names available in cfgmaker ifdesc
+
+From: Jeremy J. Smith <jeremy pre klugerwahl.com>
+* DOCTYPE must be before any comment ... 
+
+From: Steve Bonds <388rzvl02 alpha sneakemail.com>
+* added --zero-speed option to cfgmaker to deal with broken snmp
+
+From: "Poetzel, Christopher J." <cpoetzel some anl.gov>
+* Force10 ifAlias support for cfgmaker
+
+From:  Nick Ellson <grimm location nickellson.com>
+* teach cfgmaker about Cisco PIX Firewall Switch Modules
+
+From: NormW <normw location bocnet.com.au>
+* updated NetWare integration
+
 Changes 2.11.1, 2005-01-05
 --------------------------
 From: Artyom Adjemov <one.bofh location gmail.com>

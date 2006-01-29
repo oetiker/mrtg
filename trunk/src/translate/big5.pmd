@@ -10,16 +10,11 @@
 ###### PATCHTAG 30 ###################################################
 # Chinese/中文繁體
    'big5' =>
-   "  <HR NOSHADE>
-    中文化作者
-    <NOBR><A HREF=\"http://www.joy-tech.com.tw/~tate\">Tate Chen</A>
-  <A HREF=\"mailto:tate\@joy-tech.com.tw\">
-  &lt;tate\@joy-tech.com.tw&gt;</A></NOBR>
-  and
-  <NOBR><A HREF=\"http://asplord.com\">黃東隆</A>
-  <A HREF=\"mailto:ryan\@asplord.com\">
-  &lt;ryan\@asplord.com&gt;</A>  
-  </NOBR>",
+   "中文化作者
+				<a href=\"http://www.joy-tech.com.tw/~tate\">Tate Chen</a>
+				<a href=\"mailto:tate\@joy-tech.com.tw\">&lt;tate\@joy-tech.com.tw&gt;</a><br />
+				and <a href=\"http://asplord.com\">黃東隆</a>
+				<a href=\"mailto:ryan\@asplord.com\">&lt;ryan\@asplord.com&gt;</a>",
 ###### PATCHTAG 40 ###################################################
 $credits::LOCALE{'中文繁體'}=$credits::LOCALE{'big5'};
 ###### PATCHTAG 50 ###################################################
@@ -40,20 +35,20 @@ sub big5
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=big5',
+     'iso-8859-1'                             => 'big5',
      'Maximal 5 Minute Incoming Traffic'      => '5分鐘最大流入量',
      'Maximal 5 Minute Outgoing Traffic'      => '5分鐘最大流出量',
      'the device'                             => '裝置',
      'The statistics were last updated(.*)'   => '上次統計更新時間: $1',
-     ' Average\)</B><BR>'                     => ' 平均)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>平均$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>最大$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>目前$1',
+     ' Average\)'                             => ' 平均)',
+     'Average'                                => '平均',
+     'Max'                                    => '最大',
+     'Current'                                => '目前',
      'version'                                => '版本',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>每日 圖表 ($1 分鐘',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>每週 圖表 (30 分鐘' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>每月 圖表 (2 小時',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>每年 圖表 (1 天',
+     '`Daily\' Graph \((.*) Minute'           => '每日 圖表 ($1 分鐘',
+     '`Weekly\' Graph \(30 Minute'            => '每週 圖表 (30 分鐘' ,
+     '`Monthly\' Graph \(2 Hour'              => '每月 圖表 (2 小時',
+     '`Yearly\' Graph \(1 Day'                => '每年 圖表 (1 天',
      'Incoming Traffic in (\S+) per Second'   => '每秒流入量 (單位 $1)',
      'Outgoing Traffic in (\S+) per Second'   => '每秒流出量 (單位 $1)',
      'Incoming Traffic in (\S+) per Minute'   => '每分鐘流入量 (單位 $1)',
@@ -68,9 +63,9 @@ sub big5
      '(.+)/h$'                                => '$1/小時',
      # 'Bits'                                   => 'Bits',
      # 'Bytes'                                  => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;流入:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;流出:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;百分比:</FONT>',
+     'In'                                     => '流入',
+     'Out'                                    => '流出',
+     'Percentage'                             => '百分比',
      'Ported to OpenVMS Alpha by'             => '移植到 OpenVM Alpha 作者',
      'Ported to WindowsNT by'                 => '移植到 WindowsNT 作者',
      'and'                                    => '及',

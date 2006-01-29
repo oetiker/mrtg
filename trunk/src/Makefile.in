@@ -1,7 +1,7 @@
 # things that the GNU standards document suggests all makefiles
 # should have.
 SHELL=/bin/sh
-VER=2.11.1
+VER=2.12.2
 .SUFFIXES:
 .SUFFIXES: .c .o .pl .pm .pod .html .man .wml .1 .txt
 
@@ -74,7 +74,8 @@ install:
 ARCHIVE = mrtg-$(VER)
 DIRNAME = mrtg-$(VER)
 
-POD = doc/mrtg-faq.pod      doc/mrtg-logfile.pod  doc/mrtg-nt-guide.pod      doc/mrtg-unix-guide.pod   \
+POD = doc/mrtg-faq.pod      doc/mrtg-logfile.pod  doc/mrtg-nt-guide.pod      doc/mrtg-nw-guide.pod \
+      doc/mrtg-unix-guide.pod   \
       doc/mrtg-forum.pod    doc/mrtg-mibhelp.pod  doc/mrtg-reference.pod     doc/mrtg-webserver.pod    \
       doc/mrtg-rrd.pod      doc/mrtg-squid.pod    doc/mrtg.pod       doc/mrtg-contrib.pod \
       doc/cfgmaker.pod      doc/indexmaker.pod    doc/mrtglib.pod    doc/mrtg-ipv6.pod
@@ -133,7 +134,7 @@ tar:	doc rateupexe
 	(cd .. ; sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | gtar -czv --files-from=- -f $(DIRNAME)/archive/$(ARCHIVE).tar.gz --exclude='*~' --exclude="CVS")
 	$(PERL) -0777 -pi -e 's@GRAPHFMT="...";@GRAPHFMT="png";@' bin/mrtg bin/indexmaker
 	# build rateup for windows ...
-	(cd .. ; touch $(DIRNAME)/contrib/a~;sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | xargs zip -r $(DIRNAME)/archive/$(ARCHIVE).zip; zip $(DIRNAME)/archive/$(ARCHIVE).zip $(DIRNAME)/bin/rateup.exe; zip -d $(DIRNAME)/archive/$(ARCHIVE).zip '*~' 'CVS')
+	(cd .. ; touch $(DIRNAME)/contrib/a~;sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | xargs zip -r $(DIRNAME)/archive/$(ARCHIVE).zip; zip $(DIRNAME)/archive/$(ARCHIVE).zip $(DIRNAME)/bin/rateup.exe  $(DIRNAME)/bin/rateup.nlm $(DIRNAME)/bin/rateup.nlm; zip -d $(DIRNAME)/archive/$(ARCHIVE).zip '*~' 'CVS')
 	-rm ../$(DIRNAME)
 
 doc-dist: doc

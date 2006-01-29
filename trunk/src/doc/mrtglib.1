@@ -129,7 +129,7 @@
 .\" ========================================================================
 .\"
 .IX Title "MRTGLIB 1"
-.TH MRTGLIB 1 "2005-01-06" "2.11.1" "mrtg"
+.TH MRTGLIB 1 "2005-06-19" "2.12.2" "mrtg"
 .SH "NAME"
 MRTG_lib.pm \- Library for MRTG and support scripts
 .SH "SYNOPSIS"
@@ -340,12 +340,30 @@ muliple times, the retrieved value else.
 \&\f(CW\*(C`my $confcache = readconfcache($file)\*(C'\fR
 .Sp
 Preload the confcache from a file.
+.ie n .IP """readfromconfcache""" 4
+.el .IP "\f(CWreadfromconfcache\fR" 4
+.IX Item "readfromconfcache"
+\&\f(CW\*(C`writeconfcache($confcache,$file)\*(C'\fR
+.Sp
+Store the current confcache into a file.
 .ie n .IP """writeconfcache""" 4
 .el .IP "\f(CWwriteconfcache\fR" 4
 .IX Item "writeconfcache"
 \&\f(CW\*(C`writeconfcache($confcache,$file)\*(C'\fR
 .Sp
 Store the current confcache into a file.
+.ie n .IP """storeincache""" 4
+.el .IP "\f(CWstoreincache\fR" 4
+.IX Item "storeincache"
+\&\f(CW\*(C`storeincache($confcache,$host,$method,$key,$value)\*(C'\fR
+.ie n .IP """readfromcache""" 4
+.el .IP "\f(CWreadfromcache\fR" 4
+.IX Item "readfromcache"
+\&\f(CW\*(C`readfromcache($confcache,$host,$method,$key)\*(C'\fR
+.ie n .IP """clearfromcache""" 4
+.el .IP "\f(CWclearfromcache\fR" 4
+.IX Item "clearfromcache"
+\&\f(CW\*(C`clearfromcache($confcache,$host)\*(C'\fR
 .ie n .IP """debug""" 4
 .el .IP "\f(CWdebug\fR" 4
 .IX Item "debug"

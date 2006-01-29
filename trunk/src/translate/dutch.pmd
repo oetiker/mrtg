@@ -9,13 +9,11 @@
 ###### PATCHTAG30 ####################################################
 # Dutch/nederlands
    'dutch' =>
-   "  <HR NOSHADE>
-    Vertaald naar het Nederlands door
-    <NOBR><A HREF=\"http://doema.peterson.nl\">Barry van Dijk</A>
-  <A HREF=\"mailto:barry\@dijk.com\">
-  &lt;barry\@dijk.com&gt;</A>;
+   "Vertaald naar het Nederlands door
+				<a href=\"http://doema.peterson.nl\">Barry van Dijk</a>
+				<a href=\"mailto:barry\@dijk.com\">&lt;barry\@dijk.com&gt;</a><br />;
   Aangepast door Paul Slootman
-  <A HREF=\"mailto:paul\@debian.org\">&lt;paul\@debian.org&gt;</A></NOBR>",
+				<a href=\"mailto:paul\@debian.org\">&lt;paul\@debian.org&gt;</a>",
 ###### PATCHTAG40 ####################################################
 $credits::LOCALE{'nederlands'}=$credits::LOCALE{'dutch'};
 ###### PATCHTAG50 ####################################################
@@ -41,15 +39,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Maximaal uitgaand verkeer per 5 minuten',
      'the device'                             => 'het apparaat',
      'The statistics were last updated(.*)'   => 'Statistieken voor het laatst bijgewerkt op$1',
-     ' Average\)</B><BR>'                     => ' gemiddeld)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Gemiddeld$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Actueel$1',
+     ' Average\)'                             => ' gemiddeld)',
+     'Average'                                => 'Gemiddeld',
+     'Max'                                    => 'Max',
+     'Current'                                => 'Actueel',
      'version'                                => 'versie',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>`Dagelijkse\' grafiek ($1 minuten',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>`Wekelijkse\' grafiek (30 minuten' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>`Maandelijkse\' grafiek (2 uur',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>`Jaarlijkse\' grafiek (1 dag', 
+     '`Daily\' Graph \((.*) Minute'           => '`Dagelijkse\' grafiek ($1 minuten',
+     '`Weekly\' Graph \(30 Minute'            => '`Wekelijkse\' grafiek (30 minuten' ,
+     '`Monthly\' Graph \(2 Hour'              => '`Maandelijkse\' grafiek (2 uur',
+     '`Yearly\' Graph \(1 Day'                => '`Jaarlijkse\' grafiek (1 dag', 
      'Incoming Traffic in (\S+) per Second'   => 'Inkomend verkeer in $1 per seconde',
      'Outgoing Traffic in (\S+) per Second'   => 'Uitgaand verkeer in $1 per seconde',
      'at which time (.*) had been up for(.*)' => 'op het moment dat $1 reeds actief was voor$2',
@@ -59,8 +57,8 @@ return "" unless defined $string;
      # 'Bits'                                => 'Bits',
      # 'Bytes'                              => 'Bytes'
      # '&nbsp;In:</FONT>'                      => '&nbsp;In:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;Uit:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;Procent:</FONT>',
+     'Out'                                    => 'Uit',
+     'Percentage'                             => 'Procent',
      'Ported to OpenVMS Alpha by'             => 'Ported naar OpenVMS door', 
      'Ported to WindowsNT by'                 => 'Ported naar WindowsNT door',
      'and'                                    => 'en',

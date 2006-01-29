@@ -9,11 +9,9 @@
 ###### PATCHTAG30 ####################################################
 # Swedish/Svenska
    'swedish' =>
-   "  <HR NOSHADE>
-    &Oumlversatt till svenska av
-    <NOBR>Clas Mayer
-  <A HREF=\"mailto:clas\@mayer.se\">
-  &lt;clas\@mayer.se&gt;</A></NOBR>",
+   "&Oumlversatt till svenska av
+				Clas Mayer
+				<a href=\"mailto:clas\@mayer.se\">&lt;clas\@mayer.se&gt;</a>",
 # the Swedish string means: "Prepared for languages and translated to Swedish by"
 ###### PATCHTAG40 ####################################################
 $credits::LOCALE{'svenska'}=$credits::LOCALE{'swedish'};
@@ -40,15 +38,15 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Maximalt utg&aring;ende trafik i 5 minuter',
      'the device'                             => 'enheten',
      'The statistics were last updated(.*)'   => 'Statistiken blev senast uppdaterad$1',
-     ' Average\)</B><BR>'                     => ')</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Medel$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Senaste$1',
+     ' Average\)'                             => ')',
+     'Average'                                => 'Medel',
+     #'Max'                                    => 'Max',
+     'Current'                                => 'Senaste',
      'version'                                => 'version',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Daglig graf (samplingsintervall $1 minut(er)',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Veckovis graf (medelvärde per 30 minuter' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>M&aring;natlig graf (medelvärde per 2 timmar',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>&Aring;rlig graf (medelvärde per dygn', 
+     '`Daily\' Graph \((.*) Minute'           => 'Daglig graf (samplingsintervall $1 minut(er)',
+     '`Weekly\' Graph \(30 Minute'            => 'Veckovis graf (medelvärde per 30 minuter' ,
+     '`Monthly\' Graph \(2 Hour'              => 'M&aring;natlig graf (medelvärde per 2 timmar',
+     '`Yearly\' Graph \(1 Day'                => '&Aring;rlig graf (medelvärde per dygn', 
      'Incoming Traffic in (\S+) per Second'   => 'Inkommande trafik i $1 per sekund',
      'Outgoing Traffic in (\S+) per Second'   => 'Utgående trafik i $1 per sekund',
      'at which time (.*) had been up for(.*)' 		=> 'då $1 varit ig&aring;ng i$2',
@@ -57,9 +55,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/t',
      # 'Bits'                                => 'Bits',
      # 'Bytes'                              => 'Bytes',
-     '&nbsp;In:</FONT>'                      => '&nbsp; In:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;Ut:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;Procent:</FONT>',
+     #'In'                                     => 'In',
+     'Out'                                    => 'Ut',
+     'Percentage'                             => 'Procent',
      'Ported to OpenVMS Alpha by'             => 'Portad till OpenVMS av', 
      'Ported to WindowsNT by'                 => 'Portad till WindowsNT av',
      'and'                                    => 'och',

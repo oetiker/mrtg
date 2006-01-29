@@ -130,7 +130,7 @@
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
-<p>mrtg-reference - MRTG 2.11.1 configuration reference</p>
+<p>mrtg-reference - MRTG 2.12.2 configuration reference</p>
 <p>
 </p>
 <hr />
@@ -427,11 +427,7 @@ ukrainian</p>
 </p>
 <h2><a name="logformat">LogFormat</a></h2>
 <p>Setting LogFormat to 'rrdtool' in your mrtg.cfg file enables rrdtool mode.
-In rrdtool mode, mrtg relies on <strong>rrdtool</strong> to do its logging. Graphs and html
-pages will be generated on the fly by the 14all.cgi which can be found in
-the contrib section together with a short readme ... This feature has been
-contributed by Rainer&nbsp;Bawidamann&nbsp;&lt;<a&nbsp;href="mailto:bawidama@users.sourceforge.net">bawidama@users.sourceforge.net</a>&gt;. Please check his
-website for more information: <a href="http://www.wh-hms.uni-ulm.de/~widi/14all/">http://www.wh-hms.uni-ulm.de/~widi/14all/</a></p>
+In rrdtool mode, mrtg relies on <strong>rrdtool</strong> to do its logging. See <a href="././mrtg-rrd.html">the mrtg-rrd manpage</a>.</p>
 <p>Example:</p>
 <pre>
  LogFormat: rrdtool</pre>
@@ -1014,13 +1010,12 @@ interface port can carry.</p>
 Also read the section on <em>AbsMax</em> for further info.
 The <em>MaxBytes</em> value is also used in calculating the Y range
 for unscaled graphs (see the section on <em>Unscaled</em>).</p>
-<p>Since most links are rated in bits per second, you need to divide
-their maximum bandwidth (in bits) by eight (8) in order to get
-bytes per second.  This is very important to make your
-unscaled graphs display realistic information.
-T1 = 193000, 56K = 7000, Ethernet = 1250000. The <em>MaxBytes</em>
-value will be used by mrtg to decide whether it got a
-valid response from the router.</p>
+<p>Since most links are rated in bits per second, you need to divide their
+maximum bandwidth (in bits) by eight (8) in order to get bytes per second. 
+This is very important to make your unscaled graphs display realistic
+information. T1 = 193000, 56K = 7000, 10 MB Ethernet = 1250000, 100 MB
+Ethernet = 12500000. The <em>MaxBytes</em> value will be used by mrtg to decide
+whether it got a valid response from the router.</p>
 <p>If you need two different MaxBytes values for the two monitored
 variables, you can use MaxBytes1 and MaxBytes2 instead of MaxBytes.</p>
 <p>Example:</p>
@@ -1936,6 +1931,7 @@ Enable debug options. The argument of the debug option is a comma separated list
  base - basic program flow 
  tarp - target parser
  snpo - snmp polling 
+ coca - confcache operations
  fork - forking view 
  time - some timing info
  log  - logging of data via rateup or rrdtool</pre>

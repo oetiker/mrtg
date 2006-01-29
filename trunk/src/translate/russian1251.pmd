@@ -9,11 +9,9 @@
 ###### PATCHTAG30 ####################################################
 # Russian1251/Русский1251
    'russian1251' =>
-   "  <HR NOSHADE>
-    Перевод на русский язык (кодировка 1251):
-    <NOBR><A HREF=\"http://www.irmcity.com\">Александр Редюк</A>
-  <A HREF=\"mailto:aredyuk\@irmcity.com\">
-  &lt;aredyuk\@irmcity.com&gt;</A></NOBR>",
+   "Перевод на русский язык (кодировка 1251):
+				<a href=\"http://www.irmcity.com\">Александр Редюк</a>
+				<a href=\"mailto:aredyuk\@irmcity.com\">&lt;aredyuk\@irmcity.com&gt;</a>",
 ###### PATCHTAG40 ####################################################
 $credits::LOCALE{'Русский1251'}=$credits::LOCALE{'russian1251'};
 ###### PATCHTAG50 ####################################################
@@ -34,33 +32,33 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=windows-1251',
+     'iso-8859-1'                             => 'windows-1251',
      'Maximal 5 Minute Incoming Traffic'      => 'Максимальный входящий трафик за 5 минут',
      'Maximal 5 Minute Outgoing Traffic'      => 'Максимальный исходящий трафик за 5 минут',
      'the device'                             => 'устройство',
      'The statistics were last updated(.*)'   => 'Время последнего обновления: $1',
-     ' Average\)</B><BR>'                     => ')</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD><SMALL>В среднем$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD><SMALL>Максимально$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD><SMALL>Сейчас$1',
+     ' Average\)'                             => ')',
+     'Average'                                => 'В среднем',
+     'Max'                                    => 'Максимально',
+     'Current'                                => 'Сейчас',
      'version'                                => 'версия',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Суточный трафик (среднее за $1 минут',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Недельный трафик (среднее за 30 минут' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Месячный трафик  (среднее за 2 часа',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Годовой трафик (среднее за 1 день', 
+     '`Daily\' Graph \((.*) Minute'           => 'Суточный трафик (среднее за $1 минут',
+     '`Weekly\' Graph \(30 Minute'            => 'Недельный трафик (среднее за 30 минут' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Месячный трафик  (среднее за 2 часа',
+     '`Yearly\' Graph \(1 Day'                => 'Годовой трафик (среднее за 1 день', 
      'Incoming Traffic in (\S+) per Second'   => 'Входящий трафик в $1 в секунду',
      'Outgoing Traffic in (\S+) per Second'   => 'Исходящий трафик в $1 в секунду',
-     'at which time <B>(\S+)</B> had been up for <B>(\S+)</B>' => 'время после инициализации устройства <B>$1</B>: <B>$2</B>.',
-     'at which time <B>(\S+)</B> had been up for <B>(\S+) day, (\S+)</B>' => 'время после инициализации устройства <B>$1</B>: <B>$2 сутки</B>, <B>$3</B>.',
-     'at which time <B>(\S+)</B> had been up for <B>(\S+) days, (\S+)</B>' => 'время после инициализации устройства <B>$1</B>: <B>$2 суток</B>, <B>$3</B>.',
+     'at which time <strong>(\S+)</strong> had been up for <strong>(\S+)</strong>' => 'время после инициализации устройства <strong>$1</strong>: <strong>$2</strong>.',
+     'at which time <strong>(\S+)</strong> had been up for <strong>(\S+) day, (\S+)</strong>' => 'время после инициализации устройства <strong>$1</strong>: <strong>$2 сутки</strong>, <strong>$3</strong>.',
+     'at which time <strong>(\S+)</strong> had been up for <strong>(\S+) days, (\S+)</strong>' => 'время после инициализации устройства <strong>$1</strong>: <strong>$2 суток</strong>, <strong>$3</strong>.',
      #'([kMG]?)([bB])/s'                      => '$1$1/сек',
      #'([kMG]?)([bB])/min'                    => '$1$2/мин',
      '([kMG]?)([bB])/h'                       => '$1$2/час',
      'Bits'                                  => 'битах',
      'Bytes'                                 => 'байтах',
-     '&nbsp;In:</FONT>'                       => '&nbsp;Вх:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Исх:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Проценты:</FONT>',
+     'In'                                     => 'Вх',
+     'Out'                                    => 'Исх',
+     'Percentage'                             => 'Проценты',
      'Ported to OpenVMS Alpha by'             => 'Адаптировано для OpenVMS Alpha',
      'Ported to WindowsNT by'                 => 'Адаптировано для WindowsNT',
      'and'                                    => 'и',

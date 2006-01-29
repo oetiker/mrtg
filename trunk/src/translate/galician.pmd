@@ -9,11 +9,9 @@
 ###### PATCHTAG30 ####################################################
 # Galician/Galego
    'galician' =>
-   "  <HR NOSHADE>
-    Traducido ao galego por
-    <NOBR>David Garabana Barro
-<A HREF=\"mailto:dgaraban\@arrakis.es\">&lt;dgaraban\@arrakis.es&gt;</A>
-    </NOBR>",
+   "Traducido ao galego por
+				David Garabana Barro
+				<a href=\"mailto:dgaraban\@arrakis.es\">&lt;dgaraban\@arrakis.es&gt;</a>",
 ###### PATCHTAG40 ####################################################
 $credits::LOCALE{'galego'}=$credits::LOCALE{'galician'};
 ###### PATCHTAG50 ####################################################
@@ -34,20 +32,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=iso-8859-1',
+     #'charset=iso-8859-1'                     => 'charset=iso-8859-1',
      'Maximal 5 Minute Incoming Traffic'      => 'Tr&&aacute;fico entrante m&aacute;ximo en 5 minutos',
      'Maximal 5 Minute Outgoing Traffic'      => 'Tr&&aacute;fico sa&iacute;nte m&aacute;ximo en 5 minutos',
      'the device'                             => 'o dispositivo',
      'The statistics were last updated(.*)'   => 'Estas estat&iacute;sticas actualiz&aacute;ronse o $1',
-     ' Average\)</B><BR>'                     => ' de Media)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Media$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>M&aacute;x$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Actual$1',
+     ' Average\)'                             => ' de Media)',
+     'Average'                                => 'Media',
+     'Max'                                    => 'M&aacute;x',
+     'Current'                                => 'Actual',
      'version'                                => 'versi&oacute;n',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Gr&aacute;fica diaria ($1 minutos',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Gr&aacute;fica semanal (30 minutos' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Gr&aacute;fica mensual (2 horas',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Gr&aacute;fica anual (1 d&iacute;a', 
+     '`Daily\' Graph \((.*) Minute'           => 'Gr&aacute;fica diaria ($1 minutos',
+     '`Weekly\' Graph \(30 Minute'            => 'Gr&aacute;fica semanal (30 minutos' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Gr&aacute;fica mensual (2 horas',
+     '`Yearly\' Graph \(1 Day'                => 'Gr&aacute;fica anual (1 d&iacute;a', 
      'Incoming Traffic in (\S+) per Second'   => 'Tr&aacute;fico entrante en $1 por segundo',
      'Outgoing Traffic in (\S+) per Second'   => 'Tr&aacute;fico sa&iacute;nte en $1 por segundo',
      'at which time (.*) had been up for(.*)' => 'nese intre $1 levaba prendida $2',
@@ -56,9 +54,9 @@ return "" unless defined $string;
      '([kMG]?)([bB])/h'                       => '$1$2/h',
      # 'Bits'                                => 'Bits',
      # 'Bytes'                              => 'Bytes'
-     '&nbsp;In:</FONT>'                      => '&nbsp;Entrante:</FONT>',
-     '&nbsp;Out:</FONT>'                     => '&nbsp;Sa&iacute;nte:</FONT>',
-     '&nbsp;Percentage</FONT>'               => '&nbsp;Tanto por ciento:</FONT>',
+     'In'                                     => 'Entrante',
+     'Out'                                    => 'Sa&iacute;nte',
+     'Percentage'                             => 'Tanto por ciento',
      'Ported to OpenVMS Alpha by'             => 'Portado a OpenVMS Alpha por', 
      'Ported to WindowsNT by'                 => 'Portado a Windows NT por',
      'and'                                    => 'e',

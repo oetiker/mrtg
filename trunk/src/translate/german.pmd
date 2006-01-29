@@ -9,11 +9,9 @@
 ###### PATCHTAG 30 ###################################################
 # German/deutsch
    'german' =>
-   "  <HR NOSHADE>
-    Vorbereitet für die Lokalisation von
-    <NOBR><A HREF=\"http://www.gumblfarz.de/~illsen\">Ilja Pavkovic</A>
-  <A HREF=\"mailto:illsen\@gumblfarz.de\">
-  &lt;illsen\@gumblfarz.de&gt;</A></NOBR>",
+   "Vorbereitet f&uuml;r die Lokalisation von
+				<a href=\"http://www.gumblfarz.de/~illsen\">Ilja Pavkovic</a>
+				<a href=\"mailto:illsen\@gumblfarz.de\">&lt;illsen\@gumblfarz.de&gt;</a>",
 ###### PATCHTAG 40 ###################################################
 $credits::LOCALE{'deutsch'}=$credits::LOCALE{'german'};
 ###### PATCHTAG 50 ###################################################
@@ -39,15 +37,15 @@ sub german
      'Maximal 5 Minute Outgoing Traffic'      => 'Maximaler hinausgehender Traffic in 5 Minuten',
      'the device'                             => 'das Gerät',
      'The statistics were last updated(.*)'   => 'Die Statistiken wurden am $1 zuletzt aktualisiert',
-     ' Average\)</B><BR>'                     => '',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Mittel$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Maximal$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Aktuell$1',
+     ' Average\)'                             => '',
+     'Average'                                => 'Mittel',
+     'Max'                                    => 'Maximal',
+     'Current'                                => 'Aktuell',
      'version'                                => 'Version',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Tages&uuml;bersicht (Skalierung $1 Minute(n))</B><BR>',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Wochen&uuml;bersicht (Skalierung 30 Minuten)</B><BR>' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Monats&uuml;bersicht (Skalierung 2 Stunden)</B><BR>',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Jahres&uuml;bersicht (Skalierung 1 Tag)</B><BR>', 
+     '`Daily\' Graph \((.*) Minute'           => 'Tages&uuml;bersicht (Skalierung $1 Minute(n))',
+     '`Weekly\' Graph \(30 Minute'            => 'Wochen&uuml;bersicht (Skalierung 30 Minuten)',
+     '`Monthly\' Graph \(2 Hour'              => 'Monats&uuml;bersicht (Skalierung 2 Stunden)',
+     '`Yearly\' Graph \(1 Day'                => 'Jahres&uuml;bersicht (Skalierung 1 Tag)', 
      'Incoming Traffic in (\S+) per Second'   => 'Hereinkommender Traffic in $1 pro Sekunde',
      'Outgoing Traffic in (\S+) per Second'   => 'Hinausgehender Traffic in $1 pro Sekunde',
      'Incoming Traffic in (\S+) per Minute'   => 'Hereinkommender Traffic in $1 pro Minute',
@@ -65,9 +63,9 @@ sub german
      #'([kMG]?)([bB])/h'                       => '$1$2/std',
      # 'Bits'                                => 'Bits',
      # 'Bytes'                               => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Herein:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Hinaus:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Prozent:</FONT>',
+     'In'                                     => 'Herein',
+     'Out'                                    => 'Hinaus',
+     'Percentage'                             => 'Prozent',
      'Ported to OpenVMS Alpha by'             => 'Portierung nach OpenVMS von', 
      'Ported to WindowsNT by'                 => 'Portierung nach WindowsNT von',
      'and'                                    => 'und',

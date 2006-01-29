@@ -8,12 +8,9 @@
 ###### PATCHTAG 30 ###################################################
 # Serbian/Srpski
    'serbian' =>
-   "  <HR NOSHADE>
-  <TD WIDTH=388 ALIGN=RIGHT><FONT FACE=\"Arial,Helvetica\" SIZE=2>
-  Ported to Serbian by / Srpski prevod uradio: 
-    <NOBR>Ratko Buèiæ
-  <A HREF=\"mailto:ratko\@ni.ac.yu\">
-  &lt;ratko\@ni.ac.yu&gt;</A></NOBR>",
+   "Ported to Serbian by / Srpski prevod uradio: 
+				Ratko Buèiæ
+				<a href=\"mailto:ratko\@ni.ac.yu\">&lt;ratko\@ni.ac.yu&gt;</a>",
 ###### PATCHTAG 40 ###################################################
 $credits::LOCALE{'serbian'}=$credits::LOCALE{'serbian'};
 ###### PATCHTAG 50 ###################################################
@@ -34,20 +31,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=windows-1250',
+     'iso-8859-1'                             => 'windows-1250',
      'Maximal 5 Minute Incoming Traffic'      => 'Najveæi 5 minutni ulazni saobraæaj',
      'Maximal 5 Minute Outgoing Traffic'      => 'Najveæi 5 minutni izlazni saobraæaj',
      'the device'                             => 'uredjaj',
      'The statistics were last updated(.*)'   => 'Poslednje ažuriranje podataka:$1',
-     ' Average\)</B><BR>'                     => ' prosek)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Proseèni$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Maksimalni$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Trenutni$1',
+     ' Average\)'                             => ' prosek)',
+     'Average'                                => 'Proseèni',
+     'Max'                                    => 'Maksimalni',
+     'Current'                                => 'Trenutni',
      'version'                                => 'verzija',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Dnevni graf ($1 minutni ',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Nedeljni graf (30 minutni ' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Meseèni graf (2 sata ',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Godišnji graf (1 dnevni ', 
+     '`Daily\' Graph \((.*) Minute'           => 'Dnevni graf ($1 minutni ',
+     '`Weekly\' Graph \(30 Minute'            => 'Nedeljni graf (30 minutni ' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Meseèni graf (2 sata ',
+     '`Yearly\' Graph \(1 Day'                => 'Godišnji graf (1 dnevni ', 
      'Incoming Traffic in (\S+) per Second'   => 'Ulazni saobraæaj - $1 u sekundi.',
      'Outgoing Traffic in (\S+) per Second'   => 'Izlazni saobraæaj - $1 u sekundi.',
      'Incoming Traffic in (\S+) per Minute'   => 'Ulazni saobraæaj - $1 u minutu',
@@ -60,9 +57,9 @@ return "" unless defined $string;
      #'([kMG]?)([bB])/h'                       => '$1$2/h',
      'Bits'                                   => 'Bita',
      'Bytes'                                  => 'Bajta',
-     '&nbsp;In:</FONT>'                       => '&nbsp;Ulaz:</FONT>',
-     '&nbsp;Out:</FONT>'                      => '&nbsp;Izlaz:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Procenat</FONT>',
+     'In'                                     => 'Ulaz',
+     'Out'                                    => 'Izlaz',
+     'Percentage'                             => 'Procenat',
      'Ported to OpenVMS Alpha by'             => 'Na OpenVMS portovao', 
      'Ported to WindowsNT by'                 => 'Na WindowsNT portovao',
      'and'                                    => 'i',

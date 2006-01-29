@@ -23,14 +23,14 @@ FFAAQQ
        MMRRTTGG??
 
        Nobody has contributed a _@_#_$_%_._p_m_d file yet. Go into the
-       _m_r_t_g_-_2_._1_1_._1_/_t_r_a_n_s_l_a_t_e directory and create your own trans-
+       _m_r_t_g_-_2_._1_2_._2_/_t_r_a_n_s_l_a_t_e directory and create your own trans-
        lation file.  When you are happy with it send it to me for
        inclusion with the next mrtg release.
 
        II nneeeedd aa ssccrriipptt ttoo mmaakkee mmrrttgg wwoorrkk wwiitthh mmyy xxyyzz ddeevviiccee..
 
        Probably this has already been done. Check the stuff in
-       the _m_r_t_g_-_2_._1_1_._1_/_c_o_n_t_r_i_b directory. There is a file called
+       the _m_r_t_g_-_2_._1_2_._2_/_c_o_n_t_r_i_b directory. There is a file called
        _0_0_I_N_D_E_X in that directory which tells what you can find in
        there.
 
@@ -116,4 +116,4 @@ AAUUTTHHOORR
 
 
 
-2.11.1                      2005-01-06                MRTG-FAQ(1)
+2.12.2                      2005-06-19                MRTG-FAQ(1)

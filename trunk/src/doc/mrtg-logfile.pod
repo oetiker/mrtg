@@ -64,9 +64,12 @@ The Unix timestamp for the point in time the data on this line is relevant.
 Note that the interval between timestamps increases as you prograss through the
 file. At first it is 5 minutes and at the end it is one day between two lines.
 
-This timestamp may be converted in EXCEL by using the following formula:
+This timestamp may be converted in OpenOffice Calc or MS Excel by using the
+following formula
 
- =(x+y)/86400+DATE(1970,1,1)
+ =(x+y)/86400+DATE(1970;1;1)
+
+(instead of ";" it may be that you have to use "," this depends on the context and your locale settings)
 
 you can also ask perl to help by typing
 

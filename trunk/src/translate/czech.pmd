@@ -8,11 +8,9 @@
 ###### PATCHTAG 30 ###################################################
 # Czech/Èesky
    'czech' =>
-   "  <HR NOSHADE>
-    Èeský pøeklad pøipravil
-    <NOBR><A HREF=\"http://www.och.cz\">Martin Och</A>
-  <A HREF=\"mailto:martin\@och.cz\">
-  &lt;martin\@och.cz&gt;</A></NOBR>",
+   "Èeský pøeklad pøipravil
+				<a href=\"http://www.och.cz\">Martin Och</a>
+				<a href=\"mailto:martin\@och.cz\"> &lt;martin\@och.cz&gt;</a>",
 ###### PATCHTAG 40 ###################################################
 $credits::LOCALE{'czech'}=$credits::LOCALE{'czech'};
 ###### PATCHTAG 50 ###################################################
@@ -33,20 +31,20 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=windows-1250',
+     'iso-8859-1'                             => 'windows-1250',
      'Maximal 5 Minute Incoming Traffic'      => 'Maximální 5 minutový pøíchozí tok',
      'Maximal 5 Minute Outgoing Traffic'      => 'Maximální 5 minutový odchozí tok',
      'the device'                             => 'zaøízení',
      'The statistics were last updated(.*)'   => 'Poslední aktualizace statistiky:$1',
-     ' Average\)</B><BR>'                     => ' prùmìr)</B><BR>',
-     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Prùm.$1',
-     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Max.$1',
-     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Akt.$1',
+     ' Average\)'                             => ' prùmìr)',
+     'Average'                                => 'Prùm.',
+     'Max'                                    => 'Max.',
+     'Current'                                => 'Akt.',
      'version'                                => 'verze',
-     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Denní graf ($1 minutový',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Týdenní graf (30 minutový' ,
-     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Mìsíèní graf (2 hodinový',
-     '<B>`Yearly\' Graph \(1 Day'             => '<B>Roèní graf (1 denní', 
+     '`Daily\' Graph \((.*) Minute'           => 'Denní graf ($1 minutový',
+     '`Weekly\' Graph \(30 Minute'            => 'Týdenní graf (30 minutový' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Mìsíèní graf (2 hodinový',
+     '`Yearly\' Graph \(1 Day'                => 'Roèní graf (1 denní', 
      'Incoming Traffic in (\S+) per Second'   => 'Pøíchozí tok v $1 za sec.',
      'Outgoing Traffic in (\S+) per Second'   => 'Odchozí tok v $1 za sec.',
      'at which time (.*) had been up for(.*)' => 'od posledního restartu $1 ubìhlo: $2',
@@ -57,7 +55,7 @@ return "" unless defined $string;
      'Bytes'                                  => 'bajtech',
      #'&nbsp;In:</FONT>'                       => '&nbsp;In:</FONT>',
      #'&nbsp;Out:</FONT>'                      => '&nbsp;Out:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Proc.</FONT>',
+     'Percentage'                             => 'Proc.',
      'Ported to OpenVMS Alpha by'             => 'Na OpenVMS portoval', 
      'Ported to WindowsNT by'                 => 'Na WindowsNT portoval',
      'and'                                    => 'a',

@@ -129,9 +129,9 @@
 .\" ========================================================================
 .\"
 .IX Title "CFGMAKER 1"
-.TH CFGMAKER 1 "2005-01-06" "2.11.1" "mrtg"
+.TH CFGMAKER 1 "2005-06-19" "2.12.2" "mrtg"
 .SH "NAME"
-cfgmaker \- Creates mrtg.cfg files (for mrtg\-2.11.1)
+cfgmaker \- Creates mrtg.cfg files (for mrtg\-2.12.2)
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
 cfgmaker [options] [community@]router [[options] [community@]router ...]
@@ -146,12 +146,13 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
 \& --ifref=type                       ... by Interface Type
 .Ve
 .PP
-.Vb 7
+.Vb 8
 \& --ifdesc=nr       interface description uses Interface Number (default)
 \& --ifdesc=ip                        ... uses Ip Address
 \& --ifdesc=eth                       ... uses Ethernet Number
 \& --ifdesc=descr                     ... uses Interface Description
 \& --ifdesc=name                      ... uses Interface Name
+\& --ifdesc=catname                   ... uses CatOS Interface Name
 \& --ifdesc=alias                     ... uses Interface Alias
 \& --ifdesc=type                      ... uses Interface Type
 .Ve
@@ -197,6 +198,12 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
 .PP
 .Vb 1
 \& --show-op-down    show interfaces which are operatively down
+.Ve
+.PP
+.Vb 3
+\& --zero-speed=spd  use this speed in bits-per-second as the interface
+\&                   speed for all interfaces that return a speed of 0
+\&                   via ifSpeed/ifHighSpeed.  100Mbps = 100000000
 .Ve
 .PP
 .Vb 4
@@ -467,6 +474,13 @@ switch you get them all.
 .IP "\fB\-\-show\-op\-down\fR" 4
 .IX Item "--show-op-down"
 Include interfaces which are operatively down.
+.IP "\fB\-\-zero\-speed\fR \fIspeed\fR" 4
+.IX Item "--zero-speed speed"
+Assign this speed in bits-per-second to all interfaces which return 0
+for ifSpeed and ifHighSpeed.  Some switches, notably Foundry equipment,
+return a speed of zero for some interfaces.  For example, to have
+all interfaces reporting zero set to 100Mbps, use
+\&\-\-zero\-speed=100000000.
 .IP "\fB\-\-subdirs\fR \fIformat\fR" 4
 .IX Item "--subdirs format"
 Give each router its own subdirectory for the \s-1HTML\s0 and graphics (or
@@ -1008,41 +1022,67 @@ interface happens to be rejected.
 \&   }
 .Ve
 .PP
-.Vb 11
+.Vb 27
 \&   $target_lines .= <<ECHO;
 \& MaxBytes[$target_name]: $if_speed
 \& Title[$target_name]: $html_desc_prefix$html_if_title_desc -- $sysname
-\& PageTop[$target_name]: <H1>$html_desc_prefix$html_if_title_desc -- $sysname</H1>
-\&  <TABLE>
-\&    <TR><TD>System:</TD>     <TD>$sysname in $html_syslocation</TD></TR>
-\&    <TR><TD>Maintainer:</TD> <TD>$html_syscontact</TD></TR>
-\&    <TR><TD>Description:</TD><TD>$html_if_description</TD></TR>
-\&    <TR><TD>ifType:</TD>     <TD>$html_if_type_desc ($if_type_num)</TD></TR>
-\&    <TR><TD>ifName:</TD>     <TD>$html_if_snmp_name</TD></TR>
+\& PageTop[$target_name]: <h1>$html_desc_prefix$html_if_title_desc -- $sysname</h1>
+\&                <div id="sysdetails">
+\&                        <table>
+\&                                <tr>
+\&                                        <td>System:</td>
+\&                                        <td>$sysname in $html_syslocation</td>
+\&                                </tr>
+\&                                <tr>
+\&                                        <td>Maintainer:</td>
+\&                                        <td>$html_syscontact</td>
+\&                                </tr>
+\&                                <tr>
+\&                                        <td>Description:</td>
+\&                                        <td>$html_if_description</td>
+\&                                </tr>
+\&                                <tr>
+\&                                        <td>ifType:</td>
+\&                                        <td>$html_if_type_desc ($if_type_num)</td>
+\&                                </tr>
+\&                                <tr>
+\&                                        <td>ifName:</td>
+\&                                        <td>$html_if_snmp_name</td>
+\&                                </tr>
 \& ECHO
 .Ve
 .PP
-.Vb 3
+.Vb 6
 \&   $target_lines .= <<ECHO if defined $if_port_name;
-\&    <TR><TD>Port Name:</TD>  <TD>$if_port_name</TD></TR>
+\&                                <tr>
+\&                                        <td>Port Name:</td>
+\&                                        <td>$if_port_name</td>
+\&                                </tr>
 \& ECHO
 .Ve
 .PP
-.Vb 3
+.Vb 6
 \&   $target_lines .= <<ECHO;
-\&    <TR><TD>Max Speed:</TD>  <TD>$if_speed_str</TD></TR>
+\&                                <tr>
+\&                                        <td>Max Speed:</td>
+\&                                        <td>$if_speed_str</td>
+\&                                </tr>
 \& ECHO
 .Ve
 .PP
-.Vb 3
+.Vb 6
 \&   $target_lines .= <<ECHO if $if_ip;
-\&    <TR><TD>Ip:</TD>         <TD>$if_ip ($if_dns_name)</TD></TR>
+\&                                <tr>
+\&                                        <td>Ip:</td>
+\&                                        <td>$if_ip ($if_dns_name)</td>
+\&                                </tr>
 \& ECHO
 .Ve
 .PP
-.Vb 9
+.Vb 10
 \&   $target_lines .= <<ECHO;
-\&  </TABLE>
+\&                        </table>
+\&                </div>
 \& ECHO
 \& } else {
 \&   $head_lines="";
@@ -1094,7 +1134,7 @@ Below is an example of a host template.
 \& $target_lines .= <<ECHO;
 .Ve
 .PP
-.Vb 21
+.Vb 35
 \& YLegend[$target_name]: Percentage CPU load
 \& ShortLegend[$target_name]: %
 \& Legend1[$target_name]: CPU load in %
@@ -1108,13 +1148,27 @@ Below is an example of a host template.
 \& Options[$target_name]: growright, gauge, nopercent
 \& Title[$target_name]: $router_name CPU load
 \& Target[$target_name]: 1.3.6.1.4.1.9.2.1.58.0&1.3.6.1.4.1.9.2.1.58.0:$router_connect
-\& PageTop[$target_name]: <H1>$router_name CPU load</H1>
-\&   <TABLE>
-\&     <TR><TD>System:</TD><TD>$router_name in $html_syslocation</TD></TR>
-\&     <TR><TD>Maintainer:</TD><TD>$html_syscontact</TD></TR>
-\&     <TR><TD VALIGN="top">Description:</TD><TD>$html_sysdescr</TD></TR>
-\&     <TR><TD>Resource:</TD><TD>CPU.</TD></TR>
-\&   </TABLE>
+\& PageTop[$target_name]: <h1>$router_name CPU load</h1>
+\&                <div>
+\&                        <table>
+\&                                <tr>
+\&                                        <td>System:</td>
+\&                                        <td>$router_name in $html_syslocation</td>
+\&                                </tr>
+\&                                <tr>
+\&                                        <td>Maintainer:</td>
+\&                                        <td>$html_syscontact</td>
+\&                                </tr>
+\&                                <tr>
+\&                                        <td>Description:</td>
+\&                                        <td>$html_sysdescr</td>
+\&                                </tr>
+\&                                <tr>
+\&                                        <td>Resource:</td>
+\&                                        <td>CPU.</td>
+\&                                </tr>
+\&                        </table>
+\&                </div>
 \& ECHO
 .Ve
 .SH "EXAMPLES"
