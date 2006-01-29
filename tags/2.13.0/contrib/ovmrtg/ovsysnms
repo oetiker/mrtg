@@ -1,0 +1,43 @@
+#!/usr/local/bin/perl5
+# -*- mode: Perl -*-
+##################################################################
+# Config file creator
+##################################################################
+# Created by Laurie Gellatly <gellatly@one.net.au>
+# this produces an array of ip address and system names for each
+# ip address passed to it, by pulling info
+# off the device via snmp
+#################################################################
+#
+# Distributed under the GNU copyleft
+#
+# $Id: ovsysnms,v 1.1.1.1 2002/02/26 10:16:36 oetiker Exp $
+#
+use Socket;
+use strict;
+use ovmrtg;
+use vars '$DEBUG';
+my $DEBUG = 0;
+
+
+my($router,@res,$cnt); 
+
+sub main {
+
+  $router = $ARGV[0];
+  die <<USAGE  unless $router;
+
+USAGE: ovsysnms 'router IP ADDRESS/S or HPOV selection Names'
+
+EXAMPLE:  ovsysnms 193.21.1.2 >> resolved
+
+
+USAGE
+   @res = ovsysnms(@ARGV);
+   for($cnt = 0 ; $cnt < @res; ++$cnt){
+      print "$res[$cnt]\n";
+   }
+}  
+main;
+exit(0);
+

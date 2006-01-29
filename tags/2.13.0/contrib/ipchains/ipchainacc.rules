@@ -1,0 +1,36 @@
+#!/bin/bash
+
+#--- sample ipchains rules for accounting
+
+# Flush the rules in case they exist already
+/sbin/ipchains -F acctin
+/sbin/ipchains -F acctout
+
+# add the new rule chains
+/sbin/ipchains -N acctin
+/sbin/ipchains -N acctout
+
+# add empty rules to the new chains just for accounting
+/sbin/ipchains -A acctin
+/sbin/ipchains -A acctout
+
+# insert rules into the input and output streams.
+# Packets will first pass through these rules before
+# returning to the other rules in the chains
+# You might not want this if you are trying to 
+# completely ignore certain hosts.
+/sbin/ipchains -I input -j acctin
+/sbin/ipchains -I output -j acctout
+
+# if you wanted to narrow the accouting to a single IP
+# you could do these lines instead of the above 2 (not tested)
+# (assuming your IP address was 192.168.1.1)
+#/sbin/ipchains -I input -d 192.168.1.1 -j acctin
+#/sbin/ipchains -I output -s 192.168.1.1 -j acctout
+
+# By changing the rules, you can make it filter only exactly
+# what you want as long as it jumps to acctin, or acctout.
+# Be careful not to double count packets though.
+
+#----------- end ---------------
+

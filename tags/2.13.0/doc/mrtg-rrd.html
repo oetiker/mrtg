@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>doc/mrtg-rrd</title>
+<link rev="made" href="mailto:dws@ee.ethz.ch" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+<!--
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#rrdtool_integration">RRDTOOL INTEGRATION</a></li>
+	<li><a href="#future">FUTURE</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+</ul>
+-->
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>mrtg-rrd - How to use RRDtool with MRTG</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>After using MRTG for some time you may find some limitations, mostly in the
+areas of performance and graphing flexibility. These are exactly the areas
+addressed by RRDtool. To learn more about RRDtool check out its website on</p>
+<pre>
+ <a href="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool">http://people.ee.ethz.ch/~oetiker/webtools/rrdtool</a></pre>
+<p>
+</p>
+<hr />
+<h1><a name="rrdtool_integration">RRDTOOL INTEGRATION</a></h1>
+<p>When using mrtg with RRDtool you are replacing <em>rateup</em> with the
+RRDtool perl module <em>RRDs.pm</em>. To enable RRDtool support in mrtg
+you have to add the line</p>
+<pre>
+ LogFormat: rrdtool</pre>
+<p>to your mrtg config file.</p>
+<p>MRTG needs access to both the RRDtool perl module <strong>RRDs.pm</strong> and to the
+<strong>rrdtool</strong> executable.</p>
+<p>If these two items are not installed in locations where perl can find them
+on its own, then you can use the following two parameters to supply the
+appropriate directories.</p>
+<p>For the location of the <strong>rrdtool</strong> executable you put</p>
+<pre>
+ PathAdd: /usr/local/rrdtool/bin/</pre>
+<p>or</p>
+<pre>
+ PathAdd: c:\rrdtool\bin</pre>
+<p>For the location of the perl module it would be:</p>
+<pre>
+ LibAdd: /usr/local/rrdtool/lib/perl/</pre>
+<p>or</p>
+<pre>
+ LibAdd: c:\rrdtool\bin\lib\perl</pre>
+<p>When you have made this modification to the configuration file, several
+things will happen when you run mrtg again with the new config file:</p>
+<ol>
+<li></li>
+mrtg will take all your old <code>.log</code> files and <strong>convert</strong> them to <code>.rrd</code>
+format. (The <code>.log</code> files don't get touched in the process, so if things
+don't work out they are still there.)
+<p></p>
+<li></li>
+mrtg will use <strong>rrdtool</strong> to update its databases. These will have a new format
+called <em>rrd</em> which is totally different than the native <em>log</em> format of
+the classic mrtg.
+<p></p>
+<li></li>
+mrtg will <strong>not</strong> create any webpages of graphs anymore.
+It will only query the routers for traffic information and update its <em>rrd</em>
+databases.
+<p></p></ol>
+<p>The advantage of whole thing is that the mrtg will become <strong>much</strong>
+faster. Expect the runtime to drop to 20% of the previous value. (I would like
+to get some feedback on this from folks with large installations.)</p>
+<p>Mind you, though, while the logging process of RRDtool is <strong>very</strong> fast, you
+are also gaining some time by neither creating graphs nor updating webpages.
+The idea behind this is that it is more efficient to create
+graphs and webpages on demand by using a cgi script.</p>
+<p>At the moment there is no <strong>official</strong> script to do this, but two
+contributers have created such scripts:</p>
+<ol>
+<li><strong><a name="item_all_2ecgi"><strong>14all.cgi</strong></a></strong><br />
+</li>
+This was the first program to take over the webpage creation and graphing task.
+It has been developed by Rainer&nbsp;Bawidamann
+&lt;<a&nbsp;href="mailto:rainer.bawidamann@web.de">rainer.bawidamann@web.de</a>&gt;. You can find a copy 
+on Rainers website:
+<pre>
+ <a href="http://my14all.sourceforge.net/">http://my14all.sourceforge.net/</a></pre>
+<p>The program comes with its own documentation</p>
+<p></p>
+<dt><strong><a name="item_routers_2ecgi_2c_servers_2ecgi_and_generic_2ecgi"><strong>routers.cgi</strong>, <strong>servers.cgi</strong> and <strong>generic.cgi</strong></a></strong><br />
+</dt>
+<dd>
+These are other cgi frontends to mrtg running with rrdtool. The main difference
+between this and 14all is that the web pages it creates are much more stylish than the
+ones from mrtg. These tools have been written by Steve&nbsp;Shipway
+&lt;<a&nbsp;href="mailto:steve@steveshipway.org">steve@steveshipway.org</a>&gt;. You can find a copy in
+</dd>
+<dd>
+<pre>
+ <a href="http://www.steveshipway.org/software/">http://www.steveshipway.org/software/</a></pre>
+</dd>
+<dd>
+<p>The scripts comes with their own installation instructions.</p>
+</dd>
+<p></p>
+<dt><strong><a name="item_mrtg_2drrd"><strong>mrtg-rrd</strong></a></strong><br />
+</dt>
+<dd>
+The mrtg-rrd script is a CGI/FastCGI application by Jan ``Yenya'' Kasprzak for
+displaying MRTG graphs from data in the RRDtool format. It is an intended
+replacement for the 14all.cgi script. It can make your monitoring system
+faster because MRTG does not have to generate all the PNG files with graphs
+every 5 minutes or so. Instead of this the graphs are generated on-demand
+when the user wants to see them.
+</dd>
+<dd>
+<pre>
+   <a href="http://www.fi.muni.cz/~kas/mrtg-rrd/">http://www.fi.muni.cz/~kas/mrtg-rrd/</a></pre>
+</dd>
+<p></p></ol>
+<p>Paul C. Williamson has written a more in-depth page on how the whole process works, including some performance figures. You can find his page on</p>
+<pre>
+   <a href="http://www.geocities.com/paulcwilliamson/mrtg/rateup2rrd.html">http://www.geocities.com/paulcwilliamson/mrtg/rateup2rrd.html</a></pre>
+<p>
+</p>
+<hr />
+<h1><a name="future">FUTURE</a></h1>
+<p>Just as a side note: MRTG-3 will be based entirely on rrdtool technology.
+But don't wait for it ... get going <strong>now</strong>!</p>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Tobias Oetiker &lt;<a href="mailto:oetiker@ee.ethz.ch">oetiker@ee.ethz.ch</a>&gt;</p>
+
+</body>
+
+</html>

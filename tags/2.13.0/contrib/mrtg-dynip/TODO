@@ -1,0 +1,32 @@
+Investigate integration with terminal server software. such as the RADIUS 
+server.
+
+The current release of mrtg-dynip, mrtg-dynip-0.41b, appears to be stable,
+robust and free of major problems arising from misconfiguration and lack of
+response.
+
+While it might seem rather trivial to introduce changes to make mrtg-dynip
+more suitable as a front end to MRTG, this in a sense is somewhat trivial
+in terms of the design goal of mrtg-dynip, namely to enable mrtg-dynip to
+work in environments with inconsistent snmp target names for the same
+phyical interface.  This design goal has been achieved.  The goal of having
+a convenient and efficient 'front end' to MRTG and mrtg-dynip is a different
+design goal in itself.
+
+It is planned to investigate and test use of the 'ifLastChange' snmp object.
+
+It is planned to introduce configuration to indicate if a host or router has
+unvarying SNMP target numbers for its interfaces, or not.  Suitable coding
+will reduce processing demands and reduce the amount of snmp traffic
+generated.  This may be trialed with tesing use of the 'ifLastChange' snmp
+object
+
+There are plans to try out terminal server software, such as RADIUS server
+software, with a RADIUS client Livingstone emulator, and see if there are
+any special issues or convenient outcomes involved.
+
+There is much scope for introducing a menu based configuration.
+
+
+
+

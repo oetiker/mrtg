@@ -1,0 +1,98 @@
+=head1 NAME
+
+mrtg-ipv6 - IPv6 support in MRTG
+
+=head1 OVERVIEW
+
+MRTG and cfgmaker support SNMP over IPv6. IPv6 targets can be specified by
+hostname or IPv6 address, and if the required libraries are present (see
+below), queries will use IPv6.
+
+=head1 USAGE
+
+=head2 Enabling IPv6
+
+IPv6 is currently disabled by default and must be explicitly enabled. In
+MRTG this is done by turning on the B<EnableIPv6> global option in the
+configuration file. In cfgmaker, it is enabled with the B<--enable-ipv6>
+command-line option.
+
+If IPv6 is disabled, MRTG and cfgmaker should behave in exactly the same way
+as previous versions. So the addition of IPv6 support should have no effect
+on existing MRTG setups unless IPv6 is enabled.
+
+IPv6 support requires the Socket6 and INET6 libraries (see below). If MRTG
+can't find them, IPv6 is disabled.
+
+=head2 Specifying IPv6 targets
+
+IPv6 targets may be specified by name or IPv6 address. Numeric IPv6 addresses
+may be used with both cfgmaker and MRTG, but they must be enclosed in square
+brackets.
+
+For example, a target could be specified as:
+
+ public@[2001:760:4::]:161
+
+Hostnames work as expected: first an IPv6 name lookup is tried, then an IPv4
+lookup.
+
+=head2 Targets that do not support SNMP over IPv6
+
+Many targets (this currently includes all Cisco routers) do not yet support
+SNMP over IPv6 and must be monitored over IPv4. This can cause problems if
+you specify a target through its DNS name and the name maps to both the IPv6
+address and the IPv4 address of the target: MRTG will only try IPv6, and will
+fail.
+
+To query these targets, use the B<IPv4Only> per-target option, which tells
+MRTG not to use SNMP over IPv6 for the target.
+
+MRTG does not fall back to IPv4 for performance and correctness reasons. If
+there are many routers to query, a timeout for every router would make MRTG
+take too long to query them all. And if, for some reason, IPv6 connectivity to
+the target is lost, MRTG's error messages can help figure out what is wrong.
+
+cfgmaker does fall back from IPv6 to IPv4. If IPv6 is enabled and cfgmaker is
+given a hostname that resolves to both an IPv6 and an IPv4 address, it first
+tries to query the target over IPv6. If it receives no answer, it tries again
+using IPv4. If the target answers, cfgmaker sets the IPv4Only option in the
+generated config file.
+
+=head1 IPv6 LIBRARIES
+
+=head2 Libraries required
+
+IPv6 support requires the B<Socket6> and B<INET6> Perl modules. Both can be
+downloaded from CPAN:
+
+http://search.cpan.org/author/UMEMOTO/Socket6/
+
+http://search.cpan.org/author/MONDEJAR/INET6/
+
+If you use Debian, you will need the packages B<libsocket6-perl> and
+B<libio-socket-inet6-perl>, which are (or should soon be) in unstable.
+
+So far, IPv6 support has been tested on Linux only, and only with Socket6
+version 0.12. Also note that IPv6 won't work at all if you don't have
+INET6.pm version 2.00 or newer.
+
+=head2 Installing the libraries
+
+Building and installing Socket6 and INET6 is very simple. For each module,
+just unpack the archive and then do:
+
+ perl Makefile.PL
+ make
+
+and then:
+
+ su
+ make install
+
+If you have installed the libraries successfully, cfgmaker and mrtg should
+automatically detect them and allow IPv6 support to be enabled.
+
+=head1 AUTHOR
+
+Lorenzo Colitti E<lt>lorenzo location colitti.comE<gt>
