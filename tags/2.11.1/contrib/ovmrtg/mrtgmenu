@@ -1,0 +1,57 @@
+/*
+ *  Network Node Manager MRTG menu items
+ *
+ *  $Date: 2002/02/26 10:16:36 $
+ */
+
+Application "MRTG Actions"
+{
+    Version "NNM Release B.05.01  Jun 21 1997";
+
+    Description {
+   	"Enables you to add new targets for MRTG to graph.",
+   	"See Laurie for more details"
+    }
+
+    Copyright {
+	"Copyright (c) 1990-1999 Net Improvement Consulting Pty Limited",
+	"All rights reserved."
+    }
+
+    /*
+    **  Tools
+    */
+
+    MenuBar <100> "Misc" _i
+    {
+	<90> "MRTG Actions"   _R   f.menu "MRTG Actions";
+    }
+
+    Menu "MRTG Actions"
+    {
+	<100> "Add/Update Target/s"	      	    _A CONTEXT "AllContexts || isIP" f.action "MRTGADD";
+	<100> "Stop Collecting Target/s"	      	    _S CONTEXT "AllContexts || isIP" f.action "MRTGDEL";
+	<100> "Show Current Target/s"	      	    _C CONTEXT "AllContexts || isIP" f.action "MRTGSHO";
+
+    }
+
+    Action "MRTGADD"
+    {
+	SelectionRule (isNode || isInterface) && isIP;
+	NameField "IP Hostname", "IP Address";
+	Command "perl /opt/mrtg/run/ovadd ${OVwSelections}";
+    }
+     
+    Action "MRTGDEL"
+    {
+	SelectionRule (isNode || isInterface) && isIP;
+	NameField "IP Hostname", "IP Address";
+	Command "perl /opt/mrtg/run/ovdel ${OVwSelections}";
+    }
+
+    Action "MRTGSHO"
+    {
+	Command "perl /opt/mrtg/run/ovsho";
+    }
+     
+}

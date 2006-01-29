@@ -1,0 +1,17 @@
+This script allows mrtg to monitor cpu usage for both system and user on linux
+and sun solaris.  
+
+All of the information you need to set it up, including a sample cfg file
+is documented in the header of the script itself.  If you have any questions, 
+you can email me at schu@schu.net and I'll try to get back to you.
+
+Hope it works for you as well as it does for me :)
+
+schu
+
+PLEASE NOTE THAT I NO LONGER WORK FOR 7X.  DO *NOT* SEND EMAIL TO SCHU@7X.COM.
+THAT ADDRESS IS NOW ALIASED TO THE 7X GENERAL MANAGER.  ANY MAIL SENT THERE WILL
+GO TO THE WRONG PERSON.  Apparently 7x is to lame to remove my old address and let 
+the server bounce it.    
+
+Matthew Schumacher <schu@schu.net>

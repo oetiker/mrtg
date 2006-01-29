@@ -1,0 +1,97 @@
+#!/usr/bin/perl
+
+# ipchainacc version 1.1.0
+# Author: John Lange, john@darkcore.net
+# Date: September 12, 2000
+#
+# This script was written to provide output for MRTG
+#  (multi router traffic grapher) via ipchains.
+#
+# http://ee-staff.ethz.ch/~oetiker/webtools/mrtg/mrtg.html
+#
+## Changelog
+# Sept 12, 2000
+# v1.1.0 added flag for selection of graphing either packets, or bytes.
+#        The default is packets (which is pretty useless), but since
+#        the previous releases were graphing packets I kept the default
+#        the same.
+#        I always meant for this to be bytes but I only recently noticed
+#        this bug so I added a config flag for bytes.
+#        Also changed the uptime slightly, but its still broken. When
+#        goes past 99 days, it will hack the last digit off (used to happen
+#        after 9 days)
+#
+# June 22, 2000
+# v1.0.1 added -x to ipchains to expand byte counters
+# 
+# v1.0.0 Inital Release
+#
+#
+#   This command must return 4 lines of output:
+#     Line 1 : current state of the 'incoming bytes counter'
+#     Line 2 : current state of the 'outgoing bytes counter'
+#     Line 3 : string, telling the uptime of the target.
+#     Line 4 : string, telling the name of the target.  
+
+# This script relies on you having setup your ipchains rules beforehand
+
+#--- sample ipchains rules that will work with this script
+## Add some empty rules for accounting purposes only
+#
+#/sbin/ipchains -F acctin 
+#/sbin/ipchains -F acctout 
+#
+## add the new rules
+#/sbin/ipchains -N acctin
+#/sbin/ipchains -N acctout 
+#
+## empty rules on the chains
+#/sbin/ipchains -A acctin 
+#/sbin/ipchains -A acctout
+#
+#/sbin/ipchains -I input -j acctin
+#/sbin/ipchains -I output -j acctout
+#----------- end ---------------
+
+## edit for your system
+
+$ipchains='/sbin/ipchains';   # path to ipchains
+$host=`/bin/hostname --fqdn`;  # local hostname (for information only)
+
+# if you use the ipchains rules above, you don't have to change these
+$inrule='acctin';  # name of input accounting rule
+$outrule='acctout'; # name of output accounting rule
+
+# What should we graph? packet counters = 0, bytes = 1
+# If you used this script before and you want to keep counting
+# packets, then set this to 0. If you would rather do the
+# sensible thing and count bytes, then set this to 1. If you change
+# from one to the other, then you should delete all the previous
+# history since it will be meaningless.
+$bytec=0;
+
+## -- don't edit below here ----
+
+# fetch the status from ipchains
+$_=`$ipchains -L $inrule -v -n -x |grep -v -i Chain |grep -v -i pkts`;
+@in_bytes = split;
+printf "$in_line";   # just for debugging
+
+$_=`$ipchains -L $outrule -v -n -x |grep -v -i Chain |grep -v -i pkts`;
+@out_bytes = split;
+printf "$out_line";    # just for debugging
+
+#$c=1;
+#foreach $value (@in_bytes) {
+#  printf "$c: $value\n";
+#  $c++;
+#};
+
+# uptime of the machine
+open(UPTIME,"uptime |cut -b 13-27|");
+$upTime=<UPTIME>;
+close(UPTIME);
+chop $upTime;
+
+# 4 lines of output only.
+printf "$in_bytes[$bytec]\n$out_bytes[$bytec]\n$upTime\n$host";

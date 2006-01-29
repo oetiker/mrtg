@@ -1,0 +1,21 @@
+README file for Access-list Monitoring via MRTG
+
+MRTG can be found at : http://ee-staff.ethz.ch/~oetiker/webtools/mrtg/mrtg.html
+
+
+What this script does :
+
+Basically I wanted to monitor how many hits I had to a particular access-list for a Cisco
+router.  Rather than having to login and type the necessary commands, I thought it would be
+easier to write a shell script to do it for me.
+As MRTG is a graphing program, you can do almost anything with it, it then came into the
+equation that it is possible to graph it by feeding it into MRTG.
+
+
+Please see the INSTALL file for further instructions.
+
+
+
+N.B Please note I take no responsibility for any damage that is caused (not that it would I
+dont think).
+Feel free to modify the script any which way you wish.

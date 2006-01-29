@@ -1,0 +1,108 @@
+PREREQUISITES:
+	- Linux operating system ( I am using RedHat 6.2 );
+        - MRTG version ( I used 2.8.8 version );
+	- SHELL scripting language;
+	- AWK scripting language;
+	- FPING utility ( I used 2.2b1 );
+	- CRON daemon installed;
+	- TCP/IP Network connection {:-)
+
+net-hosts
+
+        I use this script to monitor internet connection state
+        on a chosen route (from traceroute). Usage is very simple:
+
+        - Put in your crontab file a line which have to be run
+	every five (5) minute or any other time interval you want
+	(but you have to edit, according with this new value,
+	'make-mrtg.cfg.awk' file). I am using Linux RedHat 6.2
+	and in my /etc/cron.d I put a file named 'net-hosts' with
+	the following structure:
+
+##################################
+# /etc/cron.d/net-hosts -rw-r--r--
+#
+
+*/05 * * * * root /usr/local/mrtg/contrib/net-hosts/net-hosts
+
+#
+# EOF
+##################################
+	
+	- Restart your cron daemon... and wait
+
+        To install, first edit the variables from both 'make-mrtg.cfg.awk'
+	and 'net-hosts files' as needed. I found it easier to have these defined
+	rather than hardcoded due to differences between code interpretations.
+	
+	You don't have to insert any other target in your own mrtg.cfg
+	file that you already have, because this script is launced by
+	the cron daemon.
+
+
+
+internet
+	
+	This is the file which keep the IPs, FQDNs, dates and states
+	for hosts you want to monitor. The format of this file is:
+	
+	<IP_1>:<FQDN_1>:<LAST-MODIFIED_1>:<STATE_1>
+	<IP_2>:<FQDN_2>:<LAST-MODIFIED_2>:<STATE_2>
+	<IP_3>:<FQDN_3>:<LAST-MODIFIED_3>:<STATE_3>
+	.
+	.
+	.
+	
+	where:
+	 - IP_xxx is IP address (IPv4) for host xxx
+	 - FQDN_xxx is Fully Qualified Domain Name of host xxx
+	 - LAST-MODIFIED_1 is the date when the state of host xxx was last modified
+	 - STATE_1 is the current state of host xxx (1 = UP; 0 = DOWN)
+	
+	First time you create this file you just need IPs and  FQDNs,
+	blank dates and 1 (or 0) for the state of every hosts, like this:
+	
+	 aaa.aaa.aaa.aaa:your.router.name::1
+	 bbb.bbb.bbb.bbb:yourISP.router.name::1
+	 .
+	 .
+	 .
+	 zzz.zzz.zzz.zzz:that.host.name::1
+
+	HINT: You could have an ordered list using traceroute and
+	awk (or any other shell-script).
+	
+	The file 'internet' shipped with this package it is
+	a demo.
+
+
+
+
+make-mrtg.cfg.awk
+
+	This is the core of the entire task. Here I make 'mrtg-awk.cfg'
+	file using the content of 'internet' file and the state read
+	from fping utility (Fast Ping - it was not written by me...).
+	After doing this, internaly is lauched 'mrtg' executable
+	for net-hosts's mrtg.cfg file (named 'mrtg-awk.cfg').
+	Of course, it is created a file, 'internet.html', used
+	like an index file for the all targets in 'mrtg-awk.cfg',
+	but you could use 'indexmaker' script provided with MRTG
+	for doing this (see an example in 'net-hosts').
+	
+	Be aware ! You have to place icons (MRTG) and image files
+	(grnball.gif, redball.gif, cubprev.gif) in the same
+	location. You also have to place 'net-hosts.css' into declared
+	location inside that AWK script file.
+	
+
+----------
+
+        Direct questions or suggestions to me.
+
+        Have fun!
+
+        -Adrian Turcu <adrianturcu@yahoo.com>
+
+
+

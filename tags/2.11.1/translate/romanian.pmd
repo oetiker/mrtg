@@ -1,0 +1,132 @@
+###### PATCHTAG 00 ###################################################
+###      Romãn/Romanian
+###      => József Szilágyi <jozsi@maxiq.ro>
+###### PATCHTAG 10 ###################################################
+  &romanian
+###### PATCHTAG 20 ###################################################
+  'romanian'     => \&romanian,
+  'romãn'        => \&romanian,
+###### PATCHTAG 30 ###################################################
+# Romãn/romanian
+   'romanian' =>
+   "  <HR NOSHADE>
+    Tradus de
+    <NOBR><A HREF=\"http://szjozsef.go.ro/\">József Szilágyi</A>
+  <A HREF=\"mailto:jozsi\@maxiq.ro\">
+  &lt;jozsi\@maxiq.ro&gt;</A></NOBR>",
+###### PATCHTAG 40 ###################################################
+$credits::LOCALE{'romãn'}=$credits::LOCALE{'romanian'};
+###### PATCHTAG 50 ###################################################
+# Romanian
+
+sub romanian
+{
+  my $string = shift;
+return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+  # charset=iso-8859-2
+
+  %translations =
+  (  
+     'charset=iso-8859-1'                     => 'charset=iso-8859-2',
+     'Maximal 5 Minute Incoming Traffic'      => 'Traficul Maxim de intrare pe 5 Minute',
+     'Maximal 5 Minute Outgoing Traffic'      => 'Traficul Maxim de iesire pe 5 Minute',
+     'the device'                             => 'echipamentul',
+     'The statistics were last updated(.*)'   => 'Ultima actualizare :$1',
+     ' Average\)</B><BR>'                     => '',
+     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>Medie$1',
+     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>Maxim$1',
+     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Curent$1',
+     'version'                                => 'versiunea',
+     '<B>`Daily\' Graph \((.*) Minute'        => '<B>Graficul \'Zilnic\' (medie pe $1 minute)</B><BR>',
+     '<B>`Weekly\' Graph \(30 Minute'         => '<B>Graficul \'Sãptãmânal\' (medie pe 30 de minute)</B><BR>' ,
+     '<B>`Monthly\' Graph \(2 Hour'           => '<B>Graficul \'Lunar\' (medie pe 2 ore)</B><BR>',
+     '<B>`Yearly\' Graph \(1 Day'             => '<B>Graficul \'Anual\' (medie pe 1 zi)</B><BR>', 
+     'Incoming Traffic in (\S+) per Second'   => 'Traficul de intrare [$1/secundã]',
+     'Outgoing Traffic in (\S+) per Second'   => 'Traficul de ieºire [$1/secundã]',
+     'at which time <B>(\S+)</B> had been up for <B>(\S+)</B>' => 'când <B>$1</B> funcþiona de <B>$2</B>',
+     'at which time <B>(\S+)</B> had been up for <B>(\S+) day, (\S+)</B>' => 'când <B>$1</B> funcþiona de <B>$2 zi, $3</B>',
+     'at which time <B>(\S+)</B> had been up for <B>(\S+) days, (\S+)</B>' => 'când <B>$1</B> funcþiona de <B>$2 zile, $3</B>',
+     #'(.+)/s$'                               => '$1/s',
+     #'(.+)/min'                              => '$1/min',
+     '(.+)/h$'                                => '$1/ora',
+     #'([kMG]?)([bB])/s'                      => '$1$2/s',
+     #'([kMG]?)([bB])/min'                    => '$1$2/min',
+     '([kMG]?)([bB])/h'                       => '$1$2/ora',
+     'Bits'                                   => 'Biþi',
+     'Bytes'                                  => 'Octeþi',
+     '&nbsp;In:</FONT>'                       => '&nbsp;int:&nbsp;</FONT>',
+     '&nbsp;Out:</FONT>'                      => '&nbsp;ieº:&nbsp;</FONT>',
+     '&nbsp;Percentage</FONT>'                => '&nbsp;procent:</FONT>',
+     'Ported to OpenVMS Alpha by'             => 'Translatat sub OpenVMS de', 
+     'Ported to WindowsNT by'                 => 'Translatat sub WindowsNT de',
+     'and'                                    => 'ºi',
+     '^GREEN'                                 => 'VERDE',
+     'BLUE'                                   => 'ALBASTRU',
+     'DARK GREEN'                             => 'VERDE ÎNCHIS',
+     'MAGENTA'                                => 'PURPURIU',
+     'AMBER'                                  => 'GALBEN',
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => 'duminicã',     'Sun' => 'lu',
+      'Monday'    => 'luni',         'Mon' => 'ma',
+      'Tuesday'   => 'marþi',        'Tue' => 'mi',
+      'Wednesday' => 'miercuri',     'Wed' => 'jo',
+      'Thursday'  => 'joi',          'Thu' => 'vi',
+      'Friday'    => 'vineri',       'Fri' => 'sâ',
+      'Saturday'  => 'sâmbãtã',      'Sat' => 'du' 
+    );
+
+%month = 
+    (
+      'January'   => 'ianuarie',    'February'  => 'februarie' ,    'March'     => 'martie',
+      'Jan'       => 'ian',         'Feb'       => 'feb',           'Mar'       => 'mar',
+      'April'     => 'aprilie',     'May'       => 'mai',           'June'      => 'iunie', 
+      'Apr'       => 'apr',         'May'       => 'mai',           'Jun'       => 'iun',
+      'July'      => 'iulie',       'August'    => 'august',        'September' => 'septembrie', 
+      'Jul'       => 'iul',         'Aug'       => 'aug',           'Sep'       => 'sep', 
+      'October'   => 'octombrie',   'November'  => 'noiembrie',     'December'  => 'decembrie', 
+      'Oct'       => 'oct',         'Nov'       => 'noi',           'Dec'       => 'dec' 
+    );
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+    {
+	if($foo[3]=~(/(.*)at(.*)/))
+      { 
+        @quux=split(/at/,$foo[3]);
+        $foo[3]=$quux[0].", ora ".$quux[1]; 
+      };
+      return "$wday{$foo[0]}, $foo[1] $month{$foo[2]} $foo[3]"; 
+    };
+
+#
+# handle two different time/date formats:  
+# return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
+#
+
+# handle nontranslated strings which ought to be translated
+# print STDERR "$_\n" or print DEBUG "not translated $_";
+# but then again we might not want/need to translate all strings
+
+  return $string;
+
+};

@@ -1,0 +1,332 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>doc/mrtglib</title>
+<link rev="made" href="mailto:dws@ee.ethz.ch" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+<!--
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#authors">AUTHORS</a></li>
+</ul>
+-->
+<!-- INDEX END -->
+
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>MRTG_lib.pm - Library for MRTG and support scripts</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ use MRTG_lib;
+ my ($configfile, @target_names, %globalcfg, %targetcfg);
+ readcfg($configfile, \@target_names, \%globalcfg, \%targetcfg);
+ my (@parsed_targets);
+ cfgcheck(\@target_names, \%globalcfg, \%targetcfg, \@parsed_targets);</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>MRTG_lib is part of MRTG, the Multi Router Traffic Grapher. It was separated
+from MRTG to allow other programs to easily use the same config files. The
+main part of MRTG_lib is the config file parser but some other funcions are
+there too.</p>
+<dl>
+<dt><strong><a name="item__24mrtg_lib_3a_3aos"><code>$MRTG_lib::OS</code></a></strong><br />
+</dt>
+<dd>
+Type of OS: WIN, UNIX, VMS
+</dd>
+<p></p>
+<dt><strong><a name="item__24mrtg_lib_3a_3asl"><code>$MRTG_lib::SL</code></a></strong><br />
+</dt>
+<dd>
+<em>Slash</em> in the current OS.
+</dd>
+<p></p>
+<dt><strong><a name="item__24mrtg_lib_3a_3aps"><code>$MRTG_lib::PS</code></a></strong><br />
+</dt>
+<dd>
+Path separator in PATH variable
+</dd>
+<p></p>
+<dt><strong><a name="item_readcfg"><code>readcfg</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_readcfg"><code>readcfg($file, \@targets, \%globalcfg, \%targetcfg [, $prefix, \%extrules])</code></a>
+</dd>
+<dd>
+<p>Reads a config file, parses it and fills some arrays and hashes. The
+mandatory arguments are: the name of the config file, a ref to an array which
+will be filled with a list of the target names, a hashref for the global
+configuration, a hashref for the target configuration.</p>
+</dd>
+<dd>
+<p>The configuration file syntax is:</p>
+</dd>
+<dd>
+<pre>
+ globaloption: value
+ targetoption[targetname]: value
+ aprefix*extglobal: value
+ aprefix*exttarget[target2]: value</pre>
+</dd>
+<dd>
+<p>E.g.</p>
+</dd>
+<dd>
+<pre>
+ workdir: /var/stat/mrtg
+ target[router1]: 2:public@router1.local.net
+ 14all*columns: 2</pre>
+</dd>
+<dd>
+<p>The global config hash has the structure</p>
+</dd>
+<dd>
+<pre>
+ $globalcfg{configoption} = 'value'</pre>
+</dd>
+<dd>
+<p>The target config hash has the structure</p>
+</dd>
+<dd>
+<pre>
+ $targetcfg{configoption}{targetname} = 'value'</pre>
+</dd>
+<dd>
+<p>See <a href="././mrtg-reference.html">the mrtg-reference manpage</a> for more information about the MRTG configuration syntax.</p>
+</dd>
+<dd>
+<p><a href="#item_readcfg"><code>readcfg</code></a> can take two additional arguments to extend the config file
+syntax. This allows programs to put their configuration into the mrtg config
+file. The fifth argument is the prefix of the extension, the sixth argument
+is a hash with the checkrules for these extension settings. E.g. if the
+prefix is ``14all'' <a href="#item_readcfg"><code>readcfg</code></a> will check config lines that begin with
+``14all*'', i.e. all lines like</p>
+</dd>
+<dd>
+<pre>
+ 14all*columns: 2
+ 14all*graphsize[target3]: 500 200</pre>
+</dd>
+<dd>
+<p>against the rules in %extrules. The format of this hash is:</p>
+</dd>
+<dd>
+<pre>
+ $extrules{option} = [sub{$_[0] =~ m/^\d+$/}, sub{&quot;Error message for $_[0]&quot;}]
+     i.e.
+ $extrules{option}[0] -&gt; a test expression
+ $extrules{option}[1] -&gt; error message if test fails</pre>
+</dd>
+<dd>
+<p>The first part of the array is a perl expression to test the value of the
+option. The test can access this value in the variable ``$arg''. The second
+part of the array is an error message to display when the test fails. The
+failed value can be integrated by using the variable ``$arg''.</p>
+</dd>
+<dd>
+<p>Config settings with an different prefix than the one given in the <a href="#item_readcfg"><code>readcfg</code></a>
+call are not checked but inserted into <em>%globalcfg</em> and <em>%targetcfg</em>.
+Prefixed settings keep their prefix in the config hashes:</p>
+</dd>
+<dd>
+<pre>
+ $targetcfg{'14all*graphsize'}{'target3'} = '500 200'</pre>
+</dd>
+<p></p>
+<dt><strong><a name="item_cfgcheck"><code>cfgcheck</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_cfgcheck"><code>cfgcheck(\@target_names, \%globalcfg, \%targetcfg, \@parsed_targets)</code></a>
+</dd>
+<dd>
+<p>Checks the configuration read by <a href="#item_readcfg"><code>readcfg</code></a>. Checks the values in the config
+for syntactical and/or semantical errors. Sets defaults for some options.
+Parses the ``target[...]'' options and filles the array @parsed_targets ready
+for mrtg functions.</p>
+</dd>
+<dd>
+<p>The first three arguments are the same as for <a href="#item_readcfg"><code>readcfg</code></a>. The fourth argument
+is an arrayref which will be filled with the parsed target defs.</p>
+</dd>
+<dd>
+<p><a href="#item_cfgcheck"><code>cfgcheck</code></a> converts the values of target settings <em>options</em>, e.g.</p>
+</dd>
+<dd>
+<pre>
+ options[router1]: bits, growright</pre>
+</dd>
+<dd>
+<p>to a hash:</p>
+</dd>
+<dd>
+<pre>
+ $targetcfg{'option'}{'bits'}{'router1'} = 1
+ $targetcfg{'option'}{'growright'}{'router1'} = 1</pre>
+</dd>
+<dd>
+<p>This is not done by <a href="#item_readcfg"><code>readcfg</code></a> so if you don't use <a href="#item_cfgcheck"><code>cfgcheck</code></a> you have to
+check the scalar variable <em>$targetcfg{'option'}{'router1'}</em> (MRTG allows
+options to be separated by space or ',').</p>
+</dd>
+<p></p>
+<dt><strong><a name="item_ensuresl"><code>ensureSL</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_ensuresl"><code>ensureSL(\$pathname)</code></a>
+</dd>
+<dd>
+<p>Checks that the <em>pathname</em> does not contain double path separators and ends
+with a path separator. It uses $MRTG_lib::SL as path separator which will be /
+or \ depending on the OS.</p>
+</dd>
+<p></p>
+<dt><strong><a name="item_log2rrd"><code>log2rrd</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_log2rrd"><code>log2rrd ($router,\%globalcfg,\%targetcfg)</code></a>
+</dd>
+<dd>
+<p>Convert log file to rrd format. Needs rrdtool.</p>
+</dd>
+<p></p>
+<dt><strong><a name="item_datestr"><code>datestr</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_datestr"><code>datestr(time)</code></a>
+</dd>
+<dd>
+<p>Returns the time given in the argument as a nicely formated date string.
+The argument has to be in UNIX time format (seconds since 1970-1-1).</p>
+</dd>
+<p></p>
+<dt><strong><a name="item_timestamp"><code>timestamp</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_timestamp"><code>timestamp()</code></a>
+</dd>
+<dd>
+<p>Return a string representing the current time.</p>
+</dd>
+<p></p>
+<dt><strong><a name="item_setup_loghandlers"><code>setup_loghandlers</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_setup_loghandlers"><code>setup_loghandlers(filename)</code></a>
+</dd>
+<dd>
+<p>Install signalhandlers for __DIE__ and __WARN__ making the errors
+go the the specified destination. If filename is 'eventlog'
+mrtg will log to the windows event logger.</p>
+</dd>
+<p></p>
+<dt><strong><a name="item_expistr"><code>expistr</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_expistr"><code>expistr(time)</code></a>
+</dd>
+<dd>
+<p>Returns the time given in the argument formatted suitable for HTTP
+Expire-Headers.</p>
+</dd>
+<p></p>
+<dt><strong><a name="item_create_pid"><code>create_pid</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_create_pid"><code>create_pid()</code></a>
+</dd>
+<dd>
+<p>Creates a pid file for the mrtg daemon</p>
+</dd>
+<p></p>
+<dt><strong><a name="item_demonize_me"><code>demonize_me</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_demonize_me"><code>demonize_me()</code></a>
+</dd>
+<dd>
+<p>Puts the running program into background, detaching it from the terminal.</p>
+</dd>
+<p></p>
+<dt><strong><a name="item_populatecache"><code>populatecache</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_populatecache"><code>populatecache(\%confcache, $host, $reread, $snmpoptshash)</code></a>
+</dd>
+<dd>
+<p>Reads the SNMP variables <em>ifDescr</em>, <em>ipAdEntIfIndex</em>, <em>ifPhysAddress</em>, <em>ifName</em> from
+the <em>host</em> and stores the values in <em>%confcache</em> as follows:</p>
+</dd>
+<dd>
+<pre>
+ $confcache{$host}{'Descr'}{ifDescr}{oid} = (ifDescr or 'Dup')
+ $confcache{$host}{'IP'}{ipAdEntIfIndex}{oid} = (ipAdEntIfIndex or 'Dup')
+ $confcache{$host}{'Eth'}{ifPhysAddress}{oid} = (ifPhysAddress or 'Dup')
+ $confcache{$host}{'Name'}{ifName}{oid} = (ifName or 'Dup')
+ $confcache{$host}{'Type'}{ifType}{oid} = (ifType or 'Dup')</pre>
+</dd>
+<dd>
+<p>The value (at the right side of =) is 'Dup' if a value was retrieved
+muliple times, the retrieved value else.</p>
+</dd>
+<p></p>
+<dt><strong><a name="item_readconfcache"><code>readconfcache</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_readconfcache"><code>my $confcache = readconfcache($file)</code></a>
+</dd>
+<dd>
+<p>Preload the confcache from a file.</p>
+</dd>
+<p></p>
+<dt><strong><a name="item_writeconfcache"><code>writeconfcache</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_writeconfcache"><code>writeconfcache($confcache,$file)</code></a>
+</dd>
+<dd>
+<p>Store the current confcache into a file.</p>
+</dd>
+<p></p>
+<dt><strong><a name="item_debug"><code>debug</code></a></strong><br />
+</dt>
+<dd>
+<a href="#item_debug"><code>debug($type, $message)</code></a>
+</dd>
+<dd>
+<p>Prints the <em>message</em> on STDERR if debugging is enabled for type <em>type</em>.
+A debug type is enabled if <em>type</em> is in array @main::DEBUG.
+
+</p>
+</dd>
+<p></p></dl>
+<p>
+</p>
+<hr />
+<h1><a name="authors">AUTHORS</a></h1>
+<p>Tobias Oetiker &lt;<a href="mailto:tobi@oetiker.ch">tobi@oetiker.ch</a>&gt;, Dave Rand &lt;<a href="mailto:dlr@bungi.com">dlr@bungi.com</a>&gt;
+and other contributors, mentioned in the file <code>CHANGES</code>
+
+</p>
+<p>Documentation by Rainer Bawidamann &lt;<a href="mailto:Rainer.Bawidamann@rz.uni-ulm.de">Rainer.Bawidamann@rz.uni-ulm.de</a>&gt;
+
+</p>
+
+</body>
+
+</html>

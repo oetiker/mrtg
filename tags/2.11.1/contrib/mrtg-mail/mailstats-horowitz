@@ -1,0 +1,522 @@
+#!/usr/bin/perl
+#
+# Author by Rick Horowitz <rick@techstop.com> 1998-12-16
+# Inspired by, and may show remnants of code from: 
+#            "mailstats" by Petter Reinholdtsen <pere@td.org.uit.no> 
+#             dated 1997-07-09 and part of mrtg2.54c dist
+# Petter credits Rachel Polanskis <rachel@juno.virago.org.au> for 
+# the original. 
+# Type "perldoc mrtg-mailstat" from a shell prompt for more information
+# on this script and its use. 
+#
+
+use strict;
+use Socket;
+use Getopt::Long;
+
+# IMPORTANT: THIS NEXT LINE ENSURE THAT CASE MATTERS ON OPTIONS!!!
+$Getopt::Long::ignorecase = 0;    
+
+use vars qw($datafile $server $sourceport $oldfrm $oldto $help
+            $newfrm $newto $uptime $mailtype $logbase);
+
+# Assign options.  ("Illegal" options will be possible, 
+# but we'll warn about them via Usage().)
+#     h = runs the perldoc program to show the mrtg-mailstat manual
+#     m = specifies the type of mail we're checking for 
+#     p = specifies the port for reaching the mailstats on the mailserver
+#     s = specifies the location of the mailserver 
+# See the mrtg-mailstat man page for details.  
+GetOptions("help"          => \$help,
+           "logbase=s"     => \$logbase, 
+           "mailtype=s"    => \$mailtype, 
+           "port=i"        => \$sourceport, 
+           "server=s"      => \$server, 
+	   "<>"            => \&Usage); 
+
+# HARDCODING SECTION -- MODIFY THESE ONLY IF YOU KNOW WHAT YOU ARE DOING!!!
+# Set these ONLY if you don't wish to use command line options.  For more 
+# information, type 'mrtg-mailstat -h' or 'perldoc mrtg-mailstat' from a 
+# shell prompt.
+$logbase    = '/tmp' unless $logbase;
+$mailtype   = '' unless $mailtype;
+$server     = '' unless $server;
+$sourceport = '' unless $sourceport;
+
+# Location for keeping mail statistics.  The numbers stored here are 
+# compared to the new numbers at each run of this script. 
+$datafile       = "$logbase/${mailtype}-mailstat.old";
+
+# Core portions of the program.  Most of retained code from original 
+# comes into play here.  
+GetHelp() if $help; 
+Usage() unless ($mailtype && $server && $sourceport);
+
+($oldfrm, $oldto)          = GetOldStats($datafile);
+($newfrm, $newto, $uptime) = GetNewStats($server, $sourceport);
+
+PutOldStats($datafile, $newfrm, $newto) || warn "$0: Unable to save stats to $datafile";
+
+print $newfrm-$oldfrm,"\n",$newto-$oldto,"\n","$uptime\nthe mail server\n" if ($oldfrm);
+
+##
+# Returns first line of file given as param split on (a single) space
+sub GetOldStats {
+    my($datafile) = @_;
+
+    if (-e $datafile) { 
+        open(OLD, $datafile) || warn "$0: Unable to open $datafile for reading";
+        my($line) = <OLD>;
+        close(OLD);
+        return split(/ /, $line);
+    } else { 
+        return(0, 0);
+    }
+       
+}
+
+sub GetNewStats {
+    my($server, $sourceport) = @_;
+    my(@output, $port, $proto, $iaddr, $paddr, $tempuptime, $curfrm, $curto, $uptime);
+    if ( $server eq "localhost" ) {
+	@output = `/usr/sbin/mailstats`;
+	chomp(@output);
+    } else {
+        if ($sourceport =~ /\D/) { 
+	    $port = getservbyname ($sourceport, 'tcp');
+         } else { 
+            $port = $sourceport;
+         }
+	die "$0: Bad port \"$sourceport\"" unless ($port);
+	$proto = getprotobyname ('tcp') || die "$0: Bad prototype tcp";
+
+	$iaddr = inet_aton($server) or die "$0: no host \"$server\"";
+	$paddr = sockaddr_in($port, $iaddr);
+
+	socket (SOCK, PF_INET, SOCK_STREAM, $proto) or die "$0: socket error $!";
+	connect (SOCK, $paddr) or die "$0: connect error $!";
+
+	while (<SOCK>) {
+	    push(@output, $_);
+	}
+	close(SOCK) || warn "$0: socket close error $!";
+    }
+
+    # Parse only the interesting lines. 
+    foreach (@output) {
+	($curfrm, $curto) = (split(/ +/))[2,4] if (/$mailtype/);
+        if (/UPTIME.*?up\s*(.*?), [0-9]* user/) { 
+            $uptime = $1;
+            $uptime =~ s/:([0-9]*)/ hours, $1 minutes/;
+        }
+    }
+
+    # This line ensures no negative numbers.  See "perldoc mrtg-mailstat".
+    ($curfrm, $curto) = noNeg($curfrm, $curto);
+
+    return ($curfrm, $curto, $uptime);
+
+}   # End GetNewStats().
+
+# Saves the information to the log file. (Note: Overwrites old contents
+# which aren't needed anymore, anyway.)
+sub PutOldStats {
+    my($datafile, $frm, $to) = @_;
+    open(STAT, ">$datafile") || return "";
+    print STAT "$frm $to\n";
+    close(STAT);
+    return "1";
+}   # End PutOldStats().
+
+# Negative values should only occur the first time the script is ever run.
+# These must be converted to positives so subsequent runs of the script 
+# correctly compute new values. 
+sub noNeg  { 
+    
+    my ($frm, $to) = @_;
+
+    $frm = -($frm) if ($frm < 0);
+    $to = -($to) if ($to < 0);
+
+    return($frm, $to);
+
+}   # End noNeg(). 
+
+# Usage() simply checks to see that no "illegal" options 
+# have been entered.  If the program is thus improperly 
+# called, it issues a notice explaining how to read the 
+# man page for this program.  
+sub Usage { 
+
+   my $option = shift; 
+
+   print STDERR "You may wish to read the documentation \n";
+   print STDERR "(type \"perldoc mrtg-mailstat\" or \"mrtg-mailstat -h\")\n";
+
+   exit(5); 
+
+} # End Usage(). 
+
+sub GetHelp { 
+
+   system("perldoc mrtg-mailstat");
+   exit(0);
+
+}   # End GetHelp().
+
+__END__
+
+=head1 NAME
+
+mrtg-mailstat - Mail Statistics Collector for MRTG
+
+=head1 SYNOPSIS
+
+mrtg-mailstat S<[B<-h>]> S<[B<-m> I<mailtype>]> S<[B<-p> I<sourceport>]> 
+              S<[B<-s> I<server>]>
+
+=head1 DESCRIPTION
+
+The B<mrtg-mailstat> program retrieves statistical information from the 
+mail server.  It does not matter whether the script is run on the mail 
+server itself, or on a machine remote from the mail server.  
+
+=head1  S<   Running mrtg-mailstat >
+
+S<                                                                        >
+The proper way to run B<mrtg-mailstat> is to call it from an MRTG configuration
+file.  The following provides an example of a valid configuration file entry: 
+
+=over 2
+
+=item 
+
+C<S<Target[smtp-mail]: `mrtg-mailstat -m smtp -p 7258 -s mail.techstop.com`>
+S<MaxBytes[smtp-mail]: 150                  >
+S<Options[smtp-mail]: gauge                 >
+S<Title[smtp-mail]: TechStop Support Services SMTP Mail Statistics>
+S<PageTop[smtp-mail]: E<lt>H1E<gt>TechStop SMTP Mail Statistics E<lt>/H1E<gt>>
+S<XSize[smtp-mail]: 500                     >
+S<YSize[smtp-mail]: 200                     >
+S<WithPeak[smtp-mail]: dwmy>
+S<YLegend[smtp-mail]: No. of messages>
+S<ShortLegend[smtp-mail]: messages>
+S<LegendI[smtp-mail]: &nbsp;Incoming:>
+S<LegendO[smtp-mail]: &nbsp;Outgoing: > >
+
+=back
+
+This makes certain assumptions which are outlined below under I<Dependencies>.
+
+=head1  S<   Switches >
+
+S<                                                                        >
+
+=head2  Hardcoding versus Using Switches
+
+It is not necessary to provide switches to the program, if you prefer to "hardcode"
+the information in the script itself.  "Hardcoding" allows you to call the script 
+with less (or no) flags; information needed by the script, and not provided by a 
+flag,  must be "hardcoded" by you before this will work.  (This was provided for 
+diehards who hate the flexibility of switches.  I provided enough flexibility for 
+them to be inflexible. ;))
+
+To "hardcode" your information into the script, look for the section near the 
+top of the script labeled "HARDCODING SECTION".  Change the "null" entries 
+represented by the double double quotes ("") so that they contain the appropriate
+values.  
+
+Example:  
+
+
+=over 4 
+
+=item 
+
+C<$server     = "" unless $server; >
+
+=back
+
+becomes  
+
+=over 4
+
+=item 
+
+C<$server     = "mail.techstop.com" unless $server; >
+
+=back
+
+As stated, this is not necessary; it is not even preferred.  You may, 
+and probably should, use the switches in the next subsection.  
+
+=head2  Invoking Switches
+
+B<mrtg-mailstat> switches adhere to the POSIX syntax for command-line
+options.  This means options can take a variety of forms.  
+For example, to specify running B<mrtg-mailstat> against port C<7258>
+of the mail server to obtain reports on smtp mail (see "I<mailtype> 
+under I<Available Switches> below) you could use any of the following forms:  
+
+=over 5
+
+=item    
+
+C<% mrtg-mailstat -m smtp -p 7258>
+
+=item    
+
+C<% mrtg-mailstat -m=smtp -p=7258>       
+
+=item    
+
+C<% mrtg-mailstat -mailtype smtp -port 7258> 
+
+=item    
+
+C<% mrtg-mailstat -mailtype=smtp -port=7258> 
+
+=item    
+
+C<% mrtg-mailstat --m smtp --p 7258> 
+
+=item    
+
+C<% mrtg-mailstat --m=smtp --p=7258>
+
+=item    
+
+C<% mrtg-mailstat --mailtype smtp --port 7258>  
+
+=item    
+
+C<% mrtg-mailstat --mailtype=smtp --port=7258>  
+
+=back
+
+Any of the last four forms are preferred.  One way of doing options 
+which is I<not> possible is: 
+
+=over 5
+
+=item    
+
+C<% mrtg-mailstat --msmtp --p7258>
+
+=back
+
+Use of that last form may cause results other than you expected. 
+(Important Note: The above examples would also require that the 
+server be "hardcoded" into the script as noted in the subsection on 
+I<Hardcoding versus Using Switches> above.)
+
+=head2  Available Switches
+
+The following switches are available:  
+
+=over 2
+
+=item B<--h[elp]>
+
+The B<-h> flag causes B<mrtg-mailstat> to print this manual to 
+standard output.  For obvious reasons, this is not normally included in an 
+MRTG configuration file, nor invoked by cron.  
+
+=item B<--l[ogbase]>
+
+The B<-l> flag can be used to specify the directory in which to store the 
+file that holds the values from each run.  By default, this file is created 
+in I</tmp>, but if you need to store it in another directory, this is the 
+flag for you.  By the way, if the file doesn't exist, one is created.  A side-effect 
+of this is that if you try to use one "logbase" one time, and another the next, 
+the program has no way of warning you.  It simply creates a new file, and uses zero 
+values to begin its calculations.  This can have strange consequences for your 
+mail statistics.  Try to remember where you store your log, or use the hardcoding 
+option (see I<Hardcoding versus Using Switches> above).  
+
+=item B<--m[ailtype]>
+
+The B<-m> flag is used to specify the mail type.  The two 
+types reported by I</usr/bin/mailstat> are "esmtp" and "local".  The 
+"esmtp" line reports traffic between the mail server and other systems. 
+The "local" line reports traffic between users on the mail server.  For 
+most smaller networks, this likely means that "esmtp" reports mail between 
+their network and the Internet, and "local" reports mail between users 
+within the small network's organization.  Possible values for this flag are 
+"smtp" and "local".  B<Note the flag takes "smtp" and not "esmtp".>
+
+=item B<--p[ort]>
+
+The B<-p> flag specifies the port whence the statistics are obtained.  See
+the I<Dependencies> section below.  
+
+=item B<--s[erver]>
+
+The B<-s> flag specifies the mail server.  This can be either a DNS name, 
+or an IP number. 
+
+=back
+
+=head1 DEPENDENCIES
+
+The B<mrtg-mailstat> program makes certain assumptions.  The following is 
+quoted with a few changes from the documentation for the original B<mailstat> script 
+upon which B<mrtg-mailstat> is based.  In particular, it is important to note that 
+the original instructions were Solaris-centric.  Your system may have different commands 
+for starting and stopping the mail server, and your paths may be different (i.e., may 
+use /usr/local instead of /opt, or whatever).  You are assumed to be able to figure that 
+out yourself.  
+
+=over 2
+
+=item 1:  Ensure you have I</bin/mailstat> (or I</usr/sbin/mailstat>)on your system.
+
+=item 2:  Enable I</var/log/sendmail.st>
+
+    To do this you can just make sure the entry for "sendmail.st" in
+    "sendmail.cf" is uncommented.  On the BSD/OS 3.1 system mrtg-mailstat was 
+    tested on, the /etc/sendmail.cf entries look like this:  
+
+    OS/var/log/sendmail.st
+    O StatusFile=/var/log/sendmail.st
+
+
+    Then do the command:
+
+        # touch /var/log/sendmail.st
+
+    And restart sendmail:
+
+        # /etc/init.d/sendmail stop
+        # /etc/init.d/sendmail start
+
+
+=item 3:  Create the following shell-script (B<Note!> This section is different than the original version!):
+
+        #!/bin/sh
+        #
+        # smtp-stats: invoke mailstats from a wrapper for use in inetd.
+        #
+        PATH=/bin:/sbin
+        if [ -x "/usr/sbin/mailstats" ]
+           then
+           temp1=`/usr/sbin/mailstats -f/var/log/sendmail.st`
+        fi
+
+        if [ -x "/usr/bin/uptime" ]
+           then
+           temp2=`/usr/bin/uptime`
+        fi
+
+        echo -e "$temp1\nUPTIME: $temp2"
+
+I run this out of /usr/local/bin, and call it "smtp-stats"
+
+=item 4:  Now add the following to /etc/services:
+
+        # /etc/services
+        #
+        smtp-stats      7256/tcp                        # smtp-stats
+
+I used port 7256 as it was undefined.  You might like to select something
+else.
+
+=item 5:  Add the following to /etc/inetd.conf:
+
+        # /etc/inetd.conf
+        #
+        smtp-stats      stream  tcp     nowait root \
+        /usr/local/bin/smtp-stats smtp-stats
+
+
+***Ensure that the above is all on *one* line.  The sample above
+is broken on 2 lines for legibility!!
+
+
+=item 6:  Restart inetd
+
+
+=item 7:  Test the port.  you should see the following:
+
+S<                                                       >
+S<unixhost:   {26} % telnet mailserver 7258              >
+S<Trying 192.168.1.8...                                  >
+S<Connected to mailserver.yourdomain.com.                >
+S<Escape character is '^]'.                              >
+S<Statistics from Wed Jan 14 03:10:34 1998               >
+S< M msgsfr bytes_from  msgsto   bytes_to  Mailer        >
+S< 3  79372    3623347K 143989    6954437K  local        >
+S< 5   9941     483230K   6669     652586K  esmtp        >
+S<========================================               >
+S< T  89313    4106577K 150658    7607023K               >
+S<UPTIME:  9:02AM  up 52 days, 48 mins, 2 users, load averages: 0.57, 0.56, 0.43>
+S<Connection closed by foreign host.                     >
+
+
+=back
+
+=head1 FILES
+
+Strictly speaking, you needn't worry about the files.  If you've created
+the smtp-stats script noted above, and made the appropriate changes, the 
+only other I<file> you need to be concerned with is B<mrtg-mailstat> itself.
+
+For completeness sake, I list all the files with which B<mrtg-mailstat> may 
+depend upon, utilize, create, or use.  
+
+=over 5
+
+=item 
+
+I<mrtg-mailstat>
+
+=item 
+
+I</etc/sendmail.cf>
+
+=item 
+
+I</usr/local/bin/smtp-stats>
+
+=item 
+
+I</usr/sbin/mailstats>
+
+=item 
+
+I</usr/bin/uptime>
+
+=item 
+
+I</var/log/sendmail.st>
+
+=item 
+
+I<$logbase/${mailtype}-mailstat.old>
+
+=back
+
+
+=head1 AUTHOR
+
+This B<mrtg-mailstat> program was written by Rick Horowitz <rick@techstop.com>, 
+tested, and released to the MRTG mailing list on December 16, 1998.  It was 
+inspired by, and contains remnants of code from: 
+
+=over 10
+
+=item
+
+            "mailstats" by Petter Reinholdtsen <pere@td.org.uit.no> 
+             dated 1997-07-09 and part of mrtg2.54c dist
+
+=back
+
+Petter credits Rachel Polanskis <rachel@juno.virago.org.au> for 
+the original. 
+
+=cut
+
+
+
+

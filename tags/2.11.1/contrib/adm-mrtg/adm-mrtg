@@ -1,0 +1,149 @@
+#!/usr/bin/ksh 
+
+# This script organizes config files for MRTG
+# and restarts the MRTG processes cleanly.
+
+# Author: Scott Ripley, U.S. House of Representatives
+# Version: 1.0 (and all that a 1.0 release entails)
+# Contact: scott.ripley@mail.house.gov
+# Copyright: (C) 2001 Scott Ripley 
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# See the GNU General Public License for more details.
+
+
+# Change these directores to match your configuration for MRTG
+MRTG=/usr/local/mrtg/bin
+# TARHOME is the location of the back-up files. It should be another volume
+TARHOME=/usr/local/mrtg/bin
+# Location of log files
+WEBHOME=/usr/local/apache/htdocs/mrtg_images
+
+cd $MRTG 
+
+# Initialize the variables and temp files
+
+typeset -i CFGLINE
+typeset -i MAXLINE
+CFGLINE=1
+MAXLINE=1
+CFG="$MRTG"/mrtgcfgs.run
+CFGNUM="$MRTG"/cfgnum.run
+MCNAME=`uname -n`
+EXIT=N
+DATE=`date '+%m%d%y%H%M' `
+# TARHOME is the location of the back-up files. It should be another volume
+TARHOME=/usr/local/mrtg/bin
+WEBHOME=/usr/local/apache/htdocs/mrtg_images
+
+# Set tabs for display columns
+stty tabs
+tabs 10,30,40,45 
+ 
+# Main loop
+while [ "$EXIT" = N ]
+do
+	# reads the pid files and inputs them into a file 
+	ls -go *pid | sed 's/[ ][ ]/ /g' | cut -d"." -f1 > "$CFG"
+
+	nl -bt -nrz -w2 "$CFG" > "$CFGNUM" # numbers the lines in the file
+
+	# sets the number of configs loaded, for error testing
+	MAXLINE=`wc -l "$CFG" | cut -d" " -f7 `
+
+	clear
+	printf "\n\nThe following MRTG configs are running on "$MCNAME":\n"
+
+	printf "\n\tConfig name\t\tRunning Since\n"
+	printf "\t-----------\t\t-------------\n"
+	
+
+		# prints out the appropriate fields on-screen
+		nawk ' { print "\t" $1,$8".cfg \t\t" $5,$6,$7 } ' "$CFGNUM"
+		printf "\n"	
+		printf " Which file would you like to reload? (b to back-up, q to quit) \c"
+		read X
+
+	case "$X" in
+	[qQ] )
+		EXIT=Y # I quit!
+	;;
+
+	[bB] )
+		printf "\n Backup *.cfg & *.log files? \c"
+		read V
+		case "$V" in
+		'y' | 'Y' )
+			
+			CNAME=MRTG_"$DATE".cfgs.tar
+			tar cvf "$TARHOME"/"$CNAME" "$MRTG"/*.cfg
+			chmod 0400 "$TARHOME"/"$CNAME"
+			LNAME=MRTG_"$DATE".logs.tar
+			find "$WEBHOME" | egrep  -e "\.log$|\.old$" > mrtgtar.run
+			tar cvf "$LNAME" -I mrtgtar.run
+			chmod 0600 "$TARHOME"/"$CNAME"
+			chmod 0600 "$TARHOME"/"$LNAME"
+		#	printf "\nGzipping files..."
+		#	gzip "$TARHOME"/"$CNAME" 
+		#	gzip "$TARHOME"/"$LNAME" 
+			printf "\nConfig files backed up to `ls "$TARHOME"/MRTG_"$DATE".cfg*` "
+			printf "\nLog files backed up to `ls "$TARHOME"/MRTG_"$DATE".log*` "
+			printf "\nPress return to continue..."
+			read U
+			;;
+		* )
+			printf "\nBackup aborted."
+					sleep 3
+			;;
+		esac
+	;;
+
+	[0-9][0-9] ) # If the number entered is between 0 and 99...
+
+		# and if the number is <= the no. of configs loaded
+		if [ "$X" -le "$MAXLINE" ] # 
+		then
+				
+		FILE=`sed -n ''$X'p' "$CFGNUM" | cut -d" " -f11 ` # put filename into $FILE
+
+		echo " Okay to restart "$FILE".cfg? \c"	
+		read Y
+
+		case "$Y" in 
+		'y' | 'Y' )
+			FKILL=`cat "$MRTG""/""$FILE"".pid"` # Set the variable with the PID
+			kill -9 $FKILL	 			# Kill it 
+			rm $MRTG/$FILE".pid"			# Remove the file
+			$MRTG"/mrtg" $FILE".cfg"		# Restart MRTG with the config file
+			sleep 8					# Wait for new PID file to be created
+			echo "New PID for "$FILE".cfg is `cat "$MRTG"/"$FILE".pid` "
+		;;
+		*)
+			echo "\nRestart aborted!"
+		;;
+		esac
+		else
+			echo "Entry Invalid! Press return to continue..."
+			read ZZ
+		fi
+	;;
+	*)
+		echo "Entry Invalid! Press return to continue..."
+                read ZZ
+	;;
+	esac
+
+done
+	# For security/housekeeping reasons, we clean out the temp files here.
+	cat /dev/null >	 "$MRTG"/mrtgcfgs.run
+	cat /dev/null >	 "$MRTG"/cfgnum.run
+	cat /dev/null >	 "$MRTG"/cfgsed.run
+	cat /dev/null >	 "$MRTG"/mrtgtar.run
+exit 0

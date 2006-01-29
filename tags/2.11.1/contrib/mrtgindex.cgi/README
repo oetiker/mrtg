@@ -1,0 +1,19 @@
+Date: Fri, 14 Mar 1997 14:40:56 +0000
+From: Mick Ghazey <mick@lowdown.com>
+
+My program, mrtgindex.cgi, is similar to indexmaker. There are
+some signficant differences however.
+
+Mrtgindex.cgi graphs update every 5 minutes.
+
+Mrtgindex.cgi *graphs* are clickable. Indexmaker's *text* is
+clickable.
+
+Mrtgindex.cgi supports multiple config files.
+
+Mrtgindex.cgi graphs are in the same order as targets in config
+files. Indexmaker graphs are ordered alphabetically by title.
+
+Perhaps mrtgindex.cgi will run on more servers because it doesn't
+require SSI. OTOH, it requires CGI.pm. Between the two we should
+have a program that works on all servers. :=)

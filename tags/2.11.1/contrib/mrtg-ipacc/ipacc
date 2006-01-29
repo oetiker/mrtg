@@ -1,0 +1,141 @@
+#!/usr/bin/perl
+#
+#  This is just a hack, but it works fine for me.
+#  I'm using the ip accounting kernel rules to feed the mrtg.
+#  You need to have IP accounting compiled in your kernel(2.0), or IPChains
+#  support if you are running 2.1 or 2.2
+#  Anyway I'm not using the ipchains in here as there's no need to.
+#  The old ipfwadm will do just fine.
+#  So for 2.1 or 2.2 you'll need the ipfwadm-wrapper.
+#
+#
+#  Cristian Caramida <brick@bbs.ro>
+#             but very soon <brick@pcnet.ro>
+#  
+# Usage:
+# 
+#  You need to have IP accounting compiled in your kernel, and than just add 
+#  to the mrtg.cfg
+#  Target[ip_addr]: `ipacc [mode] [-S aaa.bbb.ccc.ddd[/net_bits]] [port1 port2 ...] [-D aaa.bbb.ccc.ddd[/net_bits]] [port1 port2 ...]`
+#  where
+#  - mode - is one of "in" or "out" in lowercase 
+#  - aaa.bbb.ccc.ddd - is a dotted IP address (not a host/net name)
+#  - net_bits - is the number of bits used by the network portion of the IP
+#                (eg. 24 for a whole C class, or 25 for half of a C class)
+#  - port1 port2 ... - the ports you want to plot trafic on
+# I haven't tryied to call it without any parameters!
+# It will probably make accounting for all trafic.
+
+$ipfwadm='/sbin/ipfwadm';   # <-------- ATTENTION
+$host="com.bbs.ro";
+#If you are running with ipchains (kernel 2.1, 2.2 or later) you may 
+#either symlink the ipfwadm-wrapper to that location or simply modify the value
+
+
+
+#---------------------------------------------------------------------------
+# Modify this only if you know what you are doing !!! :-)
+$mode='both';
+$remote='';
+$port='8889';
+if(!($ARGV[0] =~ /^\-/)){ ($mode)=@ARGV; shift @ARGV;}
+if($mode eq 'in') {$mode='in ';}
+$mode=($mode eq 'in')?'in ':$mode;
+$source_ip='0.0.0.0/0';
+$source_port='';
+$dest_ip='0.0.0.0/0';
+$dest_port='';
+$prot='all';
+$inBytes=0;
+$outBytes=0;
+$upTime=0;
+
+while ($ARGV[0] =~ /^\-/)
+{ 
+
+    if($ARGV[0] eq '-S') 
+    {
+ 	shift @ARGV; 
+	($source_ip)=@ARGV;
+	shift @ARGV;
+	while ($ARGV[0] =~ /[0123456789]+/) 
+	{ 	   
+	    $source_port.="$ARGV[0] ";
+	    shift @ARGV;
+	}
+    }
+    elsif($ARGV[0] eq '-D')
+    {
+	shift @ARGV;
+	($dest_ip)=@ARGV;
+	shift @ARGV;
+	while ($ARGV[0] =~ /[0123456789]+/)
+	       {
+
+		   $dest_port.="$ARGV[0] ";
+		   shift @ARGV;
+	       }
+    }
+	else {
+	    die "Error: Unknown parameter $ARGV[0] \n";
+
+	}
+}
+
+chop $source_port;
+chop $dest_port;
+
+if($source_port.$dest_port ne '') { $prot='tcp';}
+if($mode eq 'both') 
+{
+    $exec_line="$ipfwadm -A out -a -P $prot -S $source_ip $source_port -D $dest_ip $dest_port; $ipfwadm -A in -a -P $prot -S $dest_ip $dest_port -D $source_ip $source_port";
+}
+else {
+    $exec_line="$ipfwadm -A $mode -a -P $prot -S $source_ip $source_port -D $dest_ip $dest_port";
+}
+$new_sp=($source_port eq '')?'*':join(',',split(/ /,$source_port));
+$new_dp=($dest_port eq '')?'*':join(',',split(/ /,$dest_port));
+$ports=($source_port.$dest_port eq '')?"\"n/a\"":"\"".$new_sp." -> ".$new_dp."\"";
+
+if($mode eq 'both') 
+{
+    $stats_line=($source_port.$dest_port eq '')?"$ipfwadm -A -l -x -n| grep $prot |grep $source_ip |grep $dest_ip | grep \"n/a\"":"$ipfwadm -A -l -x -n| grep $prot |grep $source_ip |grep $dest_ip | grep \"$new_sp\" | grep \"$new_dp\"";
+}
+else 
+{
+    $stats_line="$ipfwadm -A -l -x -n |grep \"$mode $prot  $source_ip\" | grep $dest_ip | grep $ports ";
+}
+
+
+open(DATA,$stats_line."|");
+@info=<DATA>;
+close <DATA>;
+$probe=($mode eq 'both')?2:1;
+
+$mode=($mode eq 'in ')?'in':$mode;
+if(@info<$probe) 
+{ 
+    system($exec_line);
+}
+else
+{
+    if($probe%2) 
+    {
+	eval "\$$mode"."Bytes=(split(/ +/,\$info[0]))[2]";
+    }
+    else
+    {
+	if($info[0] =~ /in /) { $inBytes=(split(/ +/,$info[0]))[2]; }
+	elsif($info[0] =~ /out /) { $outBytes=(split(/ +/,$info[0]))[2];}
+	if($info[1] =~ /in /) { $inBytes=(split(/ +/,$info[1]))[2]; }
+	elsif($info[1] =~ /out /) { $outBytes=(split(/ +/,$info[1]))[2];}
+    }
+}
+open(UPTIME,"uptime |cut -b 13-26|");
+$upTime=<UPTIME>;
+close(UPTIME);
+printf "$inBytes\n$outBytes\n$upTime\n$host";
+
+
+
+
