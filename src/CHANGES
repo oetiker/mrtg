@@ -1,3 +1,354 @@
+Changes 2.10.15, 2004-08-08
+---------------------------
+
+From: NormW <normw@bocnet.com.au>
+* patches for netware support
+
+From: Tobi
+* the optional Conversion function wants to have the original
+  data pulled in via snmp to work with, mapping \n and \r to nothing
+  and stripping spaces must happen later.
+* better error message for missing library
+* Updated to snmp_session 1.05
+
+From: Fuminori -Tany- Tanizaki <tany@tany.org>
+* fix for cuin and cout values saved in html comments
+
+From: Tom Pala <gotar@pld-linux.org>
+* fix for polish translation
+
+From: Georgi Georgiev <chutz@gg3.net>
+* nodetach option for running mrtg under daemontools
+
+From: Jozsef Szilagyi <j.szilagyi@atlastelecom.ro>
+* fixed indexmaker. added missing last for  --section=portname code
+
+From: Bartosz Kwitniewski <zerg2000@lurker.ath.cx>
+* fixed scaling bug in rateup (unsigned long) should have been long long
+
+From: Mike Mitchell <mcm@unx.sas.com>
+* fix indexmaker when used with 14all
+
+Changes 2.10.14
+---------------
+From: Michael P. Soulier <michael_soulier@mitel.com>
+* new option subtitle for indexmaker
+
+From: Lech Szychowski <lech.szychowski@pse.pl>
+* added new options for printing date inside the graph:
+  TimeStrPos[] and TimeStrFmt[]
+
+From: Joshua Nichols <nichoj@scorec.rpi.edu>
+* teach Makefile about DESTDIR
+
+From: Tobi
+* do not try to populate the confcache off a dead hosts ... 
+
+
+From: Norm <normw@bocnet.com.au>
+* make mrtg work on netware
+
+From: Fuminori Uematsu <uematsu@kgz.com>
+* updated japanese translation
+
+From: Ladislav Mihok <starman@inmail.sk>
+* fixed encoding for slovak translation
+
+From:  Hal Dell <hdell@epodworks.net>
+* added 3com RMON VLAN detection to cfgmaker
+
+From: Michael_Soulier@Mitel.com
+* added --headeradd option to indexmaker
+
+From: Simon Leinen <simon@switch.ch>
+* updated SMNP_Session to 1.03
+
+From: Quentin Dunchue <que@qnr.biz>
+* added host anchor in indexmaker
+* fixed $default filter in cfgmaker to not include everything
+
+From:  ¶ÀªF¶© <ryan@asplord.com>
+* updates for chinese big5 translation
+
+From: Klaus Schmidinger <Klaus.Schmidinger@cadsoft.de>
+* fix for ytics with small values in rateup
+
+From: "Peter Wirdemo (MO/EMW)" <peter.wirdemo@ericsson.com>
+* enhance cfgmaker for extremenetworks
+
+From: Tobi and Bernd Drefs <drefs@gmx.de>
+* fix hairy issue with description matching in indexmaker (add quoting)
+
+From: Kenji <kenji@club.h14m.org>
+* make thresholds work when maxbytes1 and maxbytes2 are in use ... 
+
+Changes 2.10.13
+---------------
+From: Pedro Marcolino <pedro@jazznet.pt>
+* fixed undef data problem with forks
+* add --icondir option to indexmaker
+
+From: Tobi
+* faild rrdtune should not kill mrtg complaining is enough.
+* fixed manpages first lines to include mrtg as well
+
+Changes 2.10.12
+---------------
+From: Nico Kadel-Garcia <nkadel@merl.com>
+* Makefile should not complain when running clean on a clean setup
+* It's community not comunity.
+
+From: Luc Pauwels <Luc.Pauwels@xalasys.com> and Simon Leinen
+* 16-Bit SNMP Session ID support for cfgmaker and SNMP_Session
+
+From: Tobi
+* renamed all doc pages to mrtg-* except the manpages for cfgmaker and indexmaker
+* added MaxAge option setting which will prevent mrtg from touching old logfiles,
+  potentially caused by setting the clock to a wrong date.
+* fixed a number of && vs and and || vs or problems in the mrtg script and library
+
+Changes 2.10.11
+---------------
+From: Tobi
+* put out color allocation back into rateup.c what was I thinking
+
+Changes 2.10.10
+---------------
+From: Tobi
+* config.h.in was out of sync
+* removed eout checking after select as the output seems unreliable
+
+Changes 2.10.9
+--------------
+From: Tobi
+* with forks, do not try to look at filehandles which have been closed
+
+From: Albert Chin-A-Young <china@thewrittenword.com>
+* improved long long check for configure.in
+
+Changes 2.10.8
+--------------
+From: Marc Baudoin <babafou@pasteur.fr>
+* cfgmaker has to know about Foundry virtual Ethernet interfaces
+
+From: Tobi
+* %lf was bad ... go back to %f this should portable
+
+Changes 2.10.7
+--------------
+From: Don Russell <drussel2@san.rr.com>
+* fixed READPID in MRTG_lib.pm
+* added commandline as meta tag in indexmaker output
+
+From: Tobi
+* for running on old perls ... we need %Lf not %lf for sprintf.
+
+Changes 2.10.6
+--------------
+From: Dave Plonka <plonka@doit.wisc.edu>
+* modified fork code to use select to determine if data is ready to be read
+
+From: Philipp Capoy <pcapoy@diversenet.com>
+* teach cfgmaker about  Nokia IPSO
+
+From: Richard Bullington-McGuire <rbulling@obscure.org>
+* pseudo entry for his contributions which somehow got lost from
+  the changes file. Early in 2.0 history (1996) Richard
+  contributed.
+  * Perl code strictification (it now runs with "use strict;")
+  * Makefile for rateup
+  * rateup debugging
+  * Perl code cleanup
+  Sorry for that.
+  
+From: Klaus Schmidinger <Klaus.Schmidinger@cadsoft.de>
+* fix rounding error with YTicsFactor in ratuep (nmax_q is double)
+
+From: Mike Mitchell <Mike.Mitchell@sas.com>
+* fix for generation of non negative request ids
+  in SNMP_Session.pm
+
+From: Alex Samorukov <samm@os2.ru>
+* updated OS/2 portability ...RunAsDaemon works now
+
+From: Stephen Heise <stephen@streetprices.com>
+* fix for lockfile management when two instances run in parallel
+
+From: Rafael Martinez Torres <rafael.martinez@novagnet.com>
+* updated docs and snmp_session to be comaptible with INET6-2.00
+
+From: Tobi
+* fix command line option description in reference and mrtg
+* Updated to SNMP Session 0.99
+* fixed handling of dead host for cases where ip matching is involved
+* Fixed table structure generated by indexmaker
+* Change Doctype to HTML 4.01 Transitional, so that font face becomes legal
+* fix pngtitle alignement for growright option.
+* Restart after HUP, but terminate for INT and TERM
+* fix handling of ' ' in community names
+* make rounding work even without BigFloat
+* allow BigFloat only in perl 5.8 and later
+* added new oid hacks ... PseudoOne and PseudoZero ... they return the respective number.
+* make threshold handling deal gracefuly with missing thershold descript
+* fixed portability to hpux (setsid)
+* make sure snmpoptions are passed everywhere
+* run rateup with unknown values ... as we used to in the good old days.
+  unknown as zero would not make much sense otherwhise
+
+Changes 2.10.5
+--------------
+From: Dmitry Sivachenko <mitya@cavia.pp.ru>
+* Improved configure to work on *bsd as well
+
+Changes 2.10.4
+--------------
+From: Tobi
+* More BigFloat portability fixes
+
+Changes 2.10.3
+--------------
+From: Tobi
+* Can only use BigFloat in perl > 5.6.1 
+
+Changes 2.10.2
+--------------
+From: Tobi
+* Updated to SNMP_Session 0.98
+
+Changes 2.10.1
+--------------
+From: Tobi
+* make snmp_session work with old perls
+
+Changes 2.10.0
+--------------
+From: Simon Leinen <simon@limmat.switch.ch>
+* New Version of SNMP Library (0.97)
+
+From: Martin Opitz <xomartin@ti.com>
+* allow sci notation numbers
+
+Changes 2.10.0pre9
+------------------
+From: Jon Barber <jon@scorpiocomputing.com>
+* new configurables: printrouter and pngdate ... check the docs
+From: Jessica Blackburn <jessica.blackburn@acterna.com>
+* indexmaker: improve handling of multiple cfg file situation with rrdtool logging
+From: Tobi
+* allow user and group to be set even when not running as a daemon.
+From: "Spain, Jeffry A." <spainj@countryday.net>
+* use Math::BigFloat objects with 40 digits of precision
+  so that we can handle floats for rrdtool if needs be
+* detect if a target is a simple target for simplified handling of uptime and
+  router name
+* propperly handle \& in targets
+
+Changes 2.10.0pre8
+------------------
+From: Tobi
+* handle dead hosts propperly by returning 'empty data' and not just the
+  same as in the previous round.
+  fixes the stray update error with rrdtool.
+
+From: Eric Einhorn <eric@monmouth.com>
+* there are snmp devices which emit bizzar output when their tables get
+  walked in the wrong order. Use a fix walking order now. No more
+  hanging cfgmaker instances.
+
+
+Changes 2.10.0pre7
+------------------
+From: Tobi
+* Oops configure was broken ... 
+
+Changes 2.10.0pre6
+------------------
+From: Tobi
+* attempt to restart when hitting a die in daemon mode.
+
+From: "Spain, Jeffry A." <spainj@countryday.net>
+* revamped target parser to weed out duplicat polls
+* added new 'per target' conversion filter capability
+
+Changes 2.10.0pre5
+------------------
+From: Tobi
+* fixed goof in rateup where the wrong long long printf string crept back in
+
+Changes 2.10.0pre4
+------------------
+From: Alex Samorukov <samm@os2.ru>
+* OS/2 port
+
+From: Tobi
+* Detect 3com VLAN ids
+* mrtg should not gethostbyname on numberic ipv4 addresses
+* allow empty variables to be set in SetEnv
+* make diff routine more conservative in rateup ... 
+* snmpv2 did not poll HC counters anymore ... fixed
+
+From: Lorenzo Colitti <lorenzo@colitti.com>,
+* updated docs on ipv6
+* portability fixes for perl 5.00502
+
+From: Brian Lube <blube@mail.fdn.com>
+* use $if_snmp_name if $if_title_desc is empty in cfgmaker
+
+From: Dmitry Sivachenko <mitya@cavia.pp.ru>
+* fix to rateup where  sizeof(time_t) != sizeof(long)
+
+Changes 2.10.0pre3
+------------------
+From: Andrew A. Vasilyev <andy@demos.su>
+* fix for freebsd ... its %qd and not %lld there
+
+From: Simon Leinen <simon@limmat.switch.ch>
+      and Lorenzo Colitti <lorenzo@colitti.com>
+* updates to SNMP_Session
+
+From:  Gleydson Mazioli da Silva <gleydson.mazioli@ima.sp.gov.br>
+* fixes for brazilian translation
+
+Changes 2.10.0pre2
+------------------
+
+From: bill shamam <bill@continuity.cx>
+* contributed a favicon
+
+From: Lorenzo Colitti <lorenzo@colitti.com>,
+      Valerio Bontempi <v.bontempi@inwind.it>,
+      Roma Tre Computer Networks research group <compunet@dia.uniroma3.it>
+* fix for IPv6 support (work with out option settings)
+* fix IPv6 module detection
+
+From: Daniel J McDonald <dan.mcdonald@austinenergy.com>
+* allow $if_vlan_id in cfgmaker filters 
+
+From: imacat <imacat@mail.imacat.idv.tw>
+* make --bindir, --libdir, --mandir, etc work
+
+From: Paul Slootman <paul@debian.org>
+* removes a couple of silly typo's and the capitalization for weekday and month names
+* fix indexmaker to propperly parse description tags which do not have a white space at the end of the line.
+
+Changes 2.10.0pre1
+------------------
+From: Lorenzo Colitti <lorenzo@colitti.com>,
+      Valerio Bontempi <v.bontempi@inwind.it>,
+      Roma Tre Computer Networks research group <compunet@dia.uniroma3.it>
+* IPv6 for mrtg
+
+From: Ryan Finnie <ryan@finnie.org>
+* get router name from a dirfferent oid with Routerneme configurable
+
+From: Tobi
+* cfgmaker now complains about hosts it can not get info from, but does not die.
+* force all counters to be BigInt
+* make configure escape to scanf if long long is missing (inspired by marc.elsen@imec.be)
+
+From: Clas Mayer <clas@mayer.se>
+* improved swedish translation
+
 Changes 2.9.29
 --------------
 From: Tobi
@@ -2123,5 +2474,4 @@ are stupid anyway.
 
 2.0.1
 -----
-
 Fixed ascendget script 

@@ -1,6 +1,7 @@
 ###### PATCHTAG00 ####################################################
 ###      Brazil/Brazilian Portuguese
 ###      => Luiz Felipe R E <luizfelipe@encarnacao.com>
+###      => Gleydson Mazoli da Silva <gleydson@debian.org> (Atualização)
 ###### PATCHTAG10 ####################################################
   &brazilian 
 ###### PATCHTAG20 ####################################################
@@ -13,7 +14,11 @@
     Localiza&ccedil;&atilde;o efetuada por
     <NOBR><A HREF=\"http://www.encarnacao.com\">Luiz Felipe R E</A>
   <A HREF=\"mailto:luizfelipe\@encarnacao.com\">
-  &lt;luizfelipe\@encarnacao.com&gt;</A></NOBR>",
+  &lt;luizfelipe\@encarnacao.com&gt;</A>
+   atualização por
+    <NOBR>Gleydson Mazioli da Silva
+  <A HREF=\"mailto:gleydson\@debian.org\">
+  &lt;gleydson\@debian.org&gt;</A></NOBR>",
 ###### PATCHTAG40 ####################################################
 $credits::LOCALE{'brazil'}=$credits::LOCALE{'brazilian'};
 ###### PATCHTAG50 ####################################################
@@ -50,17 +55,17 @@ return "" unless defined $string;
      '<B>`Yearly\' Graph \(1 Day'             => '<B>Gr&aacute;fico `Anual\' (1 dia', 
      'Incoming Traffic in (\S+) per Second'   => 'Tr&aacute;fego de Entrada em $1 por segundo',
      'Outgoing Traffic in (\S+) per Second'   => 'Tr&aacute;fego de Sa&iacute;da em $1 por segundo',
-     'at which time (.*) had been up for(.*)' => 'nesta hora $1 estava online por $2',
+     'at which time (.*) had been up for(.*)' => 'nesta hora $1 estava ativo por $2',
      # '([kMG]?)([bB])/s'                     => '\$1\$2/s',
      # '([kMG]?)([bB])/min'                   => '\$1\$2/min',
      # '([kMG]?)([bB])/h'                     => '$1$2/t',
      # 'Bits'                                 => 'Bits',
      # 'Bytes'                                => 'Bytes'
-     '&nbsp;In:</FONT>'                       => '&nbsp;Ent:</FONT>',
+     '&nbsp;In:</FONT>'                       => '&nbsp;Entr.:</FONT>',
      '&nbsp;Out:</FONT>'                      => '&nbsp;Sa&iacute;:</FONT>',
-     '&nbsp;Percentage</FONT>'                => '&nbsp;Per:</FONT>',
-     'Ported to OpenVMS Alpha by'             => 'Adaptado para OpenVMS Alpha por', 
-     'Ported to WindowsNT by'                 => 'Adaptado para WindowsNT por',
+     '&nbsp;Percentage</FONT>'                => '&nbsp;Porc.:</FONT>',
+     'Ported to OpenVMS Alpha by'             => 'Adaptado para o Alpha OpenVMS por', 
+     'Ported to WindowsNT by'                 => 'Adaptado para o WindowsNT por',
      'and'                                    => 'e',
      '^GREEN'                                  => 'VERDE',
      'BLUE'                                   => 'AZUL',

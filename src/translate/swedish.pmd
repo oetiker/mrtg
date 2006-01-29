@@ -51,8 +51,7 @@ return "" unless defined $string;
      '<B>`Yearly\' Graph \(1 Day'             => '<B>&Aring;rlig graf (medelvärde per dygn', 
      'Incoming Traffic in (\S+) per Second'   => 'Inkommande trafik i $1 per sekund',
      'Outgoing Traffic in (\S+) per Second'   => 'Utgående trafik i $1 per sekund',
-     'at which time (.*) had been up for(.*) days,(.*)' => '$1 har varit ig&aring;ng i$2 dagar och$3',
-     'at which time (.*) had been up for(.*) day,(.*)' => '$1 har varit ig&aring;ng i$2 dag och$3',
+     'at which time (.*) had been up for(.*)' 		=> 'då $1 varit ig&aring;ng i$2',
      # '([kMG]?)([bB])/s'                 => '\$1\$2/s',
      # '([kMG]?)([bB])/min'              => '\$1\$2/min',
      '([kMG]?)([bB])/h'                       => '$1$2/t',
@@ -95,7 +94,7 @@ foreach $i (keys %translations)
 
 %month = 
     (
-      'January'   => 'januari',    'February'  => 'februari' ,    'March'     => 'mars',
+      'January'   => 'januari',   'February'  => 'februari',    'March'     => 'mars',
       'Jan'       => 'jan',       'Feb'       => 'feb',         'Mar'       => 'mar',
       'April'     => 'april',     'May'       => 'maj',         'June'      => 'juni', 
       'Apr'       => 'apr',       'May'       => 'maj',         'Jun'       => 'jun',

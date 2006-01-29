@@ -18,18 +18,36 @@ Command-line options:
 Most items are set through the configuration file; command-line options
 are specified here:
 
-=item B<--user> I<username>
+=over
 
-Run as the given user (Unix Only) 
+=item B<--user> I<username>  and B<--group> I<groupname>
 
-=item B<--group> I<groupname>
+Run as the given user and/or group. (Unix Only)
 
-Run as the given group (Unix Only)
+=item B<--lock-file> I<filename>
+
+Use an alternate lock-file (the default is to use the configuration-file
+appended with C<_l>).
+
+=item B<--confcache-file> I<filename>
+
+Use an alternate confcache-file (the default is to use the configuration-file appended with C<.ok>)
+
+=item B<--logging> I<filename>|B<eventlog>
+
+If this is set to writable filename, all output from mrtg (warnings, debug messages, errors)
+will go to I<filename>. If you are running on Win32 you can specify B<eventlog> instead of a filename
+which will send all error to the windows event log.
+
+B<NOTE:>Note, there is no Message DLL for mrtg. This has the side effect
+that the windows event logger will display a nice message with every entry
+in the event log, complaing about the fact that mrtg has no message dll. If
+any of the Windows folks want to contribute one, they are welcome.
 
 =item B<--daemon>
 
 Put MRTG into the background, running as a daemon. This works the same way as
-the config file option, but the switch is required for proper FHS operation
+the config file option, but the switch is required for proper FHS operation  
 (because /var/run is writable only by root)
 
 =item B<--fhs>
@@ -37,35 +55,32 @@ the config file option, but the switch is required for proper FHS operation
 Configure all mrtg paths to conform to the FHS specification;
 http://www.pathname.com/fhs/
 
-=item B<--lock-file> I<filename>
-
-Use an alternate lock-file (the default is to use the 
-configuration-file appended with _l) 
-
-=item B<--confcache-file> I<filename>
-
-Use an alternate confcache-file (the default is to use the 
-configuration-file appended with .ok) 
-
-=item B<--pid-file> I<filename>
-
-Set the location/name of the pid file
-
-=item B<--logging> I<filename>|eventlog
-
-If this is set to writable filename, all output from mrtg (warnings, 
-debug messages, errors) will go to filename. If you are running on Win32
-you can specify eventlog instead of a filename which will send all 
-errors to the windows event log. 
-
 =item B<--check>
 
-Just check the configuration file, then exit
+Only check the cfg file for errors. Do not do anything.
 
-=item B<--debug> I<string>
+=item B<--pid-file=s>
 
-Set the debug logging level
+Define the name and path of the pid file for mrtg running as a daemon
 
+=item B<--debug=s>
+
+Enable debug options. The argument of the debug option is a comma separated list of debug values:
+
+ cfg  - watch the config file reading
+ dir  - directory mangeling
+ base - basic program flow 
+ tarp - target parser
+ snpo - snmp polling 
+ fork - forking view 
+ time - some timing info
+ log  - logging of data via rateup or rrdtool
+
+Example:
+
+ --debug="cfg,snpo"
+
+=back
 
 =head1 USER PAGES
 

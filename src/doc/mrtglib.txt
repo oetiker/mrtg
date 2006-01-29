@@ -60,8 +60,8 @@ DDEESSCCRRIIPPTTIIOONN
 
             $targetcfg{configoption}{targetname} = 'value'
 
-           See reference for more information about the MRTG con-
-           figuration syntax.
+           See mrtg-reference for more information about the MRTG
+           configuration syntax.
 
            "readcfg" can take two additional arguments to extend
            the config file syntax. This allows programs to put
@@ -220,4 +220,4 @@ AAUUTTHHOORRSS
 
 
 
-2.9.29                      2003-04-12                 MRTGLIB(1)
+2.10.15                     2004-08-08                 MRTGLIB(1)

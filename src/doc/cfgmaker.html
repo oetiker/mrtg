@@ -39,15 +39,15 @@
 			<li><a href="#host_and_system_variables">Host and System Variables</a></li>
 			<li><a href="#interface_target_related_variables">Interface Target Related Variables</a></li>
 			<li><a href="#interface_network_configuration_variables">Interface Network Configuration Variables</a></li>
-			<li><a href="#interface_name,_description_and_alias_variables">Interface Name, Description and Alias Variables</a></li>
+			<li><a href="#interface_name__description_and_alias_variables">Interface Name, Description and Alias Variables</a></li>
 		</ul>
 
 		<li><a href="#help_functions_for_templates">Help Functions for Templates</a></li>
 		<li><a href="#example_template_files">Example Template Files</a></li>
 		<ul>
 
-			<li><a href="#template_example_1:_eliminating_rejected_targets_from_appearing">Template Example 1: Eliminating Rejected Targets From Appearing</a></li>
-			<li><a href="#template_example_2:_simplier_version_of_example_1">Template Example 2: Simplier Version of Example 1</a></li>
+			<li><a href="#template_example_1__eliminating_rejected_targets_from_appearing">Template Example 1: Eliminating Rejected Targets From Appearing</a></li>
+			<li><a href="#template_example_2__simplier_version_of_example_1">Template Example 2: Simplier Version of Example 1</a></li>
 		</ul>
 
 	</ul>
@@ -64,7 +64,7 @@
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
-<p>cfgmaker - Creates mrtg.cfg files (for mrtg-2.9.29)</p>
+<p>cfgmaker - Creates mrtg.cfg files (for mrtg-2.10.15)</p>
 <p>
 </p>
 <hr />
@@ -131,6 +131,12 @@
  --community=cmty  Set the default community string to &quot;cmty&quot; instead of
                    &quot;public&quot;.</pre>
 <pre>
+ --enable-ipv6     Enable IPv6 support, if the required libraries are
+                   present. Numeric IPv6 addresses must be enclosed
+                   in square brackets, e.g. public@[2001:760:4::1]:161</pre>
+<pre>
+ --use-16bit       Use 16bit SNMP request IDs to query all routers.</pre>
+<pre>
  --snmp-options=:[&lt;port&gt;][:[&lt;tmout&gt;][:[&lt;retr&gt;][:[&lt;backoff&gt;][:&lt;ver&gt;]]]]</pre>
 <pre>
                    Specify default SNMP options to be appended to all
@@ -165,7 +171,7 @@ pulled from a router or another SNMP manageable device.</p>
 <p><em>Community</em> is the community name of the device you want to create a
 configuration for. If not specified, it defaults to '<strong>public</strong>'; you might
 want to try this first if you do not know the community name of a
-device. If you are using the wrong comunity name you will get no
+device. If you are using the wrong community name you will get no
 response from the device.</p>
 <p><em>Router</em> is the DNS name or the IP number of an SNMP-managable device.           
 Following the name you can specify 6 further options separated by                 
@@ -179,6 +185,10 @@ order in which the routers are specified on the command line do matter as
 the same order is used when the configuration file is generated.  The first
 specified router has it's configuration lines genrated first, followed by
 the lines belonging to the next router and so on.</p>
+<p>Note that the first line of the generated cfg file will contain all the
+commandline options you used for generating it. This is to allow for the
+easy 'regeneration' in case you want to add newhosts or make some other
+global change.</p>
 <p>
 </p>
 <h2><a name="configuration">Configuration</a></h2>
@@ -193,26 +203,26 @@ where or how many times they appear on the command line.</p>
 <p>See the <strong>Examples</strong> below on how to set an option differently for
 multiple routers.</p>
 <dl>
-<dt><strong><a name="item_%2d%2dhelp"><strong>--help</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dhelp"><strong>--help</strong></a></strong><br />
 </dt>
 <dd>
 Print a brief help message and exit.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dman"><strong>--man</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dman"><strong>--man</strong></a></strong><br />
 </dt>
 <dd>
 Prints the manual page and exits.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dversion"><strong>--version</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dversion"><strong>--version</strong></a></strong><br />
 </dt>
 <dd>
 Print the version of cfgmaker.  This should match the version of MRTG
 for which config files are being created.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2difref_nr%7cip%7ceth%7cdescr%7cname"><strong>--ifref</strong> <strong>nr</strong>|<strong>ip</strong>|<strong>eth</strong>|<strong>descr</strong>|<strong>name</strong></a></strong><br />
+<dt><strong><a name="item__2d_2difref_nr_7cip_7ceth_7cdescr_7cname"><strong>--ifref</strong> <strong>nr</strong>|<strong>ip</strong>|<strong>eth</strong>|<strong>descr</strong>|<strong>name</strong></a></strong><br />
 </dt>
 <dd>
 Select the interface identification method.  Default is <strong>nr</strong> which
@@ -238,7 +248,7 @@ the Interface description. Or use <strong>name</strong> to use the Interface nam
 the device you are querying, <strong>cfgmaker</strong> will tell you about it.</p>
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2difdesc_nr%7cip%7ceth%7cdescr%7cname%7ctype%7"><strong>--ifdesc</strong> <strong>nr</strong>|<strong>ip</strong>|<strong>eth</strong>|<strong>descr</strong>|<strong>name</strong>|<strong>type</strong>|<strong>alias</strong></a></strong><br />
+<dt><strong><a name="item__2d_2difdesc_nr_7cip_7ceth_7cdescr_7cname_7ctype_7"><strong>--ifdesc</strong> <strong>nr</strong>|<strong>ip</strong>|<strong>eth</strong>|<strong>descr</strong>|<strong>name</strong>|<strong>type</strong>|<strong>alias</strong></a></strong><br />
 </dt>
 <dd>
 Select what to use as the description of the interface.  The description
@@ -263,7 +273,7 @@ what is used as the interface's <code>description</code> in the router's configu
 (i.e <code>&quot;ethernetCSMA&quot;</code>, <code>&quot;propPointtoPoint&quot;</code> etc) you can use <strong>type</strong>.</p>
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dif%2dfilter_%27filter%2dexpression%27"><strong>--if-filter</strong> '<strong>filter-expression</strong>'</a></strong><br />
+<dt><strong><a name="item__2d_2dif_2dfilter__27filter_2dexpression_27"><strong>--if-filter</strong> '<strong>filter-expression</strong>'</a></strong><br />
 </dt>
 <dd>
 First of all, this is under some developement and is experimental.
@@ -280,7 +290,7 @@ exclude the interface.</p>
 <a href="#details_on_filters">DETAILS ON FILTERS</a> below.</p>
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dif%2dtemplate_template%2dfile"><strong>--if-template</strong> <strong>template-file</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dif_2dtemplate_template_2dfile"><strong>--if-template</strong> <strong>template-file</strong></a></strong><br />
 </dt>
 <dd>
 First of all, this is under some development and is experimental.
@@ -296,7 +306,7 @@ variables for input and output.</p>
 <a href="#details_on_templates">DETAILS ON TEMPLATES</a> below.</p>
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dhost%2dtemplate_template%2dfile"><strong>--host-template</strong> <strong>template-file</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dhost_2dtemplate_template_2dfile"><strong>--host-template</strong> <strong>template-file</strong></a></strong><br />
 </dt>
 <dd>
 First of all, this is under some development and is experimental.
@@ -313,7 +323,7 @@ variables for input and output.</p>
 <a href="#details_on_templates">DETAILS ON TEMPLATES</a> below.</p>
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dcommunity_community%2dstring"><strong>--community</strong> <strong>community-string</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dcommunity_community_2dstring"><strong>--community</strong> <strong>community-string</strong></a></strong><br />
 </dt>
 <dd>
 Use this to set the community for the routers following on the command
@@ -321,7 +331,45 @@ line to <strong>community-string</strong>.  Individual routers might overrride t
 community string by using the syntax <strong>community</strong><strong>@</strong><strong>router</strong>.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dsnmp%2doptions_%3a%5bport%5d%5b%3a%5btimeout"><strong>--snmp-options</strong>  :[<strong>port</strong>][:[<strong>timeout</strong>][:[<strong>retries</strong>][:[<strong>backoff</strong>][:<strong>version</strong>]]]]</a></strong><br />
+<dt><strong><a name="item__2d_2denable_2dipv6"><strong>--enable-ipv6</strong></a></strong><br />
+</dt>
+<dd>
+This option enables IPv6 support. It requires the appropriate perl
+modules; if they are not found then IPv6 is disabled (see the ipv6
+documentation).
+</dd>
+<dd>
+<p>cfgmaker will use IPv6 or IPv4 depending on the target. If the target
+is a numeric address, the protocol depends on the type of address. If the
+target is a hostname, cfgmaker will try to resolve the name first to an
+IPv6 address then to an IPv4 address.</p>
+</dd>
+<dd>
+<p>IPv6 numeric addresses must be specified between square braces.</p>
+</dd>
+<dd>
+<p>For example:</p>
+</dd>
+<dd>
+<pre>
+ cfgmaker --enable-ipv6 [2001:760:4::1]:165:::2</pre>
+</dd>
+<dd>
+<p>If the target has both an IPv6 address and an IPv4 address with the same
+hostname, cfgmaker first queries the target using IPv6 and falls back to
+IPv4 if it fails. This is useful for targets which don't support SNMP
+over IPv6.</p>
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2duse_2d16bit"><strong>--use-16bit</strong></a></strong><br />
+</dt>
+<dd>
+This option forces the use of 16bit SNMP request IDs.  Some broken SNMP
+agents do not accept 32bit request IDs.  Try to avoid this option as much
+as possible, complain to your agent vendor instead.
+</dd>
+<p></p>
+<dt><strong><a name="item__2d_2dsnmp_2doptions__3a_5bport_5d_5b_3a_5btimeout"><strong>--snmp-options</strong>  :[<strong>port</strong>][:[<strong>timeout</strong>][:[<strong>retries</strong>][:[<strong>backoff</strong>][:<strong>version</strong>]]]]</a></strong><br />
 </dt>
 <dd>
 Use this to set the default SNMP options for all routers following on the
@@ -333,7 +381,7 @@ specified by <strong>--snmp-options</strong> by using the syntax
 <p><strong>router</strong>[:[<strong>port</strong>][:[<strong>timeout</strong>][:[<strong>retries</strong>][:[<strong>backoff</strong>][:<strong>version</strong>]]]]]</p>
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dglobal_%22bla%3a_abc%22"><strong>--global</strong> <strong>``</strong><em>bla: abc</em><strong>''</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dglobal__22bla_3a_abc_22"><strong>--global</strong> <strong>``</strong><em>bla: abc</em><strong>''</strong></a></strong><br />
 </dt>
 <dd>
 Use this to add global options to the generated config file. 
@@ -358,13 +406,13 @@ create a line in the configuration file which will appear after all the
 routers.</p>
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dnoreversedns"><strong>--noreversedns</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dnoreversedns"><strong>--noreversedns</strong></a></strong><br />
 </dt>
 <dd>
 Do not try to reverse lookup IP numbers ... a must for DNS free environments.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dno%2ddown"><strong>--no-down</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dno_2ddown"><strong>--no-down</strong></a></strong><br />
 </dt>
 <dd>
 Normally cfgmaker will not include interfaces which are marked
@@ -372,13 +420,13 @@ anything but administratively and operationally UP. With this
 switch you get them all.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dshow%2dop%2ddown"><strong>--show-op-down</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dshow_2dop_2ddown"><strong>--show-op-down</strong></a></strong><br />
 </dt>
 <dd>
 Include interfaces which are operatively down.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dsubdirs_format"><strong>--subdirs</strong> <em>format</em></a></strong><br />
+<dt><strong><a name="item__2d_2dsubdirs_format"><strong>--subdirs</strong> <em>format</em></a></strong><br />
 </dt>
 <dd>
 Give each router its own subdirectory for the HTML and graphics (or
@@ -402,7 +450,7 @@ its own name (the same name that appears on the right side of the
  Directory[10.10.0.18_1]: 10.10.0.18__fp2200-bothrip-1.3</pre>
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2doutput_file"><strong>--output</strong> <em>file</em></a></strong><br />
+<dt><strong><a name="item__2d_2doutput_file"><strong>--output</strong> <em>file</em></a></strong><br />
 </dt>
 <dd>
 Write the output from <strong>cfgmaker</strong> into the file <em>file</em>. The default
@@ -411,7 +459,7 @@ command line. If used multiple times, the file specified by the last
 <strong>--output</strong> will be used.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dnointerfaces"><strong>--nointerfaces</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dnointerfaces"><strong>--nointerfaces</strong></a></strong><br />
 </dt>
 <dd>
 Don't generate configuration lines for interfaces.
@@ -423,7 +471,7 @@ information which speeds up the execution of cfgmaker and it will
 neither run any interface templates.</p>
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dinterfaces"><strong>--interfaces</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dinterfaces"><strong>--interfaces</strong></a></strong><br />
 </dt>
 <dd>
 This makes cfgmaker generate configuration lines for interfaces (the
@@ -453,21 +501,21 @@ in Perl are worth mentioning:</p>
 <p>Expressions might be grouped by using parentheses ``()''.  Expressions might
 be combined using boolean operators such as the following:</p>
 <dl>
-<dt><strong><a name="item_%22and%22_%28equivalent_with_%22%26%26%22%29">``<strong>and</strong>'' (equivalent with ``<strong>&amp;&amp;</strong>'')</a></strong><br />
+<dt><strong><a name="item__22and_22__28equivalent_with__22_26_26_22_29">``<strong>and</strong>'' (equivalent with ``<strong>&amp;&amp;</strong>'')</a></strong><br />
 </dt>
 <dd>
 Boolean ``and'' of the two expressions, is only true if both expressions are
 true.  Example: <em>expression1</em> <strong>and</strong> <em>expression2</em>
 </dd>
 <p></p>
-<dt><strong><a name="item_%22or%22_%28equivalent_with_%22%7c%7c%22%29">``<strong>or</strong>'' (equivalent with ``<strong>||</strong>'')</a></strong><br />
+<dt><strong><a name="item__22or_22__28equivalent_with__22_7c_7c_22_29">``<strong>or</strong>'' (equivalent with ``<strong>||</strong>'')</a></strong><br />
 </dt>
 <dd>
 Boolean ``or'' of the two expressions, is true if either or both expressions
 are true.  Example: <em>expression1</em> <strong>or</strong> <em>expression2</em>
 </dd>
 <p></p>
-<dt><strong><a name="item_%22not%22_%28equivalent_with_%22%21%22%29">``<strong>not</strong>'' (equivalent with ``<strong>!</strong>'')</a></strong><br />
+<dt><strong><a name="item__22not_22__28equivalent_with__22_21_22_29">``<strong>not</strong>'' (equivalent with ``<strong>!</strong>'')</a></strong><br />
 </dt>
 <dd>
 Boolean negation of a single expression.  Example:  <strong>not</strong> <em>expression</em> .
@@ -493,7 +541,7 @@ evaluation:</p>
 <pre>
  '--if-filter=($default_iftype &amp;&amp; $if_admin)'</pre>
 <dl>
-<dt><strong><a name="item_%24if_type"><strong>$if_type</strong></a></strong><br />
+<dt><strong><a name="item__24if_type"><strong>$if_type</strong></a></strong><br />
 </dt>
 <dd>
 This is an integer specifying the interface type as
@@ -532,19 +580,18 @@ type. (e.g ``propPointToPointSerial (22)'').
   69 Full Duplex Fast Ethernet (100BaseFX)
   94 Asymetric Digital Subscriber Loop (ADSL)
  117 Gigabit Ethernet
- 134 ATM Sub Interface</pre>
+ 134 ATM Sub Interface
+ 
+=item B&lt;$default&gt;</pre>
 </dd>
-<p></p>
-<dt><strong><a name="item_%24default"><strong>$default</strong></a></strong><br />
-</dt>
 <dd>
-True if and only if cfgmaker normally should
+<p>True if and only if cfgmaker normally should
 accepted the interface based on the interfaces administrative and
 operational state (taking the flags <strong>--no-down</strong> and <strong>--show-op-down</strong> into
-account) and it's type (and a few other things).
+account) and it's type (and a few other things).</p>
 </dd>
 <p></p>
-<dt><strong><a name="item_%24default_ifstate"><strong>$default_ifstate</strong></a></strong><br />
+<dt><strong><a name="item__24default_ifstate"><strong>$default_ifstate</strong></a></strong><br />
 </dt>
 <dd>
 True if and only if cfgmaker would have accepted the
@@ -552,21 +599,21 @@ interface based on it's operational and administrative states (also taking
 into account the presence of the flags <strong>--no-down</strong> and <strong>--show-op-down</strong>).
 </dd>
 <p></p>
-<dt><strong><a name="item_%24default_iftype"><strong>$default_iftype</strong></a></strong><br />
+<dt><strong><a name="item__24default_iftype"><strong>$default_iftype</strong></a></strong><br />
 </dt>
 <dd>
 True if and only if cfgmaker would have accepted the
 interface based on it's type (and a few type specific details in addition).
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_admin"><strong>$if_admin</strong></a></strong><br />
+<dt><strong><a name="item__24if_admin"><strong>$if_admin</strong></a></strong><br />
 </dt>
 <dd>
 True if and only if the interface is in an adminstrative up
 state.
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_oper"><strong>$if_oper</strong></a></strong><br />
+<dt><strong><a name="item__24if_oper"><strong>$if_oper</strong></a></strong><br />
 </dt>
 <dd>
 True if and only if the interface is in an operational up
@@ -578,19 +625,19 @@ belong to a certain cathegory or not.  Below is all those variables listed
 together with which if_type numbers each variable will be true for.  Note
 that some variables refer to other variables as well.</p>
 <dl>
-<dt><strong><a name="item_%24if_is_ethernet"><strong>$if_is_ethernet</strong></a></strong><br />
+<dt><strong><a name="item__24if_is_ethernet"><strong>$if_is_ethernet</strong></a></strong><br />
 </dt>
 <dd>
 True for ethernet interfaces (nr 6, 7, 26, 62, 69 and 117).
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_is_isdn"><strong>$if_is_isdn</strong></a></strong><br />
+<dt><strong><a name="item__24if_is_isdn"><strong>$if_is_isdn</strong></a></strong><br />
 </dt>
 <dd>
 True for various ISDN interface types (nr 20, 21, 63, 75, 76 and 77)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_is_dialup"><strong>$if_is_dialup</strong></a></strong><br />
+<dt><strong><a name="item__24if_is_dialup"><strong>$if_is_dialup</strong></a></strong><br />
 </dt>
 <dd>
 True for dial-up interfaces such as PPP as well
@@ -598,49 +645,57 @@ as ISDN.  (nr 23, 81, 82 and 108 in addition to the numbers of
 <strong>$if_is_isdn</strong>).
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_is_atm"><strong>$if_is_atm</strong></a></strong><br />
+<dt><strong><a name="item__24if_is_atm"><strong>$if_is_atm</strong></a></strong><br />
 </dt>
 <dd>
 True for miscellaneous ATM related interface types (nr 37, 49, 107, 105,
 106, 114 and 134).
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_is_wan"><strong>$if_is_wan</strong></a></strong><br />
+<dt><strong><a name="item__24if_is_wan"><strong>$if_is_wan</strong></a></strong><br />
 </dt>
 <dd>
 True for WAN interfaces point to point, Frame Relay and High Speed Serial ( 22,32,44,46)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_is_lan"><strong>$if_is_lan</strong></a></strong><br />
+<dt><strong><a name="item__24if_is_lan"><strong>$if_is_lan</strong></a></strong><br />
 </dt>
 <dd>
 True for LAN interfaces (8, 9, 11, 15, 26, 55, 59, 60 and 115 in addition
 to the numbers of <strong>$if_is_ethernet</strong>).
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_is_dsl"><strong>$if_is_dsl</strong></a></strong><br />
+<dt><strong><a name="item__24if_is_dsl"><strong>$if_is_dsl</strong></a></strong><br />
 </dt>
 <dd>
 True for ADSL, RDSL, HDSL and SDSL (nr 94, 95, 96, 97)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_is_loopback"><strong>$if_is_loopback</strong></a></strong><br />
+<dt><strong><a name="item__24if_is_loopback"><strong>$if_is_loopback</strong></a></strong><br />
 </dt>
 <dd>
 True for software loopback interfaces (nr 24)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_is_ciscovlan"><strong>$if_is_ciscovlan</strong></a></strong><br />
+<dt><strong><a name="item__24if_is_ciscovlan"><strong>$if_is_ciscovlan</strong></a></strong><br />
 </dt>
 <dd>
 True for Cisco VLAN interfaces (interfaces with the
 word Vlan or VLAN in their ifdescs)
 </dd>
+<p></p>
+<dt><strong><a name="item__24if_vlan_id"><strong>$if_vlan_id</strong></a></strong><br />
+</dt>
+<dd>
+Returns the vlan id associated with a specific port
+on Cisco Catalyst switches under both Catalyst OS
+and IOS.  If it is not a vlan interface, will return undef.
+</dd>
 <p></p></dl>
-<p>Besides of that, all the variables available in cfgmaker is at the scripts
-disposal even if the use of such features is discouraged.  More
-``shortcuts'' in the form of variables and functions will be made avaiable in
-the future instead.</p>
+<p>Besides that, you can also use the variables defined for templates below.
+Further, all the variables available in cfgmaker is at the scripts disposal
+even if the use of such features is discouraged.  More ``shortcuts'' in the
+form of variables and functions will be made avaiable in the future instead.</p>
 <p>
 </p>
 <h2><a name="examples_on_filters">Examples on Filters</a></h2>
@@ -688,7 +743,7 @@ variable <strong>$target_lines</strong> are turned into comments by adding a has
 <strong>$problem_lines</strong> , <strong>$target_lines</strong> and <strong>$separator_lines</strong>
 are concatenated together to form the lines to add to the configuration file.</p>
 <dl>
-<dt><strong><a name="item_%24target_lines"><strong>$target_lines</strong></a></strong><br />
+<dt><strong><a name="item__24target_lines"><strong>$target_lines</strong></a></strong><br />
 </dt>
 <dd>
 This variable is the placeholder for the configuration lines created
@@ -696,7 +751,7 @@ by the template.  <strong>$target_lines</strong> is predefined to be empty when
 the template code is evaluated.
 </dd>
 <p></p>
-<dt><strong><a name="item_%24head_lines"><strong>$head_lines</strong></a></strong><br />
+<dt><strong><a name="item__24head_lines"><strong>$head_lines</strong></a></strong><br />
 </dt>
 <dd>
 This variable is intended to be the placeholder for the comment line
@@ -706,7 +761,7 @@ code and if the template doesn't modify <strong>$head_lines</strong> during eval
 the comment will look like usual in the config file.
 </dd>
 <p></p>
-<dt><strong><a name="item_%24problem_lines"><strong>$problem_lines</strong></a></strong><br />
+<dt><strong><a name="item__24problem_lines"><strong>$problem_lines</strong></a></strong><br />
 </dt>
 <dd>
 This variable is intended to be the placholder for the comment lines
@@ -723,7 +778,7 @@ an interface will be included or rejected but this is not recommended.
 Test against <strong>$if_ok</strong> instead.</p>
 </dd>
 <p></p>
-<dt><strong><a name="item_%24separator_lines"><strong>$separator_lines</strong></a></strong><br />
+<dt><strong><a name="item__24separator_lines"><strong>$separator_lines</strong></a></strong><br />
 </dt>
 <dd>
 This variable is the placeholder for the string to use as the separator
@@ -744,7 +799,7 @@ are available.</p>
 </p>
 <h3><a name="host_and_system_variables">Host and System Variables</a></h3>
 <dl>
-<dt><strong><a name="item_%24router_name"><strong>$router_name</strong></a></strong><br />
+<dt><strong><a name="item__24router_name"><strong>$router_name</strong></a></strong><br />
 </dt>
 <dd>
 This is the fully qualified name for the router.  It is affected by the
@@ -752,7 +807,7 @@ following items on the command line:  the router name itself and
 <strong>--dns-domain</strong>.
 </dd>
 <p></p>
-<dt><strong><a name="item_%24router_connect"><strong>$router_connect</strong></a></strong><br />
+<dt><strong><a name="item__24router_connect"><strong>$router_connect</strong></a></strong><br />
 </dt>
 <dd>
 This is the reference string for the router being polled.  It is on the
@@ -762,7 +817,7 @@ itself, <strong>--community</strong>, <strong>--snmp-options</strong> and <stron
 (There's no HTML escaped variant available)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24directory_name"><strong>$directory_name</strong></a></strong><br />
+<dt><strong><a name="item__24directory_name"><strong>$directory_name</strong></a></strong><br />
 </dt>
 <dd>
 This variable should contain the directory name as cfgmaker normally would
@@ -772,28 +827,28 @@ by the <strong>--subdirs</strong> command line option.  If <strong>--subdirs</st
 variant available)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24syscontact"><strong>$syscontact</strong></a></strong><br />
+<dt><strong><a name="item__24syscontact"><strong>$syscontact</strong></a></strong><br />
 </dt>
 <dd>
 This variable is the router's SNMP sysContact value.  (HTML escaped
 variant: <strong>$html_syscontact</strong>)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24sysname"><strong>$sysname</strong></a></strong><br />
+<dt><strong><a name="item__24sysname"><strong>$sysname</strong></a></strong><br />
 </dt>
 <dd>
 This variable is the router's SNMP sysName value.  (No HTML escaped
 variant available)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24syslocation"><strong>$syslocation</strong></a></strong><br />
+<dt><strong><a name="item__24syslocation"><strong>$syslocation</strong></a></strong><br />
 </dt>
 <dd>
 This variable is the router's SNMP sysLocation value.  (HTML escaped
 variant: <strong>$html_syslocation</strong>)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24sysdescr"><strong>$sysdescr</strong></a></strong><br />
+<dt><strong><a name="item__24sysdescr"><strong>$sysdescr</strong></a></strong><br />
 </dt>
 <dd>
 This variable is the router's SNMP sysDescr value.  It is normally not used
@@ -805,7 +860,7 @@ by cfgmaker but might be useful in a template.  (HTML escaped variant:
 </p>
 <h3><a name="interface_target_related_variables">Interface Target Related Variables</a></h3>
 <dl>
-<dt><strong><a name="item_%24target_name"><strong>$target_name</strong></a></strong><br />
+<dt><strong><a name="item__24target_name"><strong>$target_name</strong></a></strong><br />
 </dt>
 <dd>
 This is what cfgmaker normally would use as the the name of the target.
@@ -813,7 +868,7 @@ The target name is what is found within the square brackets, ``[]'', for target
 directives.  (There's no HTML escaped variant available)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_ref"><strong>$if_ref</strong></a></strong><br />
+<dt><strong><a name="item__24if_ref"><strong>$if_ref</strong></a></strong><br />
 </dt>
 <dd>
 This the reference string for the interface.  It is expected to be used
@@ -823,7 +878,7 @@ It is normally used together with <strong>$router_connect</strong>.
 (There's no HTML escaped variant available)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_ok"><strong>$if_ok</strong></a></strong><br />
+<dt><strong><a name="item__24if_ok"><strong>$if_ok</strong></a></strong><br />
 </dt>
 <dd>
 This variable is true if the interface is going to be included into the
@@ -832,7 +887,7 @@ such as <strong>$problem_lines</strong> to find out if an interface will be reje
 or not, use this <strong>$if_ok</strong> instead.
 </dd>
 <p></p>
-<dt><strong><a name="item_%24default_target_lines"><strong>$default_target_lines</strong></a></strong><br />
+<dt><strong><a name="item__24default_target_lines"><strong>$default_target_lines</strong></a></strong><br />
 </dt>
 <dd>
 This variable contains all the target lines which cfgmaker by default outputs
@@ -851,38 +906,38 @@ cfgmaker would have output it by default.</p>
 HTML escaped where needed.  Also note that they do not have any newline
 at the end.</p>
 <dl>
-<dt><strong><a name="item_%24default_target_directive"><strong>$default_target_directive</strong></a></strong><br />
+<dt><strong><a name="item__24default_target_directive"><strong>$default_target_directive</strong></a></strong><br />
 </dt>
 <dd>
 This variable contains the default string for the Target[] directive line.
 </dd>
 <p></p>
-<dt><strong><a name="item_%24default_setenv_directive"><strong>$default_setenv_directive</strong></a></strong><br />
+<dt><strong><a name="item__24default_setenv_directive"><strong>$default_setenv_directive</strong></a></strong><br />
 </dt>
 <dd>
 This variable contains the default string for the SetEnv[] directive line.
 </dd>
 <p></p>
-<dt><strong><a name="item_%24default_directory_directive"><strong>$default_directory_directive</strong></a></strong><br />
+<dt><strong><a name="item__24default_directory_directive"><strong>$default_directory_directive</strong></a></strong><br />
 </dt>
 <dd>
 This variable contains the default string for the Directory[] directive line
 which means it is an empty string (with no newline) if there's no directory.
 </dd>
 <p></p>
-<dt><strong><a name="item_%24default_maxbytes_directive"><strong>$default_maxbytes_directive</strong></a></strong><br />
+<dt><strong><a name="item__24default_maxbytes_directive"><strong>$default_maxbytes_directive</strong></a></strong><br />
 </dt>
 <dd>
 This variable contains the default string for the MaxBytes[] directive line.
 </dd>
 <p></p>
-<dt><strong><a name="item_%24default_title_directive"><strong>$default_title_directive</strong></a></strong><br />
+<dt><strong><a name="item__24default_title_directive"><strong>$default_title_directive</strong></a></strong><br />
 </dt>
 <dd>
 This variable contains the default string for the Title[] directive line.
 </dd>
 <p></p>
-<dt><strong><a name="item_%24default_pagetop_directive"><strong>$default_pagetop_directive</strong></a></strong><br />
+<dt><strong><a name="item__24default_pagetop_directive"><strong>$default_pagetop_directive</strong></a></strong><br />
 </dt>
 <dd>
 This variable contains the default string for the PageTop[] directive lines.
@@ -892,41 +947,41 @@ This variable contains the default string for the PageTop[] directive lines.
 </p>
 <h3><a name="interface_network_configuration_variables">Interface Network Configuration Variables</a></h3>
 <dl>
-<dt><strong><a name="item_%24if_ip"><strong>$if_ip</strong></a></strong><br />
+<dt><strong><a name="item__24if_ip"><strong>$if_ip</strong></a></strong><br />
 </dt>
 <dd>
 This variable should contain the IP-address of the interface, if any has
 been assigned to it.  (There's no HTML escaped variant available)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24ifindex"><strong>$ifindex</strong></a></strong><br />
+<dt><strong><a name="item__24ifindex"><strong>$ifindex</strong></a></strong><br />
 </dt>
 <dd>
 This variable is the SNMP ifIndex for the interface which per definition
 always is an integer.  (There's no HTML escaped variant available)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_index"><strong>$if_index</strong></a></strong><br />
+<dt><strong><a name="item__24if_index"><strong>$if_index</strong></a></strong><br />
 </dt>
 <dd>
 Equivalent with <strong>$ifindex</strong>.
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_eth"><strong>$if_eth</strong></a></strong><br />
+<dt><strong><a name="item__24if_eth"><strong>$if_eth</strong></a></strong><br />
 </dt>
 <dd>
 Contains the ethernet address of the interface, if any.  (There's no HTML
 escaped variant available)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_speed"><strong>$if_speed</strong></a></strong><br />
+<dt><strong><a name="item__24if_speed"><strong>$if_speed</strong></a></strong><br />
 </dt>
 <dd>
 This variable is the speed in bytes/second (with prefixes).  (There's no
 HTML escaped variant available)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_speed_str"><strong>$if_speed_str</strong></a></strong><br />
+<dt><strong><a name="item__24if_speed_str"><strong>$if_speed_str</strong></a></strong><br />
 </dt>
 <dd>
 This variable is a cooked speed description which is either in bits or
@@ -935,14 +990,14 @@ the proper prefix for the speed (k, M, G etc).  (No HTML escaped variant
 available)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_type_desc"><strong>$if_type_desc</strong></a></strong><br />
+<dt><strong><a name="item__24if_type_desc"><strong>$if_type_desc</strong></a></strong><br />
 </dt>
 <dd>
 This variable is a textual description of the interface type.  (HTML
 escaped variant: <strong>$html_if_type_desc</strong>)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_type_num"><strong>$if_type_num</strong></a></strong><br />
+<dt><strong><a name="item__24if_type_num"><strong>$if_type_num</strong></a></strong><br />
 </dt>
 <dd>
 This variable the integer value corresponding to the interface type (for a
@@ -950,7 +1005,7 @@ listing for the value for the more common interface types, see the section
 DETAILS ON FILTERS above).  (No HTML escaped variant available)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_dns_name"><strong>$if_dns_name</strong></a></strong><br />
+<dt><strong><a name="item__24if_dns_name"><strong>$if_dns_name</strong></a></strong><br />
 </dt>
 <dd>
 This is the DNS name for the interface.  (No HTML escaped variant available)
@@ -958,7 +1013,7 @@ This is the DNS name for the interface.  (No HTML escaped variant available)
 <p></p></dl>
 <p>
 </p>
-<h3><a name="interface_name,_description_and_alias_variables">Interface Name, Description and Alias Variables</a></h3>
+<h3><a name="interface_name__description_and_alias_variables">Interface Name, Description and Alias Variables</a></h3>
 <p>It might seem confusing with both <em>Name</em>, <em>Description</em> and <em>Alias</em> in
 this context and to some extent it is.  <em>Name</em> and <em>Description</em> are
 usually supported on most equipment but how they are used varies, both
@@ -970,7 +1025,7 @@ variables for <em>Description</em>).</p>
 <p>For better control from the command line consider <strong>$if_title_desc</strong> which contents
 are controlled by the <strong>--if-descr</strong> command line option.</p>
 <dl>
-<dt><strong><a name="item_%24if_snmp_descr"><strong>$if_snmp_descr</strong></a></strong><br />
+<dt><strong><a name="item__24if_snmp_descr"><strong>$if_snmp_descr</strong></a></strong><br />
 </dt>
 <dd>
 This variable should contain the ``raw'' description of the interface as
@@ -978,28 +1033,28 @@ determined by the SNMP polling of the router.  (HTML escaped variant:
 <strong>$html_if_snmp_descr</strong>)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_snmp_name"><strong>$if_snmp_name</strong></a></strong><br />
+<dt><strong><a name="item__24if_snmp_name"><strong>$if_snmp_name</strong></a></strong><br />
 </dt>
 <dd>
 The ``raw'' name for the interface as provided by SNMP polling.  (HTML escaped
 variant: <strong>$html_if_snmp_name</strong>)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_snmp_alias"><strong>$if_snmp_alias</strong></a></strong><br />
+<dt><strong><a name="item__24if_snmp_alias"><strong>$if_snmp_alias</strong></a></strong><br />
 </dt>
 <dd>
 The ``raw'' ifAlias for the interface as provided by SNMP polling. (HTML
 escaped variant: <strong>$html_if_snmp_alias</strong>)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_cisco_descr"><strong>$if_cisco_descr</strong></a></strong><br />
+<dt><strong><a name="item__24if_cisco_descr"><strong>$if_cisco_descr</strong></a></strong><br />
 </dt>
 <dd>
 The ``raw'' CiscolocIfDescr for the interface as provided by SNMP polling.
 (HTML escaped variant: <strong>$html_if_cisco_descr</strong>)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_description"><strong>$if_description</strong></a></strong><br />
+<dt><strong><a name="item__24if_description"><strong>$if_description</strong></a></strong><br />
 </dt>
 <dd>
 This is the ``cooked'' description string for the interface, taking into account
@@ -1007,7 +1062,7 @@ the SNMP values found for the interface's RDescr, ifAlias and
 CiscolocIfDescr.  (HTML escaped variant: <strong>$html_if_description</strong>)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_title"><strong>$if_title</strong></a></strong><br />
+<dt><strong><a name="item__24if_title"><strong>$if_title</strong></a></strong><br />
 </dt>
 <dd>
 The full string cfgmaker by default would have used for the Title[] directive
@@ -1023,14 +1078,14 @@ control <strong>$if_title</strong> by using the command line option <strong>--if
 <p>(HTML escaped variant: <strong>$html_if_title</strong>)</p>
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_port_name"><strong>$if_port_name</strong></a></strong><br />
+<dt><strong><a name="item__24if_port_name"><strong>$if_port_name</strong></a></strong><br />
 </dt>
 <dd>
 If the host is a Cisco Catalyst LAN switch, this variable is the name of
 that port.  (No HTML escaped variant available)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24desc_prefix"><strong>$desc_prefix</strong></a></strong><br />
+<dt><strong><a name="item__24desc_prefix"><strong>$desc_prefix</strong></a></strong><br />
 </dt>
 <dd>
 This variable is a prefix of the description of what the target is to use in 
@@ -1038,7 +1093,7 @@ the ``Title[]'' directive and in the H1 section of the ``PageTop[]''.  Default i
 ``Traffic analysis for ''.  (HTML escaped variant: <strong>$html_desc_prefix</strong>)
 </dd>
 <p></p>
-<dt><strong><a name="item_%24if_title_desc"><strong>$if_title_desc</strong></a></strong><br />
+<dt><strong><a name="item__24if_title_desc"><strong>$if_title_desc</strong></a></strong><br />
 </dt>
 <dd>
 This is the description of the interface normally used by cfgmaker as part
@@ -1074,7 +1129,7 @@ in the string are prepended with ``&lt;BR&gt;'' and appended with a space charac
 <h2><a name="example_template_files">Example Template Files</a></h2>
 <p>
 </p>
-<h3><a name="template_example_1:_eliminating_rejected_targets_from_appearing">Template Example 1: Eliminating Rejected Targets From Appearing</a></h3>
+<h3><a name="template_example_1__eliminating_rejected_targets_from_appearing">Template Example 1: Eliminating Rejected Targets From Appearing</a></h3>
 <p>This template file generates exactly the same configuration code per
 interface as cfgmaker does by default, with the exception that it eliminates
 all lines (comments as well as config code) for an interface if the
@@ -1127,7 +1182,7 @@ interface happens to be rejected.</p>
  }</pre>
 <p>
 </p>
-<h3><a name="template_example_2:_simplier_version_of_example_1">Template Example 2: Simplier Version of Example 1</a></h3>
+<h3><a name="template_example_2__simplier_version_of_example_1">Template Example 2: Simplier Version of Example 1</a></h3>
 <p>Example 1 was partly intended to demonstrate how to customize the generation
 of interface targets but also to provide a hint of how the variables are
 used in the ``default'' template which one could consider that cfgmaker
@@ -1251,7 +1306,7 @@ of the ppp-server to be <em>ppp-server.<strong>remote</strong></em> .</p>
 </p>
 <hr />
 <h1><a name="see_also">SEE ALSO</a></h1>
-<p><a href="././reference.html">the reference manpage</a></p>
+<p><a href="././mrtg-reference.html">the mrtg-reference manpage</a></p>
 <p>
 </p>
 <hr />

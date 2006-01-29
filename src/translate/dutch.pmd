@@ -13,7 +13,9 @@
     Vertaald naar het Nederlands door
     <NOBR><A HREF=\"http://doema.peterson.nl\">Barry van Dijk</A>
   <A HREF=\"mailto:barry\@dijk.com\">
-  &lt;barry\@dijk.com&gt;</A></NOBR>",
+  &lt;barry\@dijk.com&gt;</A>;
+  Aangepast door Paul Slootman
+  <A HREF=\"mailto:paul\@debian.org\">&lt;paul\@debian.org&gt;</A></NOBR>",
 ###### PATCHTAG40 ####################################################
 $credits::LOCALE{'nederlands'}=$credits::LOCALE{'dutch'};
 ###### PATCHTAG50 ####################################################
@@ -45,12 +47,12 @@ return "" unless defined $string;
      '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>Actueel$1',
      'version'                                => 'versie',
      '<B>`Daily\' Graph \((.*) Minute'        => '<B>`Dagelijkse\' grafiek ($1 minuten',
-     '<B>`Weekly\' Graph \(30 Minute'         => '<B>`Weekelijkse\' grafiek (30 minuten' ,
+     '<B>`Weekly\' Graph \(30 Minute'         => '<B>`Wekelijkse\' grafiek (30 minuten' ,
      '<B>`Monthly\' Graph \(2 Hour'           => '<B>`Maandelijkse\' grafiek (2 uur',
      '<B>`Yearly\' Graph \(1 Day'             => '<B>`Jaarlijkse\' grafiek (1 dag', 
      'Incoming Traffic in (\S+) per Second'   => 'Inkomend verkeer in $1 per seconde',
      'Outgoing Traffic in (\S+) per Second'   => 'Uitgaand verkeer in $1 per seconde',
-     'at which time (.*) had been up for(.*)' => 'op het moment dat $1 reeds actief is voor$2',
+     'at which time (.*) had been up for(.*)' => 'op het moment dat $1 reeds actief was voor$2',
      # '([kMG]?)([bB])/s'                 => '\$1\$2/s',
      # '([kMG]?)([bB])/min'              => '\$1\$2/min',
      '([kMG]?)([bB])/h'                       => '$1$2/u',
@@ -80,26 +82,26 @@ foreach $i (keys %translations)
 
 %wday = 
     (
-      'Sunday'    => 'Zondag',           'Sun' => 'Zon',
-      'Monday'    => 'Maandag',          'Mon' => 'Maa',
-      'Tuesday'   => 'Dinsdag',          'Tue' => 'Din',
-      'Wednesday' => 'Woensdag',         'Wed' => 'Woe',
-      'Thursday'  => 'Donderdag',        'Thu' => 'Don',
-      'Friday'    => 'Vrijdag',          'Fri' => 'Vri',
-      'Saturday'  => 'Zaterdag',         'Sat' => 'Zat' 
+      'Sunday'    => 'zondag',           'Sun' => 'zon',
+      'Monday'    => 'maandag',          'Mon' => 'maa',
+      'Tuesday'   => 'dinsdag',          'Tue' => 'din',
+      'Wednesday' => 'woensdag',         'Wed' => 'woe',
+      'Thursday'  => 'donderdag',        'Thu' => 'don',
+      'Friday'    => 'vrijdag',          'Fri' => 'vri',
+      'Saturday'  => 'zaterdag',         'Sat' => 'zat' 
 
     );
 
 %month = 
     (
-      'January'   => 'Januari',   'February'  => 'Februari',    'March'     => 'Maart',
-      'Jan'       => 'Jan',       'Feb'       => 'Feb',         'Mar'       => 'Mrt',
-      'April'     => 'April',     'May'       => 'Mei',         'June'      => 'Juni', 
-      'Apr'       => 'Apr',       'May'       => 'Mai',         'Jun'       => 'Jun',
-      'July'      => 'Juli',      'August'    => 'Augustus',    'September' => 'September', 
-      'Jul'       => 'Jul',       'Aug'       => 'Aug',         'Sep'       => 'Sep', 
-      'October'   => 'Oktober',   'November'  => 'November',    'December'  => 'December', 
-      'Oct'       => 'Okt',       'Nov'       => 'Nov',         'Dec'       => 'Dec' 
+      'January'   => 'januari',   'February'  => 'februari',    'March'     => 'maart',
+      'Jan'       => 'jan',       'Feb'       => 'feb',         'Mar'       => 'mrt',
+      'April'     => 'april',     'May'       => 'mei',         'June'      => 'juni', 
+      'Apr'       => 'apr',       'May'       => 'mei',         'Jun'       => 'jun',
+      'July'      => 'juli',      'August'    => 'augustus',    'September' => 'september', 
+      'Jul'       => 'jul',       'Aug'       => 'aug',         'Sep'       => 'sep', 
+      'October'   => 'oktober',   'November'  => 'november',    'December'  => 'december', 
+      'Oct'       => 'okt',       'Nov'       => 'nov',         'Dec'       => 'dec' 
     );
 
   @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);

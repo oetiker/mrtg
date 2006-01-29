@@ -28,7 +28,7 @@
 </p>
 <hr />
 <h1><a name="name">NAME</a></h1>
-<p>indexmaker - Creates index files for mrtg web sites (mrtg-2.9.29)</p>
+<p>indexmaker - Creates index files for mrtg web sites (mrtg-2.10.15)</p>
 <p>
 </p>
 <hr />
@@ -47,6 +47,7 @@
 <pre>
  --addhead=text      insert this text between &lt;/TITLE&gt; and &lt;/HEAD&gt;
  --title=text        set title of generated index file
+ --subtitle=text     add a subtitle to the generated index file
  --bodyopt=text      set body tag options
  --headlevel=number  use &lt;Hnumber&gt; at top of page (default: 1)
  --pagetop=text      insert this text between &lt;BODY&gt; and &lt;H1&gt;...&lt;/H1&gt;
@@ -87,7 +88,9 @@
  --sectionhost       Try to prepend the host to the section heading if missing</pre>
 <pre>
  --rrdviewer=path    path to rrdviewer (default: /cgi-bin/14all.cgi)
+ --icondir=path      path to icondir
  --prefix=path       path from the location of the index.html to the graphs
+ --headeradd=string  add string to the html page header
  --autoprefix        try to set prefix automatically
  
  --&lt;opt&gt;-file=file   read string argument for option &lt;opt&gt; from file</pre>
@@ -98,7 +101,7 @@
 <p><strong>Indexmaker</strong> can create web pages which display the status of an
 array of mrtg interface status pages.</p>
 <dl>
-<dt><strong><a name="item_%2d%2doutput_filename"><strong>--output</strong> <em>filename</em></a></strong><br />
+<dt><strong><a name="item__2d_2doutput_filename"><strong>--output</strong> <em>filename</em></a></strong><br />
 </dt>
 <dd>
 set output filename (default: stdout)
@@ -120,13 +123,13 @@ positive or negative.</p>
 necessary to type <strong>\!~</strong> instead.</p>
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dtitle_text"><strong>--title</strong> <em>text</em></a></strong><br />
+<dt><strong><a name="item__2d_2dtitle_text"><strong>--title</strong> <em>text</em></a></strong><br />
 </dt>
 <dd>
 Set title of generated index file (default: regexp)
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dbodyopt_text"><strong>--bodyopt</strong> <em>text</em></a></strong><br />
+<dt><strong><a name="item__2d_2dbodyopt_text"><strong>--bodyopt</strong> <em>text</em></a></strong><br />
 </dt>
 <dd>
 The value of this argument gets appended to
@@ -138,45 +141,45 @@ By default this option is set to
  bgcolor=&quot;#ffffff&quot; text=&quot;#000000&quot; link=&quot;#000000&quot; vlink=&quot;#000000&quot; alink=&quot;#000000&quot;</pre>
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dcolumns_number"><strong>--columns</strong> <em>number</em></a></strong><br />
+<dt><strong><a name="item__2d_2dcolumns_number"><strong>--columns</strong> <em>number</em></a></strong><br />
 </dt>
 <dd>
 Display graphs in a table with <em>number</em> columns (default: 2)
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dsort_title%7cname%7cdescr%7coriginal"><strong>--sort</strong> <strong>title</strong>|<strong>name</strong>|<strong>descr</strong>|<strong>original</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dsort_title_7cname_7cdescr_7coriginal"><strong>--sort</strong> <strong>title</strong>|<strong>name</strong>|<strong>descr</strong>|<strong>original</strong></a></strong><br />
 </dt>
 <dd>
 Sort the graphs in the page either by <strong>title</strong>, by <strong>name</strong>, by interface
 <strong>descr</strong>iption, or leave them as is.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2denumerate"><strong>--enumerate</strong></a></strong><br />
+<dt><strong><a name="item__2d_2denumerate"><strong>--enumerate</strong></a></strong><br />
 </dt>
 <dd>
 Add a sequence number to the title of each graph
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dwidth_number"><strong>--width</strong> <em>number</em></a></strong><br />
+<dt><strong><a name="item__2d_2dwidth_number"><strong>--width</strong> <em>number</em></a></strong><br />
 </dt>
 <dd>
 Set width of graphs
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dheight_number"><strong>--height</strong> <em>number</em></a></strong><br />
+<dt><strong><a name="item__2d_2dheight_number"><strong>--height</strong> <em>number</em></a></strong><br />
 </dt>
 <dd>
 Set the height of the graphs
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dshow_day%7cweek%7cmonth%7cyear%7cnone"><strong>--show</strong> <strong>day</strong>|<strong>week</strong>|<strong>month</strong>|<strong>year</strong>|<strong>none</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dshow_day_7cweek_7cmonth_7cyear_7cnone"><strong>--show</strong> <strong>day</strong>|<strong>week</strong>|<strong>month</strong>|<strong>year</strong>|<strong>none</strong></a></strong><br />
 </dt>
 <dd>
 Select which graph to show in the index page. You can supress images
 completely with <strong>--show=none</strong>.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dsection_h1%7ctitle%7cname%7cdescription%7cpo"><strong>--section</strong> <strong>h1</strong>|<strong>title</strong>|<strong>name</strong>|<strong>description</strong>|<strong>portname</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dsection_h1_7ctitle_7cname_7cdescription_7cpo"><strong>--section</strong> <strong>h1</strong>|<strong>title</strong>|<strong>name</strong>|<strong>description</strong>|<strong>portname</strong></a></strong><br />
 </dt>
 <dd>
 Select what to use as the title for each graph in the page.  <strong>h1</strong> is
@@ -187,7 +190,7 @@ the bit in square brackets (option[name]: bla), and <strong>descr</strong> or
 interface description). <strong>portname</strong> is the <code>Port Name:</code> from pagetop.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dsectionhost"><strong>--sectionhost</strong></a></strong><br />
+<dt><strong><a name="item__2d_2dsectionhost"><strong>--sectionhost</strong></a></strong><br />
 </dt>
 <dd>
 Extract the hostname from the target line (this does not work if the 
@@ -195,7 +198,7 @@ target is a mathematial expression). Prepend the hostname (and a colon)
 to the section if not already present.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2drrdviewer_path"><strong>--rrdviewer</strong> <em>path</em></a></strong><br />
+<dt><strong><a name="item__2d_2drrdviewer_path"><strong>--rrdviewer</strong> <em>path</em></a></strong><br />
 </dt>
 <dd>
 If you have set the <strong>LogFormat: rrdtool</strong> property in the mrtg.cfg
@@ -203,7 +206,7 @@ file, the index will take this into account. The only thing you must
 tell it is the path to your grapher cgi. (default: /cgi-bin/14all.cgi)
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dprefix_path"><strong>--prefix</strong> <em>path</em></a></strong><br />
+<dt><strong><a name="item__2d_2dprefix_path"><strong>--prefix</strong> <em>path</em></a></strong><br />
 </dt>
 <dd>
 By  default we assume    that  the file generated by indexmaker is stored in
@@ -213,7 +216,7 @@ use '/' as path separator as this will be used in urls. Speaking of which,
 you can even enter a whole url.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dautoprefix_path"><strong>--autoprefix</strong> <em>path</em></a></strong><br />
+<dt><strong><a name="item__2d_2dautoprefix_path"><strong>--autoprefix</strong> <em>path</em></a></strong><br />
 </dt>
 <dd>
 Requires --output.
@@ -223,7 +226,7 @@ Particulary useful when multiple configuration files are specified, with
 different Htmldir settings.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2doptlog"><strong>--optlog</strong></a></strong><br />
+<dt><strong><a name="item__2d_2doptlog"><strong>--optlog</strong></a></strong><br />
 </dt>
 <dd>
 Default is logging in the generated page the command line, suppress with
@@ -231,7 +234,7 @@ Default is logging in the generated page the command line, suppress with
 which could confuse simple browsers.
 </dd>
 <p></p>
-<dt><strong><a name="item_%2d%2dsomeoption%2dfile_filename"><strong>--someoption-file</strong> <em>filename</em></a></strong><br />
+<dt><strong><a name="item__2d_2dsomeoption_2dfile_filename"><strong>--someoption-file</strong> <em>filename</em></a></strong><br />
 </dt>
 <dd>
 For any someoption which takes a <em>string</em> as parameter you can read the

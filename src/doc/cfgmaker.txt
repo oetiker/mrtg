@@ -3,7 +3,7 @@ CFGMAKER(1)                    mrtg                   CFGMAKER(1)
 
 
 NNAAMMEE
-       cfgmaker - Creates mrtg.cfg files (for mrtg-2.9.29)
+       cfgmaker - Creates mrtg.cfg files (for mrtg-2.10.15)
 
 SSYYNNOOPPSSIISS
        cfgmaker [options] [community@]router [[options] [commu-
@@ -67,6 +67,12 @@ OOPPTTIIOONNSS
         --community=cmty  Set the default community string to "cmty" instead of
                           "public".
 
+        --enable-ipv6     Enable IPv6 support, if the required libraries are
+                          present. Numeric IPv6 addresses must be enclosed
+                          in square brackets, e.g. public@[2001:760:4::1]:161
+
+        --use-16bit       Use 16bit SNMP request IDs to query all routers.
+
         --snmp-options=:[<port>][:[<tmout>][:[<retr>][:[<backoff>][:<ver>]]]]
 
                           Specify default SNMP options to be appended to all
@@ -103,7 +109,7 @@ DDEESSCCRRIIPPTTIIOONN
        create a configuration for. If not specified, it defaults
        to 'ppuubblliicc'; you might want to try this first if you do
        not know the community name of a device. If you are using
-       the wrong comunity name you will get no response from the
+       the wrong community name you will get no response from the
        device.
 
        _R_o_u_t_e_r is the DNS name or the IP number of an SNMP-man-
@@ -123,6 +129,12 @@ DDEESSCCRRIIPPTTIIOONN
        the configuration file is generated.  The first specified
        router has it's configuration lines genrated first, fol-
        lowed by the lines belonging to the next router and so on.
+
+       Note that the first line of the generated cfg file will
+       contain all the commandline options you used for generat-
+       ing it. This is to allow for the easy 'regeneration' in
+       case you want to add newhosts or make some other global
+       change.
 
        CCoonnffiigguurraattiioonn
 
@@ -251,6 +263,36 @@ DDEESSCCRRIIPPTTIIOONN
            ing on the command line to ccoommmmuunniittyy--ssttrriinngg.  Individ-
            ual routers might overrride this community string by
            using the syntax ccoommmmuunniittyy@@rroouutteerr.
+
+       ----eennaabbllee--iippvv66
+           This option enables IPv6 support. It requires the
+           appropriate perl modules; if they are not found then
+           IPv6 is disabled (see the ipv6 documentation).
+
+           cfgmaker will use IPv6 or IPv4 depending on the tar-
+           get. If the target is a numeric address, the protocol
+           depends on the type of address. If the target is a
+           hostname, cfgmaker will try to resolve the name first
+           to an IPv6 address then to an IPv4 address.
+
+           IPv6 numeric addresses must be specified between
+           square braces.
+
+           For example:
+
+            cfgmaker --enable-ipv6 [2001:760:4::1]:165:::2
+
+           If the target has both an IPv6 address and an IPv4
+           address with the same hostname, cfgmaker first queries
+           the target using IPv6 and falls back to IPv4 if it
+           fails. This is useful for targets which don't support
+           SNMP over IPv6.
+
+       ----uussee--1166bbiitt
+           This option forces the use of 16bit SNMP request IDs.
+           Some broken SNMP agents do not accept 32bit request
+           IDs.  Try to avoid this option as much as possible,
+           complain to your agent vendor instead.
 
        ----ssnnmmpp--ooppttiioonnss  :[ppoorrtt][:[ttiimmeeoouutt][:[rreettrriieess][:[bbaacckk--
        ooffff][:vveerrssiioonn]]]]
@@ -406,6 +448,18 @@ DDEETTAAIILLSS OONN FFIILLTTEERRSS
            Here's a list of some of the most common interface
            types by number:
 
+
+
+
+
+
+
+
+
+
+
+
+
               6 ethernetCsmacd
               7 iso88023Csmacd
               9 iso88025TokenRing
@@ -500,11 +554,18 @@ DDEETTAAIILLSS OONN FFIILLTTEERRSS
            True for Cisco VLAN interfaces (interfaces with the
            word Vlan or VLAN in their ifdescs)
 
-       Besides of that, all the variables available in cfgmaker
-       is at the scripts disposal even if the use of such fea-
-       tures is discouraged.  More "shortcuts" in the form of
-       variables and functions will be made avaiable in the
-       future instead.
+       $$iiff__vvllaann__iidd
+           Returns the vlan id associated with a specific port on
+           Cisco Catalyst switches under both Catalyst OS and
+           IOS.  If it is not a vlan interface, will return
+           undef.
+
+       Besides that, you can also use the variables defined for
+       templates below.  Further, all the variables available in
+       cfgmaker is at the scripts disposal even if the use of
+       such features is discouraged.  More "shortcuts" in the
+       form of variables and functions will be made avaiable in
+       the future instead.
 
        EExxaammpplleess oonn FFiilltteerrss
 
@@ -858,6 +919,10 @@ DDEETTAAIILLSS OONN TTEEMMPPLLAATTEESS
            and appended with a space character (newlines at the
            end of the string are not touched).
 
+
+
+
+
        EExxaammppllee TTeemmppllaattee FFiilleess
 
        _T_e_m_p_l_a_t_e _E_x_a_m_p_l_e _1_: _E_l_i_m_i_n_a_t_i_n_g _R_e_j_e_c_t_e_d _T_a_r_g_e_t_s _F_r_o_m
@@ -1050,7 +1115,7 @@ EEXXAAMMPPLLEESS
                  access@ppp-server.remote:::::1 > mrtg.cfg
 
 SSEEEE AALLSSOO
-       reference
+       mrtg-reference
 
 AAUUTTHHOORR
        Tobias Oetiker <tobi@oetiker.ch> and Jakob Ilves
@@ -1065,4 +1130,4 @@ CCOOPPYYRRIIGGHHTT
 
 
 
-2.9.29                      2003-04-12                CFGMAKER(1)
+2.10.15                     2004-08-08                CFGMAKER(1)

@@ -45,19 +45,19 @@ from MRTG to allow other programs to easily use the same config files. The
 main part of MRTG_lib is the config file parser but some other funcions are
 there too.</p>
 <dl>
-<dt><strong><a name="item_%24mrtg_lib%3a%3aos"><code>$MRTG_lib::OS</code></a></strong><br />
+<dt><strong><a name="item__24mrtg_lib_3a_3aos"><code>$MRTG_lib::OS</code></a></strong><br />
 </dt>
 <dd>
 Type of OS: WIN, UNIX, VMS
 </dd>
 <p></p>
-<dt><strong><a name="item_%24mrtg_lib%3a%3asl"><code>$MRTG_lib::SL</code></a></strong><br />
+<dt><strong><a name="item__24mrtg_lib_3a_3asl"><code>$MRTG_lib::SL</code></a></strong><br />
 </dt>
 <dd>
 <em>Slash</em> in the current OS.
 </dd>
 <p></p>
-<dt><strong><a name="item_%24mrtg_lib%3a%3aps"><code>$MRTG_lib::PS</code></a></strong><br />
+<dt><strong><a name="item__24mrtg_lib_3a_3aps"><code>$MRTG_lib::PS</code></a></strong><br />
 </dt>
 <dd>
 Path separator in PATH variable
@@ -108,7 +108,7 @@ configuration, a hashref for the target configuration.</p>
  $targetcfg{configoption}{targetname} = 'value'</pre>
 </dd>
 <dd>
-<p>See <a href="././reference.html">the reference manpage</a> for more information about the MRTG configuration syntax.</p>
+<p>See <a href="././mrtg-reference.html">the mrtg-reference manpage</a> for more information about the MRTG configuration syntax.</p>
 </dd>
 <dd>
 <p><a href="#item_readcfg"><code>readcfg</code></a> can take two additional arguments to extend the config file
@@ -310,7 +310,9 @@ muliple times, the retrieved value else.</p>
 </dd>
 <dd>
 <p>Prints the <em>message</em> on STDERR if debugging is enabled for type <em>type</em>.
-A debug type is enabled if <em>type</em> is in array @main::DEBUG.</p>
+A debug type is enabled if <em>type</em> is in array @main::DEBUG.
+
+</p>
 </dd>
 <p></p></dl>
 <p>

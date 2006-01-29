@@ -21,44 +21,65 @@ DDEESSCCRRIIPPTTIIOONN
        Most items are set through the configuration file; com-
        mand-line options are specified here:
 
-----uusseerr _u_s_e_r_n_a_m_e
-Run as the given user (Unix Only)
+       ----uusseerr _u_s_e_r_n_a_m_e  and ----ggrroouupp _g_r_o_u_p_n_a_m_e
+           Run as the given user and/or group. (Unix Only)
 
-----ggrroouupp _g_r_o_u_p_n_a_m_e
-Run as the given group (Unix Only)
+       ----lloocckk--ffiillee _f_i_l_e_n_a_m_e
+           Use an alternate lock-file (the default is to use the
+           configuration-file appended with "_l").
 
-----ddaaeemmoonn
-Put MRTG into the background, running as a daemon. This works the
-same way as the config file option, but the switch is required
-for proper FHS operation (because /var/run is writable only by
-root)
+       ----ccoonnffccaacchhee--ffiillee _f_i_l_e_n_a_m_e
+           Use an alternate confcache-file (the default is to use
+           the configuration-file appended with ".ok")
 
-----ffhhss
-Configure all mrtg paths to conform to the FHS specification;
-http://www.pathname.com/fhs/
+       ----llooggggiinngg _f_i_l_e_n_a_m_e|eevveennttlloogg
+           If this is set to writable filename, all output from
+           mrtg (warnings, debug messages, errors) will go to
+           _f_i_l_e_n_a_m_e. If you are running on Win32 you can specify
+           eevveennttlloogg instead of a filename which will send all
+           error to the windows event log.
 
-----lloocckk--ffiillee _f_i_l_e_n_a_m_e
-Use an alternate lock-file (the default is to use the configura-
-tion-file appended with _l)
+           NNOOTTEE::Note, there is no Message DLL for mrtg. This has
+           the side effect that the windows event logger will
+           display a nice message with every entry in the event
+           log, complaing about the fact that mrtg has no message
+           dll. If any of the Windows folks want to contribute
+           one, they are welcome.
 
-----ccoonnffccaacchhee--ffiillee _f_i_l_e_n_a_m_e
-Use an alternate confcache-file (the default is to use the con-
-figuration-file appended with .ok)
+       ----ddaaeemmoonn
+           Put MRTG into the background, running as a daemon.
+           This works the same way as the config file option, but
+           the switch is required for proper FHS operation
+           (because /var/run is writable only by root)
 
-----ppiidd--ffiillee _f_i_l_e_n_a_m_e
-Set the location/name of the pid file
+       ----ffhhss
+           Configure all mrtg paths to conform to the FHS speci-
+           fication; http://www.pathname.com/fhs/
 
-----llooggggiinngg _f_i_l_e_n_a_m_e|eventlog
-If this is set to writable filename, all output from mrtg (warn-
-ings, debug messages, errors) will go to filename. If you are
-running on Win32 you can specify eventlog instead of a filename
-which will send all errors to the windows event log.
+       ----cchheecckk
+           Only check the cfg file for errors. Do not do any-
+           thing.
 
-----cchheecckk
-Just check the configuration file, then exit
+       ----ppiidd--ffiillee==ss
+           Define the name and path of the pid file for mrtg run-
+           ning as a daemon
 
-----ddeebbuugg _s_t_r_i_n_g
-Set the debug logging level
+       ----ddeebbuugg==ss
+           Enable debug options. The argument of the debug option
+           is a comma separated list of debug values:
+
+            cfg  - watch the config file reading
+            dir  - directory mangeling
+            base - basic program flow
+            tarp - target parser
+            snpo - snmp polling
+            fork - forking view
+            time - some timing info
+            log  - logging of data via rateup or rrdtool
+
+           Example:
+
+            --debug="cfg,snpo"
 
 UUSSEERR PPAAGGEESS
        MRTG is written in Perl and C and works under UNIX and
@@ -181,4 +202,4 @@ AAUUTTHHOORR
 
 
 
-2.9.29                      2003-04-12                    MRTG(1)
+2.10.15                     2004-08-08                    MRTG(1)

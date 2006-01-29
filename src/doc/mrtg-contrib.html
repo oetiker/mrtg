@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>doc/mrtg-contrib</title>
+<link rev="made" href="mailto:dws@ee.ethz.ch" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+<!--
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#translations">TRANSLATIONS</a></li>
+	<li><a href="#documentation">DOCUMENTATION</a></li>
+	<li><a href="#patches">PATCHES</a></li>
+	<li><a href="#documentation">DOCUMENTATION</a></li>
+	<li><a href="#address">ADDRESS</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+</ul>
+-->
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>mrtg-contrib - Contribution Guidelines for MRTG</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>If you have written an extension to mrtg or created a bug fix, please
+consider contributing it to the project. As I get quite a number of
+contributions every week, here are a few guidelines which explain how to
+contribute so that I can use the contribution without too much additional
+work.</p>
+<p>
+</p>
+<hr />
+<h1><a name="translations">TRANSLATIONS</a></h1>
+<p>MRTG messages have been translated to a number of languages but there are
+still many which have not been covered yet. If you want to add yours, go
+into the <em>mrtg-2.10.15/translate</em> directory and follow the instructions
+given in the <em>README</em> file.</p>
+<p>
+</p>
+<hr />
+<h1><a name="documentation">DOCUMENTATION</a></h1>
+<p>All documentation of mrtg is done with the perl <strong>POD</strong> system. If you want to
+learn about it, type</p>
+<pre>
+ perldoc perlpod</pre>
+<p>and read the instructions. If you have bugfixes or additions to the existing
+documents, make sure you modify the <strong>POD</strong> files and not the html or txt
+versions.</p>
+<p>
+</p>
+<hr />
+<h1><a name="patches">PATCHES</a></h1>
+<p>When you have created your modification or extension to mrtg and want to
+submit it to me, please crate a patch for the files which you have modified.
+Do not send entire files unless they are new.</p>
+<p>To create a patch, get hold of a copy of GNU diff (Many Unix systems will
+have this installed already. In the NT world you might want to get
+<a href="http://sources.redhat.com/cygwin/">http://sources.redhat.com/cygwin/</a> to get all the nice GNU tools available.)
+and type</p>
+<pre>
+ diff --unified --ignore-space-change old-file new-file &gt; simple.patch</pre>
+<p>or if you have modified several files do</p>
+<pre>
+ diff --recursive --unified --ignore-space-change old-dir/ new-dir/ &gt;long.patch</pre>
+<p>
+</p>
+<hr />
+<h1><a name="documentation">DOCUMENTATION</a></h1>
+<p>I take documentation very seriously. Whenever you create a new feature for
+mrtg which you want to get included in the official release, your patch must
+also contain modifications for the relevant <strong>pod</strong> file in the <em>doc</em> tree or
+for the documentation sections of <em>cfgmaker</em> and <em>indexmaker</em>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="address">ADDRESS</a></h1>
+<p>Send your patches, translations and contributions to Tobias Oetiker
+&lt;<a href="mailto:oetiker@ee.ethz.ch">oetiker@ee.ethz.ch</a>&gt;</p>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Tobias Oetiker &lt;<a href="mailto:oetiker@ee.ethz.ch">oetiker@ee.ethz.ch</a>&gt;</p>
+
+</body>
+
+</html>

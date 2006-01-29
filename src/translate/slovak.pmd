@@ -33,7 +33,7 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'charset=iso-8859-1'                     => 'charset=windows-1250',
+     'charset=iso-8859-1'                     => 'charset=iso-8859-2',
      'Maximal 5 Minute Incoming Traffic'      => 'Maximálny 5 minútovı prichádzajúci tok',
      'Maximal 5 Minute Outgoing Traffic'      => 'Maximálny 5 minútovı odchádzajúci tok',
      'the device'                             => 'zariadenie',

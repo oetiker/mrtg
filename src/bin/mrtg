@@ -2,7 +2,7 @@
 # -*- mode: cperl -*-
 
 ###################################################################
-# MRTG 2.9.29  Multi Router Traffic Grapher
+# MRTG 2.10.15  Multi Router Traffic Grapher
 ###################################################################
 # Created by Tobias Oetiker <oetiker@ee.ethz.ch>
 #            and Dave Rand <dlr@bungi.com>
@@ -14,6 +14,7 @@
 # Distributed under the GNU General Public License
 #
 ###################################################################
+my @STARTARGS=($0,@ARGV);
 
 @main::DEBUG=qw();
 # DEBUG TARGETS
@@ -22,6 +23,7 @@
 # base - basic program flow
 # tarp - target parser
 # snpo - snmp polling
+# repo - track confcache repopulation
 # fork - forking view
 # time - some timing info
 # log  - logging of data via rateup or rrdtool
@@ -38,23 +40,33 @@ BEGIN {
 	$main::OS = 'NT';
 	$main::SL = '\\';
 	$main::PS = ';';
+    } elsif ( $^O =~ /^NetWare$/i ) {
+	$main::OS = 'NW';
+	$main::SL = '/';
+	$main::PS = ';';
     } elsif ( $^O =~ /^VMS$/i ) {
 	$main::OS = 'VMS';
 	$main::SL = '.';
 	$main::PS = ':';
+    } elsif ( $^O =~ /^os2$/i ) {
+	$main::OS = 'OS2';
+	$main::SL = '/';
+	$main::PS = ';';
     } else {
 	$main::OS = 'UNIX';
 	$main::SL = '/';
 	$main::PS = ':';
     }
-    if ( $ENV{LANG} and $ENV{LANG} =~ /UTF-8/ ){
+    if ( $ENV{LANG} and $ENV{LANG} =~ /UTF.*8/i ){        
+        my $args = join " ", map { /\s/ ? "\"$_\"" : $_ } @ARGV;
+        $args ||= "";
         print <<ERR;
 -----------------------------------------------------------------------
-ERROR: Mrtg will most likely not work propperly when the environment
+ERROR: Mrtg will most likely not work properly when the environment
        variable LANG is set to UTF-8. Please run mrtg in an environment
-       where this is not the case:
+       where this is not the case. Try the following command to start:
 
-       env LANG=C $0 ...
+       env LANG=C ${0} $args 
 -----------------------------------------------------------------------
 ERR
         exit 0;
@@ -66,18 +78,44 @@ use FindBin;
 use lib "${FindBin::Bin}";
 use lib "${FindBin::Bin}${main::SL}..${main::SL}lib${main::SL}mrtg2";
 use Getopt::Long;
+use Math::BigFloat;
 
 # search for binaries in the bin and bin/../lib  directory
-use MRTG_lib "2.090026";
-use SNMP_util '0.93';
+use MRTG_lib "2.100015";
+use SNMP_util '1.04';
 # $SNMP_Session::suppress_warnings = 2;
 use locales_mrtg "0.07";
 
+# Import IPv6 libraries if available, as (unfortunately) they are
+# necessary for dead host detection (for IPv6 name lookups).
+BEGIN {
+    if (eval {require Socket6;})  {
+	import Socket;
+	import Socket6
+    }
+}
+
 $main::STARTTIME = time;
 
+if ($MRTG_lib::OS eq 'OS2') {
+# in daemon mode we will pause 3 seconds to be sure that parent died
+  require OS2::Process;
+  if (OS2::Process::my_type() eq 'DETACH') {sleep(3);}
+}
+
 if ($MRTG_lib::OS eq 'UNIX') {
-    $SIG{HUP} = $SIG{INT} = $SIG{TERM} = 
+   $SIG{INT} = $SIG{TERM} = 
            sub {   unlink ${main::Cleanfile} 
+                       if defined $main::Cleanfile;
+                   unlink ${main::Cleanfile2}
+                       if defined $main::Cleanfile2;
+                   unlink ${main::Cleanfile3}
+                       if defined $main::Cleanfile3;
+                   warn "ERROR: Bailout after SIG $_[0]\n";
+                   exit 1;
+                };
+  $SIG{HUP} = sub {
+                   unlink ${main::Cleanfile} 
                        if defined $main::Cleanfile;
                    unlink ${main::Cleanfile2}
                        if defined $main::Cleanfile2;
@@ -103,7 +141,7 @@ exit(0);
 sub main {
 
     debug 'time', "prog start ".localtime(time);
-
+    
     # read in the config file
     my @routers;
     my %cfg;
@@ -145,7 +183,7 @@ sub main {
 
     my $cfgfile = shift @ARGV;
 
-    if ( !defined $cfgfile && -r "/etc/mrtg.cfg" ) { $cfgfile = "/etc/mrtg.cfg"; }
+    if ( !defined $cfgfile and -r "/etc/mrtg.cfg" ) { $cfgfile = "/etc/mrtg.cfg"; }
 
     printusage() unless defined $cfgfile;
 
@@ -162,17 +200,16 @@ sub main {
 	# Create a pidfile, then chown it so we can use it once we change user
 	&create_pid($pidfile);
 	chown $uid, $gid, $pidfile;
-
-        ($(,$)) = ($gid,$gid);
-        ($<,$>) = ($uid,$uid);
-        die "ERROR failed to set UID to $uid\n" unless ($< == $uid and  $> == $uid);
     }
 
+    ($(,$)) = ($gid,$gid) ;
+    ($<,$>) = ($uid,$uid) ;
+    die "ERROR failed to set UID to $uid\n" unless ($< == $uid and  $> == $uid);
 
     $logfile = $opts{logging} || $logfile;
     if (defined $logfile){
 	setup_loghandlers $logfile;
-        warn "Started mrtg\n";
+        warn "Started mrtg with config \'$cfgfile\'\n";
     }	
 
     # lets make sure that there are not two mrtgs running in parallel.
@@ -193,6 +230,22 @@ sub main {
     debug('base', "Reading Config File: $cfgfile");
     readcfg($cfgfile,\@routers,\%cfg,\%rcfg);
 
+    # Enable or disable IPv6
+    if(defined $cfg{enableipv6}) {
+        $cfg{enableipv6} = lc($cfg{enableipv6});
+    } else {
+        $cfg{enableipv6} = 'no';
+    }
+
+    # Check we have the necessary libraries for IPv6 support
+    if ($cfg{enableipv6} eq 'yes') {
+        if ( (eval {require Socket6;}) and (eval {require IO::Socket::INET6;}) ) {
+            debug('base', "IPv6 libraries found, IPv6 enabled.");
+        } else {
+            warn "WARNING: IPv6 libraries not found, IPv6 disabled.\n";
+            $cfg{enableipv6} =  'no';
+        }
+    }
 
     # from our last run we kept some info about
     # the configuration of our devices around
@@ -227,7 +280,7 @@ sub main {
 
     # set the locale
     my $LOC;
-    if ( $cfg{'language'} && defined($lang2tran::LOCALE{"\L$cfg{'language'}\E"})) {
+    if ( $cfg{'language'} and defined($lang2tran::LOCALE{"\L$cfg{'language'}\E"})) {
 	debug('base', "Loading Locale for ".$cfg{'language'});
 	$LOC=$lang2tran::LOCALE{"\L$cfg{'language'}\E"};
     } else {
@@ -240,8 +293,17 @@ sub main {
     my $curent_time;
     my $sleep_time;
     if (defined $opts{"daemon"}) { $cfg{'runasdaemon'} = "yes"; }
-    &demonize_me($pidfile) if defined $cfg{'runasdaemon'}  and $cfg{'runasdaemon'} =~ /y/i  and $MRTG_lib::OS ne 'VMS';
-    
+    &demonize_me($pidfile,$cfgfile) if defined $cfg{'runasdaemon'}  and $cfg{'runasdaemon'} =~ /y/i  and $MRTG_lib::OS ne 'VMS'
+    	and not (defined $cfg{'nodetach'} and $cfg{'nodetach'} =~ /y/i);
+    # auto restart on die if running as demon
+
+    $SIG{__DIE__} = sub {
+        warn $_[0];
+        warn "*** Restarting after 10 seconds in an attempt to recover from the error above\n";
+        sleep 10;
+        exec @STARTARGS;
+    } if $cfg{'runasdaemon'};
+
     debug('base', "Starting main Loop");
     do {                        # Do this loop once for native mode and forever in daemon mode 
         my $router;
@@ -284,7 +346,7 @@ sub main {
 	    debug('base', "Act on Router/Target $router");
             if (defined $rcfg{'setenv'}{$router}) {
                 my $line = $rcfg{'setenv'}{$router};
-                while ( $line =~ s/([^=]+)=\"([^\"]+)\"\s*// ) 
+                while ( $line =~ s/([^=]+)=\"([^\"]*)\"\s*// ) 
  		{ 
 		    $ENV{$1}=$2;
                 }
@@ -296,46 +358,33 @@ sub main {
 
             my ($inlast, $outlast, $uptime, $name, $time) = 
               getcurrent(\@target, $router, \%rcfg, \%cfg);
-	    debug('base', "Get Current values: ".($inlast ||"undef").", ".
-                                                 ($outlast||"undef").", ".
-                                                 ($uptime||"undef").", ".
-                                                 ($name||"undef").", ".
-                                                 ($time||undef).")");
+	    debug('base', "Get Current values: in:".( defined $inlast ? $inlast : "undef").", out:".
+                                                 ( defined $outlast? $outlast : "undef").", up:".
+                                                 ( defined $uptime ? $uptime : "undef").", name:".
+                                                 ( defined $name ? $name : "undef").", time:".
+                                                 ( defined $time ? $time : "undef"));
 
             #abort, if the router is not responding.
-
-        
-             # Fix to integer value, just in case we're not using rrdtool
-             # and we're doing Target math that results in non-integer
-             # values. James Overbeck Jr. grendel@interq.ad.jp
-          
             if ($cfg{'logformat'} ne 'rrdtool') {
               # undefined values are ok for rrdtool !
-              if ( not defined $inlast or not defined $outlast){
-                warn "WARNING: Skipping Update of $router, inlast is not defined\n"
-                        unless defined $inlast;
-                warn "WARNING: Skipping Update of $router, outlast is not defined\n"
-                        unless defined $outlast;
-                next;
-              }
+              #if ( not defined $inlast or not defined $outlast){
+              #  warn "WARNING: Skipping Update of $router, inlast is not defined\n"
+              #          unless defined $inlast;
+              #  warn "WARNING: Skipping Update of $router, outlast is not defined\n"
+              #          unless defined $outlast;
+              #  next;
+              #}
 
-              $inlast = (0.5 > abs($inlast - int($inlast)) ) ? 
-                        int($inlast) : int($inlast) + int($inlast/abs($inlast))
-                                if $inlast =~ /\./;              
-              $outlast = (0.5 > abs($outlast - int($outlast)) ) ? 
-                        int($outlast) : int($outlast) + int($outlast/abs($outlast))
-                                if $outlast =~ /\./;
-              if ($inlast < 0) {
+              if (defined $inlast and $inlast < 0) {
                 $inlast += 2**31;
                 # this is likely to be a broken snmp counter ... lets compensate
               }  
-              if ($outlast < 0) {
+              if (defined $outlast and $outlast < 0) {
                 $outlast += 2**31;
                 # this is likely to be a broken snmp counter ... lets compensate
               }  
             }
 	    
-
             my ($maxin, $maxout, $maxpercent, $avin, $avout, $avpercent,$avmxin, $avmxout,
                 $cuin, $cuout, $cupercent);
 	    debug('base', "Create Graphics");
@@ -382,70 +431,127 @@ sub main {
 
 }
 
-
+# ( $inlast, $outlast, $uptime, $name, $time ) =
+#    &getcurrent( $target, $rou, $rcfg, $cfg )
+# Calculate monitored data for device $rou based on information in @$target
+# and referring to configuration data in %$rcfg and %$cfg. In the returned
+# list, $inlast and $outlast are the input and output monitored data values,
+# $uptime is the device uptime, $name is the device name, and $time is the
+# current time when the calculation was performed.
 sub getcurrent {
-    my ($target, $rou, $rcfg, $cfg) = @_;
+	my( $target, $rou, $rcfg, $cfg ) = @_;
+	# Hash indexed by $mode for conveniently saving $inlast and $outlast
+	my %last;
+	# Initialize uptime, device name, and data collection time to empty strings
+	my $uptime = '';
+	my $name = '';
+	my $time = '';
 
-    my %last;
-    my $uptime = "";
-    my $name = "";
-    my $strg;
-    my $time = "";
-    my $count=0;
-    foreach my $mode (qw(_IN_ _OUT_)){
-        my $data;
-        my $warning;
-        my $death;
-        { 
-          local $SIG{__WARN__}  = 
-                    sub { $warning = shift; $warning =~ s/^\s*(.+?)\s*$/$1/g; };
-          local $SIG{__DIE__}   = 
-                    sub { $death = shift;  $death =~ s/^\s*(.+?)\s*$/$1/g; };
-          $data = eval("$$rcfg{target}{$rou}");
-        }
-        if ( $warning ) {
-             warn "ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' (warn): $warning\n";
-             $data = undef; 
-        } elsif ( $death ) {
-              warn "ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' (kill): $death\n";
-              $data = undef;
-        } elsif ($@) {
-              warn "ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' (eval): $@\n";
-              $data = undef;
-	} elsif ( not defined $data ) {
-              warn "ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' did not eval into defined data\n";
-              $data = undef;  
-        } elsif ($data && $data !~ /^[-+]?\d+(\.\d*)?$/){ 
-              warn "ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' evaluated to '$data' instead of a number\n";
-              $data = undef;
-        } elsif ($data && length($data) > 190) {
-              warn "ERROR: $mode value: '$data' is way to long ...\n";
-              $data = undef;                
-	} else {
-              $data =~ s/^\+//;
+	# Calculate input and output monitored data
+	foreach my $mode( qw( _IN_  _OUT_ ) ) {
+		# Initialize monitored data, warning message, and death message
+		# to empty strings
+		my $data;
+		my $warning;
+		my $death;
+		{
+			# Code block used to calculate monitoring data
+			# Localize warning and death exception handlers to capture
+			# error message less any leading and trailing white space
+			local $SIG{ __WARN__ } =
+				sub { $_[0] =~ /^\s*(.+?)\s*$/; $warning = $1; };
+			local $SIG{ __DIE__ } =
+				sub { $_[0] =~ /^\s*(.+?)\s*$/; $death = $1; };
+			# Calculate monitoring data. $rcfg->{ target }{ $rou } contains
+			# a Perl expression for the calculation.
+			$data = eval "$rcfg->{target}{$rou}";
+       		}
+		# Test for various exceptions occurring in the calculation
+		if( $warning ) {
+			warn "ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' (warn): $warning\n";
+			$data = undef;
+		} elsif( $death ) {
+			warn "ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' (kill): $death\n";
+			$data = undef;
+		} elsif( $@ ) {
+			warn "ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' (eval): $@\n";
+			$data = undef;
+		} elsif( not defined $data ) {
+			warn "ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' did not eval into defined data\n";
+			$data = undef;
+		} elsif( $data and $data !~ /^[-+]?\d+(\.\d*)?([eE][+-]?[0-9]+)?$/ ) {
+			warn "ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' evaluated to '$data' instead of a number\n";
+			$data = undef;
+		} elsif( length( $data ) > 190 ) {
+			warn "ERROR: $mode value: '$data' is way to long ...\n";
+			$data = undef;
+		} else {
+			# At this point data is considered valid. Round to an integer
+			# unless RRDTool is in use and this is a gauge
+                        if (not ( $cfg->{ logformat } eq 'rrdtool'
+                                      and  defined $rcfg->{ options }{ gauge }{ $rou })){
+                            if (ref $data and ref $data eq 'Math::BigFloat') {
+                			$data->ffround( 0 )
+                            } else {
+                                        $data = sprintf "%.0f", $data;
+                            }
+                        }
+			# Remove any leading plus sign
+			$data =~ s/^\+//;
+		}
+		$last{ $mode } = $data;
 	}
-        $last{$mode} = $data;
-    }
 
-    if (defined $$rcfg{target}{$rou}  and $$rcfg{target}{$rou} =~ /^\s*\$\$target\[\d+\]{\$mode}\s*$/ ) {
-        $uptime = eval("my \$mode='_UPTIME_';$$rcfg{target}{$rou}");
-        $name = eval("my \$mode='_NAME_';$$rcfg{target}{$rou}");
-	die "ERROR: Target[$rou] eval warning: $@\n" if $@;
-        $time = eval("my \$mode='_TIME_';$$rcfg{target}{$rou}");
-	die "ERROR: Target[$rou] eval warning: $@\n" if $@;
-    }
+	# Set $u to the unique index of the @$target array referred to in the
+	# monitored data calculation for the current device. $u will be set to
+	# -1 if that index is not unique.
+	my $u = $rcfg->{ uniqueTarget }{ $rou };
 
-    #make sure we have a time set ...
-    $time = time unless defined $time and $time =~ /^\d+$/;
+	# Get the uptime, device name, and data collection time from the @$target
+	# array if the monitored data calculation refers only to one target.
+	# Otherwise it doesn't make sense to do this.
+	if( $rcfg->{ uniqueTarget }{ $rou } >= 0 ) {
+		$uptime = $target->[ $u ]{ _UPTIME_ };
+		$name = $target->[ $u ]{ _NAME_ };
+		$time = $target->[ $u ]{ _TIME_ };
+	}
 
-    if (defined $$rcfg{routeruptime}{$rou}) {
-        ($uptime,$name) = snmpget($$rcfg{routeruptime}{$rou}, $$cfg{snmpoptions},
-				  'sysUptime',
-                                   'sysName'); #" <- this makes emacs parsing happy
+	# Set the time to the current time if it was not set above
+	$time = time unless $time;
         
-    }
+	# Get the uptime and device name from the alternate location
+	# (community@host) that may have been specified with the RouterUptime
+	# target keyword
+	if( defined $rcfg->{ routeruptime }{ $rou } ) {
+		( $uptime, $name ) = snmpget(
+			v4onlyifnecessary( $rcfg->{ routeruptime }{ $rou },
+				$rcfg->{ ipv4only }{ $rou } ),
+			$cfg->{ snmpoptions }, 'sysUptime', 'sysName');
+	}
   
-    return ($last{_IN_}, $last{_OUT_}, $uptime, $name, $time);
+	# Get the device name from the alternate location (OID or
+	# OID:community@host) that may have been specified with the RouterName
+	# target keyword
+	if( defined $rcfg->{ routername }{ $rou } ) {
+		my( $noid, $nloc ) = split( /:/, $rcfg->{ routername }{ $rou }, 2 );
+		# If no location (community@host) was specified use values from the
+		# unique target referred to in the monitored data calculation
+		if( $u >= 0 and not $nloc ) {
+			my $comm = $target->[ $u ]{ Community };
+			my $host = $target->[ $u ]{ Host };
+			my $opt = $target->[ $u ]{ SnmpOpt };
+			$nloc = "$comm\@$host$opt";
+		}
+		# Get the location from the RouterUptime keyword if that is defined
+		# and $nloc has not otherwise been specified
+		$nloc = $rcfg->{ routeruptime }{ $rou }
+			if defined $rcfg->{ routeruptime }{ $rou } and not $nloc;
+		# Get the device name if $nloc (community@host) has been specified
+		# one way or the other
+		( $name ) = snmpget( $nloc, $$cfg{snmpoptions}, $noid ) if $nloc;
+	}
+  
+	return ( $last{ _IN_ }, $last{ _OUT_ }, $uptime, $name, $time );
 }
 
 sub rateupcheck ($) {
@@ -493,13 +599,22 @@ sub writegraphics {
     $up_abs='h' if defined $$rcfg{'options'}{'perhour'}{$router};
     $up_abs='m' if defined $$rcfg{'options'}{'perminute'}{$router};
 
+    my $dotrrd = "$$cfg{'logdir'}$$rcfg{'directory'}{$router}$router.rrd";
+    my $dotlog = "$$cfg{'logdir'}$$rcfg{'directory'}{$router}$router.log";
+    my $reallog = $$cfg{logformat} eq 'rrdtool' ? $dotrrd : $dotlog;
+
+    if (defined $$cfg{maxage} and -e $reallog and time()-$$cfg{maxage} > (stat($reallog))[9]){
+         warn "ERROR: skipping update of $router. As $reallog is older than MaxAge ($$cfg{maxage} s)\n";
+         return undef;
+    }
+
     if ($$cfg{logformat} eq 'rrdtool') {
         debug('base',"start RRDtool section");
         # make sure we got some sane default here
         my %dstype = qw/u COUNTER a ABSOLUTE g GAUGE h COUNTER m COUNTER/;
         $up_abs = $dstype{$up_abs};
         # update the database.
-        my $rrd = "$$cfg{'logdir'}$$rcfg{'directory'}{$router}$router.rrd";
+
         # set minimum/maximum values. use 'U' if we cannot get good values
         # the lower bound is hardcoded to 0
         my $absi = $maxvi;
@@ -510,23 +625,22 @@ sub writegraphics {
         $absi = 'U' if $absi == 0;
         $abso = 'U' if $abso == 0;
         # maybe we can convert an .log file to the new rrd format
-        if (-e "$$cfg{'logdir'}$$rcfg{'directory'}{$router}$router.log"
-            and not -e "$rrd") {
-             debug('base',"converting $$cfg{'logdir'}$$rcfg{'directory'}{$router}$router.log to RRD format");
+        if (-e $dotlog and not -e $dotrrd) {
+             debug('base',"converting $dotlog to RRD format");
              if(defined $RRDs::VERSION and $RRDs::VERSION < 1.000271){
                 die "ERROR: RRDtool version 1.0.27 or later required to perform log2rrd conversion\n";
              }
              log2rrd($router,$cfg,$rcfg);
-        } elsif (! -e $rrd) {
+        } elsif (! -e $dotrrd) {
             #nope it seems we have to create a new one
-            debug('base',"create $rrd");
+            debug('base',"create $dotrrd");
             # create the rrd if it doesn't exist
             # don't fail if interval is not set
             my $interval = $$cfg{interval} || 5;
             my $minhb = int($$cfg{interval} * 60)*2;
             $minhb = 600 if ($minhb <600); 
             my $rows = $$rcfg{'rrdrowcount'}{$router} || ( 4000 / $interval);
-            my @args = ($rrd, '-b', $time-10, '-s', int($interval * 60),
+            my @args = ($dotrrd, '-b', $time-10, '-s', int($interval * 60),
                          "DS:ds0:$up_abs:$minhb:0:$absi",
                          "DS:ds1:$up_abs:$minhb:0:$abso",
                          "RRA:AVERAGE:0.5:1:$rows",
@@ -545,31 +659,31 @@ sub writegraphics {
             # update the minimum/maximum according to maxbytes/absmax
             # and (re)set the data-source-type to reflect cfg changes
             # cost: 1 read/write cycle, but update will reuse the buffered data
-            my @args = ($rrd, '-a', "ds0:$absi", '-a', "ds1:$abso",
+            my @args = ($dotrrd, '-a', "ds0:$absi", '-a', "ds1:$abso",
                        '-d', "ds0:$up_abs", '-d', "ds1:$up_abs");
             RRDs::tune(@args);
             my $e = RRDs::error();
-            die "ERROR: Cannot tune logfile: $e\n" if $e;
+            warn "ERROR: Cannot tune logfile: $e\n" if $e;
             debug('log', "Called: RRDs::tune(@args)");
         }
         # update the rrd
-        $inlast  = 'U' unless defined $inlast  && $inlast  =~ /\S/ && $inlast  ne '##UNDEF##';
-        $outlast = 'U' unless defined $outlast && $outlast =~ /\S/ && $outlast ne '##UNDEF##';
-        RRDs::update("$rrd", "$time:$inlast:$outlast");
+        $inlast  = 'U' unless defined $inlast  and $inlast  =~ /\S/ and $inlast  ne '##UNDEF##';
+        $outlast = 'U' unless defined $outlast and $outlast =~ /\S/ and $outlast ne '##UNDEF##';
+        debug('log', "Calling: RRDs::update($dotrrd, '$time:$inlast:$outlast')");
+        RRDs::update("$dotrrd", "$time:$inlast:$outlast");
         my $e = RRDs::error(); 
-        die "ERROR: Cannot update $rrd with '$time:$inlast:$outlast' $e\n" if ($e);
-        debug('log', "Called: RRDs::update($rrd, '$time:$inlast:$outlast')");
+        warn "ERROR: Cannot update $dotrrd with '$time:$inlast:$outlast' $e\n" if ($e);
 
         # get the rrdtool-processed values back from rrdtool
         # for the threshold checks (we cannot use the fetched data)
-        my $lasttime = RRDs::last($rrd);
-        $e = RRDs::error(); 
-        die "ERROR: Cannot 'last' $rrd: $e\n" if ($e);
+        my $lasttime = RRDs::last($dotrrd);
         debug('log', "Called: RRDs::last()");
-        my $fetch = (RRDs::fetch($rrd,'AVERAGE','-s',$lasttime,'-e',$lasttime))[3];
         $e = RRDs::error(); 
-        die "ERROR: Cannot 'fetch' $rrd: $e\n" if ($e);
-        debug('log', "Called: RRDs::fetch($rrd,'AVERAGE','-s',$lasttime,'-e',$lasttime)");        
+        warn "ERROR: Cannot 'last' $dotrrd: $e\n" if ($e);
+        my $fetch = (RRDs::fetch($dotrrd,'AVERAGE','-s',$lasttime,'-e',$lasttime))[3];
+        $e = RRDs::error(); 
+        die "ERROR: Cannot 'fetch' $dotrrd: $e\n" if ($e);
+        debug('log', "Called: RRDs::fetch($dotrrd,'AVERAGE','-s',$lasttime,'-e',$lasttime)");        
         my $in = $fetch->[0]->[0] ?  $fetch->[0]->[0] : "NaN" ;
         my $out = $fetch->[0]->[1] ? $fetch->[0]->[1] : "NaN" ;
         debug('log', "  got: $in/$out");
@@ -585,15 +699,20 @@ sub writegraphics {
     }                 
     ########## rrdtool users have left here ###############
 
-    ((($MRTG_lib::OS eq 'NT') && (-e "${FindBin::Bin}${MRTG_lib::SL}rateup.exe")) ||
-     (-x "${FindBin::Bin}${MRTG_lib::SL}rateup")) || 
+    ((($MRTG_lib::OS eq 'NT' or $MRTG_lib::OS eq 'OS2') and (-e "${FindBin::Bin}${MRTG_lib::SL}rateup.exe")) or
+     (($MRTG_lib::OS eq 'NW') and (-e "${FindBin::Bin}${MRTG_lib::SL}rateup.nlm")) or
+     (-x "${FindBin::Bin}${MRTG_lib::SL}rateup")) or 
        die "ERROR: Can't Execute '${FindBin::Bin}${MRTG_lib::SL}rateup'\n";
 
     # rateup does not know about undef so we make inlast and outlast ready for rateup
-    warn "ERROR: inlast is undefined. Skipping $router\n" unless defined $inlast;
-    warn "ERROR: outlast is undefined. Skipping $router\n" unless defined $outlast;
-    return undef unless defined $inlast and defined $outlast;
+    #warn "ERROR: inlast is undefined. Skipping $router\n" unless defined $inlast;
+    #warn "ERROR: outlast is undefined. Skipping $router\n" unless defined $outlast;
+    #return undef unless defined $inlast and defined $outlast;
 
+    # set values to -1 to tell rateup about unknown values
+    $inlast = -1 unless defined $inlast;
+    $outlast = -1 unless defined $outlast;
+    
     if ($$rcfg{'options'}{'dorelpercent'}{$router}) {
         @exec = ("${FindBin::Bin}${MRTG_lib::SL}rateup", 
                  "$$cfg{'logdir'}$$rcfg{'directory'}{$router}","$router",
@@ -603,6 +722,7 @@ sub writegraphics {
                  $$rcfg{'rgb3'}{$router},$$rcfg{'rgb4'}{$router},
                  $$rcfg{'rgb5'}{$router});
     } else { 
+
         @exec = ("${FindBin::Bin}${MRTG_lib::SL}rateup", 
                  "$$cfg{'logdir'}$$rcfg{'directory'}{$router}","$router",
                  $time, $$rcfg{'options'}{'unknaszero'}{$router} ? '-z':'-Z',
@@ -620,6 +740,8 @@ sub writegraphics {
     push (@exec, '-a') if defined $$rcfg{'options'}{'noarrow'}{$router};
     push (@exec, '-i') if defined $$rcfg{'options'}{'noi'}{$router};
     push (@exec, '-o') if defined $$rcfg{'options'}{'noo'}{$router};
+    push (@exec, '-d') if defined $$rcfg{'options'}{'pngdate'}{$router};
+    push (@exec, '-p') if defined $$rcfg{'options'}{'printrouter'}{$router};
 
     my $maxx = $$rcfg{'xsize'}{$router}; 
     my $maxy = $$rcfg{'ysize'}{$router};
@@ -632,6 +754,8 @@ sub writegraphics {
     my $rop;
     my $ytics = $$rcfg{'ytics'}{$router};
     my $yticsf= $$rcfg{'yticsfactor'}{$router};
+    my $timestrfmt = $$rcfg{'timestrfmt'}{$router};
+    my $timestrpos = ${MRTG_lib::timestrpospattern}{uc $$rcfg{'timestrpos'}{$router}};
 
     if (not defined $$rcfg{'ylegend'}{$router}){
 	if ($bits){
@@ -651,6 +775,14 @@ sub writegraphics {
         push (@exec, "l", "[$$rcfg{'ylegend'}{$router}]");
     }
     my $sign = ($$rcfg{'unscaled'}{$router} and $$rcfg{'unscaled'}{$router} =~ /d/) ? 1 : -1;
+
+    if ($$rcfg{'pngtitle'}{$router}) {
+        push (@exec, "T", "[$$rcfg{'pngtitle'}{$router}]");
+    }
+  
+    if ($$rcfg{'timezone'}{$router}) {
+        push (@exec, "Z", "$$rcfg{'timezone'}{$router}");
+    }
   
     if ($$rcfg{'kilo'}{$router}) {
         push (@exec, "k", $$rcfg{'kilo'}{$router});
@@ -664,15 +796,15 @@ sub writegraphics {
     if (not defined $$rcfg{'suppress'}{$router} or $$rcfg{'suppress'}{$router} !~ /d/) {
         # VMS: should work for both now
         push (@exec, "i", "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-day.${main::GRAPHFMT}",
-              $sign*$maxvi, $sign*$maxvo, $maxx, $maxy, ,$xscale, $yscale, $growright, $step, $bits, $ytics, $yticsf);
+              $sign*$maxvi, $sign*$maxvo, $maxx, $maxy, ,$xscale, $yscale, $growright, $step, $bits, $ytics, $yticsf, $timestrfmt, $timestrpos);
         @mxvls = ("d");
         push (@metas, "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-day.${main::GRAPHFMT}",
               $$cfg{'interval'} ? $$cfg{'interval'} : 5);
     }
     my $SAGE = (time - $main::STARTTIME) / 3600 / 24; # current script age 
 
-    if (((not -e "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-week.${main::GRAPHFMT}") ||
-         ((-M "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-week.${main::GRAPHFMT}") + $SAGE  >= 0.5/24)) &&
+    if (((not -e "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-week.${main::GRAPHFMT}") or
+         ((-M "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-week.${main::GRAPHFMT}") + $SAGE  >= 0.5/24)) and
         (not defined $$rcfg{'suppress'}{$router}  or $$rcfg{'suppress'}{$router} !~/w/)
        ) {
         $step=30*60;
@@ -680,39 +812,42 @@ sub writegraphics {
         push (@mxvls , "w");
         $rop =(defined $$rcfg{'withpeak'}{$router}  and $$rcfg{'withpeak'}{$router} =~ /w/) ? "p" : "i"; 
         push (@exec, $rop ,"$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-week.${main::GRAPHFMT}",
-              $sign*$maxvi, $sign*$maxvo,  $maxx, $maxy, $xscale, $yscale, $growright, $step, $bits, $ytics, $yticsf);
+              $sign*$maxvi, $sign*$maxvo,  $maxx, $maxy, $xscale, $yscale, $growright, $step, $bits, $ytics, $yticsf, $timestrfmt, $timestrpos);
         push (@metas, "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-week.${main::GRAPHFMT}", 30);
     }
   
 
-    if (((not -e "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-month.${main::GRAPHFMT}") ||
-         (( -M "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-month.${main::GRAPHFMT}") + $SAGE >= 2/24))  &&
+    if (((not -e "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-month.${main::GRAPHFMT}") or
+         (( -M "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-month.${main::GRAPHFMT}") + $SAGE >= 2/24))  and
         (not defined  $$rcfg{'suppress'}{$router} or $$rcfg{'suppress'}{$router} !~ /m/)) {
         $step=2*60*60;
         $sign = (defined $$rcfg{'unscaled'}{$router} and $$rcfg{'unscaled'}{$router} =~ /m/) ? 1 : -1;
         push (@mxvls , "m");
         $rop =(defined $$rcfg{'withpeak'}{$router} and $$rcfg{'withpeak'}{$router} =~ /m/) ? "p" : "i"; 
         push (@exec, $rop ,"$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-month.${main::GRAPHFMT}",
-              $sign*$maxvi, $sign*$maxvo, $maxx, $maxy, $xscale, $yscale, $growright, $step, $bits, $ytics, $yticsf);
+              $sign*$maxvi, $sign*$maxvo, $maxx, $maxy, $xscale, $yscale, $growright, $step, $bits, $ytics, $yticsf, $timestrfmt, $timestrpos);
         push (@metas, "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-month.${main::GRAPHFMT}", 120);
     }
   
-    if (((not -e "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-year.${main::GRAPHFMT}") ||
-         (( -M "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-year.${main::GRAPHFMT}") + $SAGE  >= 1)) &&
+    if (((not -e "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-year.${main::GRAPHFMT}") or
+         (( -M "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-year.${main::GRAPHFMT}") + $SAGE  >= 1)) and
         (not defined $$rcfg{'suppress'}{$router} or $$rcfg{'suppress'}{$router} !~/y/)) {
         $step=24*60*60;
         $sign = (defined $$rcfg{'unscaled'}{$router}  and $$rcfg{'unscaled'}{$router} =~ /y/) ? 1 : -1;
         push (@mxvls , "y");
         $rop =(defined $$rcfg{'withpeak'}{$router}  and $$rcfg{'withpeak'}{$router} =~ /y/) ? "p" : "i"; 
         push (@exec, $rop, "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-year.${main::GRAPHFMT}",
-              $sign*$maxvi, $sign*$maxvo, $maxx, $maxy, $xscale, $yscale, $growright, $step, $bits, $ytics, $yticsf) ;
+              $sign*$maxvi, $sign*$maxvo, $maxx, $maxy, $xscale, $yscale, $growright, $step, $bits, $ytics, $yticsf, $timestrfmt, $timestrpos);
         push (@metas, "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-year.${main::GRAPHFMT}", 1440);
     }
 
     # VMS: this might work now ... or does VMS NOT know about pipes?
     # NT doesn't have fork() so an open(xxx,"-|") won't work
+    # OS2 fork() have bug with socket handles. In RunAsDaemon mode it fail
+    # after first loop (with "socket operation on non socket" message.
 
-    if ($MRTG_lib::OS eq 'VMS' || $MRTG_lib::OS eq 'NT'){
+    if ($MRTG_lib::OS eq 'VMS' or $MRTG_lib::OS eq 'NT'
+    or  $MRTG_lib::OS eq 'NW'  or $MRTG_lib::OS eq 'OS2'){
         map { s/"/\\"/; $_ = '"'.$_.'"' if /\s/ } @exec;
         open (RATEUP, join (" ", @exec)."|") or
            do {
@@ -722,7 +857,7 @@ sub writegraphics {
            }
     } else {
         $! = undef;
-        open (RATEUP,"-|") ||  
+        open (RATEUP,"-|") or  
                 do { exec @exec or
                      warn "WARNING: rateup (".(join " ", @exec ).
                           ") did not work: $!\n";
@@ -922,8 +1057,8 @@ sub fmi {
     #  while ($digits-$divm*3 > 4) { $divm++; }
     #  my $divnum = $number*$mul/10**($divm*3);
     my $divnum=$number*$mul*$$rcfg{'factor'}{$router};
-    #  while ($divnum/$$rcfg{'kilo'}{$router} >= 10*$$rcfg{'kilo'}{$router} && $divnum<$#short) {
-    while ($divnum >= 10*$$rcfg{'kilo'}{$router} && $divm<$#short) {
+    #  while ($divnum/$$rcfg{'kilo'}{$router} >= 10*$$rcfg{'kilo'}{$router} and $divnum<$#short) {
+    while ($divnum >= 10*$$rcfg{'kilo'}{$router} and $divm<$#short) {
         $divm++;
         $divnum /= $$rcfg{'kilo'}{$router};
     }
@@ -1014,12 +1149,12 @@ sub writehtml {
     my $dirrel = "../" x ($$rcfg{'directory_web'}{$router} =~ tr|/|/|);
 
     $Today=&$LOC(datestr(time));
-    $VERSION = "2.9.29";
+    $VERSION = "2.10.15";
     open (HTML,">$$cfg{'htmldir'}$$rcfg{'directory'}{$router}$router.$$rcfg{'extension'}{$router}") || 
       do { warn ("WARNING: Writing $router.$$rcfg{'extension'}{$router}: $!");
       	   next };
     print HTML "<!-- Begin Head -->\n";
-    print HTML '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">' . "\n";
+    print HTML '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n";
     print HTML "<HTML>\n";
     my $interval =$$cfg{'interval'} ? $$cfg{'interval'} : 5;
     my $expiration = &expistr($interval);
@@ -1060,9 +1195,9 @@ TEXT
 TEXT
         }
         
-        print HTML "<!-- cuin $peri $$cuin{$peri}{$router} -->"
+        print HTML "<!-- cuin $peri $$cuin{$peri}{$router} -->\n"
            if defined $$cuin{$peri}{$router};
-        print HTML "<!-- cuout $peri $$cuout{$peri}{$router} -->"
+        print HTML "<!-- cuout $peri $$cuout{$peri}{$router} -->\n"
            if defined $$cuout{$peri}{$router};
 
         if ($$rcfg{'options'}{'dorelpercent'}{$router} and $$cupercent{$peri}{$router} ) {
@@ -1108,7 +1243,7 @@ TEXT
     print HTML     
       &$LOC("The statistics were last updated <B>$Today</B>");
     }
-    if ($uptime && ! $$rcfg{options}{noinfo}{$router}) {
+    if ($uptime and ! $$rcfg{options}{noinfo}{$router}) {
         print HTML
           ",<BR>\n".
         &$LOC("at which time $namestring had been up for <B>$uptime</B>.").
@@ -1234,12 +1369,12 @@ TEXT
   ".&$LOC("<TD ALIGN=right><SMALL>Current $PercentCo</SMALL></TD>")."
   <TD ALIGN=left><SMALL>".sprintf("%0.1f %%",($$cupercent{$peri}{$router} || 0 ))."
  </SMALL></TD>
- </TR> " if ($$rcfg{'options'}{'dorelpercent'}{$router} && $PercentCo);
+ </TR> " if ($$rcfg{'options'}{'dorelpercent'}{$router} and $PercentCo);
 
 print HTML '<TD colspan="8"><small>',&$LOC("Average max 5 min values for $sample{$peri} interval):&nbsp;&nbsp;"),
   "$InCo ", &fmi($$avmxin{$peri}{$router}, $$rcfg{'maxbytes1'}{$router}, $router, @foo), "/",
   "$OutCo ", &fmi($$avmxout{$peri}{$router}, $$rcfg{'maxbytes2'}{$router}, $router, @foo),
-  "</small></TD></TR>" if ($$rcfg{'options'}{'avgpeak'}{$router} && $InCo && $OutCo);
+  "</small></TD></TR>" if ($$rcfg{'options'}{'avgpeak'}{$router} and $InCo and $OutCo);
   
 print HTML "
 </TABLE>
@@ -1353,8 +1488,8 @@ TEXT
 # ";
 #    }
     if ( 
-        $$cfg{'language'} && 
-        defined($lang2tran::LOCALE{"\L$$cfg{'language'}\E"}) &&
+        $$cfg{'language'} and 
+        defined($lang2tran::LOCALE{"\L$$cfg{'language'}\E"}) and
         ($LOC != $lang2tran::LOCALE{"default"})) 
     {
         if (defined($credits::LOCALE{"\L$$cfg{'language'}\E"})) {
@@ -1395,7 +1530,7 @@ sub printusage {
     print <<USAGEDESC;
 Usage: mrtg <config-file>
 
-mrtg-2.9.29 is the Multi Router Traffic Grapher.
+mrtg-2.10.15 is the Multi Router Traffic Grapher.
 
 If you want to know more about this tool, you might want
 to read the docs. They came together with mrtg! 
@@ -1409,9 +1544,9 @@ USAGEDESC
 
 sub lockit {
     my ($lockfile,$templock) = @_;
-    if ($MRTG_lib::OS eq 'VMS' || $MRTG_lib::OS eq 'NT') {
+    if ($MRTG_lib::OS eq 'VMS' or $MRTG_lib::OS eq 'NT'  or $MRTG_lib::OS eq 'OS2') {
         # too sad NT and VMS can't do links we'll do the diletants lock
-        if (-e $lockfile && not unlink $lockfile) {
+        if (-e $lockfile and not unlink $lockfile) {
             my($lockage) = time()-(stat($lockfile))[9];
             die "ERROR: I guess another mrtg is running. A lockfile ($lockfile)\n".
                  "       aged $lockage seconds is hanging around and I can't remove\n".
@@ -1430,13 +1565,12 @@ sub lockit {
           unless  $$ == $read;
     } else {
         # now, lets do it the UNIX way ... Daves work ...
-        open(LOCK,">$templock") || die "ERROR: Creating templock $templock: $!";
+        open(LOCK,">$templock") or die "ERROR: Creating templock $templock: $!";
         $main::Cleanfile = $templock;
         if (!link($templock,$lockfile)) { # Lock file exists - deal with it.
-            $main::Cleanfile2 = $lockfile;
             my($nlink,$lockage) = (stat($lockfile))[3,9]; 
             $lockage = time() - $lockage;
-            if ($nlink < 2 || $lockage > 30*60) { #lockfile is alone and old
+            if ($nlink < 2 or $lockage > 30*60) { #lockfile is alone and old
                 unlink($lockfile) 
                   || do{ unlink $templock; 
                          die "ERROR: Can't unlink stale lockfile ($lockfile). Permissions?\n"};
@@ -1491,14 +1625,14 @@ sub threshcheck {
             next unless defined $$rcfg{'thresh'.$bound.$dir}{$router};
             # we can not deal with unknown data here
             warn "WARNING: can't do threshold checking for target $router($dir) -- No valid current data\n"
-                unless defined $threshval{$dir} and defined $threshval{$dir};
+                unless defined $threshval{$dir};
  	    my $value = $threshval{$dir};
             next unless defined $value;
             my $boundval = $$rcfg{'thresh'.$bound.$dir}{$router};
             next unless defined $boundval;
             if ($boundval =~ s/%$//) { # defined in % of maxbytes
                 # 2 decimals in %
-                    $value = int($value / $$rcfg{maxbytes}{$router} * 10000.0) / 100; # the new code
+                    $value = int($value / $$rcfg{"maxbytes".($dir eq 'i' ? 1 : 2)}{$router} * 10000.0) / 100; # the new code
             }
 
             if (($bound eq 'min' and $boundval > $value) or
@@ -1506,7 +1640,7 @@ sub threshcheck {
 
 		# threshold was broken...
                 my @exec = ( $$rcfg{'threshprog'.$dir}{$router}, $router,
-			  $$rcfg{'thresh'.$bound.$dir}{$router}, $threshval{$dir},$$rcfg{'threshdesc'}{$router}, $value);
+			  $$rcfg{'thresh'.$bound.$dir}{$router}, $threshval{$dir},($$rcfg{'threshdesc'}{$router} ||"No Description"), $value);
 
 		# Check if we use the status file or not...
 		if ( defined $threshfile ) {
@@ -1515,7 +1649,8 @@ sub threshcheck {
 			open THRESHTOUCH, ">".$threshfile.".".$bound.uc($dir)
 			    or warn "WARNING: Creating $threshfile.".$bound.uc($dir).": $!\n";
 			close THRESHTOUCH;
-			system @exec if defined $$rcfg{'threshprog'.$dir}{$router};
+                        debug('base',"run treshprog$dir: ".(join ",",@exec));
+                  	system @exec if defined $$rcfg{'threshprog'.$dir}{$router};
 		    }
 		} else {
 		    # no threshold dir so run on every 'break'
@@ -1548,7 +1683,7 @@ sub getexternal ($) {
     my $name="unknown";
 
     open (EXTERNAL , $command."|")
-	|| warn "WARNING: Running '$command': $!\n";
+	or warn "WARNING: Running '$command': $!\n";
 
     warn "WARNING: Could not get any data from external command ".
 	"'".$command.
@@ -1591,7 +1726,7 @@ sub getexternal ($) {
     } else {
         $out = $1;
     }
-
+    debug('snpo',"External result:".($in||"undef")." out:".($out||"undef")." uptime:".($uptime||"undef")." name:".($name||"undef"));
     return ($in,$out,time,$uptime,$name);
 }
 
@@ -1600,9 +1735,34 @@ sub getsnmparg ($$$){
     my $target = shift;
     my $cfg = shift;
     my $retry = 0;
-    if (not gethostbyname  $$target{Host}){
-        warn "WARNING: Skippng host '$$target{Host}' as it does not resolve to an IP address\n";
-        return 'DEADHOST';
+
+    my $hostname = $$target{Host};
+
+    if ($$target{ipv4only}) {
+        if (not ( $hostname =~ /^\d+\.\d+\.\d+\.\d+$/ or gethostbyname $hostname) ){
+            warn "WARNING: Skipping host $hostname as it does not resolve to an IPv4 address\n";
+            return 'DEADHOST';
+        }
+    } else {
+         if($hostname =~ /^\[(.*)\]$/) {
+            # Numeric IPv6 address. Check that it's valid
+            $hostname = substr($hostname, 1);
+            chop $hostname;
+            if(! inet_pton(AF_INET6(), $hostname)) {
+                warn "WARNING: Skipping host $hostname: invalid IPv6 address\n";
+                return 'DEADHOST';
+            }
+        } else {
+            # Hostname. Look it up
+            my @res;
+            my ($too,$port,$otheropts) = split(':', $$target{SnmpOpt}, 3);
+            $port = 161 unless defined $port;
+            @res = getaddrinfo($hostname, $port, AF_UNSPEC(), SOCK_DGRAM());
+            if (scalar (@res) < 5) {
+                warn "WARNING: Skipping host $hostname as it does not resolve to an IPv4 or IPv6 address\n";
+                return 'DEADHOST';
+            }
+        }
     }
   RETRY:
     my @ifnum = ();
@@ -1618,11 +1778,11 @@ sub getsnmparg ($$$){
             $$target{Key}[$i] =~ s/\s+$//; # no trainling whitespace in keys ...
 	    if (not defined $$confcache{"$$target{Community}\@$$target{Host}$$target{SnmpOpt}"}{$$target{IfSel}[$i]}{$$target{Key}[$i]}) {
 		debug('snpo',"($i) Populate ConfCache for $$target{Host}$$target{SnmpOpt}");
-		populateconfcache($confcache,"$$target{Community}\@$$target{Host}$$target{SnmpOpt}",1,$$cfg{snmpoptions});
+		populateconfcache($confcache,"$$target{Community}\@$$target{Host}$$target{SnmpOpt}",$$target{ipv4only},1,$$cfg{snmpoptions});
 	    }
 	    if (not defined $$confcache{"$$target{Community}\@$$target{Host}$$target{SnmpOpt}"}{$$target{IfSel}[$i]}{$$target{Key}[$i]}) {
 		warn "WARNING: Could not match host:'$$target{Community}\@$$target{Host}$$target{SnmpOpt}' ref:'$$target{IfSel}[$i]' key:'$$target{Key}[$i]'\n";
-		return undef;
+		return 'NOMATCH';
 	    } else {
 		$ifnum[$i] = ".".$$confcache{"$$target{Community}\@$$target{Host}$$target{SnmpOpt}"}{$$target{IfSel}[$i]}{$$target{Key}[$i]};
 		debug('snpo',"($i) Confcache Match $$target{Key}[$i] -> $ifnum[$i]");
@@ -1631,7 +1791,7 @@ sub getsnmparg ($$$){
 	if ($ifnum[$i] !~ /^$|^\.\d+$/) {
 	    warn "WARNING: Can not determine".
 	      " ifNumber for $$target{Community}\@$$target{Host}$$target{SnmpOpt} \tref: '$$target{IfSel}[$i]' \tkey: '$$target{Key}[$i]'\n";
-	    return undef;
+	    return 'NOMATCH';
 	}
     }
     for my $i (0..1) {
@@ -1656,11 +1816,10 @@ sub getsnmparg ($$$){
 	push @OID ,$$target{OID}[$i].$ifnum[$i];
     }
     # we also want to know uptime and system name unless we are
-    # looking at a squid cache or the user did a nomib2
     if ( not defined $$cfg{nomib2} and $$cfg{logformat} ne 'rrdtool' ) {
       if ( $OID[0] !~ /^cache.+$/ and
            $OID[0] !~ /^\Q1.3.6.1.4.1.3495.1\E/ ) {
-           push @OID, qw(sysUptime sysName)
+           push @OID, qw(sysUptime sysName);
       } else {
            push @OID, qw(cacheUptime cacheSoftware cacheVersionId)
       }
@@ -1669,14 +1828,30 @@ sub getsnmparg ($$$){
     # pull that data
     debug('snpo',"SNMPGet from $$target{Community}\@$$target{Host}$$target{SnmpOpt} -- ".(join ",", @OID));
     my @ret;
+    
+    # make sure we have no error messages hanging round.
+    
+    $SNMP_Session::errmsg = '';
+
+    my $targtemp = $$target{Community}.'@'.$$target{Host}.$$target{SnmpOpt};
+    $targtemp = v4onlyifnecessary($targtemp, $$target{ipv4only});
+    
+    my @snmpoids = grep !/^Pseudo/, @OID;
     if (defined $$cfg{singlerequest}){
-	foreach my $oid (@OID){
-	    push @ret, 
-	    snmpget($$target{Community}.'@'.$$target{Host}.$$target{SnmpOpt},$$cfg{snmpoptions},$oid);
+        local $BER::pretty_print_timeticks = 0;
+	foreach my $oid (@snmpoids){
+            push @ret, snmpget($targtemp,$$cfg{snmpoptions},$oid);
 	}
     } else {
-	@ret = snmpget($$target{Community}.'@'.$$target{Host}.$$target{SnmpOpt},$$cfg{snmpoptions},@OID);
+	@ret = snmpget($targtemp,$$cfg{snmpoptions},@snmpoids);
     }
+    my @newret;
+    for (@OID) {
+        /^PseudoZero$/ && do { push @newret, 0; next; };
+        /^PseudoOne$/ && do { push @newret, 1; next; };
+        push @newret, shift @ret;
+    }
+    @ret = @newret;
     debug('snpo',"SNMPfound -- ".(join ", ", map {"'".($_||"undef")."'"}  @ret));
     $ret[-2] = $ret[-2].' '.$ret[-1] if $OID[-1] and $OID[-1] eq 'cacheVersionId';
     my $time = time;
@@ -1700,12 +1875,12 @@ sub getsnmparg ($$$){
 			# remove broken entry
 			$$confcache{$$target{Community}.'@'.$$target{Host}.
 				    $$target{SnmpOpt}}{$$target{IfSel}[$i]}{$$target{Key}[$i]} = undef;
-			debug('snpo',"($i) goto RETRY force if cache repopulation");
+			debug('repo',"($i) goto RETRY force if cache repopulation");
 			goto RETRY;
 		    } else {
 			warn "WARNING: could not match&get".
 			    " $$target{Host}$$target{SnmpOpt}/$$target{OID}[$i] for Eth $$target{Key}[$i]\n";
-			return undef;
+			return 'NOMATCH';
 		    }
 		};
 		debug ('snpo',"($i) Eth crosscheck OK");
@@ -1713,18 +1888,18 @@ sub getsnmparg ($$$){
 	    /^Ip$/ && do {
 		my $if = shift @ret || 'none';
 		if ($ifnum[$i] ne '.'.$if) {
-		    debug('snpo', "($i) IP if crosscheck got .$if expected $ifnum[$i]");
+		    debug('repo', "($i) IP if crosscheck got .$if expected $ifnum[$i]");
 		    if (not $retry) {
 			$retry=1;
 			# remove broken entry
 			$$confcache{$$target{Community}.'@'.$$target{Host}.
 				    $$target{SnmpOpt}}{$$target{IfSel}[$i]}{$$target{Key}[$i]} = undef;
-			debug('snpo',"($i) goto RETRY force if cache repopulation");
+			debug('repo',"($i) goto RETRY force if cache repopulation");
 			goto RETRY;
 		    } else {
 			warn "WARNING: could not match&get".
 			    " $$target{Host}$$target{SnmpOpt}/$$target{OID}[$i] for IP $$target{Key}[$i]\n";
-			return undef;
+			return 'NOMATCH';
 		    }
 		}
 		debug ('snpo',"($i) IP crosscheck OK");
@@ -1733,24 +1908,24 @@ sub getsnmparg ($$$){
 		my $descr = shift @ret || 'Empty';
                 $descr =~ s/[\0- ]+$//; # remove excess spaces and stuff
 		if ($descr ne $$target{Key}[$i]) {
-		    debug('snpo', "($i) $_ if crosscheck got $descr expected $$target{Key}[$i]");
+		    debug('repo', "($i) $_ if crosscheck got $descr expected $$target{Key}[$i]");
 		    if (not $retry) {
 			$retry=1;
 			# remove broken entry
 			$$confcache{$$target{Community}.'@'.$$target{Host}.
 				    $$target{SnmpOpt}}{$$target{IfSel}[$i]}{$$target{Key}[$i]} = undef;
-			debug('snpo',"($i) goto RETRY force if cache repopulation");
+			debug('repo',"($i) goto RETRY force if cache repopulation");
 			goto RETRY;
 		    } else {
 			warn "WARNING: could not match&get".
 			    " $$target{Host}$$target{SnmpOpt}/$$target{OID}[$i] for $_ '$$target{Key}[$i]'\n";
-			return undef;
+			return 'NOMATCH';
 		    }
 		} 
 		debug ('snpo',"($i) $_ crosscheck OK");
 	    };
 	}
-	# we no sense continuing here ... if there is no data ...      
+	# no sense continuing here ... if there is no data ...      
  	if (defined $SNMP_Session::errmsg and $SNMP_Session::errmsg =~ /no response received/){
             $SNMP_Session::errmsg = '';
 	    warn "WARNING: skipping because at least the query for $OID[0] on  $$target{Host} did not succeed\n";
@@ -1765,6 +1940,17 @@ sub getsnmparg ($$$){
     
     my @res = ( @final,$time, @ret);
     
+    # Convert in and out values to integers with a user-defined subroutine
+    # specified by the Conversion target key
+    if( $target->{ Conversion } ) {
+        foreach my $ri( 0..1 ) {
+            next unless defined $res[ $ri ];
+            my $exp = "&MRTGConversion::$target->{ Conversion }( '$res[ $ri ]' )";
+            $res[ $ri ] = eval $exp;
+            warn "WARNING: evaluation of \"$exp\" failed\n$@\n" if $@;
+        }
+    }
+
     # have some cleanup first, it seems that some agents
     # are adding newlines to what they return
     map{ $_ =~ s/\n|\r//g if defined $_ } @res;
@@ -1775,7 +1961,7 @@ sub getsnmparg ($$$){
 	for my $ri (0..1){
 	    # for folks using rrdtool I am allowing numbers 
 	    # with decimals here
-	    if ( defined $res[$ri] && $res[$ri] !~ /^[-+]?\d+(.\d+)?$/ ) {
+	    if ( defined $res[$ri] and $res[$ri] !~ /^[-+]?\d+(.\d+)?$/ ) {
 		warn "WARNING: Expected a number but got '$res[$ri]'\n";
 		$res[$ri] = undef;
 		
@@ -1823,13 +2009,18 @@ sub readtargets ($$$) {
 		    if ($$targ{Methode} eq 'EXEC') {
 			@res = getexternal($$targ{Command});
 		    } else { # parent
-                        if (not $deadhost{$$targ{Host}}) {      
+                        if (not $deadhost{$$targ{Community}.$$targ{Host}}) {      
         	  	    @res = getsnmparg($confcache,$targ,$cfg);
                             if ( $res[0] and $res[0] eq 'DEADHOST') {
                                 # guess we got a blank here
-                                $deadhost{$$targ{Host}} = 1;
+                                @res = ( undef,undef,time,undef,undef);
+                                $deadhost{$$targ{Community}.$$targ{Host}} = 1;
                                 warn "WARNING: no data for $$targ{OID}[0]&$$targ{OID}[1]:$$targ{Community}\@$$targ{Host}. Skipping further queries for Host $$targ{Host} in this round.\n"
+                            } elsif ($res[0] and $res[0] eq 'NOMATCH'){
+                                @res = (undef,undef,time,undef,undef);
                             }
+                        } else {
+                            @res = ( undef,undef,time,undef,undef);
                         }
 		    }
 		
@@ -1852,43 +2043,70 @@ sub readtargets ($$$) {
 	    
 	}
 	# happy reaping ... 
-	for (my $i = 0; $i < $forks;$i++) {  
-	    debug ('fork',"Parent reading child $i");
-	    my $h = $hand[$i];
-	    for (my $ii = $i * $split; 
-		 $ii < ($i+1) * $split and $ii < $trgnum;
-		 $ii++){ 
-		my $targ = $$target[$ii];
-		my @res;
-		for (0..4){
-		    my $line = <$h>; # must be a simple scalar here else it wont work
-		    die "ERROR: fork $i has died ahead of time ...\n" if not defined $line;
-		    chomp $line;
-#                    debug ('fork',"reading for $ii $line");
-		    $line = undef if $line eq "##UNDEF##";                
-		    push @res,$line;
-		};
+        my $vin =''; # vector of pipe file-descriptors from children
+	for (my $i = 0; $i < $forks;$i++) {
+            vec($vin, fileno($hand[$i]), 1) = 1;
+        }
+        my $left = $forks;
+        while ($left) {
+            my $rout = $vin; # read vector
+            my $eout = $vin; # exception vector
+            my $nfound = select($rout, undef, $eout, undef); # no timeout
+            if (1 > $nfound) {
+               die sprintf("ERROR: select returned %d: $!\n", $nfound);
+            }
+	    for (my $i = 0; $i < $forks; $i++) {
+                next unless defined $hand[$i] and defined fileno($hand[$i]);
+# this does not seem to work reliably
+#                if (vec($eout, fileno($hand[$i]), 1)) {
+#		   die "ERROR: fork $i has died ahead of time?\n";
+#                }
+                next unless vec($rout, fileno($hand[$i]), 1);
 
-		($$targ{_IN_},
-		 $$targ{_OUT_},
-		 $$targ{_TIME_},
-		 $$targ{_UPTIME_},
-		 $$targ{_NAME_}) = @res;		
-            }     
-            # feed confcache entries
-            my $lasthost ="";
-            while (<$h>){
-                chomp;
-                my ($host,$method,$key,$value) = split (/\t/, $_);
-                if ($host ne $lasthost){
-        	     debug ('fork',"start undef for $host");
-                     $$confcache{$host} = undef;
-        	     debug ('fork',"end undef for $host");
-                }
-                $lasthost = $host;
-                storeincache($confcache,$host,$method,$key,$value);
-             }
-             close $h;
+                vec($vin, fileno($hand[$i]), 1) = 0; # remove this child fd
+
+	        debug ('fork',"Parent reading child $i");
+	        my $h = $hand[$i];
+	        for (my $ii = $i * $split; 
+		     $ii < ($i+1) * $split and $ii < $trgnum;
+		     $ii++){ 
+		    my $targ = $$target[$ii];
+		    my @res;
+		    for (0..4){
+		        my $line = <$h>; # must be a simple scalar here else it wont work
+		        die "ERROR: fork $i has died ahead of time ...\n" if not defined $line;
+		        chomp $line;
+    #                    debug ('fork',"reading for $ii $line");
+		        $line = undef if $line eq "##UNDEF##";                
+		        push @res,$line;
+		    };
+    
+		    ($$targ{_IN_},
+		     $$targ{_OUT_},
+		     $$targ{_TIME_},
+		     $$targ{_UPTIME_},
+		     $$targ{_NAME_}) = @res; 
+                     if ($] >= 5.0061){
+                         $$targ{_IN_} = Math::BigFloat->new($$targ{_IN_}) if $$targ{_IN_};
+                         $$targ{_OUT_} = Math::BigFloat->new($$targ{_OUT_}) if $$targ{_OUT_};
+                     }
+                }     
+                # feed confcache entries
+                my $lasthost ="";
+                while (<$h>){
+                    chomp;
+                    my ($host,$method,$key,$value) = split (/\t/, $_);
+                    if ($host ne $lasthost){
+        	         debug ('fork',"start undef for $host");
+                         $$confcache{$host} = undef;
+        	         debug ('fork',"end undef for $host");
+                    }
+                    $lasthost = $host;
+                    storeincache($confcache,$host,$method,$key,$value);
+                 }
+                 close $h;
+                 --$left;
+            }
         }
 	            
     } else {
@@ -1910,12 +2128,29 @@ sub readtargets ($$$) {
 		 $$targ{_NAME_}) = getsnmparg($confcache,$targ,$cfg);
                if ( $$targ{_IN_} and $$targ{_IN_} eq 'DEADHOST') {
                    $$targ{_IN_} = undef;
+                   $$targ{_TIME_} =time;
                    # guess we got a blank here
                    $deadhost{$$targ{Host}} = 1;
                    warn "WARNING: no data for $$targ{OID}[0]&$$targ{OID}[1]:$$targ{Community}\@$$targ{Host}. Skipping further queries for Host $$targ{Host} in this round.\n"
+               } 
+               if (  $$targ{_IN_} and $$targ{_IN_} eq 'NOMATCH') {   
+                   $$targ{_IN_} = undef;
+                   $$targ{_TIME_} =time;
                }
-	    }	    
-	}
+       
+	    } else {
+                 $$targ{_IN_} = undef;
+                 $$targ{_OUT_} = undef;
+                 $$targ{_TIME_} = time;
+                 $$targ{_UPTIME_} = undef;
+                 $$targ{_NAME_} = undef;
+            }
+            if ($] >= 5.008 ){
+                    $$targ{_IN_} = new Math::BigFloat "$$targ{_IN_}" if $$targ{_IN_};
+                    $$targ{_OUT_} = new Math::BigFloat "$$targ{_OUT_}" if $$targ{_OUT_};
+            }
+                
+	}       
     }
         
 }
