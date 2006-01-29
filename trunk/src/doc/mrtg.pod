@@ -63,6 +63,10 @@ Only check the cfg file for errors. Do not do anything.
 
 Define the name and path of the pid file for mrtg running as a daemon
 
+=item B<--log-only>
+
+Only update the logfile, do not produce graphics or html pages
+
 =item B<--debug=s>
 
 Enable debug options. The argument of the debug option is a comma separated list of debug values:

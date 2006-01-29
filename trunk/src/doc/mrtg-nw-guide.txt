@@ -25,7 +25,7 @@ OOVVEERRVVIIEEWW
        +o   Problems with NetWare's implementation of Perl.
 
        Support for the NetWare OS has now been fully added into
-       MRTG, beginning with MRTG release 2.11.2.
+       MRTG, beginning with MRTG release 2.12.2.
 
        Liberallly minded operating systems support a commandline
        length approaching 1000 characters. In such environments
@@ -53,7 +53,7 @@ OOVVEERRVVIIEEWW
        lation method supplied here will solve this problem for
        now.
 
-       The MRTG.pl script in the 2.11.2 (or later) version of
+       The MRTG.pl script in the 2.12.2 (or later) version of
        MRTG has been configured to suit all likely versions of
        NetWare able to use Perl5, and bypasses all of the known
        problems with NetWare Perl running MRTG.
@@ -67,7 +67,7 @@ PPRREERREEQQUUIISSIITTEESS
        +o   NetWare 5.1 w/ SP8, NetWare 6.0 w/ SP5 or NetWare 6.5
            w/ SP2.
 
-       +o   A copy of the MRTG Package (v2.11.2 at time of writ-
+       +o   A copy of the MRTG Package (v2.12.2 at time of writ-
            ting)
 
        +o   Three .ncf files to execute the Perl scripts at the
@@ -94,6 +94,7 @@ IINNSSTTAALLLLIINNGG MMRRTTGG
                     SYS:/Mrtg/html
                     SYS:/Mrtg/html/images
                     SYS:/Mrtg/html/work
+                    SYS:/Mrtg/lib
                     SYS:/Mrtg/logs
                     SYS:/Mrtg/translate
 
@@ -111,9 +112,9 @@ IINNSSTTAALLLLIINNGG MMRRTTGG
 
                Note 2: For English-only language support, all \translate files EXCEPT Locales_mrtg may be deleted.
 
-                    \lib\*        to  SYS:/Perl/lib              Include sub-directories. See Note 3.
+                    \lib\*        to  SYS:/Mrtg/lib              Include sub-directories. See Note 3.
 
-               Note 3: This will create the SYS:/Perl/lib/mrtg2 and ./pod directories.
+               Note 3: This will create the SYS:/Mrtg/lib/mrtg2 and ./pod directories.
 
        4.  Create copies of the three .ncf files and install
            them:
@@ -129,9 +130,9 @@ IINNSSTTAALLLLIINNGG MMRRTTGG
            .\mrtg\bin directory where it must remain.
 
 CCOONNFFIIGGUURRIINNGG MMRRTTGG
-       +o   Refer to Novell documentation on configuring and
-           loading SNMP support on your server if this is the
-           device to be monitored.
+       +o   Refer to Novell documentation on configuring and load-
+           ing SNMP support on your server if this is the device
+           to be monitored.
 
        +o   Edit sys:/mrtg/bin/MakeMrtgCfg.ncf:
 
@@ -297,20 +298,22 @@ CCOOMMPPIILLIINNGG RRAATTEEUUPP..NNLLMM
 
        +o   LibPNG Graphics Library (v1.2.8 or later)
 
-       +o   ZLib Library (v1.2.2 or later)
+       +o   ZLib Library (v1.2.3 or later)
 
-       +o   A copy of the get_ver.awk script. (See "Appendix")
+       +o   The get_ver.awk script
 
        +o   A copy of the GNU build tools.    (See <http://source-
            forge.net/projects/gnuwin32/>)
 
        The auxiliary libraries can be obtained from:
 
-            GD Graphics Library.   (See L<http://www.boutell.com/gd/>)
+       GD Graphics Library.   (See <http://www.boutell.com/gd/>)
 
-            PNG Graphics Library.   (See L<http://libpng.sourceforge.net/>)
+       PNG Graphics Library.   (See <http://libpng.source-
+       forge.net/>)
 
-            zLib Compression Library.   (See L<http://www.gzip.org/zlib/>)
+       zLib Compression Library.   (See
+       <http://www.gzip.org/zlib/>)
 
        Edit the Makefile.Netware file as required to match your
        installation paths; search the file for the key word
@@ -346,8 +349,6 @@ AAPPPPEENNDDIIXX
        The Appendix includes 'copies' of the following files:
 
        +o   The NCF files used during MRTG configuration,
-
-       +o   The AWK script used when 'building' the Rateup NLM.
 
        To create copies of these files, simply 'cut and paste'
        into your favourite 'tteexxtt eeddiittoorr' and save under their
@@ -393,7 +394,6 @@ AAPPPPEENNDDIIXX
 
 
 
-
         # MakeMrtgIndex.NCF
         # Purpose : Create the HTML Index File for MRTG HTML data pages
         # Changed :  5/05/2005  New
@@ -409,24 +409,6 @@ AAPPPPEENNDDIIXX
         #
         # End of MakeMrtgIndex.NCF
 
-       _g_e_t___v_e_r_._a_w_k
-
-        # get_ver.awk
-        # fetch rateup version number from input file and write them to STDOUT
-        BEGIN {
-          while ((getline < ARGV[1]) > 0) {
-            if (match ($0, /VERSION = "[^"]+"/)) {
-              rateup_ver_str = substr($4, 2, length($4) - 3);
-              split(rateup_ver_str, v, ".");
-              rateup_ver = v[1] "," v[2] "," v[3];
-            }
-          }
-          print "RATEUP_VERSION = " rateup_ver "";
-          print "RATEUP_VERSION_STR = " rateup_ver_str "";
-        )
-        #
-        # End of get_ver.awk
-
 LLIICCEENNSSEE
        GNU General Public License
 
@@ -439,4 +421,4 @@ AAUUTTHHOORR
 
 
 
-2.12.2                      2005-06-19           MRTG-NW-GUIDE(1)
+2.13.0                      2006-01-29           MRTG-NW-GUIDE(1)

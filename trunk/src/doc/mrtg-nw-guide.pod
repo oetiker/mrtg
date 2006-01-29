@@ -35,7 +35,7 @@ Problems with NetWare's implementation of Perl.
 
 =back
 
-Support for the NetWare OS has now been fully added into MRTG, beginning with MRTG release 2.11.2.
+Support for the NetWare OS has now been fully added into MRTG, beginning with MRTG release 2.12.2.
 
 Liberallly minded operating systems support a commandline length approaching 1000 characters. In such environments it
 was an easy matter to pass the sometimes high number of parameters used by MRTG's Rateup executable directly on the
@@ -51,7 +51,7 @@ name of executables (NLM).
 The absence of a specific installation procedure has caused MRTG to fail in the past because the Perl script could
 not find or load the Rateup executable. The installation method supplied here will solve this problem for now.
 
-The MRTG.pl script in the 2.11.2 (or later) version of MRTG has been configured to suit all likely versions of
+The MRTG.pl script in the 2.12.2 (or later) version of MRTG has been configured to suit all likely versions of
 NetWare able to use Perl5, and bypasses all of the known problems with NetWare Perl running MRTG.
 
 =head1 PREREQUISITES
@@ -70,7 +70,7 @@ NetWare 5.1 w/ SP8, NetWare 6.0 w/ SP5 or NetWare 6.5 w/ SP2.
 
 =item *
 
-A copy of the MRTG Package (v2.11.2 at time of writting)
+A copy of the MRTG Package (v2.12.2 at time of writting)
 
 =item *
 
@@ -107,6 +107,7 @@ Create the following directories:
          SYS:/Mrtg/html
          SYS:/Mrtg/html/images
          SYS:/Mrtg/html/work
+         SYS:/Mrtg/lib
          SYS:/Mrtg/logs
          SYS:/Mrtg/translate
 
@@ -126,9 +127,9 @@ Copy from the MRTG package the following files:
 
     Note 2: For English-only language support, all \translate files EXCEPT Locales_mrtg may be deleted.
 
-         \lib\*        to  SYS:/Perl/lib              Include sub-directories. See Note 3.
+         \lib\*        to  SYS:/Mrtg/lib              Include sub-directories. See Note 3.
 
-    Note 3: This will create the SYS:/Perl/lib/mrtg2 and ./pod directories.
+    Note 3: This will create the SYS:/Mrtg/lib/mrtg2 and ./pod directories.
 
 =item 4.
 
@@ -337,11 +338,11 @@ LibPNG Graphics Library (v1.2.8 or later)
 
 =item *
 
-ZLib Library (v1.2.2 or later)
+ZLib Library (v1.2.3 or later)
 
 =item *
 
-A copy of the get_ver.awk script. (See L</"Appendix">)
+The get_ver.awk script
 
 =item *
 
@@ -351,11 +352,11 @@ A copy of the GNU build tools.    (See L<http://sourceforge.net/projects/gnuwin3
 
 The auxiliary libraries can be obtained from:
 
-     GD Graphics Library.   (See L<http://www.boutell.com/gd/>)
+GD Graphics Library.   (See L<http://www.boutell.com/gd/>)
 
-     PNG Graphics Library.   (See L<http://libpng.sourceforge.net/>)
+PNG Graphics Library.   (See L<http://libpng.sourceforge.net/>)
 
-     zLib Compression Library.   (See L<http://www.gzip.org/zlib/>)
+zLib Compression Library.   (See L<http://www.gzip.org/zlib/>)
 
 Edit the Makefile.Netware file as required to match your installation paths; search
 the file for the key word 'Edit'.
@@ -391,10 +392,6 @@ The Appendix includes 'copies' of the following files:
 =item *
 
 The NCF files used during MRTG configuration,
-
-=item *
-
-The AWK script used when 'building' the Rateup NLM.
 
 =back
 
@@ -452,24 +449,6 @@ under their respective names. You should remove the leading space from each line
 
  #
  # End of MakeMrtgIndex.NCF
-
-=head3  get_ver.awk
-
- # get_ver.awk
- # fetch rateup version number from input file and write them to STDOUT
- BEGIN {
-   while ((getline < ARGV[1]) > 0) {
-     if (match ($0, /VERSION = "[^"]+"/)) {
-       rateup_ver_str = substr($4, 2, length($4) - 3);
-       split(rateup_ver_str, v, ".");
-       rateup_ver = v[1] "," v[2] "," v[3];
-     }
-   }
-   print "RATEUP_VERSION = " rateup_ver "";
-   print "RATEUP_VERSION_STR = " rateup_ver_str "";
- )
- #
- # End of get_ver.awk
 
 =head1 LICENSE
 

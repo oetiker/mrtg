@@ -1,7 +1,7 @@
 # things that the GNU standards document suggests all makefiles
 # should have.
 SHELL=/bin/sh
-VER=2.12.2
+VER=2.13.0
 .SUFFIXES:
 .SUFFIXES: .c .o .pl .pm .pod .html .man .wml .1 .txt
 
@@ -36,7 +36,7 @@ bin/rateup.o: $(top_srcdir)/src/rateup.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(top_srcdir)/src/rateup.c -o bin/rateup.o
 
 subst:
-	$(PERL) -0777 -p -i~ -e 's@^#!\s*/\S*perl@#! $(PERL)@' $(top_srcdir)/bin/cfgmaker $(top_srcdir)/bin/indexmaker $(top_srcdir)/bin/mrtg
+	$(PERL) -0777 -p -i~ -e "s'^#!\s*/\S*perl'#! $(PERL)'" $(top_srcdir)/bin/cfgmaker $(top_srcdir)/bin/indexmaker $(top_srcdir)/bin/mrtg
 	$(PERL) -0777 -p -i~ -e 's@GRAPHFMT="...";@GRAPHFMT="$(GDFORM_EXT)";@' $(top_srcdir)/bin/mrtg $(top_srcdir)/bin/indexmaker
 
 clean:
@@ -82,10 +82,9 @@ POD = doc/mrtg-faq.pod      doc/mrtg-logfile.pod  doc/mrtg-nt-guide.pod      doc
 
 MAN = $(POD:.pod=.1)
 TXT = $(POD:.pod=.txt)
-HTML = $(POD:.pod=.html) doc/index.html
 
 getpod:
-	-rm $(HTML) $(MAN) $(TXT)
+	-rm $(MAN) $(TXT)
 	-rm doc/cfgmaker.pod; ln -s ../bin/cfgmaker doc/cfgmaker.pod
 	-rm doc/indexmaker.pod;ln -s ../bin/indexmaker doc/indexmaker.pod
 	-rm doc/mrtglib.pod;ln -s ../lib/mrtg2/MRTG_lib.pm doc/mrtglib.pod
@@ -93,33 +92,18 @@ getpod:
 .pod.1:
 	pod2man --release=$(VER) --center=mrtg $<  > $@
 
-.pod.html:
-	( cd doc ; pod2html --infile=../$< --outfile=../$@ --noindex --htmlroot=. --podroot=. --podpath=. --title=$* )
-
-.wml.html:
-	wmk -f $<
-	chmod u+x $@
-
 .1.txt:
 	@NROFF@ -man -Tascii $< > $@
 
 man: $(MAN)
 
-html: $(HTML)
-
 txt: $(TXT)
 
 versync:
-	$(PERL) -i~ -p -e 's|VERSION\s*=\s*"\d+\.\d+\.\d+([a-z0-9]+)?"|VERSION = "$(VER)"|gi; s|mrtg-\d+\.\d+\.\d+([a-z0-9]+)?|mrtg-$(VER)|gi; s|MRTG\s\d+\.\d+\.\d+([a-z0-9]+)?|MRTG $(VER)|gi' ANNOUNCE bin/mrtg bin/cfgmaker bin/indexmaker lib/mrtg2/*.pm src/*.c doc/*.pod doc/*.wml doc/*.html
+	$(PERL) -i~ -p -e 's|VERSION\s*=\s*"\d+\.\d+\.\d+([a-z0-9]+)?"|VERSION = "$(VER)"|gi; s|mrtg-\d+\.\d+\.\d+([a-z0-9]+)?|mrtg-$(VER)|gi; s|MRTG\s\d+\.\d+\.\d+([a-z0-9]+)?|MRTG $(VER)|gi' ANNOUNCE bin/mrtg bin/cfgmaker bin/indexmaker lib/mrtg2/*.pm src/*.c doc/*.pod 
 	cd translate && $(PERL) mergelocale.pl skeleton.pm0 *.pmd && cp locales_mrtg.pm ../lib/mrtg2
 
-doc:    getpod versync man html txt
-	(cd doc; lynx -dump index.html >index.txt)
-	$(PERL) -p -e 's|"http://people.ee.ethz.ch/~oetiker/webtools/mrtg/([^"])|"$$1|g' doc/index.html >doc/www-index.html
-	$(PERL) -p -e 's|"http://people.ee.ethz.ch/~oetiker/webtools/mrtg/([^"])|"$$1|g' doc/mrtg.html >doc/www-mrtg.html
-	$(PERL) -i~ -p -e 's|\QHREF="././\E|HREF="|g' doc/*.html
-	(cd doc; perl -i~ -p -e 's|<BODY>|<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#990200" VLINK="#006342"><P><IMG SRC="mrtg-l.png"><IMG SRC="mrtg-m.png"><IMG SRC="mrtg-r.gif"></P>|' *.html)
-
+doc:    getpod versync man txt
 
 rateupexe:
 	i386-mingw32msvc-gcc -Wall -Wno-format -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -O3 -mwindows -Ilibs-i386-mingw32msvc/zlib -Ilibs-i386-mingw32msvc/libpng -Ilibs-i386-mingw32msvc/gd -c src/strftime.c -o src/strftime.o
@@ -130,21 +114,20 @@ rateupexe:
 tar:	doc rateupexe
 	autoconf
 	gchmod -R u=rwX,go=rX .
-	(cd .. ; ln -s AABM-mrtg $(DIRNAME))
-	(cd .. ; sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | gtar -czv --files-from=- -f $(DIRNAME)/archive/$(ARCHIVE).tar.gz --exclude='*~' --exclude="CVS")
+	(cd .. ; ln -s src $(DIRNAME))
+	(cd .. ; sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | gtar -czv --files-from=- -f $(DIRNAME)/$(ARCHIVE).tar.gz --exclude='*~' --exclude="CVS")
 	$(PERL) -0777 -pi -e 's@GRAPHFMT="...";@GRAPHFMT="png";@' bin/mrtg bin/indexmaker
 	# build rateup for windows ...
-	(cd .. ; touch $(DIRNAME)/contrib/a~;sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | xargs zip -r $(DIRNAME)/archive/$(ARCHIVE).zip; zip $(DIRNAME)/archive/$(ARCHIVE).zip $(DIRNAME)/bin/rateup.exe  $(DIRNAME)/bin/rateup.nlm $(DIRNAME)/bin/rateup.nlm; zip -d $(DIRNAME)/archive/$(ARCHIVE).zip '*~' 'CVS')
+	(cd .. ; touch $(DIRNAME)/contrib/a~;sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | xargs zip -r $(DIRNAME)/$(ARCHIVE).zip; zip $(DIRNAME)/$(ARCHIVE).zip $(DIRNAME)/bin/rateup.exe  $(DIRNAME)/bin/rateup.nlm $(DIRNAME)/bin/rateup.nlm; zip -d $(DIRNAME)/$(ARCHIVE).zip '*~' 'CVS')
 	-rm ../$(DIRNAME)
 
-doc-dist: doc
-	cp doc/*.html ${HOME}/public_html/webtools/mrtg/
-	cp doc/www-index.html ${HOME}/public_html/webtools/mrtg/readme.html
-	cp doc/www-mrtg.html ${HOME}/public_html/webtools/mrtg/mrtg.html
-
-dist: doc-dist tar
-	cp CHANGES archive/$(ARCHIVE).* ${HOME}/public_html/webtools/mrtg/pub/
+dist: tar
+	svn commit -m 'released version $(VER)'
+	svn copy -m "tagging version $(VER)" svn://svn.ee.ethz.ch/mrtg/trunk/src svn://svn.ee.ethz.ch/mrtg/tags/$(VER)
+	cp CHANGES  ${HOME}/public_html/webtools/mrtg/pub/
+	mv $(ARCHIVE).* ${HOME}/public_html/webtools/mrtg/pub/
 	(cd ${HOME}/public_html/webtools/mrtg/pub; rm mrtg.tar.gz;ln -s $(ARCHIVE).tar.gz mrtg.tar.gz;gmd5sum $(ARCHIVE).tar.gz >$(ARCHIVE).tar.gz.md5;pgps  $(ARCHIVE).tar.gz.md5;chmod 644  $(ARCHIVE).tar.gz.md5*)
 
-betadist: doc-dist tar
-	cp CHANGES archive/$(ARCHIVE).* ${HOME}/public_html/webtools/mrtg/pub/beta
+betadist: tar
+	cp $(ARCHIVE).* ${HOME}/public_html/webtools/mrtg/pub/beta
+	mv CHANGES $(ARCHIVE).* ${HOME}/public_html/webtools/mrtg/pub/beta

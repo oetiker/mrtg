@@ -92,3 +92,7 @@ and then:
 
 If you have installed the libraries successfully, cfgmaker and mrtg should
 automatically detect them and allow IPv6 support to be enabled.
+
+=head1 AUTHOR
+
+Lorenzo Colitti E<lt>lorenzo location colitti.comE<gt>

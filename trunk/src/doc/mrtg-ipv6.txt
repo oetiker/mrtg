@@ -104,6 +104,9 @@ IIPPvv66 LLIIBBRRAARRIIEESS
        and mrtg should automatically detect them and allow IPv6
        support to be enabled.
 
+AAUUTTHHOORR
+       Lorenzo Colitti <lorenzo location colitti.com>
 
 
-2.12.2                      2005-06-19               MRTG-IPV6(1)
+
+2.13.0                      2006-01-29               MRTG-IPV6(1)

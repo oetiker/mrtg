@@ -225,13 +225,10 @@ DDEESSCCRRIIPPTTIIOONN
            array @main::DEBUG.
 
 AAUUTTHHOORRSS
-       Tobias Oetiker <tobi@oetiker.ch>, Dave Rand
-       <dlr@bungi.com> and other contributors, mentioned in the
-       file "CHANGES"
+       Rainer Bawidamann <Rainer.Bawidamann@rz.uni-ulm.de>
 
-       Documentation by Rainer Bawidamann <Rainer.Baw-
-       idamann@rz.uni-ulm.de>
+       (This Manpage)
 
 
 
-2.12.2                      2005-06-19                 MRTGLIB(1)
+2.13.0                      2006-01-29                 MRTGLIB(1)

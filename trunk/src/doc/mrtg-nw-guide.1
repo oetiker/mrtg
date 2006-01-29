@@ -129,7 +129,7 @@
 .\" ========================================================================
 .\"
 .IX Title "MRTG-NW-GUIDE 1"
-.TH MRTG-NW-GUIDE 1 "2005-06-19" "2.12.2" "mrtg"
+.TH MRTG-NW-GUIDE 1 "2006-01-29" "2.13.0" "mrtg"
 .SH "NAME"
 mrtg\-nw\-guide \- MRTG for NetWare
 .SH "SYNOPSIS"
@@ -150,7 +150,7 @@ A standard installation method.
 .IP "\(bu" 4
 Problems with NetWare's implementation of Perl.
 .PP
-Support for the NetWare \s-1OS\s0 has now been fully added into \s-1MRTG\s0, beginning with \s-1MRTG\s0 release 2.11.2.
+Support for the NetWare \s-1OS\s0 has now been fully added into \s-1MRTG\s0, beginning with \s-1MRTG\s0 release 2.12.2.
 .PP
 Liberallly minded operating systems support a commandline length approaching 1000 characters. In such environments it
 was an easy matter to pass the sometimes high number of parameters used by \s-1MRTG\s0's Rateup executable directly on the
@@ -166,7 +166,7 @@ name of executables (\s-1NLM\s0).
 The absence of a specific installation procedure has caused \s-1MRTG\s0 to fail in the past because the Perl script could
 not find or load the Rateup executable. The installation method supplied here will solve this problem for now.
 .PP
-The \s-1MRTG\s0.pl script in the 2.11.2 (or later) version of \s-1MRTG\s0 has been configured to suit all likely versions of
+The \s-1MRTG\s0.pl script in the 2.12.2 (or later) version of \s-1MRTG\s0 has been configured to suit all likely versions of
 NetWare able to use Perl5, and bypasses all of the known problems with NetWare Perl running \s-1MRTG\s0.
 .SH "PREREQUISITES"
 .IX Header "PREREQUISITES"
@@ -176,7 +176,7 @@ Perl 5.8.0 for NetWare with latest Perl Updates (February, 2005 or later; previo
 .IP "\(bu" 4
 NetWare 5.1 w/ \s-1SP8\s0, NetWare 6.0 w/ \s-1SP5\s0 or NetWare 6.5 w/ \s-1SP2\s0.
 .IP "\(bu" 4
-A copy of the \s-1MRTG\s0 Package (v2.11.2 at time of writting)
+A copy of the \s-1MRTG\s0 Package (v2.12.2 at time of writting)
 .IP "\(bu" 4
 Three .ncf files to execute the Perl scripts at the NetWare server console.
 .IP "\(bu" 4
@@ -192,7 +192,7 @@ Install the latest Perl 5.8.x release on your server. See the Perl documentation
 .IP "2." 4
 Create the following directories:
 .Sp
-.Vb 9
+.Vb 10
 \&         SYS:/Mrtg
 \&         SYS:/Mrtg/bin
 \&         SYS:/Mrtg/contrib    (Optional for this document)
@@ -200,6 +200,7 @@ Create the following directories:
 \&         SYS:/Mrtg/html
 \&         SYS:/Mrtg/html/images
 \&         SYS:/Mrtg/html/work
+\&         SYS:/Mrtg/lib
 \&         SYS:/Mrtg/logs
 \&         SYS:/Mrtg/translate
 .Ve
@@ -227,11 +228,11 @@ Copy from the \s-1MRTG\s0 package the following files:
 .Ve
 .Sp
 .Vb 1
-\&         \elib\e*        to  SYS:/Perl/lib              Include sub-directories. See Note 3.
+\&         \elib\e*        to  SYS:/Mrtg/lib              Include sub-directories. See Note 3.
 .Ve
 .Sp
 .Vb 1
-\&    Note 3: This will create the SYS:/Perl/lib/mrtg2 and ./pod directories.
+\&    Note 3: This will create the SYS:/Mrtg/lib/mrtg2 and ./pod directories.
 .Ve
 .IP "4." 4
 Create copies of the three .ncf files and install them:
@@ -426,25 +427,19 @@ Novell LibC \s-1NDK\s0 (February 2004 or later)
 .IP "\(bu" 4
 LibPNG Graphics Library (v1.2.8 or later)
 .IP "\(bu" 4
-ZLib Library (v1.2.2 or later)
+ZLib Library (v1.2.3 or later)
 .IP "\(bu" 4
-A copy of the get_ver.awk script. (See \*(L"Appendix\*(R")
+The get_ver.awk script
 .IP "\(bu" 4
 A copy of the \s-1GNU\s0 build tools.    (See <http://sourceforge.net/projects/gnuwin32/>)
 .PP
 The auxiliary libraries can be obtained from:
 .PP
-.Vb 1
-\&     GD Graphics Library.   (See L<http://www.boutell.com/gd/>)
-.Ve
+\&\s-1GD\s0 Graphics Library.   (See <http://www.boutell.com/gd/>)
 .PP
-.Vb 1
-\&     PNG Graphics Library.   (See L<http://libpng.sourceforge.net/>)
-.Ve
+\&\s-1PNG\s0 Graphics Library.   (See <http://libpng.sourceforge.net/>)
 .PP
-.Vb 1
-\&     zLib Compression Library.   (See L<http://www.gzip.org/zlib/>)
-.Ve
+zLib Compression Library.   (See <http://www.gzip.org/zlib/>)
 .PP
 Edit the Makefile.Netware file as required to match your installation paths; search
 the file for the key word 'Edit'.
@@ -475,8 +470,6 @@ systems, including the leading path and name of the Rateup \s-1NLM\s0.
 The Appendix includes 'copies' of the following files:
 .IP "\(bu" 4
 The \s-1NCF\s0 files used during \s-1MRTG\s0 configuration,
-.IP "\(bu" 4
-The \s-1AWK\s0 script used when 'building' the Rateup \s-1NLM\s0.
 .PP
 To create copies of these files, simply 'cut and paste' into your favourite '\fBtext editor\fR' and save
 under their respective names. You should remove the leading space from each line.
@@ -560,27 +553,6 @@ under their respective names. You should remove the leading space from each line
 .Vb 2
 \& #
 \& # End of MakeMrtgIndex.NCF
-.Ve
-.PP
-\fIget_ver.awk\fR
-.IX Subsection "get_ver.awk"
-.PP
-.Vb 15
-\& # get_ver.awk
-\& # fetch rateup version number from input file and write them to STDOUT
-\& BEGIN {
-\&   while ((getline < ARGV[1]) > 0) {
-\&     if (match ($0, /VERSION = "[^"]+"/)) {
-\&       rateup_ver_str = substr($4, 2, length($4) - 3);
-\&       split(rateup_ver_str, v, ".");
-\&       rateup_ver = v[1] "," v[2] "," v[3];
-\&     }
-\&   }
-\&   print "RATEUP_VERSION = " rateup_ver "";
-\&   print "RATEUP_VERSION_STR = " rateup_ver_str "";
-\& )
-\& #
-\& # End of get_ver.awk
 .Ve
 .SH "LICENSE"
 .IX Header "LICENSE"

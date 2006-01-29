@@ -129,9 +129,9 @@
 .\" ========================================================================
 .\"
 .IX Title "MRTG-REFERENCE 1"
-.TH MRTG-REFERENCE 1 "2005-06-19" "2.12.2" "mrtg"
+.TH MRTG-REFERENCE 1 "2006-01-29" "2.13.0" "mrtg"
 .SH "NAME"
-mrtg\-reference \- MRTG 2.12.2 configuration reference
+mrtg\-reference \- MRTG 2.13.0 configuration reference
 .SH "OVERVIEW"
 .IX Header "OVERVIEW"
 The runtime behaviour of \s-1MRTG\s0 is governed by a configuration file. Run\-of\-
@@ -254,6 +254,19 @@ Example:
 .Vb 1
 \& EnableIPv6: Yes
 .Ve
+.Sh "EnableSnmpV3"
+.IX Subsection "EnableSnmpV3"
+When set to yes, uses the Net::SNMP module instead of the \s-1SNMP_SESSION\s0 module for
+generating snmp queries.  This allows the use of SNMPv3 if other snmpv3 parameters
+are set.
+.PP
+SNMPv3 is disabled by default.
+.PP
+Example:
+.PP
+.Vb 1
+\& EnableSnmpV3: yes
+.Ve
 .Sh "Refresh"
 .IX Subsection "Refresh"
 How many seconds apart should the browser (Netscape) be
@@ -372,6 +385,9 @@ accepts a hash of options. The following options are currently supported:
 .PP
 The values behind the options indicate the current default value.
 Note that these settings \s-1OVERRIDE\s0 the per target timeout settings.
+.PP
+A per-target SnmpOptions[] keyword will override the global settings.  
+That keyword is primarily for SNMPv3.
 .PP
 The 16bit request ids are the only way to query the broken \s-1SNMP\s0
 implementation of \s-1SMC\s0 Barricade routers.
@@ -642,6 +658,21 @@ Example:
 .Vb 1
 \& Target[myrouter]: 2:public@router1:::::2
 .Ve
+.IP "SNMPv3" 4
+.IX Item "SNMPv3"
+As an alternative to SNMPv2c, SNMPv3 provides access to the ifHC* counters,
+along with encryption.  Not all devices support SNMPv3, and you will also
+need the perl Net::SNMP library in order to use it.  It is recommended that
+cfgmaker be used to generate configurations involving SNMPv3, as it will 
+check if the Net::SNMP library is loadable, and will switch to SNMPv2c if
+v3 is unavailable.
+.Sp
+\&\s-1SNMP\s0 v3 requires additional authentication parameters, passed using the 
+SnmpOptions[] per-target keyword.
+.Sp
+Example:
+  Target[myrouter]: 2:router1:::::3
+  SnmpOptions[myrouter]: username=>'user1'
 .IP "Reversing" 4
 .IX Item "Reversing"
 Sometimes you are sitting on the wrong side of the
@@ -680,6 +711,22 @@ Example:
 .Sp
 .Vb 1
 \& Target[myrouter]: ifInErrors.1&ifOutErrors.1:public@myrouter
+.Ve
+.IP "SnmpWalk" 4
+.IX Item "SnmpWalk"
+It may be that you want to monitor an snmp object that is only reachable by
+\&'walking'. You can get mrtg to walk by prepending the \s-1OID\s0 with the string
+\&\fBWaLK\fR or if you want a particular entry from the table returned by the walk
+you can use \fBWaLK\fR\fIx\fR where \fIx\fR is a number starting from 0 (!).
+.Sp
+Example:
+.Sp
+.Vb 1
+\&  Target[myrouter]: WaLKstrangeOid.1&WaLKstrangeOid.2:public@myrouter
+.Ve
+.Sp
+.Vb 1
+\&  Target[myrouter]: WaLK3strangeOid.1&WaLK4strangeOid.2:public@myrouter
 .Ve
 .IP "Interface by \s-1IP\s0" 4
 .IX Item "Interface by IP"
@@ -753,8 +800,8 @@ a backlash:
 \& Target[myrouter]: #\e:\e fun:public@hello.router
 .Ve
 .Sp
-<Note that the # sign will be interpreted as a comment character if
-it is the first non white-space character on the line.>
+Note that the # sign will be interpreted as a comment character if
+it is the first non white-space character on the line.
 .IP "Interface by Ethernet Address" 4
 .IX Item "Interface by Ethernet Address"
 When the \s-1SNMP\s0 interface index changes, you can key that interface by its
@@ -828,8 +875,10 @@ factor by which the timeout is multiplied on every retry (default: 1.0).
 .IP "version" 4
 .IX Item "version"
 for \s-1SNMP\s0 version. If you have a fast router you might want to put
-a '2' here. This will make mrtg try to poll the 64 bit counters and thus
+a '2' here.  For authenticated or encrypted \s-1SNMP\s0, you can try to put a
+\&'3' here.  This will make mrtg try to poll the 64 bit counters and thus
 prevent excessive counter wrapping. Not all routers support this though.
+\&\s-1SNMP\s0 v3 requires additional setup, see SnmpOptions[] for full details.
 .Sp
 Example:
 .Sp
@@ -1102,6 +1151,86 @@ Example:
 \& Target[v4onlyrouter_1]: 1:public@v4onlyrouter
 \& IPv4Only[v4onlyrouter_1]: Yes
 .Ve
+.Sh "SnmpOptions (V3)"
+.IX Subsection "SnmpOptions (V3)"
+SNMPv3 requires a fairly rich set of options.  This per-target keyword
+allows access to the User Security Model of SNMPv3.  Options are listed
+in the same syntax as a perl hash.
+.PP
+\fISecurity Modes\fR
+.IX Subsection "Security Modes"
+.PP
+SNMPv3 has three security modes, defined on the device being polled.
+For example, on Cisco routers the security mode is defined by the
+snmp-server group global configuration command.
+.IP "NoAuthNoPriv" 4
+.IX Item "NoAuthNoPriv"
+Neither Authentication nor Privacy is defined.  Only the Username 
+option is specified for this mode.
+.Sp
+Example:
+.Sp
+.Vb 1
+\& SnmpOptions[myrouter]: username=>'user1'
+.Ve
+.IP "AuthNoPriv" 4
+.IX Item "AuthNoPriv"
+Uses a Username and a password.  The password can be hashed using the 
+snmpkey application, or passed in plain text along with the ContextEngineID
+.Sp
+Example:
+.Sp
+.Vb 2
+\& SnmpOptions[myrouter]: username=>'user1',authpassword=>'example',
+\&   contextengineid=>'80000001110000004000000'
+.Ve
+.IP "Priv" 4
+.IX Item "Priv"
+Both Authentication and Privacy is defined.  The default privacy protocol
+is des.
+.Sp
+Example:
+ SnmpOptions[myrouter]: authkey=>'0x1e93ab5a396e2af234c8920e61cfe2028072c0e2',
+   authprotocol=>'sha',privprotocol=>'des',username=>'user1',
+   privkey=>'0x498d74940c5872ed387201d74b9b25e2'
+.PP
+\fIsnmp options\fR
+.IX Subsection "snmp options"
+.PP
+The following option keywords are recognized:
+.IP "username" 4
+.IX Item "username"
+The user associated with the User Security Model
+.IP "contextname" 4
+.IX Item "contextname"
+An \s-1SNMP\s0 agent can define multiple contexts.  This keyword allows them to
+be polled.
+.IP "contextengineid" 4
+.IX Item "contextengineid"
+A unique 24\-byte string identifying the snmp\-agent.
+.IP "authpassword" 4
+.IX Item "authpassword"
+The plaintext password for a user in either AuthNoPriv or Priv mode.
+.IP "authkey" 4
+.IX Item "authkey"
+A md5 or sha hash of the plain-text password, along with the engineid.
+Use the snmpkey commandline program to generate this hash, or use
+Net::SNMP::Security::USM in a script.
+.IP "authprotocol {sha|md5}" 4
+.IX Item "authprotocol {sha|md5}"
+The hashing algorithm defined on the \s-1SNMP\s0 client.  Defaults to md5.
+.IP "privpassword" 4
+.IX Item "privpassword"
+A plaintext pre-shared key for encrypting snmp packets in Priv mode.
+.IP "privkey" 4
+.IX Item "privkey"
+A hash of the plain-text pre-shared key, along with the engineid.
+Use the snmpkey commandline program to generate this hash, or use
+Net::SNMP::Security::USM in a script.
+.IP "privprotocol {des|3desede|aescfb128|aescfb192|aescfb256}" 4
+.IX Item "privprotocol {des|3desede|aescfb128|aescfb192|aescfb256}"
+Specifies the encryption method defined on the snmp agent.  The default
+is des.
 .Sh "PageFoot"
 .IX Subsection "PageFoot"
 Things to add to the bottom of the generated \s-1HTML\s0 page.  Note
@@ -1730,10 +1859,9 @@ possible to set environment variables per target.
 .PP
 Example:
 .PP
-.Vb 3
+.Vb 2
 \& SetEnv[myrouter]:  EMAIL="contact_email@someplace.net"
 \&                    HOST="www.some_server.net"
-\&                    URL="http://www.some_server.net/path/mrtg.html"
 .Ve
 .SH "PER TARGET DEFAULT VALUES"
 .IX Header "PER TARGET DEFAULT VALUES"
@@ -1888,6 +2016,25 @@ Example:
 .Sp
 .Vb 1
 \& --debug="cfg,snpo"
+.Ve
+.SH "EXIT CODES"
+.IX Header "EXIT CODES"
+An exit code of 0 indicates that all targets were successful.  Generally speaking, most codes greater
+than 0 indicate that there was an unrecoverable problem.  One exception to this is code 91, which
+indicates that at least one of the targets was succesful.  A partial listing of the codes follows:
+.PP
+.Vb 1
+\&  0: All targets sucessful
+.Ve
+.PP
+.Vb 2
+\&  2: Config error (can't read, fatal error in config, etc)
+\& 17: Another MRTG process is processing config
+.Ve
+.PP
+.Vb 2
+\& 91: At least one target sucessful
+\& 92: No targets were sucessful
 .Ve
 .SH "EXAMPLES"
 .IX Header "EXAMPLES"

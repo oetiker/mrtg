@@ -12,24 +12,16 @@ DDEESSCCRRIIPPTTIIOONN
        few guidelines which explain how to contribute so that I
        can use the contribution without too much additional work.
 
-TTRRAANNSSLLAATTIIOONNSS
+       TTrraannssllaattiioonnss
+
        MRTG messages have been translated to a number of lan-
        guages but there are still many which have not been cov-
        ered yet. If you want to add yours, go into the
-       _m_r_t_g_-_2_._1_2_._2_/_t_r_a_n_s_l_a_t_e directory and follow the instruc-
+       _m_r_t_g_-_2_._1_3_._0_/_t_r_a_n_s_l_a_t_e directory and follow the instruc-
        tions given in the _R_E_A_D_M_E file.
 
-DDOOCCUUMMEENNTTAATTIIOONN
-       All documentation of mrtg is done with the perl PPOODD sys-
-       tem. If you want to learn about it, type
+       PPaattcchheess
 
-        perldoc perlpod
-
-       and read the instructions. If you have bugfixes or addi-
-       tions to the existing documents, make sure you modify the
-       PPOODD files and not the html or txt versions.
-
-PPAATTCCHHEESS
        When you have created your modification or extension to
        mrtg and want to submit it to me, please crate a patch for
        the files which you have modified.  Do not send entire
@@ -46,7 +38,17 @@ PPAATTCCHHEESS
 
         diff --recursive --unified --ignore-space-change old-dir/ new-dir/ >long.patch
 
-DDOOCCUUMMEENNTTAATTIIOONN
+       DDooccuummeennttaattiioonn
+
+       All documentation of mrtg is done with the perl PPOODD sys-
+       tem. If you want to learn about it, type
+
+        perldoc perlpod
+
+       and read the instructions. If you have bugfixes or addi-
+       tions to the existing documents, make sure you modify the
+       PPOODD files and not the html or txt versions.
+
        I take documentation very seriously. Whenever you create a
        new feature for mrtg which you want to get included in the
        official release, your patch must also contain modifica-
@@ -62,4 +64,4 @@ AAUUTTHHOORR
 
 
 
-2.12.2                      2005-06-19            MRTG-CONTRIB(1)
+2.13.0                      2006-01-29            MRTG-CONTRIB(1)

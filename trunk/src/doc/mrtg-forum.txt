@@ -82,12 +82,12 @@ MMAAIILLIINNGG--LLIISSTT
        For past activity there is also a mailing list archive
        available:
 
-        http://www.ee.ethz.ch/~slist/mrtg
+        http://lists.ee.ethz.ch/mrtg
 
        There is also a web interface to manage your mailing-list
        subscription.
 
-        http://www.ee.ethz.ch/~slist/lsg2.cgi
+        http://lists.ee.ethz.ch/lsg2.cgi
 
 NNEEWWSSGGRROOUUPP
        For discussion of MRTG or related topics on the Usenet,
@@ -101,12 +101,20 @@ NNEEWWSSGGRROOUUPP
 
         http://groups.google.com
 
+IIRRCC CChhaannnneell
+       For discussion of MRTG and related topics on IRC, the
+       `#mrtg' channel on EFNet has been created.
+
+       More information can be found at
+
+        http://mrtg.easymac.org.
+
 MMRRTTGG JJaappaann
        There is a special Mailinglist for MRTG Users in Japan. It
        carries translations of the traffic from MRTG-ANNOUNCE as
        well as updates on the Japanese Translation of the MRTG
-       documentation. Go to http://www.mrtg.jp/info/ml.html for
-       further Information. Note that the list is in Japanese.
+       documentation. Go to http://www.mrtg.jp/ for further
+       Information.
 
 MMRRTTGG TTrrkkiiyyee
        There is a special Mailinglist for MRTG Users in Turkey.
@@ -118,4 +126,4 @@ AAUUTTHHOORR
 
 
 
-2.12.2                      2005-06-19              MRTG-FORUM(1)
+2.13.0                      2006-01-29              MRTG-FORUM(1)

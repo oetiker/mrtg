@@ -1,3 +1,63 @@
+Changes 2.13.0, 2006-01-23
+--------------------------
+
+From: Tobi
+* make sure rateup properly handles unscaled graphs even
+  when the bits option is active ... 
+
+* place if-filter later in the cfgmaker code so that it can see ALL the template variables.
+
+* New magic OID prefix WaLK and GeTNEXT to cause mrtg to use snmpwalk for
+  certain variables and keep the first value it finds.  (sponsored by srg.com.bs)  
+
+* use short image paths in <img src...> if images and HTML are in the same directory.
+
+* fix threshold checking with rrdtool for logging
+
+From: Michel <unreal .. home.nl>
+* allow kMG to be set to ''
+
+From: Juergen Obermann <Juergen.Obermann with hrz.uni-giessen.de>
+* improved german translation
+
+From: Jerzy Sobczyk <J.Sobczyk in ia.pw.edu.pl>
+* make indexmaker work properly in rrdtool mode with images turned off
+
+
+From: Yusaku Nakajima <yusaku@beige.ocn.ne.jp>
+* remove unconditional warning from windows code
+
+From: "Dean, Mike" <mdean@landstar.com>
+* have some sensibility in return codes from mrtg ... 
+
+From: NormW <normw with bocnet.com.au>
+* point to favicon from indexmaker
+
+From: Fuminori Uematsu <uematsu@kgz.com>
+* improved japanese translation
+
+From: NormW <normw location bocnet.com.au>
+* look for rateup.nlm if running on netware
+
+From: Mike Tkatchouk <mike@tk.pp.ru>
+* --log-only option for mrtg script to not update the graphics.
+
+From: Daniel J McDonald <dan.mcdonald@austinenergy.com> (with help from Mike Mitchell)
+* SNMP v3 support added Net::SNMP library required for this
+
+From: Guenter Knauf <gk@gknw.de>
+* Updates for NEtWare and Win32 Makefiles
+
+From: Mike Tkatchouk <mike tk.pp.ru>
+* new option --update-only will  not produce graphs or crete webpages ... 
+
+From: Karl M. Ramberg <kalle venstre.no>
+* fix regexmatches in indexmaker
+
+From:  Stefan Loidl <Stefan.Loidl .. lrz-muenchen.de>
+* teach cfgmaker about hp gear
+* make 10Gig interface detection work
+
 Changes 2.12.2, 2005-06-19
 --------------------------
 

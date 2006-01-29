@@ -2,7 +2,7 @@
 package MRTG_lib;
 
 ###################################################################
-# MRTG 2.12.2  Support library MRTG_lib.pm
+# MRTG 2.13.0  Support library MRTG_lib.pm
 ###################################################################
 # Created by Tobias Oetiker <oetiker@ee.ethz.ch>
 #            and Dave Rand <dlr@bungi.com>
@@ -18,8 +18,12 @@ package MRTG_lib;
 require 5.005;
 use strict;
 use vars qw($OS $SL $PS @EXPORT @ISA $VERSION %timestrpospattern);
-use SNMP_util;
-
+if (eval { require Net_SNMP_util} ) {
+	import Net_SNMP_util;
+}
+else {
+	require SNMP_util; import SNMP_util;
+}
 my %mrtgrules;
 
 BEGIN {
@@ -87,6 +91,9 @@ $VERSION = 2.100015;
        'refresh' => 
        [sub{int($_[0]) >= 300}, sub{"$_[0] should be 300 seconds or more"}],
 
+       'enablesnmpv3' =>
+       [sub{((lc($_[0])) eq 'yes' or (lc($_[0])) eq 'no')}, sub{"$_[0] must be yes or no"}],
+
        'enableipv6' =>
        [sub{((lc($_[0])) eq 'yes' or (lc($_[0])) eq 'no')}, sub{"$_[0] must be yes or no"}],
 
@@ -149,6 +156,10 @@ $VERSION = 2.100015;
        # Per Router CFG
        'target[]' => 
        [sub{1}, sub{"Internal Error"}], #will test this later
+
+       'snmpoptions[]' =>
+       [sub{ eval( '{'.$_[0].'}' ); return not $@},
+        sub{"Must have the format \"OptA => Number, OptB => 'String', ... \""}],
 
        'routeruptime[]' => 
        [sub{1}, sub{"Internal Error"}], #will test this later
@@ -680,7 +691,14 @@ sub cfgcheck ($$$$) {
     $$cfg{logformat} = 'rateup' unless defined $$cfg{logformat};
 
     if($$cfg{logformat} eq 'rrdtool') {
-        my $name = ($MRTG_lib::OS eq 'NT' or $MRTG_lib::OS eq 'OS2')? 'rrdtool.exe':'rrdtool';
+        my ($name);
+        if ($MRTG_lib::OS eq 'NT' or $MRTG_lib::OS eq 'OS2'){
+            $name = "rrdtool.exe";
+        } elsif ($MRTG_lib::OS eq 'NW'){
+            $name = "rrdtool.nlm";
+        } else {
+            $name = "rrdtool";
+        }
         foreach my $path (split /\Q${MRTG_lib::PS}\E/, $ENV{PATH}) {
             ensureSL(\$path);
             -f "$path$name" && do { 
@@ -702,9 +720,6 @@ sub cfgcheck ($$$$) {
     }
     if (defined $$cfg{snmpoptions}) {
            $cfg->{snmpoptions} = eval('{'.$cfg->{snmpoptions}.'}');
-           $cfg->{snmpoptions}{avoid_negative_request_ids} = 1;
-    } else {
-           $cfg->{snmpoptions} = {avoid_negative_request_ids => 1};
     }
 
     # default interval is 5 minutes
@@ -730,6 +745,16 @@ sub cfgcheck ($$$$) {
 
     foreach $rou (@$routers) {
         # and now for the testing
+
+	if (! defined $rcfg->{snmpoptions}{$rou}) {
+		$rcfg->{snmpoptions}{$rou} = {%{$cfg->{snmpoptions}}}
+		  if defined $cfg->{snmpoptions};
+    	} else {
+    	        $rcfg->{snmpoptions}{$rou} = eval('{'.$rcfg->{snmpoptions}{$rou}.'}');
+        }
+        $rcfg->{snmpoptions}{$rou}{avoid_negative_request_ids} = 1;
+        # $rcfg->{snmpoptions}{$rou}{domain} = 'udp';
+        
         if (! defined $$rcfg{"title"}{$rou}) {
             warn ("WARNING: \"Title[$rou]\" not specified\n");
             $error = "yes";
@@ -841,8 +866,8 @@ sub cfgcheck ($$$$) {
                 $ipv4only = 0
                   unless (defined $$rcfg{ipv4only}{$rou}) && (lc($$rcfg{ipv4only}{$rou}) eq 'yes');
             }
-		( $$rcfg{target}{$rou}, $$rcfg{uniqueTarget}{$rou} ) =
-			targparser( $$rcfg{target}{$rou}, $target, $targIndex, $ipv4only );
+	    ( $$rcfg{target}{$rou}, $$rcfg{uniqueTarget}{$rou} ) =
+		targparser( $$rcfg{target}{$rou}, $target, $targIndex, $ipv4only, $rcfg->{snmpoptions}{$rou} );
         } else {
             warn ("WARNING: I can't find a \"target[$rou]\" definition\n");
             $error = "yes";
@@ -1089,6 +1114,7 @@ sub newSnmpTarg( $$ ) {
 	$targ->{ Community }	= $if->{ComStr};
 	$targ->{ Host }			= ( defined $if->{HostIPv6} ) ? $if->{HostIPv6} : $if->{HostName};
 	$targ->{ SnmpOpt }		= $if->{SnmpInfo};
+	$targ->{ snmpoptions} 		= $if->{snmpoptions};
 	$targ->{ Conversion }	= ( defined $if->{ConvSub} ) ? $if->{ConvSub} : '';
 	for my $i( 0..1 ) {
 		die 'ERROR: Malformed ', $i ? 'output ' : 'input ', "ifSpec in '$t'\n"
@@ -1150,7 +1176,7 @@ sub newSnmpTarg( $$ ) {
 # efficient. See Friedl, J.E.F. Mastering Regular Expressions. O'Reilly.
 # p. 273
 
-sub targparser( $$$$ ) {
+sub targparser( $$$$$ ) {
 	# Target string (int:community@router, etc.)
 	my $string = shift;
 	# Reference to target array
@@ -1159,7 +1185,9 @@ sub targparser( $$$$ ) {
 	my $targIndex = shift;
 	# Nonzero if only IPv4 is in use
 	my $ipv4only = shift;
-
+	# options passed per target.
+	my $snmpoptions = shift;
+	
 	# Next available index in the @$target array
 	my $idx = @$target;
 	# Common match strings: pre-target, target, post-target
@@ -1299,6 +1327,7 @@ sub targparser( $$$$ ) {
 			# A new complex target is needed
 			my $targ = newSnmpTarg( $t, $if );
 			$targ->{ ipv4only } = $ipv4only;
+			$targ->{ snmpoptions } = $snmpoptions;
 			$target->[ $idx ] = $targ;
 			$thisTarg = $idx++;
 			$targIndex->{ $t } = $thisTarg;
@@ -1351,7 +1380,7 @@ sub targparser( $$$$ ) {
 			my $d2 = 1 - $d1;
 			# Set the OIDs depending on whether SNMPv2 has been specified
 			# and on the direction
-			if( $if->{SnmpInfo} =~ m/(?::[^:]*){4}:2[Cc]?/ ) {
+			if( $if->{SnmpInfo} =~ m/(?::[^:]*){4}:[32][Cc]?/ ) {
 				$if->{OID}[$d1] = 'ifHCInOctets';
 				$if->{OID}[$d2] = 'ifHCOutOctets';
 			} else {
@@ -1370,6 +1399,7 @@ sub targparser( $$$$ ) {
 			$if->{Eth}[1]	= $if->{Eth}[0];
 			$if->{Type}[1]	= $if->{Type}[0];
 			my $targ = newSnmpTarg( $t, $if );
+			$targ->{ snmpoptions} = $snmpoptions;
 			$targ->{ ipv4only } = $ipv4only;
 			$target->[ $idx ] = $targ;
 			$thisTarg = $idx++;
@@ -2148,9 +2178,8 @@ A debug type is enabled if I<type> is in array @main::DEBUG.
 
 =head1 AUTHORS
 
-Tobias Oetiker E<lt>tobi@oetiker.chE<gt>, Dave Rand E<lt>dlr@bungi.comE<gt>
-and other contributors, mentioned in the file C<CHANGES>
+Rainer Bawidamann E<lt>Rainer.Bawidamann@rz.uni-ulm.deE<gt>
 
-Documentation by Rainer Bawidamann E<lt>Rainer.Bawidamann@rz.uni-ulm.deE<gt>
+(This Manpage)
 
 =cut

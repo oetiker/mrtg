@@ -129,7 +129,7 @@
 .\" ========================================================================
 .\"
 .IX Title "MRTG-CONTRIB 1"
-.TH MRTG-CONTRIB 1 "2005-06-19" "2.12.2" "mrtg"
+.TH MRTG-CONTRIB 1 "2006-01-29" "2.13.0" "mrtg"
 .SH "NAME"
 mrtg\-contrib \- Contribution Guidelines for MRTG
 .SH "DESCRIPTION"
@@ -139,26 +139,14 @@ consider contributing it to the project. As I get quite a number of
 contributions every week, here are a few guidelines which explain how to
 contribute so that I can use the contribution without too much additional
 work.
-.SH "TRANSLATIONS"
-.IX Header "TRANSLATIONS"
+.Sh "Translations"
+.IX Subsection "Translations"
 \&\s-1MRTG\s0 messages have been translated to a number of languages but there are
 still many which have not been covered yet. If you want to add yours, go
-into the \fImrtg\-2.12.2/translate\fR directory and follow the instructions
+into the \fImrtg\-2.13.0/translate\fR directory and follow the instructions
 given in the \fI\s-1README\s0\fR file.
-.SH "DOCUMENTATION"
-.IX Header "DOCUMENTATION"
-All documentation of mrtg is done with the perl \fB\s-1POD\s0\fR system. If you want to
-learn about it, type
-.PP
-.Vb 1
-\& perldoc perlpod
-.Ve
-.PP
-and read the instructions. If you have bugfixes or additions to the existing
-documents, make sure you modify the \fB\s-1POD\s0\fR files and not the html or txt
-versions.
-.SH "PATCHES"
-.IX Header "PATCHES"
+.Sh "Patches"
+.IX Subsection "Patches"
 When you have created your modification or extension to mrtg and want to
 submit it to me, please crate a patch for the files which you have modified.
 Do not send entire files unless they are new.
@@ -177,8 +165,19 @@ or if you have modified several files do
 .Vb 1
 \& diff --recursive --unified --ignore-space-change old-dir/ new-dir/ >long.patch
 .Ve
-.SH "DOCUMENTATION"
-.IX Header "DOCUMENTATION"
+.Sh "Documentation"
+.IX Subsection "Documentation"
+All documentation of mrtg is done with the perl \fB\s-1POD\s0\fR system. If you want to
+learn about it, type
+.PP
+.Vb 1
+\& perldoc perlpod
+.Ve
+.PP
+and read the instructions. If you have bugfixes or additions to the existing
+documents, make sure you modify the \fB\s-1POD\s0\fR files and not the html or txt
+versions.
+.PP
 I take documentation very seriously. Whenever you create a new feature for
 mrtg which you want to get included in the official release, your patch must
 also contain modifications for the relevant \fBpod\fR file in the \fIdoc\fR tree or

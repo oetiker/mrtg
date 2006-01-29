@@ -1,7 +1,7 @@
 #! /usr/bin/perl -w
 # -*- mode: Perl -*-
 ##################################################################
-# MRTG 2.12.2  --- Index Generator
+# MRTG 2.13.0  --- Index Generator
 ##################################################################
 #
 # This reads a mrtg.cfg file form std input or cmdline argument
@@ -249,10 +249,10 @@ sub genindex ($$$$) {
 	      @order =
 	        sort {
 		  $$rcfg{pagetop}{$a} =~ 
-	           m[<td>Description:</td>\S*<td>(?:\S+\s+)?(.+?)</td>]i;
+	           m[<td>Description:</td>\s*<td>(?:\S+\s+)?(.+?)</td>]i;
 		  my $aval = lc $1;
 		  $$rcfg{pagetop}{$b} =~ 
-	           m[<td>Description:</td>\S*<td>(?:\S+\s+)?(.+?)</td>]i;
+	           m[<td>Description:</td>\s*<td>(?:\S+\s+)?(.+?)</td>]i;
 		  my $bval = lc $1;
 		  $aval cmp $bval;
 	        } @filtered;
@@ -273,6 +273,17 @@ sub genindex ($$$$) {
                || /^year$/     && 86400
                || $refresh ;
     }
+
+    my $gifPath = '';
+
+    if ($$cfg{icondir} || $$opt{icondir}) {
+       $gifPath = $$opt{icondir} || $$cfg{icondir};
+       #lets make sure there is a trailing path separator
+     $gifPath =~ s|/*$|/|;
+   } else {
+       $gifPath = "$$cfg{imagehtml}";
+   }
+
 
 if ($$opt{optlog}) {
     $metaCmdLine = $argz;
@@ -297,6 +308,7 @@ $metaCmdLine =~ s/>/&gt;/g;
     <META HTTP-EQUIV="Cache-Control" content="no-cache">
     <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
     <META HTTP-EQUIV="Expires" CONTENT="$expiration">
+    <LINK HREF="${gifPath}favicon.ico" rel="shortcut icon" />
     $headeradd
 ECHO
     $index .= <<ECHO if ($$opt{addhead});
@@ -379,17 +391,17 @@ ECHO
             /^descr(iption)?$/ &&
               do{
                   $section = "No Description for $item";
-		  $$rcfg{setenv}{$item} =~ /MRTG_INT_DESCR="([^"]+)"/  #"
+		  $$rcfg{setenv}{$item} =~ /MRTG_INT_DESCR="(.*?)"/  #"
                         and $section = $1;
                   $$rcfg{pagetop}{$item} =~ 
-   		          m,<td>Description:</td>\S*<td>\Q$section\E\s*([^< ][^<]*?)\s*</td>,i
+   		          m,<td>Description:</td>\s*<td>\Q$section\E\s*(.*?)</td>,i
                         and $section = $1;
                   last;
               };
              /^portname$/ && 
                do{
                  $section = "No Portname for $item";
-                 $$rcfg{pagetop}{$item} =~ m,<td>Port Name:</td>\s*<td>([^<]+)</td>,i
+                 $$rcfg{pagetop}{$item} =~ m,<td>Port Name:</td>\s*<td>(.*?)</td>,i
                       and  $section = $1;
                  last;
                };
@@ -410,11 +422,19 @@ ECHO
 	$index .= "<$$opt{div}>" if (!$$opt{sidebyside});
 
     if (not $image) {
-	    $index .= "$$opt{boldon}".
-	          "<A HREF=\"".cleanurl($$opt{prefix}.
-		      $$rcfg{directory_web}{$item}).$item.
-		      ".$$rcfg{extension}{$item}\">".
-		      "$section$$opt{boldoff}</A></$$opt{div}>\n<$$opt{div}>";
+           if ($$cfg{logformat} eq 'rrdtool') {
+                my $sep = $$opt{rrdviewer} =~ /\?/ ? '&' : '?'; 
+                $index .= 
+               "<A HREF=\"$$opt{rrdviewer}".$sep."log=$item&cfg=$$cfgfile{$item}\">".
+                       "$$opt{boldon}".
+                     "$section$$opt{boldoff}</A>";
+            } else {
+    	          $index .= "$$opt{boldon}".
+	             "<A HREF=\"".cleanurl($$opt{prefix}.
+		        $$rcfg{directory_web}{$item}).$item.
+		        ".$$rcfg{extension}{$item}\">".
+		        "$section$$opt{boldoff}</A></$$opt{div}>\n<$$opt{div}>";
+	    }
 	} else {
 		#loop used for reversing (text,images) to (images,text) if req.
 		for my $picfirstloop (1,0) {
@@ -478,17 +498,8 @@ ECHO
     # print page end
     # -----------------------------------------------------------
 
-    my $gifPath = '';
 
-    if ($$cfg{icondir} || $$opt{icondir}) {
-        $gifPath = $$opt{icondir} || $$cfg{icondir};
-        #lets make sure there is a trailing path separator
-        $gifPath =~ s|/*$|/|;
-    } else {
-        $gifPath = "$$cfg{imagehtml}";
-    }
-
-    my $VERSION = "2.12.2";
+    my $VERSION = "2.13.0";
     $index .= <<ECHO;
 <td></td>
 </tr>
@@ -597,7 +608,7 @@ sub options ($) {
 	$$opt{prefix} .= '/';
 	$$opt{prefix} =~ s|/+$|/|;
     }
-    die ("Indexmaker for mrtg-2.12.2\n") if $$opt{version};
+    die ("Indexmaker for mrtg-2.13.0\n") if $$opt{version};
     pod2usage(-exitval => 1, -verbose => 2) if $$opt{man};
     pod2usage(-verbose => 1) if not @ARGV;
     
@@ -627,7 +638,7 @@ __END__
 
 =head1 NAME
 
-indexmaker - Creates index files for mrtg web sites (mrtg-2.12.2)
+indexmaker - Creates index files for mrtg web sites (mrtg-2.13.0)
 
 =head1 SYNOPSIS
 
