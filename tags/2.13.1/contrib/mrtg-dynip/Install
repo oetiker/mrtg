@@ -1,0 +1,17 @@
+Installation of the mrtg-dynip contribution to mrtg
+
+This contribution to mrtg runs independently of an existing running mrtg
+installation.
+
+Only one file is necessary, mrtg-dynip.  It is necessary to have mrtg
+successfully installed first and to have an snmp daemon, the snmp agent
+server, running on target hosts.  See the FAQ for information on obtaining
+mrtg-dynip and MRTG.
+
+Instructions for configuring mrtg-dynip are included in the mrtg-dynip file. 
+To assist with configuration, the actual configuration file used in a live
+ISP is included in the mrtg-dynip-sydnet file
+
+Ensure mrtg-dynip has executable permission (for example, run command chmod
+744 mrtg-dynip) and can write to directories files it is configured to write
+to.

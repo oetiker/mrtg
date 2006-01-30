@@ -1,0 +1,15 @@
+#!/store/bin/perl
+# simple mqueue done with find2perl
+
+$hostname = "apollo";
+
+require "find.pl";
+# Traverse desired filesystems
+$counter = 0;
+&find('/var/spool/mqueue/');
+sub wanted {
+    /^qf.*$/ &&
+$counter++;
+}
+chomp $counter;
+print "0\n$counter\n1\n$hostname\n"; 

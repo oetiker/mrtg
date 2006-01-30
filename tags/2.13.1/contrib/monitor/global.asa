@@ -1,0 +1,25 @@
+<SCRIPT LANGUAGE="VBScript" RUNAT="Server">
+Sub Session_OnStart
+    ' Make sure that new users start on the correct page.
+    startPage = "/default.asp"
+    currentPage = Request.ServerVariables("SCRIPT_NAME")
+
+    ' Do a case-insensitive compare, and if they don't match, send the user to the start 
+    ' page.
+    If strcomp(currentPage,startPage,1) then
+        Response.Redirect(startPage)
+    End If
+
+End Sub
+
+
+Sub Session_OnEnd
+
+  ' Remove the temp images copied from the mrtg spool directory...
+  Set fs = CreateObject("Scripting.FileSystemObject")
+  fs.DeleteFile "c:\inetpub\monitor.sunnyline.co.za\images\mrtg\" &_
+                Session("DBLINENUMBER") & "-*.gif"
+
+End Sub
+
+</SCRIPT>
