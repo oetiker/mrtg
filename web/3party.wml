@@ -99,6 +99,8 @@
   <h2>Monitoring Special Devices and Applications</h2>
 
   <ul>
+    <li><a href="http://alex.kruijff.org/FreeBSD/Traffic_Report.html">Monitoring FreeBSD IPFW with MRTG</a> by <a href="mailto:akruijff{at}dds.nl">Alex de Kruijff</a></li>
+
     <li><a href="http://forge.novell.com/modules/xfmod/project/?mrtgext">MRTG Extensions for Netware</a> by <a href="mailto:drews{at}engr.wisc.edu">James Drews</a></li>
 
     <li><a href="http://www.castellan.net/mrtg.html">How to setup MRTG to monitor your windows servers</a> by Chris Willis</li>
