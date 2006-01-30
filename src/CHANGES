@@ -1,3 +1,7 @@
+From: Tobi
+* fix routeruptime config paramter
+* fix spelling and presentation in the documentation
+
 Changes 2.13.0, 2006-01-23
 --------------------------
 
@@ -22,7 +26,6 @@ From: Juergen Obermann <Juergen.Obermann with hrz.uni-giessen.de>
 
 From: Jerzy Sobczyk <J.Sobczyk in ia.pw.edu.pl>
 * make indexmaker work properly in rrdtool mode with images turned off
-
 
 From: Yusaku Nakajima <yusaku@beige.ocn.ne.jp>
 * remove unconditional warning from windows code
