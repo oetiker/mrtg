@@ -2,7 +2,7 @@ pod2wml (){
  base=$1
  [ -z "$descr" ] && descr=$base
  [ -z "$menu" ] && menu=$descr
- pod2html --infile=$base.pod --outfile=$base.pre --noindex --htmlroot=$SITEROOT --podroot=$SITEROOT --podpath=$PODPATH
+ pod2html --infile=$base.pod --outfile=$base.pre --noindex --htmlroot='$(ROOT)' --podroot=$SITEROOT --podpath=$PODPATH
  $SITEROOT/bin/fix-pod2html.pl $base.pre | $SITEROOT/bin/fix-hrefs.pl >$base.html
  echo "<nav:but ${sect}_$base      \"$menu\" 		$base/>" >>navbar.inc
  printf "<dt><a href=\"$base.en.html\">" >>index.inc
