@@ -42,9 +42,9 @@ was an easy matter to pass the sometimes high number of parameters used by MRTG'
 commandline. Until NetWare 6.5, NetWare had a commandline limit of 512 characters. This limitation was also removed
 for NetWare 6.0 by Service Pack 5. For other NetWare versions and earlier Service Packs, this limitation remains. To
 permit a 'standard' interface for NetWare, the Rateup executable has been modified to also read its parameters from
-a file, and the MRTG script has been modified to support this method on a NetWare platform.  (See L</"New Rateup Switch">)
+a file, and the MRTG script has been modified to support this method on a NetWare platform.  (See New Rateup Switch)
 
-A Rateup NLM is now available, along with the necessary scripts to build it if required. See the  L</"NetWare Support">
+A Rateup NLM is now available, along with the necessary scripts to build it if required. See the  NetWare Support
 section of this document for further details. Additionally, mrtg.pl has been revised because of the unique (to NetWare)
 name of executables (NLM).
 
@@ -86,7 +86,7 @@ Optionally, any NetWare supported Web Server (Netscape, Apache 1.3 or 2.0)
 
 =back
 
-For copies of the .ncf files and Rateup NLM, see L</"NetWare Support"> in this document.
+For copies of the .ncf files and Rateup NLM, see NetWare Support in this document.
 
 =head1 INSTALLING MRTG
 
@@ -137,11 +137,11 @@ Create copies of the three .ncf files and install them:
 
          *.ncf         to  SYS:/Mrtg/bin
 
-See L</"NetWare Support"> in this document for details on how to create copies of these files.
+See NetWare Support in this document for details on how to create copies of these files.
 
 =item 5.
 
-See L</"Compiling Rateup.nlm"> in this document for details on compiling the Rateup NLM yourself if desired.
+See Compiling Rateup.nlm"> in this document for details on compiling the Rateup NLM yourself if desired.
 A prebuit verion is available in the .\mrtg\bin directory where it must remain.
 
 =back
@@ -186,63 +186,90 @@ Edit the Mrtg.cfg configuration file created in the previous step. Note the foll
 It was found, when testing MRTG on a NetWare 6.5 server using a NIC Interface, that mrtg.cfg contained
 the following message:
 
-   ### Interface 1 >> Descr: 'Intel(R)-8255x-based-Network-Connection'...
-   ### The following interface is commented out because:
-   ### * has a speed of 0 which makes no sense
-   # 
-   ...
+ ### Interface 1 >> Descr: 'Intel(R)-8255x-based-Network-Connection'...
+ ### The following interface is commented out because:
+ ### * has a speed of 0 which makes no sense
+ # 
+ ...
 
 If this occurs, edit MakeMrtgCfg.ncf and add the following parameter as shown:
 
-  perl sys:\mrtg\bin\cfgmaker.pl B<--zero-speed=nnn> public@10.202.65.180 > sys:\mrtg\bin\Mrtg.cfg
+ perl sys:\mrtg\bin\cfgmaker.pl --zero-speed=nnn public@10.202.65.180 > sys:\mrtg\bin\Mrtg.cfg
 
 where B<nnn> is the interface speed in bits per second. For a 100 Megabit LAN NIC, nnn = 10000000. It will be
 necessary to re-execute the MakeMrtgCfg.ncf script before continuing with this section.
 
 Below line 16 (*** Global Defaults), add:
 
-         HtmlDir:  <a path>  e.g  HtmlDir:  sys:/mrtg/html
-         ImageDir: <a path>  e.g  ImageDir: sys:/mrtg/html/work
-         LogDir:   <a path>  e.g  LogDir:   sys:/mrtg/logs
-         IconDir:  <a path>  e.g  IconDir:  ./images
+ HtmlDir:  <a path>  e.g  HtmlDir:  sys:/mrtg/html
+ ImageDir: <a path>  e.g  ImageDir: sys:/mrtg/html/work
+ LogDir:   <a path>  e.g  LogDir:   sys:/mrtg/logs
+ IconDir:  <a path>  e.g  IconDir:  ./images
 
-         Note 1: The HtmlDir entry specifies where MRTG will create its HTML pages.
-         Note 2: The ImageDir entry specifies where the created graphic icons are placed.
-         Note 3: The IconDir entry specifies where the supplied MRTG icons are located.
-                 It MUST be a relative path from HtmlDir or absolute URL. The value shown
-                 is recommended.
+=over
+
+=item Note 1
+
+The HtmlDir entry specifies where MRTG will create its HTML pages.
+
+=item Note 2
+
+The ImageDir entry specifies where the created graphic icons are placed.
+
+=item Note 3
+
+The IconDir entry specifies where the supplied MRTG icons are located.
+It MUST be a relative path from HtmlDir or absolute URL. The value shown
+is recommended.
+
+=back
 
 =item *
 
 At the server console run:
 
-         sys:/mrtg/bin/RunMrtg.ncf
+ sys:/mrtg/bin/RunMrtg.ncf
 
 several times. By the third time it should run without showing error messages on the console screen.
 This should create:
 
-        - A HTML page in the (HtmlDir) directory for each monitored device,
-        - A .dat file in the (ImageDir) directory for each monitored device,
-        - Several .png icons in the (ImageDir) directory,
-        - Some log file entries in the (LogDir) directory.
+=over
 
-         Note: If you experience a "Use of uninitialised value in split" error, it will be necessary to
-               create a 'Path' environment variable at the server console; use the following example:
+=item *
 
-               env path="SYS:\"  (The actual value is immaterial, as long as the var itself exists.)
+A HTML page in the (HtmlDir) directory for each monitored device,
+
+=item *
+
+A .dat file in the (ImageDir) directory for each monitored device,
+
+=item *
+
+Several .png icons in the (ImageDir) directory,
+
+=item *
+
+Some log file entries in the (LogDir) directory.
+
+=back
+
+Note: If you experience a "Use of uninitialised value in split" error, it will be necessary to
+create a 'Path' environment variable at the server console; use the following example
+
+ env path="SYS:\"  (The actual value is immaterial, as long as the var itself exists.)
 
 =item *
 
 Edit sys:/mrtg/bin/MakeMrtgIndex.ncf. Change the indicated E<lt>pathE<gt> shown in the following example to
 match the value entered for (HtmlDir).
 
-         perl --noscreen sys:/mrtg/bin/indexmaker.pl sys:/mrtg/bin/Mrtg.cfg > <path>/index.html
+ perl --noscreen sys:/mrtg/bin/indexmaker.pl sys:/mrtg/bin/Mrtg.cfg > <path>/index.html
 
 =item *
 
 Create an index.html page linking the seperate device HTML page(s). At the server console, run:
 
-         sys:/mrtg/bin/MakeMrtgIndex.ncf
+ sys:/mrtg/bin/MakeMrtgIndex.ncf
 
 This will create index.html in the (HtmlDir) directory.
 
@@ -251,17 +278,16 @@ This will create index.html in the (HtmlDir) directory.
 Optionally, configure a Web Server to permit access to the directory specified in (HtmlDir) to view the MRTG
 graphs remotely, at, for example:
 
-         http://ip_or_dns/mrtg/index.html
+ http://ip_or_dns/mrtg/index.html
 
 A sample configuration for an Apache Webserver is shown:
 
-         Alias /mrtg/ "SYS:/mrtg/html/"
-
-         <Directory "SYS:/mrtg/html">
+ Alias /mrtg/ "SYS:/mrtg/html/"
+ <Directory "SYS:/mrtg/html">
              AllowOverride None
              Order allow,deny
              Allow from all
-         </Directory>
+ </Directory>
 
 =item *
 
@@ -297,7 +323,7 @@ To use CRON scheduling, create a CRON Scheduler entry to execute the RunMrtg.ncf
 the server environment and information desired. The following entry in the sys:\etc\crontab file will execute MRTG
 every five minutes:
 
-         0,5,10,15,20,25,30,35,40,45,50,55 * * * * sys:\mrtg\bin\runmrtg.ncf
+ 0,5,10,15,20,25,30,35,40,45,50,55 * * * * sys:\mrtg\bin\runmrtg.ncf
 
 The CRON Scheduler (cron.nlm) can be started automatically by adding it in AUTOEXEC.ncf or, manually loading it at
 the server console.
@@ -312,7 +338,7 @@ of this document.
 Read the MRTG documents, Perl documents or, finally, submit questions to the MRTG User forums.
 
 For NetWare specific issues, submit questions to the Perl forum at 
-     L<news://developer-forums.novell.com/novell.devsup.perl> (Novell Developer Forums).
+news://developer-forums.novell.com/novell.devsup.perl (Novell Developer Forums).
 
 =head1 COMPILING RATEUP.NLM
 
@@ -346,27 +372,27 @@ The get_ver.awk script
 
 =item *
 
-A copy of the GNU build tools.    (See L<http://sourceforge.net/projects/gnuwin32/>)
+A copy of the GNU build tools.    (See http://sourceforge.net/projects/gnuwin32/)
 
 =back
 
 The auxiliary libraries can be obtained from:
 
-GD Graphics Library.   (See L<http://www.boutell.com/gd/>)
+GD Graphics Library.   (See http://www.boutell.com/gd/ )
 
-PNG Graphics Library.   (See L<http://libpng.sourceforge.net/>)
+PNG Graphics Library.   (See http://libpng.sourceforge.net/ )
 
-zLib Compression Library.   (See L<http://www.gzip.org/zlib/>)
+zLib Compression Library.   (See http://www.gzip.org/zlib/ )
 
 Edit the Makefile.Netware file as required to match your installation paths; search
 the file for the key word 'Edit'.
 
 =head1 NETWARE SUPPORT
 
-For copies of the NCF and get_ver.awk scripts, see L</"Appendix">.
+For copies of the NCF and get_ver.awk scripts, see Appendix.
 
 For NetWare specific issues, submit questions to the Perl forum at 
-     L<news://developer-forums.novell.com/novell.devsup.perl> (Novell Developer Forums).
+news://developer-forums.novell.com/novell.devsup.perl (Novell Developer Forums).
 
 To move the MRTG application to a volume other than SYS: you will need to edit the NCF
 scripts provided plus the MRTG[.pl] script itself in two places.
@@ -442,8 +468,9 @@ under their respective names. You should remove the leading space from each line
  # Set For : 
  # Params  : 
 
- # Note: Edit this file and change the redirected output to the location specified for HtmlDir or WorkDir.
- #       The sys:\apache2\htdocs\mrtg\index.html is based on the examples in "Getting Started".
+ # Note: Edit this file and change the redirected output to the location
+ #       specified for HtmlDir or WorkDir. The sys:\apache2\htdocs\mrtg\index.html
+ #       is based on the examples in "Getting Started".
 
  perl --noscreen sys:\mrtg\bin\indexmaker.pl sys:\mrtg\bin\Mrtg.cfg > sys:\mrtg\html\index.html
 
