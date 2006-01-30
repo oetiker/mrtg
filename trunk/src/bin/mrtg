@@ -594,11 +594,10 @@ sub getcurrent {
 	# (community@host) that may have been specified with the RouterUptime
 	# target keyword
 	if( defined $rcfg->{ routeruptime }{ $rou } ) {
-	  my $snmpopt=eval("{".$rcfg->{ snmpoptions }{ $rou }."}");
-		( $uptime, $name ) = snmpget(
-			v4onlyifnecessary( $rcfg->{ routeruptime }{ $rou },
-				$rcfg->{ ipv4only }{ $rou } ),
-			$snmpopt, 'sysUptime', 'sysName');
+   	     ( $uptime, $name ) = snmpget(
+		v4onlyifnecessary( $rcfg->{ routeruptime }{ $rou },
+			$rcfg->{ ipv4only }{ $rou } ),
+		$rcfg->{ snmpoptions }{ $rou }, 'sysUptime', 'sysName');
 	}
   
 	# Get the device name from the alternate location (OID or
