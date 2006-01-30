@@ -129,7 +129,7 @@
 .\" ========================================================================
 .\"
 .IX Title "MRTG-NW-GUIDE 1"
-.TH MRTG-NW-GUIDE 1 "2006-01-29" "2.13.0" "mrtg"
+.TH MRTG-NW-GUIDE 1 "2006-01-30" "2.13.1" "mrtg"
 .SH "NAME"
 mrtg\-nw\-guide \- MRTG for NetWare
 .SH "SYNOPSIS"
@@ -157,9 +157,9 @@ was an easy matter to pass the sometimes high number of parameters used by \s-1M
 commandline. Until NetWare 6.5, NetWare had a commandline limit of 512 characters. This limitation was also removed
 for NetWare 6.0 by Service Pack 5. For other NetWare versions and earlier Service Packs, this limitation remains. To
 permit a 'standard' interface for NetWare, the Rateup executable has been modified to also read its parameters from
-a file, and the \s-1MRTG\s0 script has been modified to support this method on a NetWare platform.  (See \*(L"New Rateup Switch\*(R")
+a file, and the \s-1MRTG\s0 script has been modified to support this method on a NetWare platform.  (See New Rateup Switch)
 .PP
-A Rateup \s-1NLM\s0 is now available, along with the necessary scripts to build it if required. See the  \*(L"NetWare Support\*(R"
+A Rateup \s-1NLM\s0 is now available, along with the necessary scripts to build it if required. See the  NetWare Support
 section of this document for further details. Additionally, mrtg.pl has been revised because of the unique (to NetWare)
 name of executables (\s-1NLM\s0).
 .PP
@@ -184,7 +184,7 @@ A copy of the Rateup \s-1NLM\s0 (Pre\-built or compiled)
 .IP "\(bu" 4
 Optionally, any NetWare supported Web Server (Netscape, Apache 1.3 or 2.0)
 .PP
-For copies of the .ncf files and Rateup \s-1NLM\s0, see \*(L"NetWare Support\*(R" in this document.
+For copies of the .ncf files and Rateup \s-1NLM\s0, see NetWare Support in this document.
 .SH "INSTALLING MRTG"
 .IX Header "INSTALLING MRTG"
 .IP "1." 4
@@ -241,9 +241,9 @@ Create copies of the three .ncf files and install them:
 \&         *.ncf         to  SYS:/Mrtg/bin
 .Ve
 .Sp
-See \*(L"NetWare Support\*(R" in this document for details on how to create copies of these files.
+See NetWare Support in this document for details on how to create copies of these files.
 .IP "5." 4
-See \*(L"Compiling Rateup.nlm\*(R" in this document for details on compiling the Rateup \s-1NLM\s0 yourself if desired.
+See Compiling Rateup.nlm"> in this document for details on compiling the Rateup \s-1NLM\s0 yourself if desired.
 A prebuit verion is available in the .\emrtg\ebin directory where it must remain.
 .SH "CONFIGURING MRTG"
 .IX Header "CONFIGURING MRTG"
@@ -287,17 +287,17 @@ It was found, when testing \s-1MRTG\s0 on a NetWare 6.5 server using a \s-1NIC\s
 the following message:
 .Sp
 .Vb 5
-\&   ### Interface 1 >> Descr: 'Intel(R)-8255x-based-Network-Connection'...
-\&   ### The following interface is commented out because:
-\&   ### * has a speed of 0 which makes no sense
-\&   # 
-\&   ...
+\& ### Interface 1 >> Descr: 'Intel(R)-8255x-based-Network-Connection'...
+\& ### The following interface is commented out because:
+\& ### * has a speed of 0 which makes no sense
+\& # 
+\& ...
 .Ve
 .Sp
 If this occurs, edit MakeMrtgCfg.ncf and add the following parameter as shown:
 .Sp
 .Vb 1
-\&  perl sys:\emrtg\ebin\ecfgmaker.pl B<--zero-speed=nnn> public@10.202.65.180 > sys:\emrtg\ebin\eMrtg.cfg
+\& perl sys:\emrtg\ebin\ecfgmaker.pl --zero-speed=nnn public@10.202.65.180 > sys:\emrtg\ebin\eMrtg.cfg
 .Ve
 .Sp
 where \fBnnn\fR is the interface speed in bits per second. For a 100 Megabit \s-1LAN\s0 \s-1NIC\s0, nnn = 10000000. It will be
@@ -306,56 +306,66 @@ necessary to re-execute the MakeMrtgCfg.ncf script before continuing with this s
 Below line 16 (*** Global Defaults), add:
 .Sp
 .Vb 4
-\&         HtmlDir:  <a path>  e.g  HtmlDir:  sys:/mrtg/html
-\&         ImageDir: <a path>  e.g  ImageDir: sys:/mrtg/html/work
-\&         LogDir:   <a path>  e.g  LogDir:   sys:/mrtg/logs
-\&         IconDir:  <a path>  e.g  IconDir:  ./images
+\& HtmlDir:  <a path>  e.g  HtmlDir:  sys:/mrtg/html
+\& ImageDir: <a path>  e.g  ImageDir: sys:/mrtg/html/work
+\& LogDir:   <a path>  e.g  LogDir:   sys:/mrtg/logs
+\& IconDir:  <a path>  e.g  IconDir:  ./images
 .Ve
-.Sp
-.Vb 5
-\&         Note 1: The HtmlDir entry specifies where MRTG will create its HTML pages.
-\&         Note 2: The ImageDir entry specifies where the created graphic icons are placed.
-\&         Note 3: The IconDir entry specifies where the supplied MRTG icons are located.
-\&                 It MUST be a relative path from HtmlDir or absolute URL. The value shown
-\&                 is recommended.
-.Ve
+.RS 4
+.IP "Note 1" 4
+.IX Item "Note 1"
+The HtmlDir entry specifies where \s-1MRTG\s0 will create its \s-1HTML\s0 pages.
+.IP "Note 2" 4
+.IX Item "Note 2"
+The ImageDir entry specifies where the created graphic icons are placed.
+.IP "Note 3" 4
+.IX Item "Note 3"
+The IconDir entry specifies where the supplied \s-1MRTG\s0 icons are located.
+It \s-1MUST\s0 be a relative path from HtmlDir or absolute \s-1URL\s0. The value shown
+is recommended.
+.RE
+.RS 4
+.RE
 .IP "\(bu" 4
 At the server console run:
 .Sp
 .Vb 1
-\&         sys:/mrtg/bin/RunMrtg.ncf
+\& sys:/mrtg/bin/RunMrtg.ncf
 .Ve
 .Sp
 several times. By the third time it should run without showing error messages on the console screen.
 This should create:
+.RS 4
+.IP "\(bu" 4
+A \s-1HTML\s0 page in the (HtmlDir) directory for each monitored device,
+.IP "\(bu" 4
+A .dat file in the (ImageDir) directory for each monitored device,
+.IP "\(bu" 4
+Several .png icons in the (ImageDir) directory,
+.IP "\(bu" 4
+Some log file entries in the (LogDir) directory.
+.RE
+.RS 4
 .Sp
-.Vb 4
-\&        - A HTML page in the (HtmlDir) directory for each monitored device,
-\&        - A .dat file in the (ImageDir) directory for each monitored device,
-\&        - Several .png icons in the (ImageDir) directory,
-\&        - Some log file entries in the (LogDir) directory.
-.Ve
-.Sp
-.Vb 2
-\&         Note: If you experience a "Use of uninitialised value in split" error, it will be necessary to
-\&               create a 'Path' environment variable at the server console; use the following example:
-.Ve
+Note: If you experience a \*(L"Use of uninitialised value in split\*(R" error, it will be necessary to
+create a 'Path' environment variable at the server console; use the following example
 .Sp
 .Vb 1
-\&               env path="SYS:\e"  (The actual value is immaterial, as long as the var itself exists.)
+\& env path="SYS:\e"  (The actual value is immaterial, as long as the var itself exists.)
 .Ve
+.RE
 .IP "\(bu" 4
 Edit sys:/mrtg/bin/MakeMrtgIndex.ncf. Change the indicated <path> shown in the following example to
 match the value entered for (HtmlDir).
 .Sp
 .Vb 1
-\&         perl --noscreen sys:/mrtg/bin/indexmaker.pl sys:/mrtg/bin/Mrtg.cfg > <path>/index.html
+\& perl --noscreen sys:/mrtg/bin/indexmaker.pl sys:/mrtg/bin/Mrtg.cfg > <path>/index.html
 .Ve
 .IP "\(bu" 4
 Create an index.html page linking the seperate device \s-1HTML\s0 page(s). At the server console, run:
 .Sp
 .Vb 1
-\&         sys:/mrtg/bin/MakeMrtgIndex.ncf
+\& sys:/mrtg/bin/MakeMrtgIndex.ncf
 .Ve
 .Sp
 This will create index.html in the (HtmlDir) directory.
@@ -364,21 +374,18 @@ Optionally, configure a Web Server to permit access to the directory specified i
 graphs remotely, at, for example:
 .Sp
 .Vb 1
-\&         http://ip_or_dns/mrtg/index.html
+\& http://ip_or_dns/mrtg/index.html
 .Ve
 .Sp
 A sample configuration for an Apache Webserver is shown:
 .Sp
-.Vb 1
-\&         Alias /mrtg/ "SYS:/mrtg/html/"
-.Ve
-.Sp
-.Vb 5
-\&         <Directory "SYS:/mrtg/html">
+.Vb 6
+\& Alias /mrtg/ "SYS:/mrtg/html/"
+\& <Directory "SYS:/mrtg/html">
 \&             AllowOverride None
 \&             Order allow,deny
 \&             Allow from all
-\&         </Directory>
+\& </Directory>
 .Ve
 .IP "\(bu" 4
 Set the property of the directory pointed to by (ImageDir), to 'Purge Immediate'.
@@ -400,7 +407,7 @@ the server environment and information desired. The following entry in the sys:\
 every five minutes:
 .PP
 .Vb 1
-\&         0,5,10,15,20,25,30,35,40,45,50,55 * * * * sys:\emrtg\ebin\erunmrtg.ncf
+\& 0,5,10,15,20,25,30,35,40,45,50,55 * * * * sys:\emrtg\ebin\erunmrtg.ncf
 .Ve
 .PP
 The \s-1CRON\s0 Scheduler (cron.nlm) can be started automatically by adding it in \s-1AUTOEXEC\s0.ncf or, manually loading it at
@@ -414,7 +421,7 @@ of this document.
 Read the \s-1MRTG\s0 documents, Perl documents or, finally, submit questions to the \s-1MRTG\s0 User forums.
 .PP
 For NetWare specific issues, submit questions to the Perl forum at 
-     <news://developer\-forums.novell.com/novell.devsup.perl> (Novell Developer Forums).
+news://developer\-forums.novell.com/novell.devsup.perl (Novell Developer Forums).
 .SH "COMPILING RATEUP.NLM"
 .IX Header "COMPILING RATEUP.NLM"
 In addition to the rateup.c and Makefile.Netware supplied with the \s-1MRTG\s0 release, you will also need:
@@ -431,24 +438,24 @@ ZLib Library (v1.2.3 or later)
 .IP "\(bu" 4
 The get_ver.awk script
 .IP "\(bu" 4
-A copy of the \s-1GNU\s0 build tools.    (See <http://sourceforge.net/projects/gnuwin32/>)
+A copy of the \s-1GNU\s0 build tools.    (See http://sourceforge.net/projects/gnuwin32/)
 .PP
 The auxiliary libraries can be obtained from:
 .PP
-\&\s-1GD\s0 Graphics Library.   (See <http://www.boutell.com/gd/>)
+\&\s-1GD\s0 Graphics Library.   (See http://www.boutell.com/gd/ )
 .PP
-\&\s-1PNG\s0 Graphics Library.   (See <http://libpng.sourceforge.net/>)
+\&\s-1PNG\s0 Graphics Library.   (See http://libpng.sourceforge.net/ )
 .PP
-zLib Compression Library.   (See <http://www.gzip.org/zlib/>)
+zLib Compression Library.   (See http://www.gzip.org/zlib/ )
 .PP
 Edit the Makefile.Netware file as required to match your installation paths; search
 the file for the key word 'Edit'.
 .SH "NETWARE SUPPORT"
 .IX Header "NETWARE SUPPORT"
-For copies of the \s-1NCF\s0 and get_ver.awk scripts, see \*(L"Appendix\*(R".
+For copies of the \s-1NCF\s0 and get_ver.awk scripts, see Appendix.
 .PP
 For NetWare specific issues, submit questions to the Perl forum at 
-     <news://developer\-forums.novell.com/novell.devsup.perl> (Novell Developer Forums).
+news://developer\-forums.novell.com/novell.devsup.perl (Novell Developer Forums).
 .PP
 To move the \s-1MRTG\s0 application to a volume other than \s-1SYS:\s0 you will need to edit the \s-1NCF\s0
 scripts provided plus the MRTG[.pl] script itself in two places.
@@ -541,9 +548,10 @@ under their respective names. You should remove the leading space from each line
 \& # Params  :
 .Ve
 .PP
-.Vb 2
-\& # Note: Edit this file and change the redirected output to the location specified for HtmlDir or WorkDir.
-\& #       The sys:\eapache2\ehtdocs\emrtg\eindex.html is based on the examples in "Getting Started".
+.Vb 3
+\& # Note: Edit this file and change the redirected output to the location
+\& #       specified for HtmlDir or WorkDir. The sys:\eapache2\ehtdocs\emrtg\eindex.html
+\& #       is based on the examples in "Getting Started".
 .Ve
 .PP
 .Vb 1

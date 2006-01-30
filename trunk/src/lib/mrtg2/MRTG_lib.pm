@@ -2,7 +2,7 @@
 package MRTG_lib;
 
 ###################################################################
-# MRTG 2.13.0  Support library MRTG_lib.pm
+# MRTG 2.13.1  Support library MRTG_lib.pm
 ###################################################################
 # Created by Tobias Oetiker <oetiker@ee.ethz.ch>
 #            and Dave Rand <dlr@bungi.com>

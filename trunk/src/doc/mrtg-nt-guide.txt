@@ -3,7 +3,7 @@ MRTG-NT-GUIDE(1)               mrtg              MRTG-NT-GUIDE(1)
 
 
 NNAAMMEE
-       mrtg-nt-guide - The Windows Guide to MRTG 2.13.0
+       mrtg-nt-guide - The Windows Guide to MRTG 2.13.1
 
 SSYYNNOOPPSSIISS
        Installing MRTG on a Windows box is not quite as "click
@@ -11,7 +11,7 @@ SSYYNNOOPPSSIISS
        is not all that difficult if you follow the instructions
        below.
 
-PPRREERREEQQUUIISSIITTSS
+PPRREERREEQQUUIISSIITTEESS
        To get MRTG to work on Windows you need the following:
 
        +o   A current copy of Perl.  For Example ActivePerl from
@@ -20,17 +20,17 @@ PPRREERREEQQUUIISSIITTSS
 
        +o   The latest version of MRTG from http://peo-
            ple.ee.ethz.ch/~oetiker/webtools/mrtg/pub Look for
-           mrtg-2.13.0.zip or better. The archive also contains a
+           mrtg-2.13.1.zip or better. The archive also contains a
            precompiled copy of rateup.exe for Win32.
 
-IINNSSTTAALLLLAATTLLIINNGG
+IINNSSTTAALLLLIINNGG
        I suggest you do the following from the machine that will
        be running MRTG, which, in this case, is also a web
        server. All examples are for doing things to a LOCAL
        machine.
 
        First
-           Unzip MRTG to C:\mrtg-2.13.0 on the Windowsmachine of
+           Unzip MRTG to C:\mrtg-2.13.1 on the Windows machine of
            your choice.
 
        Next
@@ -44,20 +44,20 @@ IINNSSTTAALLLLAATTLLIINNGG
            Panel]->[System]->[Environment]
 
        To see if everything is installed properly you can open a
-       Command Shell and go into _c_:_\_m_r_t_g_-_2_._1_3_._0_\_b_i_n. Type:
+       Command Shell and go into _c_:_\_m_r_t_g_-_2_._1_3_._1_\_b_i_n. Type:
 
         perl mrtg
 
        This should give you a friendly error message complaining
-       about the missing mrtg configuration file. Now, you have
-       successfully installed mrtg and perl.
+       about the missing MRTG configuration file. Now, you have
+       successfully installed MRTG and Perl.
 
 CCOONNFFIIGGUURRIINNGG MMRRTTGG
-       Now it is time to create a configuration for mrtg. But
+       Now it is time to create a configuration for MRTG. But
        before we begin you need to know a few things. Take an
        opportunity to gather the following information:
 
-       +o   The IP address or hostname and the snmp port number,
+       +o   The IP address or hostname and the SNMP port number,
            (if non standard), of the device you want to monitor.
 
        +o   If you want to monitor something other than bytes in
@@ -73,9 +73,9 @@ CCOONNFFIIGGUURRIINNGG MMRRTTGG
        ppuubblliicc. We are interested in monitoring traffic, and the
        CPU load. Let's begin.
 
-       The first thing we do in setting up mrtg is making a
+       The first thing we do in setting up MRTG is making a
        default config file.  Get to a cmd prompt and change to
-       the _c_:_\_m_r_t_g_-_2_._1_3_._0_\_b_i_n directory. Type the following com-
+       the _c_:_\_m_r_t_g_-_2_._1_3_._1_\_b_i_n directory. Type the following com-
        mand:
 
         perl cfgmaker public@10.10.10.1 --global "WorkDir: c:\www\mrtg" --output mrtg.cfg
@@ -155,8 +155,8 @@ CCOONNFFIIGGUURRIINNGG MMRRTTGG
 
          #---------------------------------------------------------------
 
-       And that's a very basic mrtg config file. You can run this
-       and see your results by going into the _c_:_\_m_r_t_g_-_2_._1_3_._0_\_b_i_n
+       And that's a very basic MRTG config file. You can run this
+       and see your results by going into the _c_:_\_m_r_t_g_-_2_._1_3_._1_\_b_i_n
        directory and typing:
 
         perl mrtg mrtg.cfg
@@ -167,17 +167,17 @@ CCOONNFFIIGGUURRIINNGG MMRRTTGG
        before.
 
        If you take a look at those web pages they are not very
-       exciting (yet). You need to have the mrtg files run every
+       exciting (yet). You need to have the MRTG files run every
        five minutes to produce the desired results.  Just run it
        again after a few minutes. You should now be able to see
        the first lines in your graphs.
 
 MMAAKKEE MMRRTTGG RRUUNN AALLLL TTHHEE TTIIMMEE
-       Starting mrtg by hand every time you want to run it is not
+       Starting MRTG by hand every time you want to run it is not
        going to make you happy I guess.
 
-       There is a special option you can set in the mrtg configu-
-       ration file so so that mrtg will not terminate after it
+       There is a special option you can set in the MRTG configu-
+       ration file so so that MRTG will not terminate after it
        was started. Instead it will wait for 5 minutes and then
        run again.
 
@@ -187,7 +187,7 @@ MMAAKKEE MMRRTTGG RRUUNN AALLLL TTHHEE TTIIMMEE
 
        to your mrtg.cfg file and start it with:
 
-        start /Dc:\mrtg-2.13.0\bin wperl mrtg --logging=eventlog mrtg.cfg
+        start /Dc:\mrtg-2.13.1\bin wperl mrtg --logging=eventlog mrtg.cfg
 
        If you use wwppeerrll instead of ppeerrll, no console window will
        show. MRTG is now running in the background. If it runs
@@ -199,16 +199,16 @@ MMAAKKEE MMRRTTGG RRUUNN AALLLL TTHHEE TTIIMMEE
        If you put a shortcut with
 
         Target:    wperl mrtg --logging=eventlog mrtg.cfg
-        Start in:  c:\mrtg-2.13.0\bin
+        Start in:  c:\mrtg-2.13.1\bin
 
-       into your startup folder, mrtg will now start whever you
-       login to your NT box.
+       into your start-up folder, MRTG will now start whenever
+       you login to your NT box.
 
        If you do not want to log into your box just to start
-       mrtg. Have a look at http://www.firedae-
+       MRTG. Have a look at http://www.firedae-
        mon.com/mrtg-howto.html which describes a free tool to
        start any program as a Service. The pages gives specific
-       instructions for mrtg users.
+       instructions for MRTG users.
 
 HHOOWW TTOO SSEETTUUPP MMRRTTGG AASS AA WWIINNDDOOWWSS SSEERRVVIICCEE
        AAddddiittiioonnaall PPrreerreeqquuiissiitteess
@@ -231,7 +231,7 @@ HHOOWW TTOO SSEETTUUPP MMRRTTGG AASS AA WWIINNDDOOWWSS S
            Detailed instructions on how to use this package are
            available at <http://sup-
            port.microsoft.com/kb/q137890/>.  In order to follow
-           the steps in this HOWTO you MMUUSSTT obtain both executa-
+           the steps in this HOW-TO you MMUUSSTT obtain both executa-
            bles.
 
        +o   You must have administrative rights on the target sys-
@@ -286,14 +286,14 @@ HHOOWW TTOO SSEETTUUPP MMRRTTGG AASS AA WWIINNDDOOWWSS S
        have to expand the MRTG tree, and go to the
        [[HHKKEEYY__LLOOCCAALL__MMAACCHHIINNEE\\SSYYSSTTEEMM\\CCuurrrreennttCCoonnttrroollSSeett\\SSeerr--
        vviicceess\\MMRRTTGG\\PPaarraammeetteerrss]] key.  Under Parameters make sure
-       that all the  AApppplliiccaattiioonn variables are setup propperly.
+       that all the  AApppplliiccaattiioonn variables are setup properly.
 
        At this point you are ready to run the service.  The only
        thing left to do is to start the MRTG service in the Ser-
        vices management console.  After you do this, you should
        see two new processes running on your system: srvany.exe
        and wperl.exe.  Make sure to stop any previously running
-       MRTG processes to avoid confict.
+       MRTG processes to avoid conflict.
 
        Note that it is imperative to set the RRuunnAAssDDaaeemmoonn:: yyeess
        option or the service will stop after just one single run!
@@ -394,9 +394,9 @@ EEXXAAMMPPLLEE
         Options[cpu.1]: gauge
 
        This is a nice example of how to monitor any SNMP device
-       if you know what OID you want to use. Once again, For an
+       if you know what OID you want to use. Once again, for an
        explanation of the more advance features of mrtg, please
-       see Tobias's documentation.
+       see the rest of the documentation.
 
 AAUUTTHHOORRSS
        Tobi Oetiker <oetiker@ee.ethz.ch>, David S. Divins <ddi-
@@ -406,4 +406,4 @@ AAUUTTHHOORRSS
 
 
 
-2.13.0                      2006-01-29           MRTG-NT-GUIDE(1)
+2.13.1                      2006-01-30           MRTG-NT-GUIDE(1)

@@ -1,6 +1,6 @@
 =head1 NAME
 
-mrtg-unix-guide - Instructions for running MRTG 2.13.0 on a Unix Box
+mrtg-unix-guide - Instructions for running MRTG 2.13.1 on a Unix Box
 
 =head1 DESCRIPTION
 
@@ -158,8 +158,8 @@ For version starting around 2.0.11, try:
 Ok, now everything is ready for the mrtg compilation.
 
  cd /usr/local/src
- gunzip -c mrtg-2.13.0.tar.gz | tar xvf -
- cd mrtg-2.13.0
+ gunzip -c mrtg-2.13.1.tar.gz | tar xvf -
+ cd mrtg-2.13.1
 
 If all the libraries have been preinstalled on your system you can
 configure mrtg by doing a simple:
@@ -272,7 +272,7 @@ documentation of your system to make sure you get this right.
 A B<minimal> script to put into F<init.d> might look like this:
 
  #! /bin/sh
- cd /usr/local/mrtg-2.13.0/bin && ./mrtg --user=mrtg-user \
+ cd /usr/local/mrtg-2.13.1/bin && ./mrtg --user=mrtg-user \
        /home/httpd/mrtg/mrtg.cfg  --logging /var/log/mrtg.log                  
 
 
