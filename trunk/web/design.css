@@ -103,7 +103,7 @@ div#menu > ul > li > div {
 }
 
 div#menu ul > li > div.selected {
-	background-image : url('images/minus.gif');
+	background-image : url('images/arr_black_right.gif'); 
 	background-color :#fe754d;
 	color : #345d98;
 	font-weight:bold;
