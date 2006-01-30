@@ -3,6 +3,7 @@ Changes 2.13.1, 2006-01-24
 From: Tobi
 * fix routeruptime config paramter
 * fix spelling and presentation in the documentation
+* added rateup.nlm back to the distribution
 
 Changes 2.13.0, 2006-01-23
 --------------------------

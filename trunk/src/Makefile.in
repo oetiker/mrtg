@@ -118,7 +118,7 @@ tar:	doc rateupexe
 	(cd .. ; sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | gtar -czv --files-from=- -f $(DIRNAME)/$(ARCHIVE).tar.gz --exclude='*~' --exclude=".svn")
 	$(PERL) -0777 -pi -e 's@GRAPHFMT="...";@GRAPHFMT="png";@' bin/mrtg bin/indexmaker
 	# build rateup for windows ...
-	(cd .. ; touch $(DIRNAME)/contrib/a~;sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | xargs zip -r $(DIRNAME)/$(ARCHIVE).zip; zip $(DIRNAME)/$(ARCHIVE).zip $(DIRNAME)/bin/rateup.exe  $(DIRNAME)/bin/rateup.nlm $(DIRNAME)/bin/rateup.nlm; zip -d $(DIRNAME)/$(ARCHIVE).zip '*~' '.svn')
+	(cd .. ; touch $(DIRNAME)/contrib/a~;sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | xargs zip -r $(DIRNAME)/$(ARCHIVE).zip; zip $(DIRNAME)/$(ARCHIVE).zip $(DIRNAME)/bin/rateup.exe  $(DIRNAME)/bin/rateup.nlm $(DIRNAME)/bin/rateup.nlm; zip -d $(DIRNAME)/$(ARCHIVE).zip '*~' '*.svn*')
 	-rm ../$(DIRNAME)
 
 dist: tar
