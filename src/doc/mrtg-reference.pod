@@ -1,6 +1,6 @@
 =head1 NAME
 
-mrtg-reference - MRTG 2.13.0 configuration reference
+mrtg-reference - MRTG 2.13.1 configuration reference
 
 =head1 OVERVIEW
 

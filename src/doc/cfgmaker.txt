@@ -3,7 +3,7 @@ CFGMAKER(1)                    mrtg                   CFGMAKER(1)
 
 
 NNAAMMEE
-       cfgmaker - Creates mrtg.cfg files (for mrtg-2.13.0)
+       cfgmaker - Creates mrtg.cfg files (for mrtg-2.13.1)
 
 SSYYNNOOPPSSIISS
        cfgmaker [options] [community@]router [[options] [commu-
@@ -1317,4 +1317,4 @@ CCOOPPYYRRIIGGHHTT
 
 
 
-2.13.0                      2006-01-29                CFGMAKER(1)
+2.13.1                      2006-01-30                CFGMAKER(1)

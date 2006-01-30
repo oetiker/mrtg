@@ -3,7 +3,7 @@ MRTG-REFERENCE(1)              mrtg             MRTG-REFERENCE(1)
 
 
 NNAAMMEE
-       mrtg-reference - MRTG 2.13.0 configuration reference
+       mrtg-reference - MRTG 2.13.1 configuration reference
 
 OOVVEERRVVIIEEWW
        The runtime behaviour of MRTG is governed by a configura-
@@ -1959,4 +1959,4 @@ AAUUTTHHOORR
 
 
 
-2.13.0                      2006-01-29          MRTG-REFERENCE(1)
+2.13.1                      2006-01-30          MRTG-REFERENCE(1)

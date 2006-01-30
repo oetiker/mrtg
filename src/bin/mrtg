@@ -2,7 +2,7 @@
 # -*- mode: cperl -*-
 
 ###################################################################
-# MRTG 2.13.0  Multi Router Traffic Grapher
+# MRTG 2.13.1  Multi Router Traffic Grapher
 ###################################################################
 # Created by Tobias Oetiker <oetiker@ee.ethz.ch>
 #            and Dave Rand <dlr@bungi.com>
@@ -1245,7 +1245,7 @@ sub writehtml {
     my $dirrel = "../" x ($$rcfg{'directory_web'}{$router} =~ tr|/|/|);
 
     $Today=&$LOC(datestr(time));
-    $VERSION = "2.13.0";
+    $VERSION = "2.13.1";
     open (HTML,">$$cfg{'htmldir'}$$rcfg{'directory'}{$router}$router.$$rcfg{'extension'}{$router}") || 
       do { warn ("WARNING: Writing $router.$$rcfg{'extension'}{$router}: $!");
       	   next };
@@ -1660,7 +1660,7 @@ sub printusage {
     print <<USAGEDESC;
 Usage: mrtg <config-file>
 
-mrtg-2.13.0 is the Multi Router Traffic Grapher.
+mrtg-2.13.1 is the Multi Router Traffic Grapher.
 
 If you want to know more about this tool, you might want
 to read the docs. They came together with mrtg! 
