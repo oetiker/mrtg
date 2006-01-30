@@ -290,9 +290,11 @@ div#menu > ul > li > ul > li > ul > li > div a {
 	vertical-align:middle;
 	text-align:right;
 }
+#page_footer,
 #page_footer a {
 	color:black;
 	font-weight:normal;
+        font-size: 10pt;
 	text-decoration:none;
 }
 
