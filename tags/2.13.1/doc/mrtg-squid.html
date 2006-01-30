@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>doc/mrtg-squid</title>
+<link rev="made" href="mailto:dws@ee.ethz.ch" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+<!--
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#modifications">MODIFICATIONS</a></li>
+	<li><a href="#config_example">CONFIG EXAMPLE</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+</ul>
+-->
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>mrtg-squid - using mrtg to monitor Squid</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>Squid 2.3 knows SNMP and you can therefore use mrtg to
+monitor it quite easily.</p>
+<p>I have made some modifications to mrtg which simplify this.
+My work is based on earlier modification made by:
+<a href="mailto:matija.grabnar@arnes.si">matija.grabnar@arnes.si</a> and <a href="mailto:kostas@nlanr.net.">kostas@nlanr.net.</a></p>
+<p>
+</p>
+<hr />
+<h1><a name="modifications">MODIFICATIONS</a></h1>
+<p>I added new code for displaying correct units to the
+previous patches ``perminute'' and ``perhour'' (``option'' tokens),
+which allows other measurement in addition to ``persecond''.</p>
+<p>Then I created a new option token ``dorelpercent'' which
+allows the calculation of the percentage of IN-stream / OUT-stream on
+the fly and then displays it on a fixed scale from 0% to 100%. For my
+requirements, this does good work. Maybe someone wants a floating
+scale. It should not be a problem to implement it, too (but 
+give me an option to keep my fixed scale). If IN-stream is always
+less than OUT-stream both lines (OUT-stream and relative percent)
+are always displayed on top of IN-stream bulk. Otherwise this
+option makes no sense. With this option you can display hitrates,
+errorrates (for router monitoring: rel. droprates) easily now.</p>
+<p>If you use this options please consider that you need a 5th
+colourname/value pair in your Colours statements!</p>
+<p>Due to some discussion on this list, I have implemented two
+tokens too:</p>
+<p>``kilo'' and ``kMG''</p>
+<p>``kilo'' should contain the value of k (1000 or 1024), where 1000 is the
+default.</p>
+<p>``kMG'' is a comma separated list of multiplier prefixes, used
+instead of ``'', ``k'', ``M'', ``G'', ``T'' on the MRTG display. Leave the
+place free, if you want no prefix.</p>
+<p>Also an incomplete list of OIDs for the new SQUID release is
+added.</p>
+<p>I hope you enjoy it.</p>
+<p>
+</p>
+<hr />
+<h1><a name="config_example">CONFIG EXAMPLE</a></h1>
+<p>You can measure responsetimes in ms and display it with MRTG
+correctly with:</p>
+<pre>
+ kMG[measure-ms]: m,,k,M,G,T
+ short[measure-ms]: s</pre>
+<p>You can display now MB/s as 1024*1024 B/s with:</p>
+<pre>
+ kilo[volume]: 1024</pre>
+<p>A sample config for squid:</p>
+<pre>
+ Target[proxy-hit]: cacheHttpHits&amp;cacheProtoClientHttpRequests:public@proxy
+ Title[proxy-hit]: HTTP Hits
+ PageTop[proxy-hit]: &lt;H2&gt;proxy Cache Statistics: HTTP Hits / Requests&lt;/H2&gt;
+ Suppress[proxy-hit]: y
+ LegendI[proxy-hit]:  HTTP hits
+ LegendO[proxy-hit]:  HTTP requests
+ Legend1[proxy-hit]:  HTTP hits
+ Legend2[proxy-hit]:  HTTP requests
+ YLegend[proxy-hit]: perminute
+ ShortLegend[proxy-hit]: req/min
+ Options[proxy-hit]: nopercent, perminute, dorelpercent</pre>
+<pre>
+ Target[proxy-srvkbinout]: cacheServerInKb&amp;cacheServerOutKb:public@proxy
+ Title[proxy-srvkbinout]: Cache Server Traffic In / Out
+ PageTop[proxy-srvkbinout]: &lt;H2&gt;Cache Statistics: Server traffic volume (In/Out) &lt;/H2&gt;
+ Suppress[proxy-srvkbinout]: y
+ LegendI[proxy-srvkbinout]:  Traffic In
+ LegendO[proxy-srvkbinout]:  Traffic Out
+ Legend1[proxy-srvkbinout]:  Traffic In
+ Legend2[proxy-srvkbinout]:  Traffic Out
+ YLegend[proxy-srvkbinout]: per minute
+ ShortLegend[proxy-srvkbinout]: b/min
+ kMG[proxy-srvkbinout]: k,M,G,T
+ kilo[proxy-srvkbinout]: 1024
+ Options[proxy-srvkbinout]: nopercent, perminute</pre>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Andreas Papst &lt;<a href="mailto:andreas.papst@univie.ac.at">andreas.papst@univie.ac.at</a>&gt;
+Dirk-Lüder Kreie &lt;<a href="mailto:deelkar@gmx.de">deelkar@gmx.de</a>&gt;</p>
+
+</body>
+
+</html>

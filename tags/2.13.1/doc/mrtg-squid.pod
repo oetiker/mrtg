@@ -1,0 +1,95 @@
+=head1 NAME
+
+mrtg-squid - using mrtg to monitor Squid
+
+=head1 DESCRIPTION
+
+Squid 2.3 knows SNMP and you can therefore use mrtg to
+monitor it quite easily.
+
+I have made some modifications to mrtg which simplify this.
+My work is based on earlier modification made by:
+matija.grabnar@arnes.si and kostas@nlanr.net.
+
+=head1 MODIFICATIONS
+
+I added new code for displaying correct units to the
+previous patches "perminute" and "perhour" ("option" tokens),
+which allows other measurement in addition to "persecond".
+
+Then I created a new option token "dorelpercent" which
+allows the calculation of the percentage of IN-stream / OUT-stream on
+the fly and then displays it on a fixed scale from 0% to 100%. For my
+requirements, this does good work. Maybe someone wants a floating
+scale. It should not be a problem to implement it, too (but 
+give me an option to keep my fixed scale). If IN-stream is always
+less than OUT-stream both lines (OUT-stream and relative percent)
+are always displayed on top of IN-stream bulk. Otherwise this
+option makes no sense. With this option you can display hitrates,
+errorrates (for router monitoring: rel. droprates) easily now.
+
+If you use this options please consider that you need a 5th
+colourname/value pair in your Colours statements!
+
+Due to some discussion on this list, I have implemented two
+tokens too:
+
+"kilo" and "kMG"
+
+"kilo" should contain the value of k (1000 or 1024), where 1000 is the
+default.
+
+"kMG" is a comma separated list of multiplier prefixes, used
+instead of "", "k", "M", "G", "T" on the MRTG display. Leave the
+place free, if you want no prefix.
+
+Also an incomplete list of OIDs for the new SQUID release is
+added.
+
+I hope you enjoy it.
+
+=head1 CONFIG EXAMPLE
+
+You can measure responsetimes in ms and display it with MRTG
+correctly with:
+
+ kMG[measure-ms]: m,,k,M,G,T
+ short[measure-ms]: s
+
+
+You can display now MB/s as 1024*1024 B/s with:
+
+ kilo[volume]: 1024
+
+A sample config for squid:
+
+ Target[proxy-hit]: cacheHttpHits&cacheProtoClientHttpRequests:public@proxy
+ Title[proxy-hit]: HTTP Hits
+ PageTop[proxy-hit]: <H2>proxy Cache Statistics: HTTP Hits / Requests</H2>
+ Suppress[proxy-hit]: y
+ LegendI[proxy-hit]:  HTTP hits
+ LegendO[proxy-hit]:  HTTP requests
+ Legend1[proxy-hit]:  HTTP hits
+ Legend2[proxy-hit]:  HTTP requests
+ YLegend[proxy-hit]: perminute
+ ShortLegend[proxy-hit]: req/min
+ Options[proxy-hit]: nopercent, perminute, dorelpercent
+
+ Target[proxy-srvkbinout]: cacheServerInKb&cacheServerOutKb:public@proxy
+ Title[proxy-srvkbinout]: Cache Server Traffic In / Out
+ PageTop[proxy-srvkbinout]: <H2>Cache Statistics: Server traffic volume (In/Out) </H2>
+ Suppress[proxy-srvkbinout]: y
+ LegendI[proxy-srvkbinout]:  Traffic In
+ LegendO[proxy-srvkbinout]:  Traffic Out
+ Legend1[proxy-srvkbinout]:  Traffic In
+ Legend2[proxy-srvkbinout]:  Traffic Out
+ YLegend[proxy-srvkbinout]: per minute
+ ShortLegend[proxy-srvkbinout]: b/min
+ kMG[proxy-srvkbinout]: k,M,G,T
+ kilo[proxy-srvkbinout]: 1024
+ Options[proxy-srvkbinout]: nopercent, perminute
+
+=head1 AUTHOR
+
+Andreas Papst E<lt>andreas.papst@univie.ac.atE<gt>
+Dirk-Lüder Kreie E<lt>deelkar@gmx.deE<gt>

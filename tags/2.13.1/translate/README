@@ -1,0 +1,7 @@
+If you want to translate mrtg into a new language, use the file 
+german.pmd as a sample ... you can then integrate your translation 
+into locales_mrtg.pm by running 
+
+./mergelocale.pl skeleton.pm0 *.pmd
+
+
