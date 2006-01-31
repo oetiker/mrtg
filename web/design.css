@@ -80,7 +80,7 @@ div#menu > ul > li > div.selected_head {
 	border:1px solid #345d98;
 	background-image : url('images/minus.gif');
 	background-repeat : no-repeat;
-	background-position : 4px 3px;
+	background-position : 4px 0.4ex;
 	background-color : #345d98;
 	margin:1px 0px;
 }
@@ -96,7 +96,7 @@ div#menu > ul > li > div {
 	border:1px solid #345d98;
 	background-image : url('images/plus.gif');
 	background-repeat : no-repeat;
-	background-position : 4px 3px;
+	background-position : 4px 0.4ex;
 	background-color : #345d98;
 	margin:1px 0px;
 	padding-left:17px;
@@ -104,6 +104,7 @@ div#menu > ul > li > div {
 
 div#menu ul > li > div.selected {
 	background-image : url('images/arr_black_right.gif'); 
+	background-position : 4px 0.5ex;
 	background-color :#fe754d;
 	color : #345d98;
 	font-weight:bold;
@@ -130,7 +131,7 @@ div#menu > ul > li > ul > li >  div > a {
 div#menu > ul > li > ul > li > div.selected {
 	background-image:url('images/arr_black_right.gif');
 	background-repeat: no-repeat;
-	background-position: 5px 4px;
+	background-position: 5px 0.5ex;
 	background-color: #fe754d;
 	border:1px solid #345d98;	
 	padding-left:15px;
@@ -145,7 +146,7 @@ div#menu > ul > li > ul > li > div.selected > a {
 div#menu > ul > li > ul > li > div.selected_head {
 	background-image:url('images/arr_black.gif');
 	background-repeat : no-repeat;
-	background-position : 5px 4px;
+	background-position : 5px 0.6ex;
 	background-color :#fe754d;
 	border:1px solid #345d98;
 }
