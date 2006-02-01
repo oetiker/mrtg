@@ -29,6 +29,7 @@
 </style>
 </head>
 <body>
+<!--[if lt IE 7]><script src="$(ROOT)/inc/IE7/ie7-standard-p.js" type="text/javascript"></script><![endif]-->
 <div id="page_header">
 #<small>
 #<A HREF="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/<where/>">Swiss Original</A>.&nbsp;Mirrors: 
