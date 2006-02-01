@@ -772,7 +772,35 @@ ECHO
                     . $default_title_directive . "\n"
                     . $default_pagetop_directive . "\n");
 
+
+                # If --if-filter is provided, evalutat that.  If it
+                # returns true, clear @prob.  If it returns false,
+                # instead add a complaint to @prob.
+
+                if (defined $$router_opt{'if-filter'}) {
+                    $@ = undef;
+                    if (eval($$router_opt{'if-filter'})) {
+                        @prob = ();
+                    } else {
+                        push @prob, "filter specified by --if-filter rejected the interface";
+                        $if_ok = 0;
+                    }
+                    die "ERROR: with if-filter $$router_opt{'if-filter'}: $@" if $@;
+                }
+
+
+                # issue problem report
+
+                my $problem_lines = "";
+
+                if (@prob) {
+                    $problem_lines .= "### The following interface is commented out because:\n";
+                    map {$problem_lines .= "### * $_\n"} @prob;
+                    $if_ok = 0;
+                }
+
                 # The target config generation code starts HERE.
+
 
                 if (defined $$router_opt{'if-template'}) {
                     # First test if the file exists and is readable,
@@ -793,35 +821,9 @@ ECHO
                 }
 
 
-                # If --if-filter is provided, evalutat that.  If it
-                # returns true, clear @prob.  If it returns false,
-                # instead add a complaint to @prob.
-
-                if (defined $$router_opt{'if-filter'}) {
-                    $@ = undef;
-                    if (eval($$router_opt{'if-filter'})) {
-                        @prob = ();
-                    } else {
-                        push @prob, "filter specified by --if-filter rejected the interface";
-                        $if_ok = 0;
-                    }
-                    die "ERROR: with if-filter $$router_opt{'if-filter'}: $@" if $@;
-                }
-
                 if ($target_lines && not $if_ok) { # comment out the target lines if needed
                     $target_lines =~ s/^/\# /gm;
                 }
-
-                # issue problem report
-
-                my $problem_lines = "";
-
-                if (@prob) {
-                    $problem_lines .= "### The following interface is commented out because:\n";
-                    map {$problem_lines .= "### * $_\n"} @prob;
-                    $if_ok = 0;
-                }
-
 
                 $conf .= ($head_lines
                     . $problem_lines
