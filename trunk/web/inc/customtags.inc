@@ -1,7 +1,7 @@
 <define-tag where>\
 <perl>
 my $path=$WML_SRC_DIRNAME."/".$WML_SRC_BASENAME;
-$path =~ s|.+?website/||s;
+$path =~ s|.+?web/||s;
 print "$path.en.html";
 </perl>\
 </define-tag>
