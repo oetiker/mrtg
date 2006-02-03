@@ -512,7 +512,7 @@ From: bill shamam <bill location continuity.cx>
 * contributed a favicon
 
 From: Lorenzo Colitti <lorenzo location colitti.com>,
-      Valerio Bontempi <v.bontempi location inwind.it>,
+From: Valerio Bontempi <valerio.bontempi location poste.it>,
       Roma Tre Computer Networks research group <compunet location dia.uniroma3.it>
 * fix for IPv6 support (work with out option settings)
 * fix IPv6 module detection
