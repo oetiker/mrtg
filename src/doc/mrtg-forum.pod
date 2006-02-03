@@ -110,7 +110,7 @@ posts to:
 Many MRTG users are in this forum and will help you. You can also find
 an archive of past activity from this Newsgroup on:
 
- http://groups.google.com
+ http://groups.google.com/group/comp.dcom.net-management
 
 =head1 IRC Channel
 
