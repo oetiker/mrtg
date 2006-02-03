@@ -1,0 +1,435 @@
+MRTG-NW-GUIDE(1)               mrtg              MRTG-NW-GUIDE(1)
+
+
+
+NNAAMMEE
+       mrtg-nw-guide - MRTG for NetWare
+
+SSYYNNOOPPSSIISS
+       This guide is intended to aid in the installation and con-
+       figuration of MRTG on a NetWare server.
+
+OOVVEERRVVIIEEWW
+       MRTG is a relative newcomer to the NetWare platform. Ear-
+       lier versions of NetWare could not run MRTG natively for
+       several reasons:
+
+       +o   Absence of NetWare OS support in the MRTG package.
+
+       +o   A NetWare server commandline length limitation.
+
+       +o   Absence of the Rateup executable (Rateup.nlm).
+
+       +o   A standard installation method.
+
+       +o   Problems with NetWare's implementation of Perl.
+
+       Support for the NetWare OS has now been fully added into
+       MRTG, beginning with MRTG release 2.12.2.
+
+       Liberallly minded operating systems support a commandline
+       length approaching 1000 characters. In such environments
+       it was an easy matter to pass the sometimes high number of
+       parameters used by MRTG's Rateup executable directly on
+       the commandline. Until NetWare 6.5, NetWare had a command-
+       line limit of 512 characters. This limitation was also
+       removed for NetWare 6.0 by Service Pack 5. For other Net-
+       Ware versions and earlier Service Packs, this limitation
+       remains. To permit a 'standard' interface for NetWare, the
+       Rateup executable has been modified to also read its
+       parameters from a file, and the MRTG script has been modi-
+       fied to support this method on a NetWare platform.  (See
+       New Rateup Switch)
+
+       A Rateup NLM is now available, along with the necessary
+       scripts to build it if required. See the  NetWare Support
+       section of this document for further details. Addition-
+       ally, mrtg.pl has been revised because of the unique (to
+       NetWare) name of executables (NLM).
+
+       The absence of a specific installation procedure has
+       caused MRTG to fail in the past because the Perl script
+       could not find or load the Rateup executable. The instal-
+       lation method supplied here will solve this problem for
+       now.
+
+       The MRTG.pl script in the 2.12.2 (or later) version of
+       MRTG has been configured to suit all likely versions of
+       NetWare able to use Perl5, and bypasses all of the known
+       problems with NetWare Perl running MRTG.
+
+PPRREERREEQQUUIISSIITTEESS
+       You will need the following:
+
+       +o   Perl 5.8.0 for NetWare with latest Perl Updates
+           (February, 2005 or later; previous versions MAY work)
+
+       +o   NetWare 5.1 w/ SP8, NetWare 6.0 w/ SP5 or NetWare 6.5
+           w/ SP2.
+
+       +o   A copy of the MRTG Package (v2.12.2 at time of writ-
+           ting)
+
+       +o   Three .ncf files to execute the Perl scripts at the
+           NetWare server console.
+
+       +o   A copy of the Rateup NLM (Pre-built or compiled)
+
+       +o   Optionally, any NetWare supported Web Server
+           (Netscape, Apache 1.3 or 2.0)
+
+       For copies of the .ncf files and Rateup NLM, see NetWare
+       Support in this document.
+
+IINNSSTTAALLLLIINNGG MMRRTTGG
+       1.  Install the latest Perl 5.8.x release on your server.
+           See the Perl documentation for details.
+
+       2.  Create the following directories:
+
+                    SYS:/Mrtg
+                    SYS:/Mrtg/bin
+                    SYS:/Mrtg/contrib    (Optional for this document)
+                    SYS:/Mrtg/doc        (Optional for this document)
+                    SYS:/Mrtg/html
+                    SYS:/Mrtg/html/images
+                    SYS:/Mrtg/html/work
+                    SYS:/Mrtg/lib
+                    SYS:/Mrtg/logs
+                    SYS:/Mrtg/translate
+
+       3.  Copy from the MRTG package the following files:
+
+                    \bin\*        to  SYS:/Mrtg/bin              All files. See Note 1.
+
+               Note 1: Add a .pl extension to the mrtg, cfgmaker and indexmaker files.
+                       The rateup.exe will NOT be needed on the NetWare server.
+
+                    \contrib\*    to  SYS:/Mrtg/contrib/         Include sub-directories
+                    \doc\*        to  SYS:/Mrtg/doc/             All files
+                    \images\*     to  SYS:/Mrtg/html/images/     All files
+                    \translate\*  to  SYS:/Mrtg/translate/       All files. See Note 2.
+
+               Note 2: For English-only language support, all \translate files EXCEPT Locales_mrtg may be deleted.
+
+                    \lib\*        to  SYS:/Mrtg/lib              Include sub-directories. See Note 3.
+
+               Note 3: This will create the SYS:/Mrtg/lib/mrtg2 and ./pod directories.
+
+       4.  Create copies of the three .ncf files and install
+           them:
+
+                    *.ncf         to  SYS:/Mrtg/bin
+
+           See NetWare Support in this document for details on
+           how to create copies of these files.
+
+       5.  See Compiling Rateup.nlm"> in this document for
+           details on compiling the Rateup NLM yourself if
+           desired.  A prebuit verion is available in the
+           .\mrtg\bin directory where it must remain.
+
+CCOONNFFIIGGUURRIINNGG MMRRTTGG
+       +o   Refer to Novell documentation on configuring and load-
+           ing SNMP support on your server if this is the device
+           to be monitored.
+
+       +o   Edit sys:/mrtg/bin/MakeMrtgCfg.ncf:
+
+                     - replace ccccc with the GET community name for the SNMP device (typically 'public'),
+                     - replace ddddd with the DNS name or IP address of the device to be monitored.
+
+                     e.g    public@www.myserver.com, public@10.202.65.180
+
+                     Note 1: These are NOT mail addresses, they just look like one!
+                     Note 2: If multiple devices are to be monitored, add their entries to the same line:
+
+                     e.g  perl cfgmaker.pl public@www.myserver.com public@10.202.65.180 > sys:/mrtg/bin/mrtg.cfg
+
+           In this "Getting Started", it is 'suggested' to only
+           monitor a single device.
+
+       +o   At the server console, run:
+
+                    sys:/mrtg/bin/MakeMrtgCfg.ncf
+
+           This will create Mrtg.cfg in sys:/mrtg/bin.
+
+       +o   Edit the Mrtg.cfg configuration file created in the
+           previous step. Note the following:
+
+           It was found, when testing MRTG on a NetWare 6.5
+           server using a NIC Interface, that mrtg.cfg contained
+           the following message:
+
+            ### Interface 1 >> Descr: 'Intel(R)-8255x-based-Network-Connection'...
+            ### The following interface is commented out because:
+            ### * has a speed of 0 which makes no sense
+            #
+            ...
+
+           If this occurs, edit MakeMrtgCfg.ncf and add the fol-
+           lowing parameter as shown:
+
+            perl sys:\mrtg\bin\cfgmaker.pl --zero-speed=nnn public@10.202.65.180 > sys:\mrtg\bin\Mrtg.cfg
+
+           where nnnnnn is the interface speed in bits per second.
+           For a 100 Megabit LAN NIC, nnn = 10000000. It will be
+           necessary to re-execute the MakeMrtgCfg.ncf script
+           before continuing with this section.
+
+           Below line 16 (*** Global Defaults), add:
+
+            HtmlDir:  <a path>  e.g  HtmlDir:  sys:/mrtg/html
+            ImageDir: <a path>  e.g  ImageDir: sys:/mrtg/html/work
+            LogDir:   <a path>  e.g  LogDir:   sys:/mrtg/logs
+            IconDir:  <a path>  e.g  IconDir:  ./images
+
+           Note 1
+               The HtmlDir entry specifies where MRTG will create
+               its HTML pages.
+
+           Note 2
+               The ImageDir entry specifies where the created
+               graphic icons are placed.
+
+           Note 3
+               The IconDir entry specifies where the supplied
+               MRTG icons are located.  It MUST be a relative
+               path from HtmlDir or absolute URL. The value shown
+               is recommended.
+
+       +o   At the server console run:
+
+            sys:/mrtg/bin/RunMrtg.ncf
+
+           several times. By the third time it should run without
+           showing error messages on the console screen.  This
+           should create:
+
+           +o   A HTML page in the (HtmlDir) directory for each
+               monitored device,
+
+           +o   A .dat file in the (ImageDir) directory for each
+               monitored device,
+
+           +o   Several .png icons in the (ImageDir) directory,
+
+           +o   Some log file entries in the (LogDir) directory.
+
+           Note: If you experience a "Use of uninitialised value
+           in split" error, it will be necessary to create a
+           'Path' environment variable at the server console; use
+           the following example
+
+            env path="SYS:\"  (The actual value is immaterial, as long as the var itself exists.)
+
+       +o   Edit sys:/mrtg/bin/MakeMrtgIndex.ncf. Change the indi-
+           cated <path> shown in the following example to match
+           the value entered for (HtmlDir).
+
+            perl --noscreen sys:/mrtg/bin/indexmaker.pl sys:/mrtg/bin/Mrtg.cfg > <path>/index.html
+
+       +o   Create an index.html page linking the seperate device
+           HTML page(s). At the server console, run:
+
+            sys:/mrtg/bin/MakeMrtgIndex.ncf
+
+           This will create index.html in the (HtmlDir) direc-
+           tory.
+
+       +o   Optionally, configure a Web Server to permit access to
+           the directory specified in (HtmlDir) to view the MRTG
+           graphs remotely, at, for example:
+
+            http://ip_or_dns/mrtg/index.html
+
+           A sample configuration for an Apache Webserver is
+           shown:
+
+            Alias /mrtg/ "SYS:/mrtg/html/"
+            <Directory "SYS:/mrtg/html">
+                        AllowOverride None
+                        Order allow,deny
+                        Allow from all
+            </Directory>
+
+       +o   Set the property of the directory pointed to by
+           (ImageDir), to 'Purge Immediate'.
+
+       +o   Finally, read the MRTG documentation for much more
+           detailed configuration/usage information.
+
+       Welcome to MRTG!!
+
+MMAAKKEE MMRRTTGG RRUUNN AALLLL TTHHEE TTIIMMEE
+       MRTG can be made to run periodically by at least two
+       means:
+
+       +o   Using CRON Scheduling
+
+       +o   Running MRTG in Daemon Mode
+
+       CCRROONN SScchheedduulliinngg
+
+       To use CRON scheduling, create a CRON Scheduler entry to
+       execute the RunMrtg.ncf file on a frequency appropriate
+       for the server environment and information desired. The
+       following entry in the sys:\etc\crontab file will execute
+       MRTG every five minutes:
+
+        0,5,10,15,20,25,30,35,40,45,50,55 * * * * sys:\mrtg\bin\runmrtg.ncf
+
+       The CRON Scheduler (cron.nlm) can be started automatically
+       by adding it in AUTOEXEC.ncf or, manually loading it at
+       the server console.
+
+       MMRRTTGG iinn DDaaeemmoonn MMooddee
+
+       Refer to the MRTG-Reference document for information about
+       the 'RunAsDaemon' option. Its use is outside the scope of
+       this document.
+
+TTRROOUUBBLLEESSHHOOOOTTIINNGG
+       Read the MRTG documents, Perl documents or, finally, sub-
+       mit questions to the MRTG User forums.
+
+       For NetWare specific issues, submit questions to the Perl
+       forum at news://developer-forums.novell.com/novell.dev-
+       sup.perl (Novell Developer Forums).
+
+CCOOMMPPIILLIINNGG RRAATTEEUUPP..NNLLMM
+       In addition to the rateup.c and Makefile.Netware supplied
+       with the MRTG release, you will also need:
+
+       +o   Metrowerks CodeWarrior with NetWare Support OR GCC
+           Compiler (v3.0.3 or later) with NlmConv Utility
+
+       +o   Novell LibC NDK (February 2004 or later)
+
+       +o   GD Graphics Library (v2.0.33 or later)
+
+       +o   LibPNG Graphics Library (v1.2.8 or later)
+
+       +o   ZLib Library (v1.2.3 or later)
+
+       +o   The get_ver.awk script
+
+       +o   A copy of the GNU build tools.    (See http://source-
+           forge.net/projects/gnuwin32/)
+
+       The auxiliary libraries can be obtained from:
+
+       GD Graphics Library.   (See http://www.boutell.com/gd/ )
+
+       PNG Graphics Library.   (See http://libpng.source-
+       forge.net/ )
+
+       zLib Compression Library.   (See http://www.gzip.org/zlib/
+       )
+
+       Edit the Makefile.Netware file as required to match your
+       installation paths; search the file for the key word
+       'Edit'.
+
+NNEETTWWAARREE SSUUPPPPOORRTT
+       For copies of the NCF and get_ver.awk scripts, see
+       Appendix.
+
+       For NetWare specific issues, submit questions to the Perl
+       forum at news://developer-forums.novell.com/novell.dev-
+       sup.perl (Novell Developer Forums).
+
+       To move the MRTG application to a volume other than SYS:
+       you will need to edit the NCF scripts provided plus the
+       MRTG[.pl] script itself in two places.
+
+NNEEWW RRAATTEEUUPP SSWWIITTCCHH
+       The MRTG[.pl] script, when used on a NetWare platform,
+       uses Rateup[.nlm] with the new commandline switch:
+
+            RATEUP -f filename
+
+       where the filename parameter can include a leading path
+       element.
+
+       The file format is exactly the same as that used on the
+       commandline by other operating systems, including the
+       leading path and name of the Rateup NLM.
+
+AAPPPPEENNDDIIXX
+       The Appendix includes 'copies' of the following files:
+
+       +o   The NCF files used during MRTG configuration,
+
+       To create copies of these files, simply 'cut and paste'
+       into your favourite 'tteexxtt eeddiittoorr' and save under their
+       respective names. You should remove the leading space from
+       each line.
+
+       _M_a_k_e_M_r_t_g_C_f_g_._N_C_F
+
+        # MakeMrtgCfg.NCF
+        # Purpose : Create the MRTG Configuration File
+        # Changed :  5/05/2005  New
+        # Located : SYS:MRTG\BIN
+        # Set For :
+        # Params  :
+
+        # Edit this file and:
+
+        # Replace ccccc with your device GET SNMP Community Name - If unsure try 'public'.
+        # Replace ddddd with your device IP (n.n.n.n) or domain name.
+
+        perl --noscreen sys:\mrtg\bin\cfgmaker.pl ccccc@ddddd > sys:\mrtg\bin\Mrtg.cfg
+
+        #
+        # End of MakeMrtgCfg.NCF
+
+       _R_u_n_M_r_t_g_._N_C_F
+
+        # RunMrtg.NCF
+        # Purpose : Run the MRTG Application
+        # Changed :  5/05/2005  New
+        # Located : SYS:MRTG\BIN
+        # Set For :
+        # Params  :
+
+        # The paths are as per the examples recommended in "Getting Started".
+
+        perl --noscreen sys:\mrtg\bin\mrtg.pl sys:\mrtg\bin\mrtg.cfg
+
+        #
+        # End of RunMrtg.NCF
+
+       _M_a_k_e_M_r_t_g_I_n_d_e_x_._N_C_F
+
+        # MakeMrtgIndex.NCF
+        # Purpose : Create the HTML Index File for MRTG HTML data pages
+        # Changed :  5/05/2005  New
+        # Located : SYS:MRTG\BIN
+        # Set For :
+        # Params  :
+
+        # Note: Edit this file and change the redirected output to the location
+        #       specified for HtmlDir or WorkDir. The sys:\apache2\htdocs\mrtg\index.html
+        #       is based on the examples in "Getting Started".
+
+        perl --noscreen sys:\mrtg\bin\indexmaker.pl sys:\mrtg\bin\Mrtg.cfg > sys:\mrtg\html\index.html
+
+        #
+        # End of MakeMrtgIndex.NCF
+
+LLIICCEENNSSEE
+       GNU General Public License
+
+CCRREEDDIITTSS
+       The MRTG for NetWare exists largely through the efforts of
+       Guenter Knauf and feedback from beta testers.
+
+AAUUTTHHOORR
+       Norm W..
+
+
+
+2.13.2                      2006-02-03           MRTG-NW-GUIDE(1)

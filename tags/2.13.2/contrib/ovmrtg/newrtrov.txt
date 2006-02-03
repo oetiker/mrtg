@@ -1,0 +1,23 @@
+To monitor device/s first select the device/s on the OV map
+and then execute the mrtg add menu option under Misc
+
+This firstly creates the collection file for xnmCollect
+via perl ovcols ip/s.
+
+xnmcollect is then called to -merge the new collection file
+xnmcollect is then called -event to activate the collection process
+
+Next, it creates the config file via perl cfgmakerov for each
+which also creates any needed new directory under
+$webdir/XXXrtrZ
+where XXXrtrZ is the device name.
+
+Then it creates the html generation files
+
+The file ovmrtgc.csv is updated with the IP address of the device, the
+SNMP sysName and the IP Hostname.
+
+If all this has worked OK, it then creates the 5 minute execution file $cronfile
+
+Finally, 
+$webdir/$roothtml is created to display the devices.

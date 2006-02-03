@@ -1,0 +1,69 @@
+#!/usr/bin/perl
+
+# iptables_acc version 0.1
+# Author: Gereon Ruetten, g.ruetten@gmx.de
+# 
+# for further informations about mrtg :
+#
+# http://ee-staff.ethz.ch/~oetiker/webtools/mrtg/mrtg.html
+#
+# usage :
+# Target[traffic]: /usr/local/mrtg-2/bin/iptables_acc httpin httpout
+#
+# the two arguments are the user chains you want to read
+
+use strict;
+
+my ($IPTABLES, $host, $in_chain, $out_chain, $in_data, $out_data);
+
+$IPTABLES='/usr/local/bin/iptables';  # where to find iptables
+$host=`/bin/hostname --fqdn`;  # local hostname (for information only)
+
+# these are defaults, yu can ovveride them with command-line parameters
+$in_chain='httpin';  # name of input accounting rule
+$out_chain='httpout'; # name of output accounting rule
+
+$in_data = 0;   # edit these settings if you want to monitor something else
+$out_data = 0;  # then the bytes counter
+
+## -- don't edit below here ----
+
+my (@rules, @in_count, @out_count, $upTime, $value, $c);
+
+# get command line params
+($in_chain,$out_chain) = @ARGV;
+
+# fetch the status from iptables
+@rules=`$IPTABLES -L $in_chain -v -n -x`;
+splice @rules, 0, 2;
+@in_count=split(' ',$rules[$in_data]);
+
+@rules=`$IPTABLES -L $out_chain -v -n -x`;
+splice @rules, 0, 2;
+@out_count = split(' ',$rules[$out_data]);
+
+#$c=1;
+#foreach $value (@in_count) {
+#  printf "in $c: $value\n";
+#  $c++;
+#};
+
+#$c=1;
+#foreach $value (@out_count) {
+#  printf "out $c: $value\n";
+#  $c++;
+#};
+
+# uptime of the machine
+open(UPTIME,"uptime |cut -b 13-26|");
+$upTime=<UPTIME>;
+close(UPTIME);
+chop $upTime;
+
+# 4 lines of output only.
+if (!$in_count[1]) { $in_count[1] = 0; }
+if (!$out_count[1]) { $out_count[1] = 0; }
+
+print	"$in_count[1]\n",
+	"$out_count[1]\n",
+	"$upTime\n$host";

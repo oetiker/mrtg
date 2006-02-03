@@ -1,0 +1,182 @@
+INDEXMAKER(1)                  mrtg                 INDEXMAKER(1)
+
+
+
+NNAAMMEE
+       indexmaker - Creates index files for mrtg web sites
+       (mrtg-2.13.2)
+
+SSYYNNOOPPSSIISS
+       indexmaker [options] mrtg.cfg [other.cfg ...]
+
+OOPPTTIIOONNSS
+        --output=filename   set output filename (default: stdout)
+
+        --filter title=~regexp  select targets by matching regexp against titles
+        --filter pagetop=~regexp  select targets by matching regexp against pagetop
+        --filter name=~regexp  select targets by matchin regexp against name
+
+        --addhead=text      insert this text between </TITLE> and </HEAD>
+        --title=text        set title of generated index file
+        --subtitle=text     add a subtitle to the generated index file
+        --bodyopt=text      set body tag options
+        --headlevel=number  use <Hnumber> at top of page (default: 1)
+        --pagetop=text      insert this text between <BODY> and <H1>...</H1>
+        --pageend=text      insert this text after the main body
+        --pagetopend=text   use this text for pagetop or pageend if undefined
+        --nolegend          do not add the Mrtg legend at the end of the page
+
+        --columns=number    show graphs in a table with x columns (default: 2)
+        --perhost           show graphs of the same host on a row
+        --compact           try to make a vertically more compact page
+        --optlog            log the used command line in the page (default: log)
+
+        --sort=title        sort graphs by title
+        --sort=name         sort graphs by their name
+        --sort=descr        sort graphs by their description
+        --sort=original     leave as is (default)
+
+        --enumerate         add a sequence number to the title of each graph
+
+        --picfirst          place pictures before text (default: text first)
+        --width=number      set width of graphs (default: not set)
+        --height=number
+        --sidebyside        place text / pictures side by side (default: above/below)
+        --bold              use bold text (default: bold)
+        --clicktext         make the text link to the inner page (like the image)
+
+        --show=day          pick which graph to show in the index (default)
+        --show=week
+        --show=month
+        --show=year
+        --show=none
+
+        --section=h1        h1 tag from pagetop as section heading (default)
+        --section=title     title as section headings for graphs
+        --section=name      graph name as section heading
+        --section=descr     graph description as section heading
+        --section=portname  port name entry in pagetop as section heading
+        --sectionhost       Try to prepend the host to the section heading if missing
+
+        --rrdviewer=path    path to rrdviewer (default: /cgi-bin/14all.cgi)
+        --icondir=path      path to icondir
+        --prefix=path       path from the location of the index.html to the graphs
+        --headeradd=string  add string to the html page header
+        --autoprefix        try to set prefix automatically
+
+        --<opt>-file=file   read string argument for option <opt> from file
+
+DDEESSCCRRIIPPTTIIOONN
+       IInnddeexxmmaakkeerr can create web pages which display the status
+       of an array of mrtg interface status pages.
+
+       ----oouuttppuutt _f_i_l_e_n_a_m_e
+           set output filename (default: stdout)
+
+       ----ffiilltteerr (ttiittllee|ppaaggeettoopp|nnaammee)(==~~|!!~~)_r_e_g_e_x_p
+           Several filters may get set.  Each filter can match
+           agains the contents of a specific section of the mrtg
+           config file. NNaammee refers to the bit in square brackets
+           (option[name]: bla).
+
+           Depending on the match operator chosen (==~~ or !!~~) the
+           match will be positive or negative.
+
+           Note that some shells consider !! a special character.
+           It may be necessary to type \\!!~~ instead.
+
+       ----ttiittllee _t_e_x_t
+           Set title of generated index file (default: regexp)
+
+       ----bbooddyyoopptt _t_e_x_t
+           The value of this argument gets appended to the <BODY>
+           tag. This allows to set document colors.  By default
+           this option is set to
+
+            bgcolor="#ffffff" text="#000000" link="#000000" vlink="#000000" alink="#000000"
+
+       ----ccoolluummnnss _n_u_m_b_e_r
+           Display graphs in a table with _n_u_m_b_e_r columns
+           (default: 2)
+
+       ----ssoorrtt ttiittllee|nnaammee|ddeessccrr|oorriiggiinnaall
+           Sort the graphs in the page either by ttiittllee, by nnaammee,
+           by interface ddeessccrription, or leave them as is.
+
+       ----eennuummeerraattee
+           Add a sequence number to the title of each graph
+
+       ----wwiiddtthh _n_u_m_b_e_r
+           Set width of graphs
+
+       ----hheeiigghhtt _n_u_m_b_e_r
+           Set the height of the graphs
+
+       ----sshhooww ddaayy|wweeeekk|mmoonntthh|yyeeaarr|nnoonnee
+           Select which graph to show in the index page. You can
+           supress images completely with ----sshhooww==nnoonnee.
+
+       ----sseeccttiioonn hh11|ttiittllee|nnaammee|ddeessccrriippttiioonn|ppoorrttnnaammee
+           Select what to use as the title for each graph in the
+           page.  hh11 is the H1 section from pagetop, ttiittllee is the
+           graph title, nnaammee is the bit in square brackets
+           (option[name]: bla), and ddeessccrr or ddeessccrriippttiioonn is the
+           text from the Description field of the PageTop (the
+           Cisco description text if it's available, otherwise
+           just the interface description). ppoorrttnnaammee is the "Port
+           Name:" from pagetop.
+
+       ----sseeccttiioonnhhoosstt
+           Extract the hostname from the target line (this does
+           not work if the target is a mathematial expression).
+           Prepend the hostname (and a colon) to the section if
+           not already present.
+
+       ----rrrrddvviieewweerr _p_a_t_h
+           If you have set the LLooggFFoorrmmaatt:: rrrrddttooooll property in the
+           mrtg.cfg file, the index will take this into account.
+           The only thing you must tell it is the path to your
+           grapher cgi. (default: /cgi-bin/14all.cgi)
+
+       ----pprreeffiixx _p_a_t_h
+           By  default we assume    that  the file generated by
+           indexmaker is stored in _W_o_r_k_D_i_r.  If you want to
+           store it somewhere   else, specify how to reach
+           _W_o_r_k_D_i_r  from  the place where the Index is stored.
+           Note that you have to use '/' as path separator as
+           this will be used in urls. Speaking of which, you can
+           even enter a whole url.
+
+       ----aauuttoopprreeffiixx _p_a_t_h
+           Requires --output.  Try to generate the prefix auto-
+           matically by comparision of the path to the output
+           file set with --output and the Htmldir set in the con-
+           figuration files.  Particulary useful when multiple
+           configuration files are specified, with different
+           Htmldir settings.
+
+       ----ooppttlloogg
+           Default is logging in the generated page the command
+           line, suppress with --nooptlog . Useful if the comman-
+           dline contains a complex --pagetop=string which could
+           confuse simple browsers.
+
+       ----ssoommeeooppttiioonn--ffiillee _f_i_l_e_n_a_m_e
+           For any someoption which takes a _s_t_r_i_n_g as parameter
+           you can read the string from a file by adding <-file>
+           to the option keyword. The whole content of the file
+           will be read and used as the _s_t_r_i_n_g. The file must
+           exist.
+
+AAUUTTHHOORR
+       Tobias Oetiker <tobi@oetiker.ch>
+
+LLIICCEENNSSEE
+       GNU General Public License
+
+CCOOPPYYRRIIGGHHTT
+       2000-2001 Tobias Oetiker <tobi@oetiker.ch>
+
+
+
+2.13.2                      2006-02-03              INDEXMAKER(1)

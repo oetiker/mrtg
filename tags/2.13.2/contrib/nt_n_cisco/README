@@ -1,0 +1,59 @@
+From: CmdrData <CmdrData@ex-pressnet.com>
+Subject: mrtg for nt and cisco
+
+I have been using MRTG running on Windows  NT now for a few months and find
+it to be pretty cool.  Thanks so much for making a free tool.
+
+The first time I installed it was on a Proliant 2500 w/ dual 200 Mhz CPUs ,
+and the setup was sloppy b/c I was learning how to run the program and make
+the config files, programatically.  The setup I had was less than ideal.
+
+So I built a new Proliant 6500 w/ 4 x 200 Mhz CPUs and 3/4 GB RAM and
+hardware RAID5 using 6 drives a couple of months later.  I also install
+Microsoft SQL server and IIS on the box.  What I now have is an mrtg
+database in sql wh/ has 2 tables 1 for NT devices and 1 for Cisco Devices.
+The main web page I use has 2 combo boxes which load from these table
+devices descriptors which are names and not ips.
+
+The main reason I used sql was so the web page would get auto updated when a
+devices was added and also so I could automate the configuration file
+creation and the list of devices it choose to poll.  I made a DTS package in
+sql which every 2 hours dumps parts of the two tables to text files (the sql
+7.0 DTS wizard for this makes it easy to dump parts of a table to a file).
+these 2 files are used to update all the configs every 12 hours.  To
+accomplish this I had to write a bunch of batch files that would read text
+file input and do some very repeatable tasks.  I also set a few environment
+variables to make the writing and reading easier.
+
+Since your site was very useful in getting me started I wanted to give a
+little back.  I have attached a few nt batch files which would be useful for
+anyone trying to set it up on NT.  I still have more automating to do like
+making the default.asp page without needing hand editing, and I haven't
+automated the ntconfig process.  But right now to add cisco devices  all I
+need to do is add a record to a database!  I am using this setup to monitor
+about 2700 + ports on mainly catalyst 6500's right now and it finishes its
+polling cycle in about 4 minutes.  The machine seems to be cpu and disk
+bound.  Quad 450's would be better and a raid with more drive heads would
+also be better.  I used the START command with the /BELOWNORMAL switch in a
+couple of places to allow the OS to jump in if it needs to b/c the CPU rides
+at about 99-100% for most of the 4 minutes.  SQL is not needed to make use
+of the attached scripts.  The files just contain 3 items, name (wh/equals
+part of the workdir path), comm str and IP [or netbiosname].
+
+I also had to hunt around for the nt info and put it in to one file which
+you can do a find and replace on to customize what nt targets you poll.
+
+Feel free to post these files if you like.
+
+What I still have not figured out is how to get the detailed port
+description to be used instead of the ifIndexs.  The post you have on this
+doesn't work with the port for NT and I don't know Perl.  If you have any
+suggestions on this I would appreciate it.  I tried to compare the mrtg file
+from the nt port and the hack and the files were too different for me to
+splice together without real knowlegde of perl, etc.
+
+Anyhow love the app.  I work for a web hosting company.
+
+thanks,
+
+-Jon

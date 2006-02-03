@@ -1,0 +1,7 @@
+From: x <tomm02@yahoo.com>
+
+
+I came up with a diagnostic tool called snmpping.pl to make sure I have the
+right information on a device.  I have posted it bellow.  It just goes out
+and grabs a gid and displays it on the screen.
+
