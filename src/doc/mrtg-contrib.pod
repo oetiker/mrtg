@@ -14,7 +14,7 @@ work.
 
 MRTG messages have been translated to a number of languages but there are
 still many which have not been covered yet. If you want to add yours, go
-into the F<mrtg-2.13.1/translate> directory and follow the instructions
+into the F<mrtg-2.13.2/translate> directory and follow the instructions
 given in the F<README> file.
 
 =head2 Patches
