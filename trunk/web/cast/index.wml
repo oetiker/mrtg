@@ -10,7 +10,7 @@
 <p><b>Simon Leinen</b> -- wrote the perl SNMP library included with mrtg.</p>
 <p><b>Daniel J McDonald</b> and <b>Mike Mitchell</b> -- contributed SNMPv3 support.</p>
 <p><b>Jakob Ilves</b> -- rewrote cfgmaker for maximum flexibilty.</p>
-<p><b>Lorenzo Colitti</b> -- add IpV6 support.</p>
+<p><b>Valerio Bontempi</b> and <b>Lorenzo Colitti</b> -- added IpV6 support.</p>
 <p><b>Alex van den Bogaerdt</b> and <b>Paul C. Williamson</b> -- act as mailinglist guardians.</p>
 
 <h2>Also With</h2>
