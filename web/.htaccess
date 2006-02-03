@@ -1,4 +1,0 @@
-ErrorDocument 404 http://people.ee.ethz.ch/~oetiker/webtools/mrtg/404.var
-RewriteEngine On
-RewriteRule mrtg.html  http://people.ee.ethz.ch/~oetiker/webtools/mrtg/ [R,L]
-
