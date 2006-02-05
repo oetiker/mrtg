@@ -1,4 +1,4 @@
-# Gnu Makefile for NetWare rateup.nlm target * 04-Sep-2005
+# Gnu Makefile for NetWare rateup.nlm target * 05-Feb-2006
 # for use with gcc/nlmconv or Metrowerks CodeWarrior compiler
 # use with: make -f Makefile.NetWare [all|clean|dist]
 
@@ -169,7 +169,14 @@ GDOBJS	= \
 	$(OBJDIR)/gdfonts.o \
 	$(OBJDIR)/gdhelpers.o \
 	$(OBJDIR)/gdtables.o \
+	$(EOLIST)
+ifeq "$(wildcard $(LIBGD)/gd_security.c)" "$(LIBGD)/gd_security.c"
+GDOBJS	+= \
 	$(OBJDIR)/gd_security.o \
+	$(EOLIST)
+endif
+
+PNGOBJS	= \
 	$(OBJDIR)/png.o \
 	$(OBJDIR)/pngerror.o \
 	$(OBJDIR)/pnggccrd.o \
@@ -208,7 +215,7 @@ ZLIBOBJS	+= \
 	$(EOLIST)
 endif
 
-OBJS	= $(GDOBJS) $(ZLIBOBJS) $(OBJDIR)/$(TARGET).o
+OBJS	= $(GDOBJS) $(PNGOBJS) $(ZLIBOBJS) $(OBJDIR)/$(TARGET).o
 
 
 all: $(OBJDIR) $(OBJDIR)/$(TARGET).nlm
