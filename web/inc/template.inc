@@ -32,7 +32,7 @@
 <!--[if lt IE 7]><script src="$(ROOT)/inc/IE7/ie7-standard-p.js" type="text/javascript"></script><![endif]-->
 <div id="page_header">
 <small>
-<A HREF="http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/<where/>">Swiss Original</A>.&nbsp;Mirrors: 
+<A HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/<where/>">Swiss Original</A>.&nbsp;Mirrors: 
 <A HREF="http://www.bigwebmaster.com/mrtg/<where/>">US</a><!--Brian Annas <questions@bigwebmaster.com>-->
 #<A HREF="http://rrdtool.planetmirror.com/<where/>">AU</A><!--jason andrade <jason@dstc.edu.au>-->
 #<A HREF="http://rrdtool.cs.pu.edu.tw/<where/>">TW</A><!--Hsun-Chang Chang <hsunchang@gmail.com>-->
@@ -110,7 +110,9 @@ design though relies completely on CSS2 styles. If you see this text, this means
 that your browser does not support CSS2. Consider upgrading to a standard conformant
 browser like Mozilla <a href="http://www.getfirefox.com">Firefox</a> or
 <a href="http://www.opera.com">Opera</a> but also Apple's <a href="http://www.apple.com/safari/">Safari</a>
-or KDE's <a href="http://www.konqueror.org">Konqueror</a> for example.</en>
+or KDE's <a href="http://www.konqueror.org">Konqueror</a> for example. It may also be that you
+are looking at a mirror page which did not copy <a href="$(ROOT)/design.css">the CSS</a> for this page. Or if some pictures
+are missing, then the mirror may not have picked up the contents of either the <a href="$(ROOT)/images/">images</a> or the <a href="$(ROOT)/inc/">inc</a> directory.</en>
 #<de><b>HINWEIS:</b> Diese Website funktioniert mit jedem Browser. Die graphische Präsentation jedoch
 #basiert komplett auf CSS2. Beispiele für CSS2 konforme Browser sind zum Beispiel  <a href="http://www.getfirefox.com">Firefox</a>
 #<a href="http://www.opera.com">Opera</a> oder auch <a href="http://www.apple.com/safari/">Safari</a> von Apple und
