@@ -2,7 +2,7 @@
 ######################################################################
 ### SNMP_util -- SNMP utilities using SNMP_Session.pm and BER.pm
 ######################################################################
-### Copyright (c) 1998-2002, Mike Mitchell.
+### Copyright (c) 1998-2005, Mike Mitchell.
 ###
 ### This program is free software; you can redistribute it under the
 ### "Artistic License" included in this distribution (file "Artistic").
@@ -20,7 +20,7 @@
 ### Tobias Oetiker <oetiker@ee.ethz.ch>: HASH as first OID to set SNMP options
 ### Simon Leinen <simon@switch.ch>: 'undefined port' bug
 ### Daniel McDonald <dmcdonald@digicontech.com>: request for getbulk support
-### Laurent Girod <girod.laurent@pmintl.ch>: code for snmpwalkhash
+### Laurent Girod <it.fb@net2000.ch>: code for snmpwalkhash
 ### Ian Duplisse <i.duplisse@cablelabs.com>: MIB parsing suggestions
 ### Jakob Ilves <jakob.ilves@oracle.com>: return_array_refs for snmpwalk()
 ### Valerio Bontempi <v.bontempi@inwind.it>: IPv6 support
@@ -39,11 +39,11 @@ use vars qw(@ISA @EXPORT $VERSION);
 use Exporter;
 use Carp;
 
-use BER "1.05";
-use SNMP_Session "1.05";
+use BER "1.02";
+use SNMP_Session "1.00";
 use Socket;
 
-$VERSION = '1.04';
+$VERSION = '1.06';
 
 @ISA = qw(Exporter);
 
@@ -650,7 +650,7 @@ sub snmpwalk_flg ($$@) {
       } else {
 	# IlvJa
 	#
-	# The walk for variable $var[$ix] has been finished as
+	# The walk for variable $vars[$ix] has been finished as
 	# $nnoid[$ix] no longer is in the $avar[$ix] OID tree.
 	# So we exclude this variable from further requests.
 
@@ -696,14 +696,14 @@ sub snmpwalk_flg ($$@) {
 	    }
 	  }	
 	  if (length($tempo) && exists($revOIDS{$tempo})) {
-	    $tempo = $revOIDS{$tempo} . $inst;
+	    $var = $revOIDS{$tempo};
 	  } else {
-	    $tempo = pretty_print($oid);
+	    $var = pretty_print($oid);
 	  }
 	  #
 	  # call hash_sub
 	  #
-	  &$hash_sub($h_ref, $host, $revOIDS{$tempo}, $tempo, $inst,
+	  &$hash_sub($h_ref, $host, $var, $tempo, $inst,
 			$tempv, $upo);
 	} else {
 	  if ($SNMP_util::Return_array_refs) {
@@ -1102,7 +1102,7 @@ sub Check_OID ($) {
     $tmp = $&;
     $tmpv = $tmp;
     for (;;) {
-      last if defined($SNMP_util::OIDS{$tmpv});
+      last if exists($SNMP_util::OIDS{$tmpv});
       last if !($tmpv =~ s/^[^\.]*\.//);
     }
     $oid = $SNMP_util::OIDS{$tmpv};
@@ -1237,9 +1237,13 @@ sub snmpMIB_to_OID ($) {
 	    ($tmp, $val) = split(' ', $val, 2);
 	    if ($tmp =~ /([\w\-]+)\((\d+)\)/) {
 	      $tmp = $1;
-	      $tmpv = "$SNMP_util::OIDS{$strt}.$2";
+	      if (exists($SNMP_util::OIDS{$strt})) {
+		$tmpv = "$SNMP_util::OIDS{$strt}.$2";
+	      } else {
+		$tmpv = $2;
+	      }
 	      $Link{$tmp} = $strt;
-	      if (!defined($prev{$tmp}) && defined($SNMP_util::OIDS{$tmp})) {
+	      if (!exists($prev{$tmp}) && exists($SNMP_util::OIDS{$tmp})) {
 		if ($tmpv ne $SNMP_util::OIDS{$tmp}) {
 		  $strt = "$strt.$tmp";
 		  $SNMP_util::OIDS{$strt} = $tmpv;
@@ -1254,7 +1258,7 @@ sub snmpMIB_to_OID ($) {
 	    }
 	  }
 
-	  if (!defined($SNMP_util::OIDS{$strt})) {
+	  if (!exists($SNMP_util::OIDS{$strt})) {
 	    if ($pass) {
 	      carp "snmpMIB_to_OID: $arg: \"$strt\" prefix unknown, load the parent MIB first.\n"
 		unless ($SNMP_Session::suppress_warnings > 1);
@@ -1263,8 +1267,10 @@ sub snmpMIB_to_OID ($) {
 	    }
 	  }
 	  $Link{$var} = $strt;
-	  $val = "$SNMP_util::OIDS{$strt}.$val";
-	  if (!defined($prev{$var}) && defined($SNMP_util::OIDS{$var})) {
+	  if (exists($SNMP_util::OIDS{$strt})) {
+	    $val = "$SNMP_util::OIDS{$strt}.$val";
+	  }
+	  if (!exists($prev{$var}) && exists($SNMP_util::OIDS{$var})) {
 	    if ($val ne $SNMP_util::OIDS{$var}) {
 	      $var = "$strt.$var";
 	    }
