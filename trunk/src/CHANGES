@@ -1,3 +1,5 @@
+From: Simon Leinen
+* Updated SNMP_Session to 1.08
 From: Guenter Knauf <gk gknw.net>
 * Small fixes for libgd in Makefile.Win32 and Makefile.Netware
 

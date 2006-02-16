@@ -36,6 +36,8 @@
 ### Lorenzo Colitti <lorenzo@colitti.com>: IPv6 support
 ### Philippe Simonet <Philippe.Simonet@swisscom.com>: Export avoid...
 ### Luc Pauwels <Luc.Pauwels@xalasys.com>: use_16bit_request_ids
+### Andrew Cornford-Matheson <andrew.matheson@corenetworks.com>: inform
+### Gerry Dalton <gerry.dalton@consolidated.com>: strict subs bug
 ######################################################################
 
 package SNMP_Session;		
@@ -58,7 +60,7 @@ sub map_table_start_end ($$$$$$);
 sub index_compare ($$);
 sub oid_diff ($$);
 
-$VERSION = '1.05';
+$VERSION = '1.08';
 
 @ISA = qw(Exporter);
 
@@ -146,14 +148,14 @@ my $the_socket;
 $SNMP_Session::errmsg = '';
 $SNMP_Session::suppress_warnings = 0;
 
-sub get_request      { 0 | context_flag };
-sub getnext_request  { 1 | context_flag };
-sub get_response     { 2 | context_flag };
-sub set_request      { 3 | context_flag };
-sub trap_request     { 4 | context_flag };
-sub getbulk_request  { 5 | context_flag };
-sub inform_request   { 6 | context_flag };
-sub trap2_request    { 7 | context_flag };
+sub get_request      { 0 | context_flag () };
+sub getnext_request  { 1 | context_flag () };
+sub get_response     { 2 | context_flag () };
+sub set_request      { 3 | context_flag () };
+sub trap_request     { 4 | context_flag () };
+sub getbulk_request  { 5 | context_flag () };
+sub inform_request   { 6 | context_flag () };
+sub trap2_request    { 7 | context_flag () };
 
 sub standard_udp_port { 161 };
 
@@ -277,14 +279,18 @@ sub decode_trap_request ($$) {
      $bindings)
 	= decode_by_template ($trap, "%{%i%s%*{%O%A%i%i%u%{%@",
 			    trap_request);
-    if (! defined ($snmp_version)) {
+    if (!defined $snmp_version) {
 	($snmp_version, $community,
 	 $request_id, $error_status, $error_index,
 	 $bindings)
 	    = decode_by_template ($trap, "%{%i%s%*{%i%i%i%{%@",
 				  trap2_request);
-	return $this->error_return ("v2 trap request contained errorStatus/errorIndex "
-		      .$error_status."/".$error_index)
+	if (!defined $snmp_version) {
+	    ($snmp_version, $community,$request_id, $error_status, $error_index, $bindings)
+		= decode_by_template ($trap, "%{%i%s%*{%i%i%i%{%@", inform_request);
+	}
+	return $this->error_return ("v2 trap/inform request contained errorStatus/errorIndex "
+				    .$error_status."/".$error_index)
 	    if defined $error_status && defined $error_index
 	    && ($error_status != 0 || $error_index != 0);
     }
@@ -377,7 +383,6 @@ sub request_response_5 ($$$$$) {
 	    if (defined $this->{'capture_buffer'}
 		and ref $this->{'capture_buffer'} eq 'ARRAY');
 	#
-	
       wait_for_response:
 	($nfound, $timeleft) = $this->wait_for_response($timeleft);
 	if ($nfound > 0) {
@@ -394,8 +399,6 @@ sub request_response_5 ($$$$$) {
 		      if (defined $this->{'capture_buffer'}
 			  and ref $this->{'capture_buffer'} eq 'ARRAY');
 		#
-		
-
 		return $response_length;
 	    } elsif (defined ($response_length)) {
 		goto wait_for_response;
@@ -417,7 +420,6 @@ sub request_response_5 ($$$$$) {
 	if (defined $this->{'capture_buffer'}
 	    and ref $this->{'capture_buffer'} eq 'ARRAY');
     #
-
     $this->error ("no response received");
 }
 
@@ -1083,7 +1085,9 @@ sub map_table_start_end ($$$$$$) {
 		}
 		($base_index = undef), last
 		    if !defined $min_index;
-		last if defined $end && index_compare ($min_index, $end) >= 0;
+		last
+		    if defined $end
+		    and SNMP_Session::index_compare ($min_index, $end) >= 0;
 		&$mapfn ($min_index, @collected_values);
 		++$call_counter;
 		$base_index = $min_index;
@@ -1092,7 +1096,9 @@ sub map_table_start_end ($$$$$$) {
 	    return undef;
 	}
 	last if !defined $base_index;
-	last if defined $end and index_compare ($base_index, $end) >= 0;
+	last
+	    if defined $end
+	    and SNMP_Session::index_compare ($base_index, $end) >= 0;
     }
     $call_counter;
 }
