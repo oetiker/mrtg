@@ -33,20 +33,21 @@
 <div id="page_header">
 <small>
 <A HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/<where/>">Swiss Original</A>.&nbsp;Mirrors: 
-<A HREF="http://mrtg-fr.agarik.com/<where/>">FR</a><!--Laurent SEROR seror@agarik.com-->
-<A HREF="http://mrtg.cs.pu.edu.tw/<where/>">TW</a><!--Hsun-Chang Chang <hsunchang@gmail.com>-->
-<A HREF="http://mrtg.grunn.org/<where/>">NL</a><!--Webmaster <webmaster@grunn.org>-->
-<A HREF="http://mrtg.meulie.net/<where/>">NO</a><!--Evert Meulie <evert@meulie.net> -->
-<A HREF="http://www.mrtg.cz/<where/>">CZ</a><!--Martin Och <martin@och.cz>-->
 <A HREF="http://mrtg.planetmirror.com/<where/>">AU</a><!--jason andrade <jason@dstc.edu.au> -->
-<A HREF="http://mrtg.mirror.graemef.net/<where/>">UK</a><!--Graeme Fowler <graeme@graemef.net>-->
 <A HREF="http://mirrors.bchosting.com/mrtg/<where/>">CA</a><!--Chris Phillips BChosting.com-->
 <A HREF="http://mrtg.paracoda.com/<where/>">CA</a><!--Hossam Hossny <admin@paracoda.com> -->
+<A HREF="http://www.mrtg.cz/<where/>">CZ</a><!--Martin Och <martin@och.cz>-->
+<A HREF="http://mrtg-fr.agarik.com/<where/>">FR</a><!--Laurent SEROR seror@agarik.com-->
 <A HREF="http://www.mrtg.it/<where/>">IT</a><!--Vicki Vinci root@power.it -->
+<A HREF="http://mrtg.grunn.org/<where/>">NL</a><!--Webmaster <webmaster@grunn.org>-->
+<A HREF="http://mrtg.meulie.net/<where/>">NO</a><!--Evert Meulie <evert@meulie.net> -->
+<A HREF="http://mrtg.cs.pu.edu.tw/<where/>">TW</a><!--Hsun-Chang Chang <hsunchang@gmail.com>-->
+<A HREF="http://mrtg.mirror.graemef.net/<where/>">UK</a><!--Graeme Fowler <graeme@graemef.net>-->
+<A HREF="http://www.bigwebmaster.com/mrtg/<where/>">US</a><!--Brian Annas <questions@bigwebmaster.com>-->
 #<A HREF="/<where/>"></a><!---->
 #<A HREF="/<where/>"></a><!---->
 #<A HREF="/<where/>"></a><!---->
-#<A HREF="http://www.bigwebmaster.com/mrtg/<where/>">US</a><!--Brian Annas <questions@bigwebmaster.com>-->
+
 #<A HREF="http://rrdtool.planetmirror.com/<where/>">AU</A><!--jason andrade <jason@dstc.edu.au>-->
 #<A HREF="http://rrdtool.cs.pu.edu.tw/<where/>">TW</A><!--Hsun-Chang Chang <hsunchang@gmail.com>-->
 #<A HREF="http://ftp.heanet.ie/mirrors/people.ee.ethz.ch/%257Eoetiker/webtools/rrdtool/<where/>">IE</A><!--Colm MacCárthaigh <colm.maccarthaigh@heanet.ie>-->
