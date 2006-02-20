@@ -34,6 +34,7 @@
 
     <li>MRTG on Linux setup instructions in <a href="http://www.linux-sottises.net/mrtg.php">French</a> and <a href="http://www.linux-sottises.net/en_mrtg.php">English</a> by TNK</li>
 
+    <li><a href="http://www.debianhelp.co.uk/mrtg.htm">MRTG Configuration in Debian</a></li>
     <li><a href="http://www.geocities.com/rjayasin/RH7X-mrtg-howto.htm">MRTG Installation in 6 Steps for RH7X</a> by Ruwan Jayasinghe (rjayasin-at-lausd.k12.ca.us)</li>
 
     <li><a href="http://www.leh.net/~kevin/docs/mrtg/index_1.html">Tips for how mrtg can assist a NOC or Monitoring Center in first line troubleshooting</a> by <a href="mailto:kevin{at}leh.net">Kevin Howard</a></li>
