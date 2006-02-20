@@ -1946,6 +1946,11 @@ main (argc, argv)
   Mh = MAX_HISTORY;
 
   router = argv[2];
+  if (strlen(router) > 120)
+  {
+      fprintf (stderr, "Rateup ERROR: Too long basename\n");
+      exit (1);
+  }
 
   /* from  mrtg-2.x with x>5 rateup calling syntax changed to
      to support time properly ... this is for backward compat
