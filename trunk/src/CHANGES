@@ -1,3 +1,5 @@
+From: Miloslav Trmac <mitr@redhat.com>
+* explicit cast in char conversion (minus one warning) for rateup.c
 From: Simon Leinen
 * Updated SNMP_Session to 1.08
 From: Guenter Knauf <gk gknw.net>

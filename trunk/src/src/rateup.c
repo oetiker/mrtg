@@ -1138,7 +1138,7 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	};
       gdImageString (graph, gdFontSmall,
 		     currdatetimepos_x, currdatetimepos_y,
-		     currdatetimestr, i_grid);
+		     (unsigned char *)currdatetimestr, i_grid);
     }
 
   if ((fo = fopen (file, "wb")) == NULL)
