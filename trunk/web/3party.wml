@@ -65,6 +65,8 @@
 
     <li><a href="http://www.geocities.com/aisvc">MRTG-Central front end</a> by <a href="mailto:aisvc{at}yahoo.com">Mark Anderson</a></li>
 
+    <li><a href="http://phpmrtgadmin.sourceforge.net">phpMrtgAdmin front end</a> by <a href="mailto:ildar-sh{at}mail.ru">Ildar N. Shaimordanov</a></li>
+
     <li><a href="http://mrtgfe.sourceforge.net">MRTGFE --- builds a dynamic target index with php</a> by <a href="mailto:i_am_fishing{at}bigpond.com">Greg West</a></li>
 
     <li>Baer explains how to <a href="http://members.tik.com.au/mrtg/default.htm">setup mrtg, 14all and rrdtool on NT</a></li>
