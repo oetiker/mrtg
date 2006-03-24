@@ -1216,6 +1216,21 @@ Example:
 
 NOTE: the Directory option must always be 'relative' or bad things will happen.
 
+=head2 Clonedirectory
+
+If the I<Directory> option is specified, the I<Clonedirectory> option will copy
+all the contents of I<Directory> to the I<Clonedirectory>. 
+
+As well as the I<Directory> option requires, the clone directory must already exist; mrtg will not create it.
+
+Example:
+
+ WorkDir: /usr/tardis/pub/www/stats/mrtg
+ Directory[myrouter]: myrouter
+ Clonedirectory[myrouter]: myclonedirectory
+
+NOTE: the Clonedirectory option must always be 'relative' or bad things will happen.
+
 =head2 XSize and YSize
 
 By default mrtgs graphs are 100 by 400 pixels wide (plus

@@ -1,3 +1,5 @@
+From: Leonardo Reginin <leonardo@procergs.rs.gov.br>
+* new: clonedirectory function
 From: Miloslav Trmac <mitr@redhat.com>
 * explicit cast in char conversion (minus one warning) for rateup.c
 From: Simon Leinen
