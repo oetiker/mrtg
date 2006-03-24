@@ -468,6 +468,10 @@ sub main {
 			  $cuin, $cuout, $cupercent, $uptime, $name, $LOC)
 	    }
 
+            #
+            clonedirectory($router,\%cfg, \%rcfg);
+            #
+
             #put TZ things back in shape ... 
             if ($savetz) {
                 $ENV{'TZ'} =  $savetz;
@@ -637,6 +641,48 @@ sub rateupcheck ($) {
             warn "WARNING: rateup died from Signal $signal\n".
               " with Exit Value $exitval when doing router '$router'\n".
                 " Signal was $signal, Returncode was $exitval\n"
+        }
+    }
+}
+
+sub clonedirectory {
+    my($router,$cfg, $rcfg) = @_;
+    require File::Copy;
+
+    if ( $$rcfg{'clonedirectory'}{$router} and ( $$rcfg{'directory'}{$router} ne $$rcfg{'clonedirectory'}{$router} )) {
+        $$rcfg{'clonedirectory'}{$router} .= "/" unless ($$rcfg{'clonedirectory'}{$router} =~ /\/$/);
+        my $srcdir = "$$cfg{'logdir'}$$rcfg{'directory'}{$router}";
+        my $dstdir = "$$cfg{'logdir'}$$rcfg{'clonedirectory'}{$router}";
+
+        die "ERROR: Destination dir: $dstdir not found for cloning process\n" unless ( -e $dstdir );
+        die "ERROR: Destination dir: $dstdir is not a directory destination for cloning process\n" unless ( -d $dstdir );
+        die "ERROR: Destination dir: $dstdir is not writeable for cloning process\n" unless ( -w $dstdir );
+
+        debug('base', "Clone directory $srcdir to $dstdir");
+        foreach my $srcfile (<$srcdir$router\[.-\]*>) {
+                debug('base', "copying $srcfile $dstdir");
+                copy("$srcfile","$dstdir") or warn "WARNING: Cloning $srcfile to $dstdir unsucessfull; $!\n";
+                if ($srcfile =~ /\.html/i) {
+                        debug('base', "altering $dstdir/$router.$$rcfg{'extension'}{$router}");
+                        #
+                        my $dirrel = "../" x ($$rcfg{'clonedirectory'}{$router} =~ tr|/|/|);
+                        #
+                        debug('base', "dirrel $dirrel $$rcfg{'clonedirectory'}{$router} ");
+                        open(HTML,"$dstdir/$router.$$rcfg{'extension'}{$router}");
+                        my @CLONEHTML = <HTML>;
+                        close(HTML);
+                        foreach ( @CLONEHTML ) {
+                                if ( /SRC=/ and /$$rcfg{'directory'}{$router}/ ) {
+                                        debug('base', "altering from $_");
+                                        s|(\.\./)+|$dirrel|;
+                                        s|$$rcfg{'directory'}{$router}|$$rcfg{'clonedirectory'}{$router}|;
+                                        debug('base', "altering to $_");
+                                }
+                        }
+                        open(HTML,">$dstdir/$router.$$rcfg{'extension'}{$router}");
+                        print HTML $_ for ( @CLONEHTML );
+                        close(HTML);
+                }
         }
     }
 }

@@ -191,6 +191,9 @@ $VERSION = 2.100015;
        'directory[]' => 
        [sub{1}, sub{"Internal Error"}], #what ever the user chooses.
 
+       'clonedirectory[]' =>
+       [sub{1}, sub{"Internal Error"}], #what ever the user chooses.
+
        'pagetop[]' => 
        [sub{1}, sub{"Internal Error"}], #what ever the user chooses.
 
