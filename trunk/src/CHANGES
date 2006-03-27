@@ -1,3 +1,5 @@
+From: Pawe? Go?aszewski <blues@pld-linux.org>
+* teach cfgmaker about unrouted vlans
 From: Guenter Knauf <gk@gknw.net>
 * Makefile.* updates
 From: Leonardo Reginin <leonardo@procergs.rs.gov.br>
