@@ -469,7 +469,7 @@ ECHO
                 my $if_is_loopback = $if_type == 24;
                 my $if_is_ciscovlan =
                     ($$router_dev{Vendor} eq 'cisco'
-                    and $$i{Descr} =~ /^V(LAN|lan)\d+$/);
+                    and $$i{Descr} =~ /^(unrouted )?V(LAN|lan)\d+$/);
 
                 my $if_ip = $$i{Ip};
                 my $if_snmp_descr = $$i{Descr};
