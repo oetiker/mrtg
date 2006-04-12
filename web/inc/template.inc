@@ -33,18 +33,18 @@
 <div id="page_header">
 <small>
 <A HREF="http://oss.oetiker.ch/mrtg/<where/>">Swiss Original</A>.
-#&nbsp;Mirrors: 
+&nbsp;Mirrors: 
 #<A HREF="http://mrtg.planetmirror.com/<where/>">AU</a><!--jason andrade <jason@dstc.edu.au> -->
 #<A HREF="http://mirrors.bchosting.com/mrtg/<where/>">CA</a><!--Chris Phillips BChosting.com-->
 #<A HREF="http://mrtg.paracoda.com/<where/>">CA</a><!--Hossam Hossny <admin@paracoda.com> -->
 #<A HREF="http://www.mrtg.cz/<where/>">CZ</a><!--Martin Och <martin@och.cz>-->
-#<A HREF="http://mrtg-fr.agarik.com/<where/>">FR</a><!--Laurent SEROR seror@agarik.com-->
+<A HREF="http://mrtg-fr.agarik.com/<where/>">FR</a><!--Laurent SEROR seror@agarik.com-->
 #<A HREF="http://www.mrtg.it/<where/>">IT</a><!--Vicki Vinci root@power.it -->
 #<A HREF="http://mrtg.magaltavor.com/<where/>">LB</a><!-- Jocelyn habib <jhabib@terra.net.lb> -->
 #<A HREF="http://mrtg.grunn.org/<where/>">NL</a><!--Webmaster <webmaster@grunn.org>-->
-#<A HREF="http://mrtg.meulie.net/<where/>">NO</a><!--Evert Meulie <evert@meulie.net> -->
+<A HREF="http://mrtg.meulie.net/<where/>">NO</a><!--Evert Meulie <evert@meulie.net> -->
 #<A HREF="http://mrtg.francenet.ro/<where/>">RO</a><!--Dan Draghici <dan.draghici@ulbsibiu.ro>-->
-#<A HREF="http://mrtg.cs.pu.edu.tw/<where/>">TW</a><!--Hsun-Chang Chang <hsunchang@gmail.com>-->
+<A HREF="http://mrtg.cs.pu.edu.tw/<where/>">TW</a><!--Hsun-Chang Chang <hsunchang@gmail.com>-->
 #<A HREF="http://mrtg.mirror.graemef.net/<where/>">UK</a><!--Graeme Fowler <graeme@graemef.net>-->
 #<A HREF="http://www.bigwebmaster.com/mrtg/<where/>">US</a><!--Brian Annas <questions@bigwebmaster.com>-->
 #<A HREF="/<where/>"></a><!---->
@@ -71,7 +71,55 @@
 <br/>
 <br/>
 <div>
-<a href="http://people.ee.ethz.ch/oetiker/wish"><img border="0" alt="Make Tobi Happy" src="$(ROOT)/inc/button.png"/></a>
+<a href="http://people.ee.ethz.ch/oetiker/wish/"><img border="0" alt="Make Tobi Happy" src="$(ROOT)/inc/button.png"/></a>
+</div>
+<div id="googlead_search">
+<!-- SiteSearch Google -->
+<form method="get" action="http://www.google.com/custom" target="_top">
+<table border="0" bgcolor="#ffffff">
+<tr><td nowrap="nowrap" valign="top" align="left" height="32">
+<a href="http://www.google.com/">
+<img src="http://www.google.com/logos/Logo_25wht.gif" border="0" alt="Google" align="middle"></img></a>
+<br/>
+<input type="hidden" name="domains" value="oss.oetiker.ch"></input>
+<input type="text" name="q" size="22" maxlength="255" value=""></input>
+</td></tr>
+<tr>
+<td nowrap="nowrap">
+<table>
+<tr>
+<td>
+<input type="radio" name="sitesearch" value="" checked="checked"></input>
+<font size="-1" color="#000000">Web</font>
+</td>
+<td>
+<input type="radio" name="sitesearch" value="oss.oetiker.ch"></input>
+<font size="-1" color="#000000">oss.oetiker.ch</font>
+</td>
+</tr>
+</table>
+<input type="submit" name="sa" value="Search"></input>
+<input type="hidden" name="client" value="pub-8135238818549668"></input>
+<input type="hidden" name="forid" value="1"></input>
+<input type="hidden" name="channel" value="1985457903"></input>
+<input type="hidden" name="ie" value="ISO-8859-1"></input>
+<input type="hidden" name="oe" value="ISO-8859-1"></input>
+<input type="hidden" name="cof" value="GALT:#FE754D;GL:1;DIV:#345D98;VLC:345D98;AH:center;BGC:FFFFFF;LBGC:E4E4E4;ALC:345D98;LC:345D98;T:000000;GFNT:345D98;GIMP:345D98;LH:35;LW:100;L:http://oss.oetiker.ch/mrtg/images/mrtg_logo.gif;S:http://oss.oetiker.ch/mrtg;LP:1;FORID:1;"></input>
+<input type="hidden" name="hl" value="en"></input>
+</td></tr></table>
+</form>
+</div>
+<!-- SiteSearch Google -->
+<div id="googlead_firefox">
+<script type="text/javascript"><!--
+google_ad_client = "pub-8135238818549668";
+google_ad_width = 180;
+google_ad_height = 60;
+google_ad_format = "180x60_as_rimg";
+google_cpa_choice = "CAAQyaj8zwEaCIwcWMzeycafKMu293M";
+//--></script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
 </div>
 </td>
 <!-- Navbar code end -->

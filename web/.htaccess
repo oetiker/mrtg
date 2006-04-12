@@ -1,15 +1,17 @@
 ErrorDocument 404 /mrtg/404.var
 RewriteEngine On
-RewriteRule mrtg.html  http://oss.oetiker.ch/mrtg/ [R,L]
-RewriteRule index.html  http://oss.oetiker.ch/mrtg/ [R,L]
-RewriteRule reference.html http://oss.oetiker.ch/mrtg/doc/mrtg-reference.en.html [R,L]
-RewriteRule mrtg-nt-guide.html http://oss.oetiker.ch/mrtg/doc/mrtg-nt-guide.en.html [R,L]
-RewriteRule cfgmaker.html http://oss.oetiker.ch/mrtg/doc/cfgmaker.html [R,L] 
-RewriteRule unix-guide.html http://oss.oetiker.ch/mrtg/doc/mrtg-unix-guide.en.html [R,L] 
-RewriteRule mrtg-unix-guide.html http://oss.oetiker.ch/mrtg/doc/mrtg-unix-guide.en.html [R,L] 
-RewriteRule links.html http://oss.oetiker.ch/mrtg/3party.en.html [R,L] 
-RewriteRule users.html http://people.ee.ethz.ch/~oetiker/webtools/mrtg-trac/wiki/MrtgUsers [R,L] 
-RewriteRule compat.html http://people.ee.ethz.ch/~oetiker/webtools/mrtg-trac/wiki/MrtgCompat [R,L]
+RewriteRule mrtg.html  http://oss.oetiker.ch/mrtg/ [R=301,L]
+RewriteRule index.html  http://oss.oetiker.ch/mrtg/ [R=301,L]
+RewriteRule reference.html http://oss.oetiker.ch/mrtg/doc/mrtg-reference.en.html [R=301,L]
+RewriteRule mrtg-nt-guide.html http://oss.oetiker.ch/mrtg/doc/mrtg-nt-guide.en.html [R=301,L]
+RewriteRule cfgmaker.html http://oss.oetiker.ch/mrtg/doc/cfgmaker.html [R=301,L] 
+RewriteRule unix-guide.html http://oss.oetiker.ch/mrtg/doc/mrtg-unix-guide.en.html [R=301,L] 
+RewriteRule mrtg-unix-guide.html http://oss.oetiker.ch/mrtg/doc/mrtg-unix-guide.en.html [R=301,L] 
+RewriteRule links.html http://oss.oetiker.ch/mrtg/3party.en.html [R=301,L] 
+RewriteRule users.html http://people.ee.ethz.ch/~oetiker/webtools/mrtg-trac/wiki/MrtgUsers [R=301,L] 
+RewriteRule compat.html http://people.ee.ethz.ch/~oetiker/webtools/mrtg-trac/wiki/MrtgCompat [R=301,L]
+# for some reason there are odd requests sometimes
+RewriteRule http:/([^/].*)  http://$1 [R=301,L]
 
 
 
