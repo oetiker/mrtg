@@ -1,4 +1,15 @@
-ErrorDocument 404 http://people.ee.ethz.ch/~oetiker/webtools/mrtg/404.var
+ErrorDocument 404 /mrtg/404.var
 RewriteEngine On
-RewriteRule mrtg.html  http://people.ee.ethz.ch/~oetiker/webtools/mrtg/ [R,L]
+RewriteRule mrtg.html  http://oss.oetiker.ch/mrtg/ [R,L]
+RewriteRule index.html  http://oss.oetiker.ch/mrtg/ [R,L]
+RewriteRule reference.html http://oss.oetiker.ch/mrtg/doc/mrtg-reference.en.html [R,L]
+RewriteRule mrtg-nt-guide.html http://oss.oetiker.ch/mrtg/doc/mrtg-nt-guide.en.html [R,L]
+RewriteRule cfgmaker.html http://oss.oetiker.ch/mrtg/doc/cfgmaker.html [R,L] 
+RewriteRule unix-guide.html http://oss.oetiker.ch/mrtg/doc/mrtg-unix-guide.en.html [R,L] 
+RewriteRule mrtg-unix-guide.html http://oss.oetiker.ch/mrtg/doc/mrtg-unix-guide.en.html [R,L] 
+RewriteRule links.html http://oss.oetiker.ch/mrtg/3party.en.html [R,L] 
+RewriteRule users.html http://people.ee.ethz.ch/~oetiker/webtools/mrtg-trac/wiki/MrtgUsers [R,L] 
+RewriteRule compat.html http://people.ee.ethz.ch/~oetiker/webtools/mrtg-trac/wiki/MrtgCompat [R,L]
+
+
 

@@ -260,6 +260,14 @@ div#menu > ul > li > ul > li > ul > li > div a {
 	font-weight:normal;
 }
 
+div#googlead_right {
+	background-color: #ffffff;
+        padding-left: 15px;        
+        padding-top: 1px;
+        padding-bottom: 10px;
+        float: right;
+}
+
 #page_footer {
 	clear:both;
 	/*
@@ -298,5 +306,6 @@ div#menu > ul > li > ul > li > ul > li > div a {
         font-size: 10pt;
 	text-decoration:none;
 }
+
 
 /*Footer styles end*/
