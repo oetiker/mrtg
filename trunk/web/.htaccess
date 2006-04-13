@@ -1,4 +1,4 @@
-ErrorDocument 404 /mrtg/404.var
+ErrorDocument 404 http://oss.oetiker.ch/mrtg/404.var
 RewriteEngine On
 RewriteRule mrtg.html  http://oss.oetiker.ch/mrtg/ [R=301,L]
 RewriteRule index.html  http://oss.oetiker.ch/mrtg/ [R=301,L]
