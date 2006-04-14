@@ -35,7 +35,8 @@ $main::GRAPHFMT="png";
 require 5.005;
 
 use strict;
-
+my $NOW = &datestr(time);
+# addon jpt
 BEGIN {
     # Automatic OS detection ... do NOT touch
     if ( $^O =~ /^(ms)?(dos|win(32|nt)?)/i ) {
@@ -107,6 +108,7 @@ BEGIN {
 
 $main::STARTTIME = time;
 
+    
 if ($MRTG_lib::OS eq 'OS2') {
 # in daemon mode we will pause 3 seconds to be sure that parent died
   require OS2::Process;
@@ -121,7 +123,7 @@ if ($MRTG_lib::OS eq 'UNIX') {
                        if defined $main::Cleanfile2;
                    unlink ${main::Cleanfile3}
                        if defined $main::Cleanfile3;
-                   warn "ERROR: Bailout after SIG $_[0]\n";
+                   warn "$NOW: ERROR: Bailout after SIG $_[0]\n";
                    exit 1;
                 };
   $SIG{HUP} = sub {
@@ -131,7 +133,7 @@ if ($MRTG_lib::OS eq 'UNIX') {
                        if defined $main::Cleanfile2;
                    unlink ${main::Cleanfile3}
                        if defined $main::Cleanfile3;
-                   die "ERROR: Bailout after SIG $_[0]\n";
+                   die "$NOW: ERROR: Bailout after SIG $_[0]\n";
                 };
 }
 
@@ -172,11 +174,11 @@ sub main {
     my $gid = $(;
 
     if (defined $opts{group}) {
-        $gid = getgrnam($opts{group}) or die "ERROR: Unknown Group: $opts{group})\n";
+        $gid = getgrnam($opts{group}) or die "$NOW: ERROR: Unknown Group: $opts{group})\n";
     }
 
     if (defined $opts{user}) {
-        $uid = getpwnam($opts{user}) or die "ERROR: Unknown User: $opts{user})\n";
+        $uid = getpwnam($opts{user}) or die "$NOW: ERROR: Unknown User: $opts{user})\n";
     }
 
     # If we've specified using FHS (http://www.pathname.com/fhs/) on the command line,
@@ -219,7 +221,7 @@ sub main {
 
     ($(,$)) = ($gid,$gid) ;
     ($<,$>) = ($uid,$uid) ;
-    die "ERROR failed to set UID to $uid\n" unless ($< == $uid and  $> == $uid);
+    die "$NOW: ERROR failed to set UID to $uid\n" unless ($< == $uid and  $> == $uid);
 
     $logfile = $opts{logging} || $logfile;
     if (defined $logfile){
@@ -260,7 +262,7 @@ sub main {
 	    import Net_SNMP_util;
             debug('base', "SNMP V3 libraries found, SNMP V3 enabled.");
         } else {
-            warn "WARNING: SNMP V3 libraries not found, SNMP V3 disabled.\n";
+            warn "$NOW: WARNING: SNMP V3 libraries not found, SNMP V3 disabled.\n";
             $cfg{enablesnmpv3} =  'no';
 	    require SNMP_util;
 	    import SNMP_util;
@@ -284,7 +286,7 @@ sub main {
         if ( (eval {require Socket6;}) and (eval {require IO::Socket::INET6;}) ) {
             debug('base', "IPv6 libraries found, IPv6 enabled.");
         } else {
-            warn "WARNING: IPv6 libraries not found, IPv6 disabled.\n";
+            warn "$NOW: WARNING: IPv6 libraries not found, IPv6 disabled.\n";
             $cfg{enableipv6} =  'no';
         }
     }
@@ -348,7 +350,8 @@ sub main {
 
     debug('base', "Starting main Loop");
     do {                        # Do this loop once for native mode and forever in daemon mode 
-        my $router;
+        my $router;        
+        $NOW = datestr(time);   # get the time
         debug 'time', "loop start ".localtime(time);
 
         #if we run as daemon, we sleep in between collection cycles
@@ -357,7 +360,7 @@ sub main {
 	    debug('time', "Sleep time $sleep_time seconds");
             sleep ($sleep_time);
         } elsif ($last_time > 0) {
-            warn "WARNING: data collection did not complete within interval!\n";
+            warn "$NOW: WARNING: data collection did not complete within interval!\n";
         }
         $last_time=time;
 
@@ -382,6 +385,7 @@ sub main {
         debug 'time', "snmp read start ".localtime(time);
         readtargets($confcache,\@target, \%cfg);
 
+        $NOW = datestr(time);   # get the time
         # collect data for each router or pseudo target (`executable`)
         debug 'time', "target loop start ".localtime(time);
         foreach $router (@routers) {
@@ -422,9 +426,9 @@ sub main {
             if ($cfg{'logformat'} ne 'rrdtool') {
               # undefined values are ok for rrdtool !
               #if ( not defined $inlast or not defined $outlast){
-              #  warn "WARNING: Skipping Update of $router, inlast is not defined\n"
+              #  warn "$NOW: WARNING: Skipping Update of $router, inlast is not defined\n"
               #          unless defined $inlast;
-              #  warn "WARNING: Skipping Update of $router, outlast is not defined\n"
+              #  warn "$NOW: WARNING: Skipping Update of $router, outlast is not defined\n"
               #          unless defined $outlast;
               #  next;
               #}
@@ -543,22 +547,22 @@ sub getcurrent {
        		}
 		# Test for various exceptions occurring in the calculation
 		if( $warning ) {
-			warn "ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' (warn): $warning\n";
+			warn "$NOW: ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' (warn): $warning\n";
 			$data = undef;
 		} elsif( $death ) {
-			warn "ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' (kill): $death\n";
+			warn "$NOW: ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' (kill): $death\n";
 			$data = undef;
 		} elsif( $@ ) {
-			warn "ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' (eval): $@\n";
+			warn "$NOW: ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' (eval): $@\n";
 			$data = undef;
 		} elsif( not defined $data ) {
-			warn "ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' did not eval into defined data\n";
+			warn "$NOW: ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' did not eval into defined data\n";
 			$data = undef;
 		} elsif( $data and $data !~ /^[-+]?\d+(\.\d*)?([eE][+-]?[0-9]+)?$/ ) {
-			warn "ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' evaluated to '$data' instead of a number\n";
+			warn "$NOW: ERROR: Target[$rou][$mode] '$$rcfg{target}{$rou}' evaluated to '$data' instead of a number\n";
 			$data = undef;
 		} elsif( length( $data ) > 190 ) {
-			warn "ERROR: $mode value: '$data' is way to long ...\n";
+			warn "$NOW: ERROR: $mode value: '$data' is way to long ...\n";
 			$data = undef;
 		} else {
 			# At this point data is considered valid. Round to an integer
@@ -638,7 +642,7 @@ sub rateupcheck ($) {
                                 #child says dave ...
         if (($MRTG_lib::OS ne 'UNIX') || ($signal != 127)) {
             my $exitval = $? >> 8;
-            warn "WARNING: rateup died from Signal $signal\n".
+            warn "$NOW: WARNING: rateup died from Signal $signal\n".
               " with Exit Value $exitval when doing router '$router'\n".
                 " Signal was $signal, Returncode was $exitval\n"
         }
@@ -654,14 +658,14 @@ sub clonedirectory {
         my $srcdir = "$$cfg{'logdir'}$$rcfg{'directory'}{$router}";
         my $dstdir = "$$cfg{'logdir'}$$rcfg{'clonedirectory'}{$router}";
 
-        die "ERROR: Destination dir: $dstdir not found for cloning process\n" unless ( -e $dstdir );
-        die "ERROR: Destination dir: $dstdir is not a directory destination for cloning process\n" unless ( -d $dstdir );
-        die "ERROR: Destination dir: $dstdir is not writeable for cloning process\n" unless ( -w $dstdir );
+        die "$NOW: ERROR: Destination dir: $dstdir not found for cloning process\n" unless ( -e $dstdir );
+        die "$NOW: ERROR: Destination dir: $dstdir is not a directory destination for cloning process\n" unless ( -d $dstdir );
+        die "$NOW: ERROR: Destination dir: $dstdir is not writeable for cloning process\n" unless ( -w $dstdir );
 
         debug('base', "Clone directory $srcdir to $dstdir");
         foreach my $srcfile (<$srcdir$router\[.-\]*>) {
                 debug('base', "copying $srcfile $dstdir");
-                copy("$srcfile","$dstdir") or warn "WARNING: Cloning $srcfile to $dstdir unsucessfull; $!\n";
+                copy("$srcfile","$dstdir") or warn "$NOW: WARNING: Cloning $srcfile to $dstdir unsucessfull; $!\n";
                 if ($srcfile =~ /\.html/i) {
                         debug('base', "altering $dstdir/$router.$$rcfg{'extension'}{$router}");
                         #
@@ -705,7 +709,7 @@ sub writegraphics {
     $absmax = $$rcfg{'absmax'}{$router};
     $absmax = $maxv unless defined $absmax;
     if ($absmax < $maxv) {
-        die "ERROR: AbsMax: $absmax is smaller than MaxBytes: $maxv\n";
+        die "$NOW: ERROR: AbsMax: $absmax is smaller than MaxBytes: $maxv\n";
     }
 
 
@@ -722,7 +726,7 @@ sub writegraphics {
     my $reallog = $$cfg{logformat} eq 'rrdtool' ? $dotrrd : $dotlog;
 
     if (defined $$cfg{maxage} and -e $reallog and time()-$$cfg{maxage} > (stat($reallog))[9]){
-         warn "ERROR: skipping update of $router. As $reallog is older than MaxAge ($$cfg{maxage} s)\n";
+         warn "$NOW: ERROR: skipping update of $router. As $reallog is older than MaxAge ($$cfg{maxage} s)\n";
          return undef;
     }
 
@@ -746,7 +750,7 @@ sub writegraphics {
         if (-e $dotlog and not -e $dotrrd) {
              debug('base',"converting $dotlog to RRD format");
              if(defined $RRDs::VERSION and $RRDs::VERSION < 1.000271){
-                die "ERROR: RRDtool version 1.0.27 or later required to perform log2rrd conversion\n";
+                die "$NOW: ERROR: RRDtool version 1.0.27 or later required to perform log2rrd conversion\n";
              }
              log2rrd($router,$cfg,$rcfg);
         } elsif (! -e $dotrrd) {
@@ -771,7 +775,7 @@ sub writegraphics {
                          "RRA:MAX:0.5:".int(1440/$interval).":800");
             RRDs::create(@args);
             my $e = RRDs::error();
-            die "ERROR: Cannot create logfile: $e\n" if $e;
+            die "$NOW: ERROR: Cannot create logfile: $e\n" if $e;
             debug('log', "Called: RRDs::create(@args)");
         } else {
             # update the minimum/maximum according to maxbytes/absmax
@@ -781,7 +785,7 @@ sub writegraphics {
                        '-d', "ds0:$up_abs", '-d', "ds1:$up_abs");
             RRDs::tune(@args);
             my $e = RRDs::error();
-            warn "ERROR: Cannot tune logfile: $e\n" if $e;
+            warn "$NOW: ERROR: Cannot tune logfile: $e\n" if $e;
             debug('log', "Called: RRDs::tune(@args)");
         }
         # update the rrd
@@ -790,7 +794,7 @@ sub writegraphics {
         debug('log', "Calling: RRDs::update($dotrrd, '$time:$inlast:$outlast')");
         RRDs::update("$dotrrd", "$time:$inlast:$outlast");
         my $e = RRDs::error(); 
-        warn "ERROR: Cannot update $dotrrd with '$time:$inlast:$outlast' $e\n" if ($e);
+        warn "$NOW: ERROR: Cannot update $dotrrd with '$time:$inlast:$outlast' $e\n" if ($e);
 
         # get the rrdtool-processed values back from rrdtool
         # for the threshold checks (we cannot use the fetched data)
@@ -798,10 +802,10 @@ sub writegraphics {
         my $lasttime =  $info->{last_update} - $info->{last_update} % $info->{step};        
         debug('log', "Called: RRDs::info($dotrrd)");
         $e = RRDs::error(); 
-        warn "ERROR: Cannot 'info' $dotrrd: $e\n" if ($e);
+        warn "$NOW: ERROR: Cannot 'info' $dotrrd: $e\n" if ($e);
         my $fetch = (RRDs::fetch($dotrrd,'AVERAGE','-s',$lasttime-1,'-e',$lasttime))[3];
         $e = RRDs::error(); 
-        warn "ERROR: Cannot 'fetch' $dotrrd: $e\n" if ($e);
+        warn "$NOW: ERROR: Cannot 'fetch' $dotrrd: $e\n" if ($e);
         debug('log', "Called: RRDs::fetch($dotrrd,'AVERAGE','-s',$lasttime,'-e',$lasttime)");        
         my $in = $fetch->[0][0] ?  $fetch->[0][0] : "NaN" ;
         my $out = $fetch->[0][1] ? $fetch->[0][1] : "NaN" ;
@@ -821,11 +825,11 @@ sub writegraphics {
     ((($MRTG_lib::OS eq 'NT' or $MRTG_lib::OS eq 'OS2') and (-e "${FindBin::Bin}${MRTG_lib::SL}rateup.exe")) or
      (($MRTG_lib::OS eq 'NW') and (-e "SYS:/Mrtg/bin/rateup.nlm")) or
      (-x "${FindBin::Bin}${MRTG_lib::SL}rateup")) or 
-       die "ERROR: Can't Execute '${FindBin::Bin}${MRTG_lib::SL}rateup'\n";
+       die "$NOW: ERROR: Can't Execute '${FindBin::Bin}${MRTG_lib::SL}rateup'\n";
 
     # rateup does not know about undef so we make inlast and outlast ready for rateup
-    #warn "ERROR: inlast is undefined. Skipping $router\n" unless defined $inlast;
-    #warn "ERROR: outlast is undefined. Skipping $router\n" unless defined $outlast;
+    #warn "$NOW: ERROR: inlast is undefined. Skipping $router\n" unless defined $inlast;
+    #warn "$NOW: ERROR: outlast is undefined. Skipping $router\n" unless defined $outlast;
     #return undef unless defined $inlast and defined $outlast;
 
     # set values to -1 to tell rateup about unknown values
@@ -974,7 +978,7 @@ sub writegraphics {
         map { s/"/\\"/; $_ = '"'.$_.'"' if /\s/ } @exec;
         open (RATEUP, join (" ", @exec)."|") or
            do {
-                warn "WARNING: rateup (".(join " ", @exec ).
+                warn "$NOW: WARNING: rateup (".(join " ", @exec ).
                           ") did not work: $!\n";
                 return;
            }
@@ -985,7 +989,7 @@ sub writegraphics {
 
         open (NWPARMS, ">"."$$cfg{'imagedir'}$router.dat") or
            do {
-                warn "WARNING: Rateup parameters [$$cfg{'imagedir'}$router.dat] [open] failed.\n";
+                warn "$NOW: WARNING: Rateup parameters [$$cfg{'imagedir'}$router.dat] [open] failed.\n";
 
                 return;
            };
@@ -996,7 +1000,7 @@ sub writegraphics {
 
         open (RATEUP, "SYS:/Mrtg/bin/rateup -f $$cfg{'imagedir'}$router.dat"."|") or
            do {
-                warn "WARNING: SYS:/Mrtg/bin/rateup -f $$cfg{'imagedir'}$router.dat did NOT work.\n";
+                warn "$NOW: WARNING: SYS:/Mrtg/bin/rateup -f $$cfg{'imagedir'}$router.dat did NOT work.\n";
 
                 return;
            }
@@ -1004,7 +1008,7 @@ sub writegraphics {
         $! = undef;
         open (RATEUP,"-|") or  
                 do { exec @exec or
-                     warn "WARNING: rateup (".(join " ", @exec ).
+                     warn "$NOW: WARNING: rateup (".(join " ", @exec ).
                           ") did not work: $!\n";
                 };
 
@@ -1067,7 +1071,7 @@ sub writegraphics {
     foreach $period (@mxvls) {
         $res = <RATEUP>; 
         if (not defined $res and eof(RATEUP)){
-            warn "ERROR: Skipping webupdates because rateup did not return anything sensible\n";
+            warn "$NOW: ERROR: Skipping webupdates because rateup did not return anything sensible\n";
             close RATEUP;
             rateupcheck $router;
             return;
@@ -1293,7 +1297,7 @@ sub writehtml {
     $Today=&$LOC(datestr(time));
     $VERSION = "2.13.2";
     open (HTML,">$$cfg{'htmldir'}$$rcfg{'directory'}{$router}$router.$$rcfg{'extension'}{$router}") || 
-      do { warn ("WARNING: Writing $router.$$rcfg{'extension'}{$router}: $!");
+      do { warn ("$NOW: WARNING: Writing $router.$$rcfg{'extension'}{$router}: $!");
       	   next };
     # this unforutnately confuses IE greatly ... so we have to comment
     # it out for now ... :-(
@@ -1627,11 +1631,11 @@ print HTML "
     print HTML<<TEXT;
 <!-- Begin MRTG Block -->
 		<div id="footer">
-			<a href="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/"><img src="${gifPath}mrtg-l.${main::GRAPHFMT}" width="63" title="MRTG" alt="MRTG" /><img src="${gifPath}mrtg-m.${main::GRAPHFMT}" width="25" title="MRTG" alt="MRTG" /><img src="${gifPath}mrtg-r.${main::GRAPHFMT}" width="388" title="Multi Router Traffic Grapher" alt="Multi Router Traffic Grapher" /></a>
+			<a href="http://oss.oetiker.ch/mrtg/"><img src="${gifPath}mrtg-l.${main::GRAPHFMT}" width="63" title="MRTG" alt="MRTG" /><img src="${gifPath}mrtg-m.${main::GRAPHFMT}" width="25" title="MRTG" alt="MRTG" /><img src="${gifPath}mrtg-r.${main::GRAPHFMT}" width="388" title="Multi Router Traffic Grapher" alt="Multi Router Traffic Grapher" /></a>
 			<p id="version">$VERSION</p>
 			<address>
-				<a href="http://people.ee.ethz.ch/~oetiker/">Tobias Oetiker</a>
-				<a href="mailto:oetiker\@ee.ethz.ch">&lt;oetiker\@ee.ethz.ch&gt;</a><br />
+				<a href="http://tobi.oetiker.ch/">Tobias Oetiker</a>
+				<a href="mailto:tobi+mrtglink\@oetiker.ch">&lt;tobi\@oetiker.ch&gt;</a><br />
 TEXT
     print HTML &$LOC("and");
     print HTML<<TEXT;
@@ -1691,7 +1695,7 @@ TEXT
         open(HTMLG, ">$$cfg{'htmldir'}$$rcfg{'directory'}{$router}$router.".
 	     "$$rcfg{'extension'}{$router}.meta") ||
 	       do {
-		   warn "WARNING: Writing $$cfg{'htmldir'}$$rcfg{'directory'}{$router}$router.".
+		   warn "$NOW: WARNING: Writing $$cfg{'htmldir'}$$rcfg{'directory'}{$router}$router.".
 		     "$$rcfg{'extension'}{$router}.meta: $!\n";
 		   next
 	       };
@@ -1711,7 +1715,7 @@ mrtg-2.13.2 is the Multi Router Traffic Grapher.
 If you want to know more about this tool, you might want
 to read the docs. They came together with mrtg! 
 
-Home: http://people.ee.ethz.ch/~oetiker/webtools/mrtg/
+Home: http://oss.oetiker.ch/mrtg/
 
 USAGEDESC
     exit(1);
@@ -1724,24 +1728,24 @@ sub lockit {
         # too sad NT and VMS can't do links we'll do the diletants lock
         if (-e $lockfile and not unlink $lockfile) {
             my($lockage) = time()-(stat($lockfile))[9];
-            die "ERROR: I guess another mrtg is running. A lockfile ($lockfile)\n".
+            die "$NOW: ERROR: I guess another mrtg is running. A lockfile ($lockfile)\n".
                  "       aged $lockage seconds is hanging around and I can't remove\n".
                  "       it because another process is still using it.";
         }
       
         open (LOCK, ">$lockfile") or 
-          die "ERROR: Creating lockfile $lockfile: $!\n";
+          die "$NOW: ERROR: Creating lockfile $lockfile: $!\n";
         print LOCK "$$\n";
         close LOCK;
         open (LOCK, "<$lockfile") or 
-          die "ERROR: Reading lockfile $lockfile for owner check: $!\n";
+          die "$NOW: ERROR: Reading lockfile $lockfile for owner check: $!\n";
         my($read)=<LOCK>;
         chomp($read);
-        die "ERROR: Someone else just got the lockfile $lockfile\n" 
+        die "$NOW: ERROR: Someone else just got the lockfile $lockfile\n" 
           unless  $$ == $read;
     } else {
         # now, lets do it the UNIX way ... Daves work ...
-        open(LOCK,">$templock") or die "ERROR: Creating templock $templock: $!";
+        open(LOCK,">$templock") or die "$NOW: ERROR: Creating templock $templock: $!";
         $main::Cleanfile = $templock;
         if (!link($templock,$lockfile)) { # Lock file exists - deal with it.
             my($nlink,$lockage) = (stat($lockfile))[3,9]; 
@@ -1749,20 +1753,20 @@ sub lockit {
             if ($nlink < 2 or $lockage > 30*60) { #lockfile is alone and old
                 unlink($lockfile) 
                   || do{ unlink $templock; 
-                         die "ERROR: Can't unlink stale lockfile ($lockfile). Permissions?\n"};
+                         die "$NOW: ERROR: Can't unlink stale lockfile ($lockfile). Permissions?\n"};
                 link($templock,$lockfile) 
                   || do{ unlink $templock; 
-                         die "ERROR: Can't create lockfile ($lockfile).\n".
+                         die "$NOW: ERROR: Can't create lockfile ($lockfile).\n".
                            "Permission problem or another mrtg locking succesfully?\n"};
             } else {
                 unlink $templock;
-                die "ERROR: It looks as if you are running two copies of mrtg in parallel on\n".
+                die "$NOW: ERROR: It looks as if you are running two copies of mrtg in parallel on\n".
                     "       the same config file. There is a lockfile ($lockfile) and it is\n".
                     "       is only $lockage seconds old ... Check your crontab.\n".
                     "       (/etc/crontab and /var/spool/cron/root) \n"
                         if $lockage < 4;
       
-                die  "ERROR: I guess another mrtg is running. A lockfile ($lockfile) aged\n".
+                die  "$NOW: ERROR: I guess another mrtg is running. A lockfile ($lockfile) aged\n".
                      "$lockage seconds is hanging around. If you are sure that no other mrtg\n".
                      "is running you can remove the lockfile\n";
           
@@ -1801,7 +1805,7 @@ sub threshcheck {
             next unless defined $$rcfg{'thresh'.$bound.$dir}{$router};
             # we can not deal with unknown data here
             $threshval{$dir} = 0 if not defined $threshval{$dir} and $$rcfg{'options'}{'unknaszero'}{$router};            
-            warn "WARNING: can't do threshold checking for target $router($dir) -- No valid current data\n"
+            warn "$NOW: WARNING: can't do threshold checking for target $router($dir) -- No valid current data\n"
                 unless defined $threshval{$dir};
  	    my $value = $threshval{$dir};
             next unless defined $value;
@@ -1824,7 +1828,7 @@ sub threshcheck {
 		    if ( not -e $threshfile.".".$bound.uc($dir) ) {
 			# Create a file to indicate a threshold problem for the time after the problem
 			open THRESHTOUCH, ">".$threshfile.".".$bound.uc($dir)
-			    or warn "WARNING: Creating $threshfile.".$bound.uc($dir).": $!\n";
+			    or warn "$NOW: WARNING: Creating $threshfile.".$bound.uc($dir).": $!\n";
 			close THRESHTOUCH;
                         debug('base',"run treshprog$dir: ".(join ",",@exec));
                   	system @exec if defined $$rcfg{'threshprog'.$dir}{$router};
@@ -1860,9 +1864,9 @@ sub getexternal ($) {
     my $name="unknown";
 
     open (EXTERNAL , $command."|")
-	or warn "WARNING: Running '$command': $!\n";
+	or warn "$NOW: WARNING: Running '$command': $!\n";
 
-    warn "WARNING: Could not get any data from external command ".
+    warn "$NOW: WARNING: Could not get any data from external command ".
 	"'".$command.
 	    "'\nMaybe the external command did not even start. ($!)\n\n" if eof EXTERNAL;
 
@@ -1879,12 +1883,12 @@ sub getexternal ($) {
 
     # do we have numbers in the external programs answer ?
     if ( not defined $in ) {
-	warn "WARNING: Problem with External get '$command':\n".
+	warn "$NOW: WARNING: Problem with External get '$command':\n".
 	    "   Expected a Number for 'in' but nothing'\n\n";        
     } elsif ( $in eq 'UNKNOWN' ) {
         $in = undef;
     } elsif ( $in !~ /([-+]?\d+(.\d+)?)/ ) {
-	warn "WARNING: Problem with External get '$command':\n".
+	warn "$NOW: WARNING: Problem with External get '$command':\n".
 	    "   Expected a Number for 'in' but got '$in'\n\n";
 	$in = undef;
     } else {
@@ -1892,12 +1896,12 @@ sub getexternal ($) {
     }
 
     if ( not defined $out ) {
-	warn "WARNING: Problem with External get '$command':\n".
+	warn "$NOW: WARNING: Problem with External get '$command':\n".
 	    "   Expected a Number for 'out' but nothing'\n\n";
     } elsif ( $out eq 'UNKNOWN' ) {
         $out = undef;
     } elsif ( $out !~ /([-+]?\d+(.\d+)?)/ ) {
-	warn "WARNING: Problem with Externale get '$command':\n".
+	warn "$NOW: WARNING: Problem with External get '$command':\n".
 	    "   Expected a Number for 'out' but got '$out'\n\n";
 	$out = undef;
     } else {
@@ -1918,7 +1922,7 @@ sub getsnmparg ($$$){
 
     if ($$target{ipv4only}) {
         if (not ( $hostname =~ /^\d+\.\d+\.\d+\.\d+$/ or gethostbyname $hostname) ){
-            warn "WARNING: Skipping host $hostname as it does not resolve to an IPv4 address\n";
+            warn "$NOW: WARNING: Skipping host $hostname as it does not resolve to an IPv4 address\n";
             return 'DEADHOST';
         }
     } else {
@@ -1927,7 +1931,7 @@ sub getsnmparg ($$$){
             $hostname = substr($hostname, 1);
             chop $hostname;
             if(! inet_pton(AF_INET6(), $hostname)) {
-                warn "WARNING: Skipping host $hostname: invalid IPv6 address\n";
+                warn "$NOW: WARNING: Skipping host $hostname: invalid IPv6 address\n";
                 return 'DEADHOST';
             }
         } else {
@@ -1937,7 +1941,7 @@ sub getsnmparg ($$$){
             $port = 161 unless defined $port;
             @res = getaddrinfo($hostname, $port, AF_UNSPEC(), SOCK_DGRAM());
             if (scalar (@res) < 5) {
-                warn "WARNING: Skipping host $hostname as it does not resolve to an IPv4 or IPv6 address\n";
+                warn "$NOW: WARNING: Skipping host $hostname as it does not resolve to an IPv4 or IPv6 address\n";
                 return 'DEADHOST';
             }
         }
@@ -1960,7 +1964,7 @@ sub getsnmparg ($$$){
 		populateconfcache($confcache,"$$target{Community}\@$$target{Host}$$target{SnmpOpt}",$$target{ipv4only},1,$$target{snmpoptions});
 	    }
 	    if (not defined readfromcache($confcache,$hostkey,$$target{IfSel}[$i],$$target{Key}[$i])) {
-		warn "WARNING: Could not match host:'$$target{Community}\@$$target{Host}$$target{SnmpOpt}' ref:'$$target{IfSel}[$i]' key:'$$target{Key}[$i]'\n";
+		warn "$NOW: WARNING: Could not match host:'$$target{Community}\@$$target{Host}$$target{SnmpOpt}' ref:'$$target{IfSel}[$i]' key:'$$target{Key}[$i]'\n";
 		return 'NOMATCH';
 	    } else {
 		$ifnum[$i] = ".".readfromcache($confcache,$hostkey,$$target{IfSel}[$i],$$target{Key}[$i]);
@@ -1968,7 +1972,7 @@ sub getsnmparg ($$$){
 	    }
 	}
 	if ($ifnum[$i] !~ /^$|^\.\d+$/) {
-	    warn "WARNING: Can not determine".
+	    warn "$NOW: WARNING: Can not determine".
 	      " ifNumber for $$target{Community}\@$$target{Host}$$target{SnmpOpt} \tref: '$$target{IfSel}[$i]' \tkey: '$$target{Key}[$i]'\n";
 	    return 'NOMATCH';
 	}
@@ -2061,7 +2065,7 @@ sub getsnmparg ($$$){
 			debug('repo',"($i) goto RETRY force if cache repopulation");
 			goto RETRY;
 		    } else {
-			warn "WARNING: could not match&get".
+			warn "$NOW: WARNING: could not match&get".
 			    " $$target{Host}$$target{SnmpOpt}/$$target{OID}[$i] for Eth $$target{Key}[$i]\n";
 			return 'NOMATCH';
 		    }
@@ -2079,7 +2083,7 @@ sub getsnmparg ($$$){
 			debug('repo',"($i) goto RETRY force if cache repopulation");
 			goto RETRY;
 		    } else {
-			warn "WARNING: could not match&get".
+			warn "$NOW: WARNING: could not match&get".
 			    " $$target{Host}$$target{SnmpOpt}/$$target{OID}[$i] for IP $$target{Key}[$i]\n";
 			return 'NOMATCH';
 		    }
@@ -2098,7 +2102,7 @@ sub getsnmparg ($$$){
 			debug('repo',"($i) goto RETRY force if cache repopulation");
 			goto RETRY;
 		    } else {
-			warn "WARNING: could not match&get".
+			warn "$NOW: WARNING: could not match&get".
 			    " $$target{Host}$$target{SnmpOpt}/$$target{OID}[$i] for $_ '$$target{Key}[$i]'\n";
 			return 'NOMATCH';
 		    }
@@ -2109,7 +2113,7 @@ sub getsnmparg ($$$){
 	# no sense continuing here ... if there is no data ...      
  	if (defined $SNMP_Session::errmsg and $SNMP_Session::errmsg =~ /no response received/){
             $SNMP_Session::errmsg = '';
-	    warn "WARNING: skipping because at least the query for $OID[0] on  $$target{Host} did not succeed\n";
+	    warn "$NOW: WARNING: skipping because at least the query for $OID[0] on  $$target{Host} did not succeed\n";
 	    return 'DEADHOST';
 	}
 	if ($$target{OID}[$i] =~ /if(Admin|Oper)Hack/) {
@@ -2128,7 +2132,7 @@ sub getsnmparg ($$$){
             next unless defined $res[ $ri ];
             my $exp = "&MRTGConversion::$target->{ Conversion }( '$res[ $ri ]' )";
             $res[ $ri ] = eval $exp;
-            warn "WARNING: evaluation of \"$exp\" failed\n$@\n" if $@;
+            warn "$NOW: WARNING: evaluation of \"$exp\" failed\n$@\n" if $@;
         }
     }
 
@@ -2143,7 +2147,7 @@ sub getsnmparg ($$$){
 	    # for folks using rrdtool I am allowing numbers 
 	    # with decimals here
 	    if ( defined $res[$ri] and $res[$ri] !~ /^[-+]?\d+(.\d+)?$/ ) {
-		warn "WARNING: Expected a number but got '$res[$ri]'\n";
+		warn "$NOW: WARNING: Expected a number but got '$res[$ri]'\n";
 		$res[$ri] = undef;
 		
 	    }
@@ -2169,8 +2173,8 @@ sub readtargets ($$$) {
             do {
                $pid = open(D, "-|");
                 unless (defined $pid) {
-                    warn "WARNING cannot fork: $!\n";
-                    die "ERROR bailing out after 6 faild forkattempts"
+                    warn "$NOW: WARNING cannot fork: $!\n";
+                    die "$NOW: ERROR bailing out after 6 failed forkattempts"
                          if $sleep_count++ > 6;
                     sleep 10;
                 }
@@ -2196,7 +2200,7 @@ sub readtargets ($$$) {
                                 # guess we got a blank here
                                 @res = ( undef,undef,time,undef,undef);
                                 $deadhost{$$targ{Community}.$$targ{Host}} = 1;
-                                warn "WARNING: no data for $$targ{OID}[0]&$$targ{OID}[1]:$$targ{Community}\@$$targ{Host}. Skipping further queries for Host $$targ{Host} in this round.\n"
+                                warn "$NOW: WARNING: no data for $$targ{OID}[0]&$$targ{OID}[1]:$$targ{Community}\@$$targ{Host}. Skipping further queries for Host $$targ{Host} in this round.\n"
                             } elsif ($res[0] and $res[0] eq 'NOMATCH'){
                                 @res = (undef,undef,time,undef,undef);
                             }
@@ -2234,13 +2238,13 @@ sub readtargets ($$$) {
             my $eout = $vin; # exception vector
             my $nfound = select($rout, undef, $eout, undef); # no timeout
             if (1 > $nfound) {
-               die sprintf("ERROR: select returned %d: $!\n", $nfound);
+               die sprintf("$NOW: ERROR: select returned %d: $!\n", $nfound);
             }
 	    for (my $i = 0; $i < $forks; $i++) {
                 next unless defined $hand[$i] and defined fileno($hand[$i]);
 # this does not seem to work reliably
 #                if (vec($eout, fileno($hand[$i]), 1)) {
-#		   die "ERROR: fork $i has died ahead of time?\n";
+#		   die "$NOW: ERROR: fork $i has died ahead of time?\n";
 #                }
                 next unless vec($rout, fileno($hand[$i]), 1);
 
@@ -2255,7 +2259,7 @@ sub readtargets ($$$) {
 		    my @res;
 		    for (0..4){
 		        my $line = <$h>; # must be a simple scalar here else it wont work
-		        die "ERROR: fork $i has died ahead of time ...\n" if not defined $line;
+		        die "$NOW: ERROR: fork $i has died ahead of time ...\n" if not defined $line;
 		        chomp $line;
     #                    debug ('fork',"reading for $ii $line");
 		        $line = undef if $line eq "##UNDEF##";                
@@ -2312,7 +2316,7 @@ sub readtargets ($$$) {
                    $$targ{_TIME_} =time;
                    # guess we got a blank here
                    $deadhost{$$targ{Host}} = 1;
-                   warn "WARNING: no data for $$targ{OID}[0]&$$targ{OID}[1]:$$targ{Community}\@$$targ{Host}. Skipping further queries for Host $$targ{Host} in this round.\n"
+                   warn "$NOW: WARNING: no data for $$targ{OID}[0]&$$targ{OID}[1]:$$targ{Community}\@$$targ{Host}. Skipping further queries for Host $$targ{Host} in this round.\n"
                } 
                if (  $$targ{_IN_} and $$targ{_IN_} eq 'NOMATCH') {   
                    $$targ{_IN_} = undef;

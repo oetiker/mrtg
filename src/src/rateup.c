@@ -104,6 +104,11 @@ short options = 0;
 
 time_t NOW;
 
+/* jpt, april 2006 : added 3 lines for date & time logging */
+struct tm * stLocal;
+time_t timestamp;
+char bufftime[32];
+
 char *short_si[] = { "", "k", "M", "G", "T" };
 char *longup = NULL;
 char *shortup = NULL;
@@ -187,8 +192,8 @@ notes about the NEXT macro ....
 
 for debuging 
 
-    fprintf (stderr,"NOW: %8lu  ST: %4lu  N: %4u HTN: %8lu HTN+1: %8lu IV: %6.0f\n", \
-            now,steptime,n,history[n].time, history[n+1].time, interval);\
+    fprintf (stderr,"%s, NOW: %8lu  ST: %4lu  N: %4u HTN: %8lu HTN+1: %8lu IV: %6.0f\n", \
+            bufftime,now,steptime,n,history[n].time, history[n+1].time, interval);\
 
 */
 
@@ -206,7 +211,7 @@ for debuging
     n++;\
   } else {\
     if (now > history[n].time) {\
-      fprintf(stderr,"ERROR: Rateup is trying to read ahead of the available data\n");\
+      fprintf(stderr,"%s, ERROR: Rateup is trying to read ahead of the available data\n" ,bufftime);\
     } else {\
       while (now <= history[n+1].time && n < histvalid){n++;}\
       do {\
@@ -232,7 +237,7 @@ for debuging
       } while (n < histvalid && nextnow < history[n].time);\
 \
       if (avc != steptime) {\
-       fprintf(stderr,"ERROR: StepTime does not match Avc %8" LLD_FORMAT ". Please Report this.\n", avc);\
+       fprintf(stderr,"%s, ERROR: StepTime does not match Avc %8" LLD_FORMAT ". Please Report this.\n", bufftime, avc);\
       }\
 \
       inr /= avc; outr /= avc;\
@@ -313,7 +318,7 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
   int styleDotted[3];
   if ((graph_label = (char **) calloc (1, sizeof (char *) * maxx)) == NULL)
     {
-      fprintf (stderr, "Rateup ERROR: Out of memory in graph creation\n");
+      fprintf (stderr, "%s, Rateup ERROR: Out of memory in graph creation\n", bufftime);
       exit (1);
     }
 
@@ -351,7 +356,7 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
     }
   if ((lhist = calloc (1, sizeof (struct HISTORY) * maxx)) == NULL)
     {
-      fprintf (stderr, "Rateup ERROR: Out of memory in graph creation\n");
+      fprintf (stderr, "%s, Rateup ERROR: Out of memory in graph creation\n", bufftime);
       exit (1);
     }
   onow = now;
@@ -589,7 +594,7 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	      if ((graph_label[x] = calloc (1, sizeof (char) * 4)) == NULL)
 		{
 		  fprintf (stderr,
-			   "Rateup ERROR: Out of memory in graph labeling\n");
+			   "%s, Rateup ERROR: Out of memory in graph labeling\n", bufftime);
 		  exit (0);
 		}
 	      else
@@ -606,14 +611,14 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 		lhist[x].time |= 2;
 	    }
 
-	  /* fprintf(stderr,"x: %i, min:%i, hour:%i day: %i\n",
-	     x,tm->tm_min,tm->tm_hour,tm->tm_wday); */
+	  /* fprintf(stderr,"%s, x: %i, min:%i, hour:%i day: %i\n",
+	     bufftime,x,tm->tm_min,tm->tm_hour,tm->tm_wday); */
 	  if ((tm->tm_min < 30) && (tm->tm_hour == 12))
 	    {
 	      if ((graph_label[x] = calloc (1, sizeof (char) * 5)) == NULL)
 		{
 		  fprintf (stderr,
-			   "Rateup ERROR: Out of memory in graph labeling\n");
+			   "%s, Rateup ERROR: Out of memory in graph labeling\n", bufftime);
 		  exit (0);
 		}
 	      else
@@ -638,7 +643,7 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	      if ((graph_label[x] = calloc (1, sizeof (char) * 16)) == NULL)
 		{
 		  fprintf (stderr,
-			   "Rateup ERROR: Out of memory in graph labeling\n");
+			   "%s, Rateup ERROR: Out of memory in graph labeling\n", bufftime);
 		  exit (0);
 		}
 	      else
@@ -661,7 +666,7 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	      if ((graph_label[x] = calloc (1, sizeof (char) * 5)) == NULL)
 		{
 		  fprintf (stderr,
-			   "Rateup Error: Out of memory in graph labeling\n");
+			   "%s, Rateup Error: Out of memory in graph labeling\n", bufftime);
 		  exit (0);
 		}
 	      else
@@ -948,7 +953,7 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	  else
 	    {
 	      fprintf (stderr,
-		       "Rateup ERROR: date + timezone string too long\n");
+		       "%s, Rateup ERROR: date + timezone string too long\n", bufftime);
 	      exit (1);
 	    }
 
@@ -1144,7 +1149,7 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
   if ((fo = fopen (file, "wb")) == NULL)
     {
       perror (program);
-      fprintf (stderr, "Rateup Error: Can't open %s for write\n", file);
+      fprintf (stderr, "%s, Rateup Error: Can't open %s for write\n", bufftime, file);
       exit (1);
     }
   GFORM_GD (graph, fo);
@@ -1248,7 +1253,7 @@ readhist (file)
     {
       if (fscanf (fi, tempform, &lasttime, &last.in[0], &last.out[0]) != 3)
 	{
-	  fprintf (stderr, "Read Error: File %s lin 1\n", file);
+	  fprintf (stderr, "%s, Read Error: File %s lin 1\n", bufftime, file);
 	  retcode = 1;
 	}
       last.time = lasttime;
@@ -1284,8 +1289,8 @@ readhist (file)
 	  if (hist->time > cur)
 	    {
 	      fprintf (stderr,
-		       "Rateup ERROR: %s found %s's log file was corrupt\n          or not in sorted order:\ntime: %lu.",
-		       program, router, (unsigned long) hist->time);
+		       "%s, Rateup ERROR: %s found %s's log file was corrupt\n          or not in sorted order:\ntime: %lu.",
+		       bufftime, program, router, (unsigned long) hist->time);
 	      retcode = 2;
 	      break;
 	    }
@@ -1299,8 +1304,8 @@ readhist (file)
 	      if (lh == NULL)
 		{
 		  fprintf (stderr,
-			   "Rateup WARNING: (pay attention to this)\nWARNING: %s found %s's log file had too many entries, data discarded\n",
-			   program, router);
+			   "%s, Rateup WARNING: (pay attention to this)\nWARNING: %s found %s's log file had too many entries, data discarded\n",
+			   bufftime, program, router);
 		  break;
 		}
 	      hist = lh + (hist - history);
@@ -1330,14 +1335,14 @@ readfile ()
   if ((err = readhist (buf)) != 0)
     {				/* Read of log file failed.  Try backup */
       fprintf (stderr,
-	       "Rateup WARNING: %s could not read the primary log file for %s\n",
-	       program, router);
+	       "%s, Rateup WARNING: %s could not read the primary log file for %s\n",
+	       bufftime, program, router);
       sprintf (buf, "%s.old", router);
       if ((err = readhist (buf)) != 0)
 	{			/* Backup failed too. New file? */
 	  fprintf (stderr,
-		   "Rateup WARNING: %s The backup log file for %s was invalid as well\n",
-		   program, router);
+		   "%s, Rateup WARNING: %s The backup log file for %s was invalid as well\n",
+		   bufftime, program, router);
 	  if (err == 2)
 	    exit (1);
 
@@ -1405,8 +1410,8 @@ update (in, out, abs_max, absupdate)
   if (now < last.time)
     {
       fprintf (stderr,
-	       "Rateup ERROR: %s found that %s's log file time of %lu was greater than now (%lu)\nERROR: Let's not do the time warp, again. Logfile unchanged.\n",
-	       program, router, (unsigned long) last.time,
+	       "%s, Rateup ERROR: %s found that %s's log file time of %lu was greater than now (%lu)\nERROR: Let's not do the time warp, again. Logfile unchanged.\n",
+	       bufftime, program, router, (unsigned long) last.time,
 	       (unsigned long) now);
       return;
     }
@@ -1416,7 +1421,7 @@ update (in, out, abs_max, absupdate)
   if ((lhist = calloc (1, sizeof (struct HISTORY) * (MAX_HISTORY + 1))) ==
       NULL)
     {
-      fprintf (stderr, "Rateup ERROR: Out of memory in update\n");
+      fprintf (stderr, "%s, Rateup ERROR: Out of memory in update\n", bufftime);
       exit (1);
     }
   hist = lhist;
@@ -1728,28 +1733,28 @@ update (in, out, abs_max, absupdate)
       if (ferror (fo) || fclose (fo))
 	{
 	  perror (program);
-	  fprintf (stderr, "Rateup ERROR: Can't write new log file\n");
+	  fprintf (stderr, "%s, Rateup ERROR: Can't write new log file\n", bufftime);
 	  exit (1);
 	}
       /* another fix to get things working under NT */
       if (unlink (buf2))
 	{
 	  fprintf (stderr,
-		   "Rateup WARNING: %s Can't remove %s updating log file\n",
-		   program, buf2);
+		   "%s, Rateup WARNING: %s Can't remove %s updating log file\n",
+		   bufftime, program, buf2);
 	}
 
       if (rename (buf1, buf2))
 	{
 	  fprintf (stderr,
-		   "Rateup WARNING: %s Can't rename %s to %s updating log file\n",
-		   program, buf1, buf2);
+		   "%s, Rateup WARNING: %s Can't rename %s to %s updating log file\n",
+		   bufftime, program, buf1, buf2);
 	}
       if (rename (buf, buf1))
 	{
 	  fprintf (stderr,
-		   "Rateup WARNING: %s Can't rename %s to %s updating log file\n",
-		   program, buf, buf1);
+		   "%s, Rateup WARNING: %s Can't rename %s to %s updating log file\n",
+		   bufftime, program, buf, buf1);
 	}
       for (n = 0; n < nout && n < MAX_HISTORY; n++)
 	{
@@ -1759,7 +1764,7 @@ update (in, out, abs_max, absupdate)
   else
     {
       perror (program);
-      fprintf (stderr, "Rateup ERROR: Can't open %s for write\n", buf);
+      fprintf (stderr, "%s, Rateup ERROR: Can't open %s for write\n", bufftime, buf);
       exit (1);
     }
   free (lhist);
@@ -1789,14 +1794,14 @@ readparam (char const *file)
   /* Open the file */
   if ((fp = fopen (file, "r")) == NULL)
     {
-      fprintf (stderr, "%s ERROR: Can't open parameters file: %s\n", program,
+      fprintf (stderr, "%s, %s ERROR: Can't open parameters file: %s\n", bufftime, program,
 	       file);
       return (1);
     }
   /* Check we actually got something */
   if (!(cbuf = fread (buff, 1, LENGTH_OF_BUFF, fp)))
     {
-      fprintf (stderr, "%s ERROR: Parameters file empty\n", program);
+      fprintf (stderr, "%s, %s ERROR: Parameters file empty\n", bufftime, program);
       return (1);
     }
   fclose (fp);
@@ -1805,7 +1810,7 @@ readparam (char const *file)
 /* #define READPARAM_INFO */
 #ifdef READPARAM_INFO
 
-  fprintf (stderr, "%s INFO: Read: %d bytes from File: '%s'\n", program, cbuf,
+  fprintf (stderr, "%s, %s INFO: Read: %d bytes from File: '%s'\n", bufftime, program, cbuf,
 	   file);
 
 #endif
@@ -1821,6 +1826,11 @@ main (argc, argv)
   int x, argi, used, initarg;
 
   program = argv[0];
+
+    /* jpt, april 2006 : 3 lines for date & time logging */
+    (void) time(&timestamp);
+    stLocal = localtime(&timestamp);
+    strftime(bufftime, 32, "%d-%m-%Y %H:%M:%S", stLocal);
 
   /* Is Argv[1] a path/file to passed parameters? */
   if ((argc > 1) && (strncasecmp (argv[1], "-F", 2) == 0))
@@ -1851,8 +1861,8 @@ main (argc, argv)
 	      else
 		{
 		  fprintf (stderr,
-			   "Rateup ERROR: Parameter %d [%s] missing quote\n",
-			   argc, b);
+			   "%s, Rateup ERROR: Parameter %d [%s] missing quote\n",
+			   bufftime, argc, b);
 		  break;
 		}
 	    }
@@ -1881,8 +1891,8 @@ main (argc, argv)
       /* Check we didn't fill argv[] */
       if (argc == NUMBER_OF_PARM)
 	{
-	  fprintf (stderr, "Rateup ERROR: Too many parameters read: %d\n",
-		   argc);
+	  fprintf (stderr, "%s, Rateup ERROR: Too many parameters read: %d\n",
+		   bufftime, argc);
 	  return (1);
 	}
 
@@ -1907,13 +1917,13 @@ main (argc, argv)
 
   if (argc < 3)
     {
-      fprintf (stderr, "%s for MRTG %s\n"
+      fprintf (stderr, "%s, %s for MRTG %s\n"
 	       "Usage: %s -f <parameter file>\n"
 	       "       %s directory basename [sampletime] [t sampletime] "
 	       "[-(t)ransparent] [-(b)order]"
 	       "[u|a|g|h|m in out abs_max] "
 	       "[i/p file maxvi maxvo maxx maxy growright step bits]\n",
-	       program, VERSION, program, program);
+	       bufftime, program, VERSION, program, program);
       return (1);
     }
 
@@ -1922,7 +1932,7 @@ main (argc, argv)
      rename across directories */
   if (chdir (routerpath))
     {
-      fprintf (stderr, "Rateup ERROR: Chdir to %s failed ...\n", routerpath);
+      fprintf (stderr, "%s, Rateup ERROR: Chdir to %s failed ...\n", bufftime, routerpath);
       return (1);
     }
 
@@ -1936,7 +1946,7 @@ main (argc, argv)
   if ((history = calloc (1, sizeof (struct HISTORY) * (MAX_HISTORY + 1))) ==
       NULL)
     {
-      fprintf (stderr, "Rateup ERROR: Out of memory in main\n");
+      fprintf (stderr, "%s, Rateup ERROR: Out of memory in main\n", bufftime);
       exit (1);
     }
 #if defined(__WATCOMC__) || defined(NETWARE)
@@ -1948,7 +1958,7 @@ main (argc, argv)
   router = argv[2];
   if (strlen(router) > 120)
   {
-      fprintf (stderr, "Rateup ERROR: Too long basename\n");
+      fprintf (stderr, "%s, Rateup ERROR: Too long basename\n", bufftime);
       exit (1);
   }
 
@@ -2057,8 +2067,8 @@ main (argc, argv)
 	      used = 1;
 	      break;
 	    default:
-	      fprintf (stderr, "Rateup ERROR: Unknown option: %s, sorry!\n",
-		       argv[argi]);
+	      fprintf (stderr, "%s, Rateup ERROR: Unknown option: %s, sorry!\n",
+		       bufftime, argv[argi]);
 	      return (1);
 	    }
 	  break;
@@ -2206,7 +2216,7 @@ main (argc, argv)
 	    if (argv[argi + 1][0] != '[')
 	      {
 		fprintf (stderr,
-			 "Rateup ERROR: YLegend: Option must be passed with '[' at start and  ']' at end (these will not be printed).\n");
+			 "%s, Rateup ERROR: YLegend: Option must be passed with '[' at start and  ']' at end (these will not be printed).\n", bufftime);
 		return (1);
 	      }
 	    for (i = 1; (i < argc) && loop; i++)
@@ -2239,7 +2249,7 @@ main (argc, argv)
 			    else
 			      {
 				fprintf (stderr,
-					 "1: rateup ERROR: YLegend:  use \"\\]\" for \"]\" or \"\\\\\" for \"\\\".\n");
+					 "%s, 1a: rateup ERROR: YLegend:  use \"\\]\" for \"]\" or \"\\\\\" for \"\\\".\n", bufftime);
 				return (1);
 			      }
 			  }
@@ -2248,7 +2258,7 @@ main (argc, argv)
 			    if (strlen (qstr + j) >= 2)
 			      {
 				fprintf (stderr,
-					 "2: rateup ERROR: YLegend:  use \"\\]\" for \"]\" or \"\\\\\" for \"\\\".\n");
+					 "%s, 2a: rateup ERROR: YLegend:  use \"\\]\" for \"]\" or \"\\\\\" for \"\\\".\n", bufftime);
 				return (1);
 			      }
 			    loop = 0;
@@ -2261,7 +2271,7 @@ main (argc, argv)
 			if ((size_t) (k + 1) > 99)
 			  {
 			    fprintf (stderr,
-				     "3: rateup ERROR: YLegend too long\n");
+				     "%s, 3a: rateup ERROR: YLegend too long\n", bufftime);
 			    return (1);
 			  }
 			longup[k] = qstr[j];
@@ -2272,7 +2282,7 @@ main (argc, argv)
 		k = strlen (longup);
 		if ((size_t) (k + 1) > 99)
 		  {
-		    fprintf (stderr, "4: rateup ERROR: YLegend too long\n");
+		    fprintf (stderr, "%s, 4a: rateup ERROR: YLegend too long\n", bufftime);
 		    return (1);
 		  }
 		longup[k] = ' ';
@@ -2283,7 +2293,7 @@ main (argc, argv)
 	  /* remove trailing space */
 	  longup[max (0, (signed) strlen (longup) - 1)] = 0;
 	  shortup = longup;
-	  /* fprintf(stderr, "YLegend = \"%s\"\n", longup);  */
+	  /* fprintf(stderr, "%s, YLegend = \"%s\"\n", bufftime, longup);  */
 	  break;
 	case 'T':		/* pngTitle - based on YLegend */
 	  {
@@ -2301,7 +2311,7 @@ main (argc, argv)
 	    if (argv[argi + 1][0] != '[')
 	      {
 		fprintf (stderr,
-			 "Rateup ERROR: YLegend: Option must be passed with '[' at start and  ']' at end (these will not be printed).\n");
+			 "%s, Rateup ERROR: YLegend: Option must be passed with '[' at start and  ']' at end (these will not be printed).\n", bufftime);
 		return (1);
 	      }
 	    for (i = 1; (i < argc) && loop; i++)
@@ -2334,7 +2344,7 @@ main (argc, argv)
 			    else
 			      {
 				fprintf (stderr,
-					 "1: rateup ERROR: YLegend:  use \"\\]\" for \"]\" or \"\\\\\" for \"\\\".\n");
+					 "%s, 1b: rateup ERROR: YLegend:  use \"\\]\" for \"]\" or \"\\\\\" for \"\\\".\n", bufftime);
 				return (1);
 			      }
 			  }
@@ -2343,7 +2353,7 @@ main (argc, argv)
 			    if (strlen (qstr + j) >= 2)
 			      {
 				fprintf (stderr,
-					 "2: rateup ERROR: YLegend:  use \"\\]\" for \"]\" or \"\\\\\" for \"\\\".\n");
+					 "%s, 2b: rateup ERROR: YLegend:  use \"\\]\" for \"]\" or \"\\\\\" for \"\\\".\n", bufftime);
 				return (1);
 			      }
 			    loop = 0;
@@ -2356,7 +2366,7 @@ main (argc, argv)
 			if ((size_t) (k + 1) > 99)
 			  {
 			    fprintf (stderr,
-				     "3: rateup ERROR: YLegend too long\n");
+				     "%s, 3b: rateup ERROR: YLegend too long\n", bufftime);
 			    return (1);
 			  }
 			pngtitle[k] = qstr[j];
@@ -2367,7 +2377,7 @@ main (argc, argv)
 		k = strlen (pngtitle);
 		if ((size_t) (k + 1) > 99)
 		  {
-		    fprintf (stderr, "4: rateup ERROR: YLegend too long\n");
+		    fprintf (stderr, "%s, 4b: rateup ERROR: YLegend too long\n", bufftime);
 		    return (1);
 		  }
 		pngtitle[k] = ' ';
@@ -2377,11 +2387,11 @@ main (argc, argv)
 	  }
 	  /* remove trailing space */
 	  pngtitle[max (0, (signed) strlen (pngtitle) - 1)] = 0;
-	  /* fprintf(stderr, "YLegend = \"%s\"\n", pngtitle);  */
+	  /* fprintf(stderr, "%s, YLegend = \"%s\"\n", bufftime, pngtitle);  */
 	  break;
 	default:
-	  fprintf (stderr, "Rateup ERROR: Can't cope with %s, sorry!\n",
-		   argv[argi]);
+	  fprintf (stderr, "%s, Rateup ERROR: Can't cope with %s, sorry!\n",
+		   bufftime, argv[argi]);
 	  return (1);
 	}
     }
