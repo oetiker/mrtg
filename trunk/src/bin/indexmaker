@@ -515,13 +515,13 @@ ECHO
 <TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0>
   <TR>
     <TD WIDTH=63><A
-    HREF="http://www.ee.ethz.ch/~oetiker/webtools/mrtg/"><IMG
+    HREF="http://oss.oetiker.ch/mrtg/"><IMG
     BORDER=0 SRC="${gifPath}mrtg-l.${main::GRAPHFMT}" WIDTH=63 HEIGHT=25 ALT="MRTG"></A></TD>
     <TD WIDTH=25><A
-    HREF="http://www.ee.ethz.ch/~oetiker/webtools/mrtg/"><IMG
+    HREF="http://oss.oetiker.ch/mrtg/"><IMG
     BORDER=0 SRC="${gifPath}mrtg-m.${main::GRAPHFMT}" WIDTH=25 HEIGHT=25 ALT=""></A></TD>
     <TD WIDTH=388><A
-    HREF="http://www.ee.ethz.ch/~oetiker/webtools/mrtg/"><IMG
+    HREF="http://oss.oetiker.ch/mrtg/"><IMG
     BORDER=0 SRC="${gifPath}mrtg-r.${main::GRAPHFMT}" WIDTH=388 HEIGHT=25
     ALT="Multi Router Traffic Grapher"></A></TD>
   </TR>
@@ -531,8 +531,8 @@ ECHO
   <TD WIDTH=88 ALIGN=RIGHT><FONT FACE="Arial,Helvetica" SIZE=2>
   version $VERSION</FONT></TD>
   <TD WIDTH=388 ALIGN=RIGHT><FONT FACE="Arial,Helvetica" SIZE=2>
-  <A HREF="http://www.ee.ethz.ch/~oetiker/">Tobias Oetiker</A>
-  <A HREF="mailto:oetiker\@ee.ethz.ch">&lt;oetiker\@ee.ethz.ch&gt;</A>
+  <A HREF="http://tobi.oetiker.ch/">Tobias Oetiker</A>
+  <A HREF="mailto:tobi+mrtglink\@oetiker.ch">&lt;tobi\@oetiker.ch&gt;</A>
   and&nbsp;<A HREF="http://www.bungi.com/">Dave&nbsp;Rand</A>&nbsp;<A HREF="mailto:dlr\@bungi.com">&lt;dlr\@bungi.com&gt;</A></FONT>
   </TD>
 </TR>

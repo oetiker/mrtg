@@ -8,7 +8,7 @@ After using MRTG for some time you may find some limitations, mostly in the
 areas of performance and graphing flexibility. These are exactly the areas
 addressed by RRDtool. To learn more about RRDtool check out its website on
 
- http://people.ee.ethz.ch/~oetiker/webtools/rrdtool
+ http://oss.oetiker.ch/rrdtool
 
 =head1 RRDTOOL INTEGRATION
 
