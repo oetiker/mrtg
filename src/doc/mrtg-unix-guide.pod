@@ -83,7 +83,7 @@ Get a copy from
 And last but not least you also need mrtg itself. In case you have not
 yet downloaded it, you can find a copy on my website:
 
- http://people.ee.ethz.ch/~oetiker/webtools/mrtg/pub/
+ http://oss.oetiker.ch/mrtg/pub
 
 =head1 LIBRARY COMPILATION
 

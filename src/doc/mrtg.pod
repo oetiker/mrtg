@@ -10,7 +10,7 @@ containing PNG images which provide a LIVE visual representation of
 this traffic. Check http://www.stat.ee.ethz.ch/mrtg/ to see what it does.
 
 Go to 
- http://people.ee.ethz.ch/~oetiker/webtools/mrtg 
+ http://oss.oetiker.ch/mrtg 
 for all the details about mrtg.
 
 
@@ -205,7 +205,7 @@ Example:
 =head1 READ ON
 
 Learn more about MRTG by going to the mrtg home page on:
- http://people.ee.ethz.ch/~oetiker/webtools/mrtg
+http://oss.oetiker.ch/mrtg
 
 =head1 AUTHOR
 
