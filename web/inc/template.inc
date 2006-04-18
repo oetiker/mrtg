@@ -45,7 +45,7 @@
 <A HREF="http://mrtg.meulie.net/<where/>">NO</a><!--Evert Meulie <evert@meulie.net> -->
 #<A HREF="http://mrtg.francenet.ro/<where/>">RO</a><!--Dan Draghici <dan.draghici@ulbsibiu.ro>-->
 <A HREF="http://mrtg.cs.pu.edu.tw/<where/>">TW</a><!--Hsun-Chang Chang <hsunchang@gmail.com>-->
-#<A HREF="http://mrtg.mirror.graemef.net/<where/>">UK</a><!--Graeme Fowler <graeme@graemef.net>-->
+<A HREF="http://mrtg.mirror.graemef.net/<where/>">UK</a><!--Graeme Fowler <graeme@graemef.net>-->
 #<A HREF="http://www.bigwebmaster.com/mrtg/<where/>">US</a><!--Brian Annas <questions@bigwebmaster.com>-->
 #<A HREF="/<where/>"></a><!---->
 #<A HREF="/<where/>"></a><!---->
@@ -89,12 +89,12 @@
 <table>
 <tr>
 <td>
-<input type="radio" name="sitesearch" value="" checked="checked"></input>
-<font size="-1" color="#000000">Web</font>
+<input type="radio" name="sitesearch" value="oss.oetiker.ch" checked="checked"></input>
+<font size="-1" color="#000000">oss.oetiker.ch</font>
 </td>
 <td>
-<input type="radio" name="sitesearch" value="oss.oetiker.ch"></input>
-<font size="-1" color="#000000">oss.oetiker.ch</font>
+<input type="radio" name="sitesearch" value=""></input>
+<font size="-1" color="#000000">Web</font>
 </td>
 </tr>
 </table>
@@ -110,17 +110,6 @@
 </form>
 </div>
 <!-- SiteSearch Google -->
-<div id="googlead_firefox">
-<script type="text/javascript"><!--
-google_ad_client = "pub-8135238818549668";
-google_ad_width = 180;
-google_ad_height = 60;
-google_ad_format = "180x60_as_rimg";
-google_cpa_choice = "CAAQyaj8zwEaCIwcWMzeycafKMu293M";
-//--></script>
-<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
-</div>
 </td>
 <!-- Navbar code end -->
 
@@ -164,9 +153,34 @@ LINE
 </protect>
 </perl>
 </p>
+<perl>
+if ( -s "$(WML_SRC_FILENAME)" > 4000 ) {
+print <<'GOOGLEAD';
+<p>
+<script type="text/javascript"><!--
+google_ad_client = "pub-8135238818549668";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text";
+google_ad_channel ="3710326600";
+google_color_border = "FE754D";
+google_color_bg = "F0F0F0";
+google_color_link = "000000";
+google_color_url = "345D98";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</p>
+GOOGLEAD
+}
+</perl>
 </td>
 </tr>
 </table>
+
 <!-- content code end -->
 <div class="orange_ruller">&nbsp;</div>
 
