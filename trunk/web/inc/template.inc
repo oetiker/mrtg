@@ -40,7 +40,7 @@
 <A HREF="http://www.mrtg.cz/<where/>">CZ</a><!--Martin Och <martin@och.cz>-->
 <A HREF="http://mrtg-fr.agarik.com/<where/>">FR</a><!--Laurent SEROR seror@agarik.com-->
 #<A HREF="http://www.mrtg.it/<where/>">IT</a><!--Vicki Vinci root@power.it -->
-#<A HREF="http://mrtg.magaltavor.com/<where/>">LB</a><!-- Jocelyn habib <jhabib@terra.net.lb> -->
+<A HREF="http://mrtg.magaltavor.com/<where/>">LB</a><!-- Jocelyn habib <jhabib@terra.net.lb> -->
 #<A HREF="http://mrtg.grunn.org/<where/>">NL</a><!--Webmaster <webmaster@grunn.org>-->
 <A HREF="http://mrtg.meulie.net/<where/>">NO</a><!--Evert Meulie <evert@meulie.net> -->
 #<A HREF="http://mrtg.francenet.ro/<where/>">RO</a><!--Dan Draghici <dan.draghici@ulbsibiu.ro>-->
