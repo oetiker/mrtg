@@ -1,5 +1,7 @@
 From: tobi
 * we live in a new home now ... oss.oetiker.ch/mrtg
+* fix makefile to work for the install target again
+
 From: jpturchi at mageos dot com
 * timestamp all error and warning messages of mrtg
 From: Pawe? Go?aszewski <blues@pld-linux.org>
