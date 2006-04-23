@@ -150,6 +150,7 @@
 
     <li><a href="http://www.polesye.net/roma/">Monitoring Atmel chipset based Access Points (GL2411AP and Linksys WAP11)</a> by <a href="mailto:roma{at}polesye.net">Roman Festchook</a></li>
 
+    <li><a href="http://www.anetzb.de/upnp2mrtg/">Monitoring a FritzBox</a> by <a href="mailto:upnp2mrtg{at}anetzb.de">Michael Tomschitz</a></li>
 
     <li><a href="http://www.sensatronics.com/downloads/mrtg_temptrax_howto.pdf">Graph server room temperatures using the Sensatronics TempTrax device</a> by <a href="mailto:kwright{at}sensatronics.com">Keith A.Wright</a>.</li>
 
