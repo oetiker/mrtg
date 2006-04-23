@@ -73,6 +73,15 @@
 <div>
 <a href="http://people.ee.ethz.ch/oetiker/wish/"><img border="0" alt="Make Tobi Happy" src="$(ROOT)/inc/button.png"/></a>
 </div>
+<br/>
+<br/>
+<br/>
+<div>
+<iframe width="206" height="25" name="bandwidth" frameborder="0" src="$(ROOT)/hoster.html"></iframe>
+</div>
+<br/>
+<br/>
+<br/>
 <div id="googlead_search">
 <!-- SiteSearch Google -->
 <form method="get" action="http://www.google.com/custom" target="_top">
