@@ -1,4 +1,5 @@
 From: tobi
+* only enable snmpv3 in cfgmaker if it is explicitly specified on the cli.
 * we live in a new home now ... oss.oetiker.ch/mrtg
 * fix makefile to work for the install target again
 
