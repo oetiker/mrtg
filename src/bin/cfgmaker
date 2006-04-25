@@ -85,7 +85,7 @@ sub main {
     }
     # Check for SNMP V3
     #
-    	if (exists($opt{username}) or lc($opt{enablesnmpv3}) eq "yes") {
+    	if (lc($opt{enablesnmpv3}) eq "yes") {
 	       if  (eval {require Net_SNMP_util;})   {
 	            import Net_SNMP_util;
 	            debug('base', "SNMP V3 libraries found, SNMP V3 enabled.");
@@ -1899,9 +1899,9 @@ represents the "default" context.
 =head3 User-based Security Model Arguments
 
 The User-based Security Model (USM) used by SNMPv3 requires that a securityName
-be specified using the B<-username> argument.  The creation of a Net::SNMP
+be specified using the B<--username> argument.  The creation of a Net::SNMP
 object with the version set to SNMPv3 will fail if the B<--username> argument
-is not present.  The B<-username> argument expects a string 1 to 32 octets
+is not present.  The B<--username> argument expects a string 1 to 32 octets
 in length.
 
 Different levels of security are allowed by the User-based Security Model which
