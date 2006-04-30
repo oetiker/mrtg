@@ -4,6 +4,7 @@ body {
 	font-family: sans-serif;
 	margin:0px;
 	max-width: 80em;
+	min-width: 910px;
 }
 
 /* hide old stuff */
