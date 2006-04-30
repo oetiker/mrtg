@@ -42,7 +42,7 @@
 #<A HREF="http://www.mrtg.it/<where/>">IT</a><!--Vicki Vinci root@power.it -->
 <A HREF="http://mrtg.magaltavor.com/<where/>">LB</a><!-- Jocelyn habib <jhabib@terra.net.lb> -->
 #<A HREF="http://mrtg.grunn.org/<where/>">NL</a><!--Webmaster <webmaster@grunn.org>-->
-<A HREF="http://mrtg.meulie.net/<where/>">NO</a><!--Evert Meulie <evert@meulie.net> -->
+<A HREF="http://mrtg.meulie.net/<where/>">US</a><!--Evert Meulie <evert@meulie.net> -->
 #<A HREF="http://mrtg.francenet.ro/<where/>">RO</a><!--Dan Draghici <dan.draghici@ulbsibiu.ro>-->
 <A HREF="http://mrtg.cs.pu.edu.tw/<where/>">TW</a><!--Hsun-Chang Chang <hsunchang@gmail.com>-->
 <A HREF="http://mrtg.mirror.graemef.net/<where/>">UK</a><!--Graeme Fowler <graeme@graemef.net>-->
