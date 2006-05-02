@@ -1,7 +1,7 @@
 # things that the GNU standards document suggests all makefiles
 # should have.
 SHELL=/bin/sh
-VER=2.13.2
+VER=2.14.0
 .SUFFIXES:
 .SUFFIXES: .c .o .pl .pm .pod .man .1 .txt
 
@@ -100,7 +100,7 @@ man: $(MAN)
 txt: $(TXT)
 
 versync:
-	$(PERL) -i~ -p -e 's|VERSION\s*=\s*"\d+\.\d+\.\d+([a-z0-9]+)?"|VERSION = "$(VER)"|gi; s|mrtg-\d+\.\d+\.\d+([a-z0-9]+)?|mrtg-$(VER)|gi; s|MRTG\s\d+\.\d+\.\d+([a-z0-9]+)?|MRTG $(VER)|gi' ANNOUNCE bin/mrtg bin/cfgmaker bin/indexmaker lib/mrtg2/*.pm src/*.c doc/*.pod 
+	$(PERL) -i~ -p -e 's|VERSION\s*=\s*"\d+\.\d+\.\d+([a-z0-9]+)?"|VERSION = "$(VER)"|gi; s|mrtg-\d+\.\d+\.\d+([a-z0-9]+)?|mrtg-$(VER)|gi; s|MRTG\s\d+\.\d+\.\d+([a-z0-9]+)?|MRTG $(VER)|gi' bin/mrtg bin/cfgmaker bin/indexmaker lib/mrtg2/*.pm src/*.c doc/*.pod 
 	cd translate && $(PERL) mergelocale.pl skeleton.pm0 *.pmd && cp locales_mrtg.pm ../lib/mrtg2
 
 doc:    getpod versync man txt
@@ -129,5 +129,5 @@ dist: tar
 	(cd ${HOME}/public_html/webtools/mrtg/pub; rm mrtg.tar.gz;ln -s $(ARCHIVE).tar.gz mrtg.tar.gz;gmd5sum $(ARCHIVE).tar.gz >$(ARCHIVE).tar.gz.md5;pgps  $(ARCHIVE).tar.gz.md5;chmod 644  $(ARCHIVE).tar.gz.md5*)
 
 betadist: tar
-	cp $(ARCHIVE).* ${HOME}/public_html/webtools/mrtg/pub/beta
-	mv CHANGES $(ARCHIVE).* ${HOME}/public_html/webtools/mrtg/pub/beta
+	mv $(ARCHIVE).* ${HOME}/public_html/webtools/mrtg/pub/beta
+	cp CHANGES ${HOME}/public_html/webtools/mrtg/pub/beta

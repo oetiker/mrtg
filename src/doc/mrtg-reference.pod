@@ -1,6 +1,6 @@
 =head1 NAME
 
-mrtg-reference - MRTG 2.13.2 configuration reference
+mrtg-reference - MRTG 2.14.0 configuration reference
 
 =head1 OVERVIEW
 
@@ -1973,4 +1973,4 @@ indicates that at least one of the targets was succesful.  A partial listing of 
 
 =head1 AUTHOR
 
-Tobias Oetiker E<lt>oetiker@ee.ethz.chE<gt> and many contributors
+Tobias Oetiker E<lt>tobi.chE<gt> and many contributors

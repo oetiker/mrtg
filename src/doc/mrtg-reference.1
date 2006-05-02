@@ -129,9 +129,9 @@
 .\" ========================================================================
 .\"
 .IX Title "MRTG-REFERENCE 1"
-.TH MRTG-REFERENCE 1 "2006-02-03" "2.13.2" "mrtg"
+.TH MRTG-REFERENCE 1 "2006-05-02" "2.14.0" "mrtg"
 .SH "NAME"
-mrtg\-reference \- MRTG 2.13.2 configuration reference
+mrtg\-reference \- MRTG 2.14.0 configuration reference
 .SH "OVERVIEW"
 .IX Header "OVERVIEW"
 The runtime behaviour of \s-1MRTG\s0 is governed by a configuration file. Run\-of\-
@@ -1365,6 +1365,22 @@ Example:
 .Ve
 .PP
 \&\s-1NOTE:\s0 the Directory option must always be 'relative' or bad things will happen.
+.Sh "Clonedirectory"
+.IX Subsection "Clonedirectory"
+If the \fIDirectory\fR option is specified, the \fIClonedirectory\fR option will copy
+all the contents of \fIDirectory\fR to the \fIClonedirectory\fR. 
+.PP
+As well as the \fIDirectory\fR option requires, the clone directory must already exist; mrtg will not create it.
+.PP
+Example:
+.PP
+.Vb 3
+\& WorkDir: /usr/tardis/pub/www/stats/mrtg
+\& Directory[myrouter]: myrouter
+\& Clonedirectory[myrouter]: myclonedirectory
+.Ve
+.PP
+\&\s-1NOTE:\s0 the Clonedirectory option must always be 'relative' or bad things will happen.
 .Sh "XSize and YSize"
 .IX Subsection "XSize and YSize"
 By default mrtgs graphs are 100 by 400 pixels wide (plus
@@ -2087,4 +2103,4 @@ indicates that at least one of the targets was succesful.  A partial listing of 
 .Ve
 .SH "AUTHOR"
 .IX Header "AUTHOR"
-Tobias Oetiker <oetiker@ee.ethz.ch> and many contributors
+Tobias Oetiker <tobi.ch> and many contributors

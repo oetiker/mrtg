@@ -68,7 +68,7 @@ Decisions about your unsubscription from the list will be taken by
 If you feel that you have been treated unfairly, you may send mail to
 me and explain the situation.
 
- Tobi Oetiker <oetiker@ee.ethz.ch>
+ Tobi Oetiker <tobi.ch>
 
 =back
 
@@ -135,5 +135,5 @@ http://groups.yahoo.com/group/mrtg-turkiye/ for more information.
 
 =head1 AUTHOR
 
-Tobias Oetiker E<lt>oetiker@ee.ethz.chE<gt> and many contributors
+Tobias Oetiker E<lt>tobi.chE<gt> and many contributors
 

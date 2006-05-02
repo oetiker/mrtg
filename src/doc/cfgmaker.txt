@@ -3,7 +3,7 @@ CFGMAKER(1)                    mrtg                   CFGMAKER(1)
 
 
 NNAAMMEE
-       cfgmaker - Creates mrtg.cfg files (for mrtg-2.13.2)
+       cfgmaker - Creates mrtg.cfg files (for mrtg-2.14.0)
 
 SSYYNNOOPPSSIISS
        cfgmaker [options] [community@]router [[options] [commu-
@@ -435,11 +435,11 @@ DDEESSCCRRIIPPTTIIOONN
        _U_s_e_r_-_b_a_s_e_d _S_e_c_u_r_i_t_y _M_o_d_e_l _A_r_g_u_m_e_n_t_s
 
        The User-based Security Model (USM) used by SNMPv3
-       requires that a securityName be specified using the --uusseerr--
-       nnaammee argument.  The creation of a Net::SNMP object with
-       the version set to SNMPv3 will fail if the ----uusseerrnnaammee
-       argument is not present.  The --uusseerrnnaammee argument expects a
-       string 1 to 32 octets in length.
+       requires that a securityName be specified using the
+       ----uusseerrnnaammee argument.  The creation of a Net::SNMP object
+       with the version set to SNMPv3 will fail if the ----uusseerrnnaammee
+       argument is not present.  The ----uusseerrnnaammee argument expects
+       a string 1 to 32 octets in length.
 
        Different levels of security are allowed by the User-based
        Security Model which address authentication and privacy
@@ -1317,4 +1317,4 @@ CCOOPPYYRRIIGGHHTT
 
 
 
-2.13.2                      2006-02-03                CFGMAKER(1)
+2.14.0                      2006-05-02                CFGMAKER(1)

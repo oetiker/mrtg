@@ -14,7 +14,7 @@ work.
 
 MRTG messages have been translated to a number of languages but there are
 still many which have not been covered yet. If you want to add yours, go
-into the F<mrtg-2.13.2/translate> directory and follow the instructions
+into the F<mrtg-2.14.0/translate> directory and follow the instructions
 given in the F<README> file.
 
 =head2 Patches
@@ -53,8 +53,8 @@ for the documentation sections of F<cfgmaker> and F<indexmaker>.
 =head1 ADDRESS
 
 Send your patches, translations and contributions to Tobias Oetiker
-E<lt>oetiker@ee.ethz.chE<gt>
+E<lt>tobi.chE<gt>
 
 =head1 AUTHOR
 
-Tobias Oetiker E<lt>oetiker@ee.ethz.chE<gt>
+Tobias Oetiker E<lt>tobi.chE<gt>

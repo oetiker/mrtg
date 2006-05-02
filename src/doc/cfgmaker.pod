@@ -1,9 +1,9 @@
 #! /usr/bin/perl
 # -*- mode: Perl -*-
 ##################################################################
-# MRTG 2.13.2  -- Config file creator
+# MRTG 2.14.0  -- Config file creator
 ##################################################################
-# Created by Tobias Oetiker <oetiker@ee.ethz.ch>
+# Created by Tobias Oetiker <tobi.ch>
 # this produces an mrtg config file for one router or more routers
 # by pulling info off the router via snmp
 ##################################################################
@@ -85,7 +85,7 @@ sub main {
     }
     # Check for SNMP V3
     #
-    	if (exists($opt{username}) or lc($opt{enablesnmpv3}) eq "yes") {
+    	if (lc($opt{enablesnmpv3}) eq "yes") {
 	       if  (eval {require Net_SNMP_util;})   {
 	            import Net_SNMP_util;
 	            debug('base', "SNMP V3 libraries found, SNMP V3 enabled.");
@@ -469,7 +469,7 @@ ECHO
                 my $if_is_loopback = $if_type == 24;
                 my $if_is_ciscovlan =
                     ($$router_dev{Vendor} eq 'cisco'
-                    and $$i{Descr} =~ /^V(LAN|lan)\d+$/);
+                    and $$i{Descr} =~ /^(unrouted )?V(LAN|lan)\d+$/);
 
                 my $if_ip = $$i{Ip};
                 my $if_snmp_descr = $$i{Descr};
@@ -1204,7 +1204,7 @@ sub options ($$) {
 	'zero-speed=s',
         '<>', $addrouter_ornf) or pod2usage(2);
 
-    die("cfgmaker for mrtg-2.13.2\n") if $$opt{version};
+    die("cfgmaker for mrtg-2.14.0\n") if $$opt{version};
     pod2usage(-exitval => 0, -verbose => 2) if $$opt{man};
     pod2usage(-verbose => 1) if not keys %$routers;
 } # end options
@@ -1490,7 +1490,7 @@ __END__
 
 =head1 NAME
 
-cfgmaker - Creates mrtg.cfg files (for mrtg-2.13.2)
+cfgmaker - Creates mrtg.cfg files (for mrtg-2.14.0)
 
 =head1 SYNOPSIS
 
@@ -1899,9 +1899,9 @@ represents the "default" context.
 =head3 User-based Security Model Arguments
 
 The User-based Security Model (USM) used by SNMPv3 requires that a securityName
-be specified using the B<-username> argument.  The creation of a Net::SNMP
+be specified using the B<--username> argument.  The creation of a Net::SNMP
 object with the version set to SNMPv3 will fail if the B<--username> argument
-is not present.  The B<-username> argument expects a string 1 to 32 octets
+is not present.  The B<--username> argument expects a string 1 to 32 octets
 in length.
 
 Different levels of security are allowed by the User-based Security Model which

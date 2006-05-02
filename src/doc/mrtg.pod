@@ -209,4 +209,4 @@ http://oss.oetiker.ch/mrtg
 
 =head1 AUTHOR
 
-Tobias Oetiker E<lt>oetiker@ee.ethz.chE<gt> and many contributors
+Tobias Oetiker E<lt>tobi.chE<gt> and many contributors

@@ -3,7 +3,7 @@ MRTG(1)                        mrtg                       MRTG(1)
 
 
 NNAAMMEE
-       mrtg - What is MRTG
+       mrtg - What is MRTG ?
 
 DDEESSCCRRIIPPTTIIOONN
        The Multi Router Traffic Grapher (MRTG) is a tool to moni-
@@ -13,84 +13,8 @@ DDEESSCCRRIIPPTTIIOONN
        http://www.stat.ee.ethz.ch/mrtg/ to see what it does.
 
        Go to
-        http://people.ee.ethz.ch/~oetiker/webtools/mrtg for all
-       the details about mrtg.
-
-       Command-line options:
-
-       Most items are set through the configuration file; com-
-       mand-line options are specified here:
-
-       ----uusseerr _u_s_e_r_n_a_m_e  and ----ggrroouupp _g_r_o_u_p_n_a_m_e
-           Run as the given user and/or group. (Unix Only)
-
-       ----lloocckk--ffiillee _f_i_l_e_n_a_m_e
-           Use an alternate lock-file (the default is to use the
-           configuration-file appended with "_l").
-
-       ----ccoonnffccaacchhee--ffiillee _f_i_l_e_n_a_m_e
-           Use an alternate confcache-file (the default is to use
-           the configuration-file appended with ".ok")
-
-       ----llooggggiinngg _f_i_l_e_n_a_m_e|eevveennttlloogg
-           If this is set to writable filename, all output from
-           mrtg (warnings, debug messages, errors) will go to
-           _f_i_l_e_n_a_m_e. If you are running on Win32 you can specify
-           eevveennttlloogg instead of a filename which will send all
-           error to the windows event log.
-
-           NNOOTTEE::Note, there is no Message DLL for mrtg. This has
-           the side effect that the windows event logger will
-           display a nice message with every entry in the event
-           log, complaing about the fact that mrtg has no message
-           dll. If any of the Windows folks want to contribute
-           one, they are welcome.
-
-       ----ddaaeemmoonn
-           Put MRTG into the background, running as a daemon.
-           This works the same way as the config file option, but
-           the switch is required for proper FHS operation
-           (because /var/run is writable only by root)
-
-       ----ffhhss
-           Configure all mrtg paths to conform to the FHS speci-
-           fication; http://www.pathname.com/fhs/
-
-       ----cchheecckk
-           Only check the cfg file for errors. Do not do any-
-           thing.
-
-       ----ppiidd--ffiillee==ss
-           Define the name and path of the pid file for mrtg run-
-           ning as a daemon
-
-       ----lloogg--oonnllyy
-           Only update the logfile, do not produce graphics or
-           html pages
-
-       ----ddeebbuugg==ss
-           Enable debug options. The argument of the debug option
-           is a comma separated list of debug values:
-
-            cfg  - watch the config file reading
-            dir  - directory mangeling
-            base - basic program flow
-            tarp - target parser
-            snpo - snmp polling
-            fork - forking view
-            time - some timing info
-            log  - logging of data via rateup or rrdtool
-
-           Example:
-
-            --debug="cfg,snpo"
-
-UUSSEERR PPAAGGEESS
-       MRTG is written in Perl and C and works under UNIX and
-       Windows NT. MRTG is being successfully used on many sites
-       around the net.  Check the MRTG-Site-Map on:
-
-        http://people.ee.ethz.ch/~oetiker/webtools/mrtg/users.html
+        http://oss.oetiker.ch/mrtg for all the details about
+       mrtg.
 
 HHIIGGHHLLIIGGHHTTSS
        Portable
@@ -197,13 +121,83 @@ HHIISSTTOORRYY
        a long list of folk people who helped to make MRTG what it
        is today.)
 
+CCoommmmaanndd--lliinnee
+       Mrtg is also the name of the script you have to run to
+       poll data and generate the graphs. Most configuration is
+       set through the configuration file; some command-line
+       options exist all the same.
+
+       ----uusseerr _u_s_e_r_n_a_m_e  and ----ggrroouupp _g_r_o_u_p_n_a_m_e
+           Run as the given user and/or group. (Unix Only)
+
+       ----lloocckk--ffiillee _f_i_l_e_n_a_m_e
+           Use an alternate lock-file (the default is to use the
+           configuration-file appended with "_l").
+
+       ----ccoonnffccaacchhee--ffiillee _f_i_l_e_n_a_m_e
+           Use an alternate confcache-file (the default is to use
+           the configuration-file appended with ".ok")
+
+       ----llooggggiinngg _f_i_l_e_n_a_m_e|eevveennttlloogg
+           If this is set to writable filename, all output from
+           mrtg (warnings, debug messages, errors) will go to
+           _f_i_l_e_n_a_m_e. If you are running on Win32 you can specify
+           eevveennttlloogg instead of a filename which will send all
+           error to the windows event log.
+
+           NNOOTTEE::Note, there is no Message DLL for mrtg. This has
+           the side effect that the windows event logger will
+           display a nice message with every entry in the event
+           log, complaing about the fact that mrtg has no message
+           dll. If any of the Windows folks want to contribute
+           one, they are welcome.
+
+       ----ddaaeemmoonn
+           Put MRTG into the background, running as a daemon.
+           This works the same way as the config file option, but
+           the switch is required for proper FHS operation
+           (because /var/run is writable only by root)
+
+       ----ffhhss
+           Configure all mrtg paths to conform to the FHS speci-
+           fication; http://www.pathname.com/fhs/
+
+       ----cchheecckk
+           Only check the cfg file for errors. Do not do any-
+           thing.
+
+       ----ppiidd--ffiillee==ss
+           Define the name and path of the pid file for mrtg run-
+           ning as a daemon
+
+       ----lloogg--oonnllyy
+           Only update the logfile, do not produce graphics or
+           html pages
+
+       ----ddeebbuugg==ss
+           Enable debug options. The argument of the debug option
+           is a comma separated list of debug values:
+
+            cfg  - watch the config file reading
+            dir  - directory mangeling
+            base - basic program flow
+            tarp - target parser
+            snpo - snmp polling
+            fork - forking view
+            time - some timing info
+            log  - logging of data via rateup or rrdtool
+
+           Example:
+
+            --debug="cfg,snpo"
+
 RREEAADD OONN
        Learn more about MRTG by going to the mrtg home page on:
-        http://people.ee.ethz.ch/~oetiker/webtools/mrtg
+       http://oss.oetiker.ch/mrtg
 
 AAUUTTHHOORR
-       Tobias Oetiker <oetiker@ee.ethz.ch> and many contributors
+       Tobias Oetiker <tobi.ch> and many contributors
 
 
 
-2.13.2                      2006-02-03                    MRTG(1)
+2.14.0                      2006-05-02                    MRTG(1)

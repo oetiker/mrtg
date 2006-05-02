@@ -3,7 +3,7 @@ MRTG-REFERENCE(1)              mrtg             MRTG-REFERENCE(1)
 
 
 NNAAMMEE
-       mrtg-reference - MRTG 2.13.2 configuration reference
+       mrtg-reference - MRTG 2.14.0 configuration reference
 
 OOVVEERRVVIIEEWW
        The runtime behaviour of MRTG is governed by a configura-
@@ -1209,6 +1209,24 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
        NOTE: the Directory option must always be 'relative' or
        bad things will happen.
 
+       CClloonneeddiirreeccttoorryy
+
+       If the _D_i_r_e_c_t_o_r_y option is specified, the _C_l_o_n_e_d_i_r_e_c_t_o_r_y
+       option will copy all the contents of _D_i_r_e_c_t_o_r_y to the
+       _C_l_o_n_e_d_i_r_e_c_t_o_r_y.
+
+       As well as the _D_i_r_e_c_t_o_r_y option requires, the clone direc-
+       tory must already exist; mrtg will not create it.
+
+       Example:
+
+        WorkDir: /usr/tardis/pub/www/stats/mrtg
+        Directory[myrouter]: myrouter
+        Clonedirectory[myrouter]: myclonedirectory
+
+       NOTE: the Clonedirectory option must always be 'relative'
+       or bad things will happen.
+
        XXSSiizzee aanndd YYSSiizzee
 
        By default mrtgs graphs are 100 by 400 pixels wide (plus
@@ -1232,6 +1250,8 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
 
         XZoom[myrouter]: 2.0
         YZoom[myrouter]: 2.0
+
+
 
        XXSSccaallee aanndd YYSSccaallee
 
@@ -1627,9 +1647,9 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
        rrds are created to hold about 1 day's worth of high reso-
        lution data. (plus 1 week of 30 minute data, 2 months of 2
        hour data and 2 years of 1 day data).  With this Keyword
-       you can change the number of base interval entries config-
-       ured for new rrds as they get created. Note that you must
-       take the interval time into account.
+       you can change the number of base interval entries
+       configured for new rrds as they get created. Note that you
+       must take the interval time into account.
 
        Example:
 
@@ -1646,8 +1666,6 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
        Example:
 
         TimeStrPos[myrouter]: RU
-
-
 
        TTiimmeeSSttrrFFmmtt
 
@@ -1711,10 +1729,6 @@ TTHHRREESSHHOOLLDD CCHHEECCKKIINNGG
        variable, the threshold value broken, and the current
        parameter value.
 
-
-
-
-
        TThhrreesshhPPrrooggOOKKII  ((PPEERR TTAARRGGEETT))
 
        This defines a program to be run if the parameter is cur-
@@ -1776,10 +1790,6 @@ PPEERR TTAARRGGEETT DDEEFFAAUULLTT VVAALLUUEESS
 
         PageTop[^]:
         PageTop[$]:
-
-
-
-
 
        NNooSSppaacceeCChhaarr
 
@@ -1955,8 +1965,8 @@ EEXXAAMMPPLLEESS
         Target[isdn2]: 3:public@router.somplace.edu
 
 AAUUTTHHOORR
-       Tobias Oetiker <oetiker@ee.ethz.ch> and many contributors
+       Tobias Oetiker <tobi.ch> and many contributors
 
 
 
-2.13.2                      2006-02-03          MRTG-REFERENCE(1)
+2.14.0                      2006-05-02          MRTG-REFERENCE(1)

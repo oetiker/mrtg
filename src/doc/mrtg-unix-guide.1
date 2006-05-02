@@ -129,9 +129,9 @@
 .\" ========================================================================
 .\"
 .IX Title "MRTG-UNIX-GUIDE 1"
-.TH MRTG-UNIX-GUIDE 1 "2006-02-03" "2.13.2" "mrtg"
+.TH MRTG-UNIX-GUIDE 1 "2006-05-02" "2.14.0" "mrtg"
 .SH "NAME"
-mrtg\-unix\-guide \- Instructions for running MRTG 2.13.2 on a Unix Box
+mrtg\-unix\-guide \- Instructions for running MRTG 2.14.0 on a Unix Box
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
 \&\s-1MRTG\s0 comes to you in Source Code. This means that you have to compile
@@ -210,7 +210,7 @@ And last but not least you also need mrtg itself. In case you have not
 yet downloaded it, you can find a copy on my website:
 .PP
 .Vb 1
-\& http://people.ee.ethz.ch/~oetiker/webtools/mrtg/pub/
+\& http://oss.oetiker.ch/mrtg/pub
 .Ve
 .SH "LIBRARY COMPILATION"
 .IX Header "LIBRARY COMPILATION"
@@ -297,8 +297,8 @@ Ok, now everything is ready for the mrtg compilation.
 .PP
 .Vb 3
 \& cd /usr/local/src
-\& gunzip -c mrtg-2.13.2.tar.gz | tar xvf -
-\& cd mrtg-2.13.2
+\& gunzip -c mrtg-2.14.0.tar.gz | tar xvf -
+\& cd mrtg-2.14.0
 .Ve
 .PP
 If all the libraries have been preinstalled on your system you can
@@ -431,7 +431,7 @@ A \fBminimal\fR script to put into \fIinit.d\fR might look like this:
 .PP
 .Vb 3
 \& #! /bin/sh
-\& cd /usr/local/mrtg-2.13.2/bin && ./mrtg --user=mrtg-user \e
+\& cd /usr/local/mrtg-2.14.0/bin && ./mrtg --user=mrtg-user \e
 \&       /home/httpd/mrtg/mrtg.cfg  --logging /var/log/mrtg.log
 .Ve
 .PP
@@ -439,4 +439,4 @@ Note that this will only work with \fBRunAsDaemon: Yes\fR in your
 mrtg.cfg file.
 .SH "AUTHOR"
 .IX Header "AUTHOR"
-Tobias Oetiker <oetiker@ee.ethz.ch>
+Tobias Oetiker <tobi.ch>
