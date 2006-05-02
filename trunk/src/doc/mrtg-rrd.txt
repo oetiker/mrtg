@@ -11,7 +11,7 @@ SSYYNNOOPPSSIISS
        flexibility. These are exactly the areas addressed by RRD-
        tool. To learn more about RRDtool check out its website on
 
-        http://people.ee.ethz.ch/~oetiker/webtools/rrdtool
+        http://oss.oetiker.ch/rrdtool
 
 RRRRDDTTOOOOLL IINNTTEEGGRRAATTIIOONN
        When using mrtg with RRDtool you are replacing _r_a_t_e_u_p with
@@ -118,8 +118,8 @@ FFUUTTUURREE
        tool technology.  But don't wait for it ... get going nnooww!
 
 AAUUTTHHOORR
-       Tobias Oetiker <oetiker@ee.ethz.ch>
+       Tobias Oetiker <tobi.ch>
 
 
 
-2.13.2                      2006-02-03                MRTG-RRD(1)
+2.14.0                      2006-05-02                MRTG-RRD(1)

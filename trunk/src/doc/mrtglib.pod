@@ -2,9 +2,9 @@
 package MRTG_lib;
 
 ###################################################################
-# MRTG 2.13.2  Support library MRTG_lib.pm
+# MRTG 2.14.0  Support library MRTG_lib.pm
 ###################################################################
-# Created by Tobias Oetiker <oetiker@ee.ethz.ch>
+# Created by Tobias Oetiker <tobi.ch>
 #            and Dave Rand <dlr@bungi.com>
 #
 # For individual Contributers check the CHANGES file
@@ -189,6 +189,9 @@ $VERSION = 2.100015;
        [sub{1}, sub{"Internal Error"}], #what ever the user chooses.
 
        'directory[]' => 
+       [sub{1}, sub{"Internal Error"}], #what ever the user chooses.
+
+       'clonedirectory[]' =>
        [sub{1}, sub{"Internal Error"}], #what ever the user chooses.
 
        'pagetop[]' => 

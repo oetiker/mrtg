@@ -107,4 +107,4 @@ The maximum outgoing transfer rate in bytes per second for the current interval.
 =head1 AUTHOR
 
 Butch Kemper E<lt>kemper@bihs.netE<gt> and
-Tobias Oetiker E<lt>oetiker@ee.ethz.chE<gt> 
+Tobias Oetiker E<lt>tobi.chE<gt> 

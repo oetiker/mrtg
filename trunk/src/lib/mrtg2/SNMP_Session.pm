@@ -20,7 +20,7 @@
 ### Contributions and fixes by:
 ###
 ### Matthew Trunnell <matter@media.mit.edu>
-### Tobias Oetiker <oetiker@ee.ethz.ch>
+### Tobias Oetiker <tobi.ch>
 ### Heine Peters <peters@dkrz.de>
 ### Daniel L. Needles <dan_needles@INS.COM>
 ### Mike Mitchell <mcm@unx.sas.com>

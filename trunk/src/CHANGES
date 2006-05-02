@@ -1,20 +1,26 @@
+Changes 2.14.0, 2006-05-02
+--------------------------
 From: tobi
 * only enable snmpv3 in cfgmaker if it is explicitly specified on the cli.
 * we live in a new home now ... oss.oetiker.ch/mrtg
 * fix makefile to work for the install target again
+* remove remaining html references
 
 From: jpturchi at mageos dot com
 * timestamp all error and warning messages of mrtg
-From: Pawe? Go?aszewski <blues@pld-linux.org>
+
+From: Pawe? Go?aszewski <blues pld-linux.org>
 * teach cfgmaker about unrouted vlans
-From: Guenter Knauf <gk@gknw.net>
-* Makefile.* updates
-From: Leonardo Reginin <leonardo@procergs.rs.gov.br>
+
+From: Leonardo Reginin <leonardo procergs.rs.gov.br>
 * new: clonedirectory function
-From: Miloslav Trmac <mitr@redhat.com>
+
+From: Miloslav Trmac <mitr redhat.com>
 * explicit cast in char conversion (minus one warning) for rateup.c
+
 From: Simon Leinen
 * Updated SNMP_Session to 1.08
+
 From: Guenter Knauf <gk gknw.net>
 * Small fixes for libgd in Makefile.Win32 and Makefile.Netware
 

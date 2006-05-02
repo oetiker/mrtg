@@ -54,7 +54,7 @@ MMAAIILLIINNGG--LLIISSTT
            If you feel that you have been treated unfairly, you
            may send mail to me and explain the situation.
 
-            Tobi Oetiker <oetiker@ee.ethz.ch>
+            Tobi Oetiker <tobi.ch>
 
        SSUUBBSSCCRRIIBBIINNGG
 
@@ -99,7 +99,7 @@ NNEEWWSSGGRROOUUPP
        can also find an archive of past activity from this News-
        group on:
 
-        http://groups.google.com
+        http://groups.google.com/group/comp.dcom.net-management
 
 IIRRCC CChhaannnneell
        For discussion of MRTG and related topics on IRC, the
@@ -122,8 +122,8 @@ MMRRTTGG TTrrkkiiyyee
        information.
 
 AAUUTTHHOORR
-       Tobias Oetiker <oetiker@ee.ethz.ch> and many contributors
+       Tobias Oetiker <tobi.ch> and many contributors
 
 
 
-2.13.2                      2006-02-03              MRTG-FORUM(1)
+2.14.0                      2006-05-02              MRTG-FORUM(1)
