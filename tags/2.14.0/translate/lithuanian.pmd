@@ -1,0 +1,127 @@
+###### PATCHTAG00 ####################################################
+###      Lithuanian/Lietuviðkai
+###      => ve <ve@hardcore.lt>
+###### PATCHTAG10 ####################################################
+  &lithuanian
+###### PATCHTAG20 ####################################################
+  'lithuanian'       => \&lithuanian, 
+  'lietuviðkai'        => \&lithuanian,
+###### PATCHTAG30 ####################################################
+# Lithuanian/lietuviðkai
+   'lithuanian' =>
+   "Paruoðë ir á lietuviø kalbà iðvertë
+				<a href=\"http://www.hardcore.lt\">ve</a>
+				<a href=\"mailto:ve\@hardcore.lt\">&lt;ve\@hardcore.lt&gt;</a>",
+# the lithuanian string means: "Prepared for languages and translated to lithuanian by"
+###### PATCHTAG40 ####################################################
+$credits::LOCALE{'lietuviðkai'}=$credits::LOCALE{'lithuanian'};
+###### PATCHTAG50 ####################################################
+# Lithuanian
+
+sub lithuanian
+{
+  my $string = shift;
+return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+  # charset=iso-2022-jp
+
+  %translations =
+  (  
+     'iso-8859-1'                             => 'windows-1257',
+     'Maximal 5 Minute Incoming Traffic'      => 'Maksimalus 5 minuèiø áeinantis srautas',
+     'Maximal 5 Minute Outgoing Traffic'      => 'Maksimalus 5 minuèiø iðeinantis srautas',
+     'the device'                             => 'árenginys',
+     'The statistics were last updated(.*)'   => 'Statistika atnaujinta$1',
+     ' Average\)'                             => ' vidurkis)',
+     'Average'                                => 'vid',
+     'Max'                                    => 'max',
+     'Current'                                => 'dabar',
+     'version'                                => 'versija',
+     '`Daily\' Graph \((.*) Minute'           => '\'dienos\' grafikas ($1 min.',
+     '`Weekly\' Graph \(30 Minute'            => '\'savaitës\' grafikas (30 min.' ,
+     '`Monthly\' Graph \(2 Hour'              => '\'mënesio\' grafikas (2 val.',
+     '`Yearly\' Graph \(1 Day'                => '\'metø\' grafikas (1 d.', 
+     'Incoming Traffic in (\S+) per Second'   => 'Áeinantis srautas, $1 per sekundæ',
+     'Outgoing Traffic in (\S+) per Second'   => 'Iðeinantis srautas i $1 per sekundæ',
+     'at which time (.*) had been up for(.*)' => '$1 veikia jau $2',
+     # '([kMG]?)([bB])/s'                 => '\$1\$2/s',
+     # '([kMG]?)([bB])/min'              => '\$1\$2/min',
+     # '([kMG]?)([bB])/h'                       => '$1$2/h',
+     'Bits'                                => 'bitai',
+     'Bytes'                              => 'baitai',
+     'In'                                     => 'á',
+     'Out'                                    => 'ið',
+     'Percentage'                             => 'procentai',
+     'Ported to OpenVMS Alpha by'             => 'Perkëlë á OpenVMS Alpha:', 
+     'Ported to WindowsNT by'                 => 'Perkëlë á WindowsNT:',
+     'and'                                    => 'ir',
+     '^GREEN'                                 => 'ÞALIA ',
+     'BLUE'                                   => 'MËLYNA ',
+     'DARK GREEN'                             => 'TAMSIAI ÞALIA ',
+     'MAGENTA'                                => 'RAUDONA ',
+     'AMBER'                                  => 'GINTARINË '
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => 'sekmadiená',       'Sun' => 'Sek',
+      'Monday'    => 'pirmadiená',       'Mon' => 'Pir',
+      'Tuesday'   => 'antradiená',       'Tue' => 'Ant',
+      'Wednesday' => 'treèiadiená',      'Wed' => 'Tre',
+      'Thursday'  => 'ketvirtadiená',    'Thu' => 'Ket',
+      'Friday'    => 'penktadiená',      'Fri' => 'Pen',
+      'Saturday'  => 'ðeðtadiená',       'Sat' => 'Ðeð' 
+
+    );
+
+%month = 
+    (
+      'January'   => 'sausio',    'February'  => 'vasario' ,    'March'     => 'kovo',
+      'Jan'       => 'Sau',       'Feb'       => 'Vas',         'Mar'       => 'Kov',
+      'April'     => 'balandþio', 'May'       => 'geguþës',     'June'      => 'birþelio', 
+      'Apr'       => 'Bal',       'May'       => 'Geg',         'Jun'       => 'Bir',
+      'July'      => 'liepos',    'August'    => 'rugpjûèio',   'September' => 'rugsëjo', 
+      'Jul'       => 'Lie',       'Aug'       => 'Rgp',         'Sep'       => 'Rgs', 
+      'October'   => 'spalio',    'November'  => 'lapkrièio',   'December'  => 'gruodþio', 
+      'Oct'       => 'Spa',       'Nov'       => 'Lap',         'Dec'       => 'Gru' 
+    );
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+    {
+	if($foo[3]=~(/(.*)at(.*)/))
+      { 
+        @quux=split(/at/,$foo[3]);
+        $foo[3]=$quux[1].", ".$quux[0]; 
+      };
+      return "$foo[3] $month{$foo[2]} $foo[1], $wday{$foo[0]}" ;
+    };
+
+#
+# handle two different time/date formats:  
+# return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
+#
+
+# handle nontranslated strings which ought to be translated
+# print STDERR "$_\n" or print DEBUG "not translated $_";
+# but then again we might not want/need to translate all strings
+  
+  return $string;
+
+  };

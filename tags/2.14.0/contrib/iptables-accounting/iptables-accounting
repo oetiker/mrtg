@@ -1,0 +1,85 @@
+#!/usr/bin/perl
+# iptables-accounting .9
+#
+# Author: Vern Gill <vgill@technologist.com>
+# Date: March 9, 2001
+#
+# Adapted from code used in ipchainacc
+#
+# ipchainacc 1.1.0
+#
+# Author: John Lange john@darkcore.net
+# Date  : September 12, 2000
+#
+#
+# The command takes one argument:
+#     Argument: what filter do you want to view
+# I.E. iptables-accounting filter
+#      iptables-accounting nat
+#
+# Also, you can check bytes or packets. Check the $bytec below
+# and the text above it for details
+#
+#   This command must return 4 lines of output:
+#     Line 1 : current state of the 'incoming bytes counter'
+#     Line 2 : current state of the 'outgoing bytes counter'
+#     Line 3 : string, telling the uptime of the target.
+#     Line 4 : string, telling the name of the target.
+#
+# To add more counters, just edit the commented out if lines
+# below. For instance, to count the filter table and the
+# INPUT chain, just change the elsif to filter, and the
+# $inrule to INPUT
+# Share and enjoy
+
+# edit for your system
+
+$iptables='/usr/local/sbin/iptables';   # path to iptables
+$host=`/bin/hostname --fqdn`;  # local hostname (for information
+only)
+
+$table = $ARGV[0];
+
+if ( $table =~ /^filter/i ) {
+        $inrule='FORWARD';
+        $outrule='OUTPUT';
+} elsif ( $table =~ /^nat/i ) {
+        $inrule='PREROUTING';
+        $outrule='POSTROUTING';
+} elsif ( $table =~ /^mangle/i ) {
+        $inrule='PREROUTING';
+        $outrule='OUTPUT';
+#} elsif ( $table =~ /^table-name-here/i ) {
+#        $inrule='CHAIN-NAME-HERE';
+#        $outrule='OTHER-CHAIN-NAME';
+#} elsif ( $table =~ /^table-name-here/i ) {
+#        $inrule='CHAIN-NAME-HERE';
+#        $outrule='OTHER-CHAIN-NAME';
+}
+
+# What should we graph? packet counters = 4, bytes = 6
+# If you used the ipchainacc script before and you want to keep
+counting
+# packets, then set this to 4. If you would rather do the
+# sensible thing and count bytes, then set this to 6. If you change
+# from one to the other, then you should delete all the previous
+# history since it will be meaningless.
+$bytec=6;
+
+## -- don't edit below here ----
+
+# fetch the status from iptables
+$_=`$iptables -t $table -L $inrule -v -n -x | grep Chain`;
+@in_bytes = split;
+
+$_=`$iptables -t $table -L $outrule -v -n -x | grep Chain`;
+@out_bytes = split;
+
+# uptime of the machine
+open(UPTIME,"uptime |cut -b 13-27|");
+$upTime=<UPTIME>;
+close(UPTIME);
+chop $upTime;
+
+# 4 lines of output only.
+printf "$in_bytes[$bytec]\n$out_bytes[$bytec]\n$upTime\n$host";

@@ -1,0 +1,67 @@
+#!/usr/bin/perl
+#
+# Mihai Claudiu Capatina <mick@aignet.ro> 
+# aka Mick
+#
+# This is a small script that I use on FreeBSD machines running ALTQ 
+# This machines acts like a traffic management system and I need to see 
+# the traffic for each class ( CBQ ) 
+# All you need to change in this script is the path to "altqstat"
+# and the name of the interfaces
+# In my case fxp0 is connected to my LAN and fxp1 is connected to my ISP
+# so...I measure on fxp0 the download and on the fxp1 the upload for each class
+#
+# This script has only one parameter....this is the class number assigned 
+# by ALTQ. 
+# If you want to use this script I suppose that you already instaled ALTQ
+# In any case do "altqstat -w 0 -c 2 -i your_interface" to see what your
+# class number is...for each class
+# If you want to count packets instead of bytes change the st line of the script# instead of $octeti_down and $octeti_up put $pakete_down and $pakete_up
+#
+# You will call this script from mrtg.conf like this :
+# Target[name]: `/your/path/to/my/script/stfc [class_number]
+#  - name - can be an ip address or a client name or whatever you want
+#  - class_number - explained above...
+# VERY IMPORTANT : always define classes in the same order for upload and 
+#                  download...so they will have the same class number 
+#
+# If you need additional information please feel free to mail me...I'll be glad
+# to help you...;-))
+
+
+$numar_clasa = $ARGV[0];
+
+@rezultat_down=`/usr/local/bin/altqstat -w 0 -c 2 -i fxp0`;
+foreach (@rezultat_down) {
+  $count++;
+  if ( /^Class(\s+)(\d+)(.*)/ ) {   
+   if ( $2 == $numar_clasa) {
+    if ($rezultat_down[$count+2] =~ /^(\s+)pkts: (\d+),(\s+)bytes: (\d+)(.*)/) {
+       $pakete_down = $2;
+       $octeti_down = $4;
+        }
+      }
+   }
+}
+
+@rezultat_up=`/usr/local/bin/altqstat -w 0 -c 2 -i fxp1`;
+foreach (@rezultat_up) {
+ $count1++;
+ if ( /^Class(\s+)(\d+)(.*)/ ) {
+  if ( $2 == $numar_clasa) {
+   if ($rezultat_up[$count1+2] =~ /^(\s+)pkts: (\d+),(\s+)bytes: (\d+)(.*)/) {
+       $pakete_up = $2;
+       $octeti_up = $4;
+        }
+      }
+   }
+}
+
+open(UPTIME,"uptime |cut -b 13-26|");
+$upTime=<UPTIME>;
+close(UPTIME);
+chop $upTime;
+$host=`/bin/hostname --fqdn`;
+
+print("$octeti_down\n$octeti_up\n$upTime\n$host");
+

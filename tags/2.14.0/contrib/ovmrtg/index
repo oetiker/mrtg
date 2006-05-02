@@ -1,0 +1,149 @@
+#!/usr/local/gnu/bin/perl5
+# -*- mode: Perl -*-
+##################################################################
+# Multi Router Traffic Grapher: Index Generator
+##################################################################
+#
+# This reads a mrtg.cfg file form std input or cmdline argument
+# and it takes a regexp on the cmdline to specify which 
+# targets to look at.
+#
+# from this info it produces a router index on std out.
+#
+##################################################################
+# Created by Tobias Oetiker <oetiker@ee.ethz.ch>
+# Modifications by Laurie Gellatly <gellatly@one.net.au>
+# Distributed under the GNU copyleft
+#
+# $Id: index,v 1.1.1.1 2002/02/26 10:16:36 oetiker Exp $
+##################################################################
+
+
+$regexp = pop @ARGV;
+$Title = pop @ARGV;
+if (defined($Title) && -f $Title) {
+ push(@ARGV, $Title);
+ $Title = "$Title Overview ($regexp)";
+}
+if (! -f $ARGV[0]) {
+ print "
+
+USAGE: index <mrtg.cfg> <title> <regular expression>
+
+This tool will read the contents of the mrtg.cfg file and will 
+return the HTML code of a webpage contanig the 'daily' graphs 
+of all the routers whose titles match the regular expression.
+
+NOTE: you have to adjust this tool to your needs as the HTML 
+      contains our logo and our name ...
+
+";
+
+ exit ;
+
+}
+
+#slurp the cfg file
+while(<>) {
+  s/\t/ /g;  #replace tabs by spac
+  next if /^\s+$/; #ignore white space
+  next if /^\s*\#/; #ignore comments
+  if (/$regexp/i && ! /\[\^\]/ && ! /\[\$\]/ && /^title\[([^\]]+)\]:\s*(.*\S)/i) {
+    $router=lc($1);
+    $arg=$2;
+    $titles{$router} = $arg;   
+    next;
+  }
+  if (/^directory\[([^\]]+)\]:\s*(.*\S)/i) {
+    $arg = $2;
+    $tmp = lc($1);
+    $dirs{$tmp} = "$arg/";
+  }
+  if ($router && /^pagetop\[([^\]]+)\]:\s*(.*\S)/i) {
+    next;
+  }
+  if ($router && /^\s+(.*?)<\/H1>/) {
+    $titles{$router} .= " $1";
+  }
+  $router = '';
+}
+
+$Today=datestr(time);
+print <<ECHO;
+<HTML>
+<HEAD>
+<TITLE>$Title</TITLE>
+<META HTTP-EQUIV="Refresh" CONTENT=300 >
+</HEAD>
+<BODY bgcolor=#ffffff>
+
+<H1>$Title</H1>
+
+These statistics were last updated <B>$Today </B>
+
+ECHO
+
+foreach $router (sort {$titles{$a} cmp $titles{$b}} keys %titles) {
+  $dirs{$router} = "" if (!defined($dirs{$router}));
+  $rdir = $dirs{$router};
+  print <<ECHO;
+<P><B><A HREF="$rdir$router.html">$titles{$router}</B><P> 
+   <SMALL><!--#flastmod file="$rdir$router.html" --></SMALL></P>
+  <IMG BORDER=0 WIDTH=500 HEIGHT=135 SRC="$rdir$router-day.gif"></A>
+  <HR>
+ECHO
+}
+
+'$Revision: 1.1.1.1 $ ' =~ /Revision: (\S*)/;
+$rev=$1;
+'$Date: 2002/02/26 10:16:36 $ ' =~ /Date: (\S*)/;
+$date=$1;
+
+print <<ECHO;
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0>
+<TR>
+<TD WIDTH=63><A ALT="MRTG"
+HREF="http://www.ee.ethz.ch/~oetiker/webtools/mrtg/mrtg.html"><IMG
+BORDER=0 SRC="../mrtg-l.gif"></A></TD>
+<TD WIDTH=25><A ALT=""
+HREF="http://www.ee.ethz.ch/~oetiker/webtools/mrtg/mrtg.html"><IMG
+BORDER=0 SRC="../mrtg-m.gif"></A></TD>
+<TD WIDTH=388><A ALT=""
+http://www.ee.ethz.ch/~oetiker/webtools/mrtg/mrtg.html"><IMG
+BORDER=0 SRC="../mrtg-r.gif"></A></TD>
+</TR>
+</TABLE>
+
+<SPACER TYPE=VERTICAL SIZE=4>
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0>
+  <TR VALIGN=top>
+  <TD WIDTH=88 ALIGN=RIGHT><FONT FACE="Arial,Helvetica" SIZE=2>
+  $rev-$date</FONT></TD>
+  <TD WIDTH=388 ALIGN=RIGHT><FONT FACE="Arial,Helvetica" SIZE=2>
+  <A HREF="http://www.ee.ethz.ch/~oetiker">Tobias Oetiker</A>
+  <A HREF="mailto:oetiker\@ee.ethz.ch">&lt;oetiker\@ee.ethz.ch&gt;</A> 
+  and&nbsp;<A HREF="http://www.bungi.com">Dave&nbsp;Rand</A>&nbsp;<A HREF="mailto:dlr\@bungi.com">&lt;dlr\@bungi.com&gt;</A><br>
+  <A HREF="../routers.html">Back to Main Router List</A></FONT>
+  
+
+</TR>
+</TABLE>
+</BODY></HTML>
+ECHO
+
+sub datestr {
+  my ($time) = shift(@_) || return 0;
+  my ($wday) = ('Sunday','Monday','Tuesday','Wednesday',
+                'Thursday','Friday','Saturday')[(localtime($time))[6]];
+  my ($month) = ('January','February' ,'March' ,'April' ,
+                 'May' , 'June' , 'July' , 'August' , 'September' , 
+                 'October' ,
+                 'November' , 'December' )[(localtime($time))[4]];
+  my ($mday,$year,$hour,$min) = (localtime($time))[3,5,2,1];
+  if ($min<10) {$min = "0$min";}
+  return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+}
+
+
+
+

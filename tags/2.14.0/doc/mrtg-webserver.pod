@@ -1,0 +1,68 @@
+=head1 NAME
+
+mrtg-webserver - hints for web server configuration
+
+=head1 SYNOPSIS
+
+If you want people to actually see the results
+of your network monitoring efforts you will need
+a webserver.
+
+This document lists some configuration hints for
+webservers. Contributions welcome.
+
+=head1 APACHE
+
+=head2 Configuring mod_expire
+
+A big issue with mrtg monitoring data is the expiry time.
+All these nice graphs you can create are only valid for a short time.
+If you do not take special action some webbrowsers will not notice this
+and you may end up with people seeing old data because of caching issues.
+
+The apache module mod_expire allows you to setup special
+expiry properties for individual file.
+
+Here is an example for how this may look for an mrtg web directory.
+The configuration directives can be stored into a F<.htaccess> file.
+
+ ############################################################
+ # Example .htaccess for use with apache-1.2 and mod_expire.
+ # (mod_expire come with apache-1.2 but you have to explicitly
+ # activate it when compiling the httpd ...)
+ #############################################################
+ #
+ <Files "*-day.png">
+ ExpiresActive On                  # enable expirations
+ # five minutes
+ ExpiresDefault M300
+ </Files>
+
+ <Files "*-week.png">
+ ExpiresActive On
+ ExpiresDefault M1800
+ </Files>
+
+ <Files "*-month.png">
+ ExpiresActive On
+ ExpiresDefault M7200
+ </Files>
+
+ <Files "*-year.png">
+ ExpiresActive On
+ ExpiresDefault M86400
+ </Files>
+
+ <Files "*.html">
+ ExpiresActive On
+ ExpiresDefault M300
+ </Files>
+
+ # index.html is not automatically generated
+ <Files "index.html">
+ ExpiresActive Off
+ </Files>
+
+=head1 AUTHOR
+
+Unknown

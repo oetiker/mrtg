@@ -1,0 +1,13 @@
+Date : Mit Sep 27 09:06:26 MEST 2000
+Author : Gereon Ruetten <g.ruetten@gmx.de>
+
+Because there is no default policy for user-chains, you have to insert a
+rule which counts all pakets/bytes going through the chain.
+You can do that by inserting (must be the first rule in the chain) a rule
+like :
+
+iptables -t filter -A httpin
+
+in your mrtg config file you have to add a line :
+
+Target[iptables]: ´/firewall/stats/mrtg/iptables_acc httpin httpout´
