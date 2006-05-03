@@ -1,0 +1,26 @@
+"mrtgmk" by Iulian Radu (iulian_r@starnets.ro) [v2.2]
+
+"mrtgmk" is giftware. It is my contribution to mrtg package.
+
+"mrtgmk" is a program that scan a .cfg file and generate a mrtg.cfg
+style file + a .html file with links to the .html files generated
+by mrtg.
+
+Version 2.2 bring you a strong facility: you can rename the target
+defined inside of genereated mrtg.cfg file. Using this new facility,
+you will no longer depends on snmp index value. So, if the index of
+a port is changed on a router, your graphics will still reprezent
+corect the history of a host.
+
+If you need to migrate from v1.x to v2.x read the readme.1st and use 
+the program from v1_to_v2 directory.
+
+To learn to use mrtgmk v2.x read the docs from doc directory.
+
+In cfg directory you will find an example of a cfg file for mrtgmk v2.x.
+
+Because I dont make all the times checkes for receiving of correct arguments,
+a core dump is posible :( , everything depends on you.
+
+Iulian Radu (iulian_r@starnets.ro).
+13th July 1999 12:00am Romanian time

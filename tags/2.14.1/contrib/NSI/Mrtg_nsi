@@ -1,0 +1,1189 @@
+#! /usr/bin/perl
+# -*- mode: Perl -*-
+BEGIN{
+#$main::OS = 'UNIX';
+$main::OS = 'NT';
+#$main::OS = 'VMS';
+##################################################################
+# MRTG-NSI 1.0		Network Status Imager for MRTG
+##################################################################
+# Created by: 				Mac Kloberg <mac@nacs.net><mac.kloberg@lam.liebherr.com>
+#
+# WARNING: 					This thing was developed 'quick and dirty' on WinNT...
+#								I've never actually tried this on Unix or VMS, so I 
+#								don't know if it will work. Guess you'll find out... 
+#								Send me mail...
+#
+# Built and based on:	MRTG by Tobias Oetiker <oetiker@ee.ethz.ch>
+#            				and Dave Rand <dlr@bungi.com>
+#
+# Credits:					THANKS, TOBI AND DAVE!!!   K.U.T.G.W.
+#
+#################################################################
+#
+# Distributed under the GNU copyleft
+#
+###################################################################
+	 # The path separator is a slash, backslash or semicolon, depending
+	 # on the platform.
+	 $main::SL = {
+	   UNIX=>'/',
+	   WINDOWS=>'\\',
+	   NT=>'\\',
+	   VMS=>''
+	   }->{$main::OS};
+
+	 # The search path separator is a colon or semicolon depending on the
+	 # operating system.
+	 $main::PS = {
+	   UNIX=>':',
+	   WINDOWS=>';',
+	   NT=>';',
+	   VMS=>':'
+	   }->{$main::OS};
+
+	# We need to find the place where mrtg is installed, and
+	# then take it from there...
+	$main::binpath ="";
+	if ($0 =~ /^(.+\Q${main::SL}\E)/) {
+	  $main::binpath="$1";
+	} else {
+	  foreach $pathname ( split ${main::PS}, $ENV{'PATH'}) {
+	    if ((($main::OS eq 'NT') &&
+	         (-e "$pathname${main::SL}$0")) ||
+	         (-x "$pathname${main::SL}$0")) {
+	$main::binpath=$pathname;
+		last;
+	    }
+	  }
+	}
+	die "ERROR: Can\'t find location of mrtg executable\n" 
+	  unless $main::binpath; 
+	unshift (@INC,$main::binpath);
+}
+
+# There older perls tend to behave peculiar with
+# large integers ... 
+require 5.003;
+
+if ($main::OS eq 'UNIX' || $main::OS eq 'NT') {
+	  use GD;
+	  use Net::SMTP;				#requires libnet package to be installed
+     #use SNMP_Session "0.71";
+     #use BER "0.66";
+     #use SNMP_util "0.71";
+	  use locales_mrtg "0.01";
+	  use Config;
+	  #$main::SNMPDEBUG =0;
+}
+
+#Doesn't seem to work very well with the win32 port of GD
+#use strict; 
+
+if($main::OS eq 'UNIX')
+{
+	  my($i) = 0;
+	  my($name);
+
+	  foreach $name (split(/ /, $Config{sig_name}))
+	  {
+	$main::signo{$name} = $i;
+	$main::signame[$i++] = $name;
+	  }
+}
+
+$main::DEBUG=1;
+
+
+sub END {
+	local($?, $!);
+	unlink ${main::Cleanfile} if($main::Cleanfile);
+}
+
+sub main {
+	
+	my ($router, $target ,$gdstyles, $neweventcounter, $eventcounter, $newevents, $neweventstype);
+	
+	# unbuffer stdout to see everything immediately
+	$|=1 if $main::DEBUG;   
+	
+
+	print "\nMRTG - Network Status Imager loading & initializing...\n\n" if $main::DEBUG;
+	my ($routers, $cfg, $rcfg, $cfgfile) = readcfg();
+	$target = cfgcheck($routers, $cfg, $rcfg);
+
+	print "Locking Config Files...\n";
+
+	# Check the config and create the target object
+	# lets make sure that there are not two mrtg-nsi's running in parallel.
+	# so we lock on the cfg file. Nothing fancy, just a lockfile
+	#
+	my $lockfile = $cfgfile."_l";
+	my $templock = $cfgfile."_l_" . $$ ;
+	if ($main::OS eq 'VMS' || $main::OS eq 'NT') {
+	# too sad NT and VMS can't do links we'll do the diletants lock
+	  if (-e $lockfile && not unlink $lockfile){
+	    my($lockage) = time()-(stat($lockfile))[9];
+	    die ("ERROR: I guess another mrtg-nsi is running. A lockfile ($lockfile)
+	     aged $lockage seconds is hanging around and I can't remove 
+	     it because another process is still using it.");
+	  }
+	  	
+	  open (LOCK, ">$lockfile") or die "ERROR: Can't create lockfile $lockfile\n";
+	  print LOCK "$$\n";
+	  close LOCK;
+	  open (LOCK, "<$lockfile") or die "ERROR: Can't open lockfile $lockfile for owner check\n";
+	  my($read)=<LOCK>;
+	  chomp($read);
+	  die "ERROR: Someone else just got the lockfile $lockfile\n" 
+	unless  $$ == $read;
+	} else {
+	  # now, lets do it the UNIX way ... Daves work ...
+	  open(LOCK,">$templock") || die "Can't create templock $templock";
+	  $main::Cleanfile = $templock;
+	  if (!link($templock,$lockfile)) {  # Lock file exists - deal with it.
+	    my($nlink,$lockage) = (stat($lockfile))[3,9]; 
+	    $lockage = time() - $lockage;
+	    if ($nlink < 2 || $lockage > 30*60) { #lockfile is alone and old
+	unlink($lockfile) 
+	  || do{ unlink $templock; 
+		 die "ERROR: Can't unlink stale lockfile ($lockfile). Permissions?\n"};
+	
+	link($templock,$lockfile) 
+	  || do{ unlink $templock; 
+		 die "ERROR: Can't create lockfile ($lockfile).\n".
+		   "Permission problem or another mrtg locking succesfully?\n"};
+	    }
+	    else {
+	unlink $templock;
+	die ("ERROR: I guess another mrtg is running. A lockfile ($lockfile) aged\n".
+	     "$lockage seconds is hanging around. If you are sure that no other mrtg\n".
+	     "is running you can remove the lockfile\n");
+	
+	    }
+	    
+	  }
+	}
+
+	#Read the messages
+ 	my($msg) = readmsgfile($$cfg{'msgfile'});
+	open (BACKGROUNDIMG,"<$$cfg{'statusmapbackground'}") || die "ERROR: Can't open StatusMapBackGround\n";
+   my($ImageData) = newFromGif GD::Image(BACKGROUNDIMG) || die "ERROR: GD::newFromGif\n";
+   close BACKGROUNDIMG;
+
+	#Allocate colors for this image...
+	my %defcolors =
+	   (#Color allocation table
+	   'black',			"0,0,0",
+	   'red',			"255,0,0",
+	   'green',			"0,255,0",
+	   'blue',			"0,0,255",
+	   'yellow', 		"255,250,205",
+	   'white',			"255,0,0"
+		);   
+	%colors = ();
+	while(($color, $cvalue) = each(%defcolors)){
+		#Try to allocate our color
+		if($ImageData->colorAllocate(split(/,/,$cvalue)) ne "-1"){
+			$colors{$color} = $ImageData->colorAllocate(split(/,/,$cvalue));
+		}else{
+			#Didn't work, we'll have to match the closest then	
+			$colors{$color} = $ImageData->colorClosest(split(/,/,$cvalue));
+		}
+	}
+
+	#Define our linestyles
+	$$gdstyles{'linestylec1'}{'style'} = "$colors{'yellow'},$colors{'yellow'},$colors{'yellow'},$colors{'yellow'},$colors{'blue'},$colors{'blue'},$colors{'blue'},$colors{'blue'},gdTransparent,gdTransparent";
+	$$gdstyles{'linestylew1'}{'style'} = "$colors{'red'},$colors{'red'},$colors{'red'},$colors{'red'},$colors{'blue'},$colors{'blue'},$colors{'blue'},$colors{'blue'},gdTransparent,gdTransparent";
+	$$gdstyles{'linestylea1'}{'style'} = "$colors{'red'},$colors{'red'},$colors{'blue'},$colors{'red'},$colors{'red'},$colors{'red'},$colors{'blue'},$colors{'blue'},gdTransparent,gdTransparent,gdTransparent,gdTransparent,gdTransparent,gdTransparent,gdTransparent,gdTransparent,gdTransparent";
+
+	drawtext($ImageData, $gdstyles, $cfg, $rcfg, $routers, $router, "cool", "cool", "", "always", "1", "baxter.x", "baxter.y", "baxtersprings", "black",);
+
+	$neweventcounter = 0;
+
+	foreach $router (@$routers) {
+	  my($savetz) = $ENV{'TZ'};
+
+	  if ($$rcfg{'timezone'}{$router} ne '') {
+	    $ENV{'TZ'} = $$rcfg{'timezone'}{$router}
+	  }  
+
+	  print "Imaging node: $router\n";
+	  
+	  # set the locale
+	  my($LOC);
+	  if( $$cfg{'language'} && defined($lang2tran::LOCALE{"\L$$cfg{'language'}\E"}))
+	  {
+	    $LOC=$lang2tran::LOCALE{"\L$$cfg{'language'}\E"};
+	  }
+	  else
+	  {
+	    $LOC=$lang2tran::LOCALE{'default'};
+	  };
+
+	  	#Node test...
+		if($$cfg{'testnodelocations'} =~ /y/i){
+			action_draw_crosshair($ImageData, $cfg, $rcfg, $routers, $router, $$rcfg{'nodecenterx'}{$router},$$rcfg{'nodecentery'}{$router},$black);
+			next;
+		#Normal node processing
+		}else{
+			my ($incurrent, $outcurrent, $inlast, $outlast) = getnodevalues($$rcfg{'node'}{$router}, $router, $rcfg, $cfg);
+
+			#DEBUG --- DEBUG --- DEBUG --- DEBUG --- DEBUG --- DEBUG --- DEBUG --- 
+			#if ($router =~ /NewportNewsEmailX400Kirchdorf/i){
+				#$inlast = 0;$incurrent = 50;
+				#$inlast = 5000;$incurrent = 100;
+			#}
+			#DEBUG --- DEBUG --- DEBUG --- DEBUG --- DEBUG --- DEBUG --- DEBUG --- 
+
+			my ($nodeinstatus,$nodeoutstatus) = getnodestatus($incurrent,$outcurrent,$$rcfg{'node'}{$router}, $router, $rcfg, $cfg); 			
+			my ($nodeinlaststatus,$nodeoutlaststatus) = getnodestatus($inlast,$outlast,$$rcfg{'node'}{$router}, $router, $rcfg, $cfg); 			
+
+			print "NodeStatus-Old: $nodeinlaststatus($inlast)/$nodeoutlaststatus($outlast)\n";
+			print "NodeStatus-New: $nodeinstatus($incurrent)/$nodeoutstatus($outcurrent)\n";
+
+			#Generate events for the log and status-email
+			my $ineventid = "";
+			my $outeventid = "";
+			my $ineventtype = "";
+			my $outeventtype = "";
+
+			#Cool event (in)
+			if($nodeinstatus eq "cool" && $nodeinlaststatus eq "alarm" && defined $$rcfg{'nodeincoolmsgid'}{$router}){$ineventid = lc($$rcfg{'nodeincoolmsgid'}{$router});$ineventtype = "Cool";};
+
+			#Cool event (in)
+			if($nodeinstatus eq "warning" && $nodeinlaststatus eq "alarm" && defined $$rcfg{'nodeincoolmsgid'}{$router}){$ineventid = lc($$rcfg{'nodeincoolmsgid'}{$router});$ineventtype = "Cool";};
+
+			#Warning event (in)
+			if($nodeinstatus eq "warning" && $nodeinlaststatus eq "cool" && defined $$rcfg{'nodeinwarningmsgid'}{$router}){$ineventid = lc($$rcfg{'nodeinwarningmsgid'}{$router});$ineventtype = "Warn";};
+
+			#Alarm event (in)
+			if($nodeinstatus eq "alarm" && ($nodeinlaststatus eq "cool" || $nodeinlaststatus eq "warning") && defined $$rcfg{'nodeinalarmmsgid'}{$router}){$ineventid = lc($$rcfg{'nodeinalarmmsgid'}{$router});$ineventtype = "Alarm";};
+
+			#Cool event (out)
+			if($nodeoutstatus eq "cool" && $nodeoutlaststatus eq "alarm" && defined $$rcfg{'nodeoutcoolmsgid'}{$router}){$outeventid = lc($$rcfg{'nodeoutcoolmsgid'}{$router});$outeventtype = "Cool";};
+
+			#Cool event (out)
+			if($nodeoutstatus eq "warning" && $nodeoutlaststatus eq "alarm" && defined $$rcfg{'nodeoutcoolmsgid'}{$router}){$outeventid = lc($$rcfg{'nodeoutcoolmsgid'}{$router});$outeventtype = "Cool";};
+
+			#Warning event (out)
+			if($nodeoutstatus eq "warning" && $nodeoutlaststatus eq "cool" && defined $$rcfg{'nodeoutwarningmsgid'}{$router}){$outeventid = lc($$rcfg{'nodeoutwarningmsgid'}{$router});$outeventtype = "Warn";};
+
+			#Alarm event (out)
+			if($nodeoutstatus eq "alarm" && ($nodeoutlaststatus eq "cool" || $nodeoutlaststatus eq "warning") && defined $$rcfg{'nodeoutalarmmsgid'}{$router}){$outeventid = lc($$rcfg{'nodeoutalarmmsgid'}{$router});$outeventtype = "Cool";};
+
+			#Log events (in)
+			if($ineventid ne ""){
+				$newevents[$neweventcounter] = $$msg{$ineventid};			
+				#Translate variables in the event message
+				$newevents[$neweventcounter] = transeventvar($cfg, $rcfg, $routers, $router, $incurrent, $outcurrent, $newevents[$neweventcounter]);
+				#Anybody needs to know about this?
+				if($$rcfg{'email'}{lc($ineventtype)}{$router}){
+					$neweventstype[$neweventcounter] = "$ineventtype/e";	
+					sendmail($cfg, $rcfg, $routers, $router, $incurrent, $outcurrent, $newevents[$neweventcounter],$neweventstype[$neweventcounter],$$rcfg{'nodestatusemailtarget'}{$router});
+				}else{
+					$neweventstype[$neweventcounter] = $ineventtype;	
+				}
+				$neweventcounter++;
+			}
+
+			#Log events (out)
+			if($outeventid ne ""){
+				$newevents[$neweventcounter] = $$msg{$outeventid};			
+				$neweventstype[$neweventcounter] = $outeventtype;
+				#Translate variables in the event message
+				$newevents[$neweventcounter] = transeventvar($cfg, $rcfg, $routers, $router, $incurrent, $outcurrent, $newevents[$neweventcounter]);
+				#Anybody needs to know about this?
+				if($$rcfg{'email'}{lc($outeventtype)}{$router}){
+					$neweventstype[$neweventcounter] = "$outeventtype/e";	
+					sendmail($cfg, $rcfg, $routers, $router, $incurrent, $outcurrent, $newevents[$neweventcounter],$neweventstype[$neweventcounter],$$rcfg{'nodestatusemailtarget'}{$router});
+				}else{
+					$neweventstype[$neweventcounter] = $outeventtype;	
+				}
+					$neweventcounter++;
+			}
+
+			#Main action loop, the right sequencing is important because of overlappling graphics in the status map
+			for ($actioncounter = 0; $actioncounter <= $$rcfg{maxaction}{$router}; $actioncounter++){
+				if (exists $$rcfg{"action.$actioncounter"}{$router}) {			
+					my $action = $$rcfg{"action.$actioncounter"}{$router};
+					my @acfunctelements = split(/\(/,$action);
+					my $acfunc = $acfunctelements[0];
+					#Cleanup the function name
+					$acfunc=~s/\s/ /g;  
+					$acfunc=~s/^ *//g;  
+					$acfunc=~s/ *$//g;  
+					$acfunc=lc($acfunc);
+					my @acfunctelements = split(/[\(\)]/,$action);
+					my @acargs = split(/,/,$acfunctelements[1]);
+					#Cleanup the functions arguments and put them in parethesis...
+					foreach $acarg (@acargs){	
+						$acarg=~s/\s/ /g;  
+						$acarg=~s/^ *//g;  
+						$acarg=~s/ *$//g;  
+						$acarg=lc($acarg);					
+						$acarg="\"$acarg\",";
+					}
+
+					#Execute Action
+					eval("$acfunc(\$ImageData, \$gdstyles, \$cfg, \$rcfg, \$routers, \$router, \$msg, \"$nodeinstatus\", \"$nodeoutstatus\", \"$incurrent\" , \"$outcurrent\", @acargs);");					
+					die "* Problem with action statement: $acfunc(\$ImageData, \$gdstyles, \$cfg, \$rcfg, \$routers, \$router, \$msg, \"$nodeinstatus\", \"$nodeoutstatus\", \"$incurrent\" , \"$outcurrent\", @acargs);\n" if $@;
+				}
+			}
+		}
+
+	  #put TZ things back in shape ... 
+	  if ($savetz) {$ENV{'TZ'} =  $savetz;} else
+	  {delete $ENV{'TZ'}};
+
+	}
+
+	#If there are no events, don't do anything
+	if ($neweventcounter > 0){	
+		#Open current log file and get the old log entries
+		open (LOGFILE,"<$$cfg{'workdir'}\\mrtg-nsi.log") || print "WARNING: Couldn't open eventlog file for reading: $$cfg{'workdir'}//mrtg-nsi.log\n";
+			my @oldeventloglines = <LOGFILE>;
+		close LOGFILE;
+
+		#Open eventlog again and add new events
+		open (LOGFILE,">$$cfg{'workdir'}\\mrtg-nsi.log") || die "ERROR: Couldn't open eventlog file for writing: $$cfg{'workdir'}//mrtg-nsi.log\n";
+		open (HTMLLOG,">$$cfg{'eventlog'}") || die "ERROR: Couldn't open eventlog file for writing: $$cfg{'eventlog'}\n";
+
+
+		#Add header to the html-log
+		print HTMLLOG "<html>\n";
+		print HTMLLOG "\n";
+		print HTMLLOG "<head>\n";
+		print HTMLLOG "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n";
+		print HTMLLOG "<meta http-equiv=\"Refresh\" CONTENT=\"60\">\n";
+		print HTMLLOG "<title>Home Page</title>\n";
+		print HTMLLOG "</head>\n";
+		print HTMLLOG "\n";
+		print HTMLLOG "<body topmargin=\"1\" leftmargin=\"1\" bordercolor=\"#FFFFFF\" bgcolor=\"#FFFFFF\">\n";
+		print HTMLLOG "\n";
+		print HTMLLOG "<p><strong><font face=\"Arial\" size=\"5\">Network Status Imager: Event Log</font><font\n";
+		print HTMLLOG "face=\"Arial\"><br>\n";
+		print HTMLLOG "</font></strong><font face=\"Arial\" size=\"1\">NSI v1.0 for MRTG, Created by Mac\n";
+		print HTMLLOG "Kloberg <a href=\"mailto:mac.kloberg\@lam.liebherr.com\">&lt;mac.kloberg\@lam.liebherr.com&gt;</a> <a\n";
+		print HTMLLOG "href=\"mailto:mac\@nacs.net\">&lt;mac\@nacs.net&gt;</a>)<br>\n";
+		print HTMLLOG "Credits to Tobias Oetiker <a href=\"mailto:oetiker\@ee.ethz.ch\">&lt;oetiker\@ee.ethz.ch&gt;</a> and Dave Rand <a\n";
+		print HTMLLOG "href=\"mailto:dlr\@bungi.com\">&lt;dlr\@bungi.com&gt;</a>.<br>\n";
+		print HTMLLOG "Sofware distributed under the GNU copyleft.";
+		print HTMLLOG "<br>\n";
+		print HTMLLOG "</font></p>\n";
+		print HTMLLOG "\n";
+		print HTMLLOG "<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" width=\"575\" bgcolor=\"#C0C0C0\">\n";
+		print HTMLLOG "  <tr>\n";
+		print HTMLLOG "    <td valign=\"top\" nowrap width=\"65\"><strong><font size=\"2\">Date</font></strong></td>\n";
+		print HTMLLOG "    <td valign=\"top\" nowrap width=\"44\"><strong><font size=\"2\">Time</font></strong></td>\n";
+		print HTMLLOG "    <td valign=\"top\" nowrap width=\"46\" bgcolor=\"#C0C0C0\" align=\"left\"><strong><font size=\"2\">Type</font></strong></td>\n";
+		print HTMLLOG "    <td valign=\"top\" nowrap width=\"420\" <font size=\"2\"><strong> <font size=\"2\">Event</font></strong></td>\n";
+		print HTMLLOG "  </tr>\n";
+		print HTMLLOG "</table>\n";
+		print HTMLLOG "\n";
+		print HTMLLOG "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"1575\"> \n";
+
+		for ($logfileeventcounter = 0; $logfileeventcounter <= $$cfg{'eventlogmax'}; $logfileeventcounter++){
+
+			#Add new events
+			if($logfileeventcounter eq 0){
+				for ($neweventlogcounter = 0; $neweventlogcounter < $neweventcounter; $neweventlogcounter++){		
+					my $shortdatestr = &shortdatestr(time);
+					print LOGFILE "$shortdatestr - $neweventstype[$neweventlogcounter] - $newevents[$neweventlogcounter]\n";
+					my($htmldate,,$htmltime) = split(/ - /,$shortdatestr);
+					print HTMLLOG "  <tr>\n";
+					print HTMLLOG "    <td valign=\"top\" nowrap width=\"56\"><font size=\"2\">$htmldate</font></td>\n";
+					print HTMLLOG "    <td valign=\"top\" nowrap width=\"9\"><font size=\"2\">-</font></td>\n";
+					print HTMLLOG "    <td valign=\"top\" nowrap width=\"44\"><font size=\"2\">$htmltime</font></td>\n";
+					print HTMLLOG "    <td valign=\"top\" nowrap width=\"46\" bgcolor=\"#C0C0C0\" align=\"left\"><font size=\"2\">$neweventstype[$neweventlogcounter]</font></td>\n";
+					if($neweventstype[$neweventlogcounter] =~ /cool.*/i){
+						print HTMLLOG "    <td valign=\"top\" nowrap width=\"5\" bgcolor=\"#00FF00\"><strong><font size=\"2\"></font></strong></td>\n";
+						print HTMLLOG "    <td valign=\"top\" nowrap width=\"1415\" bgcolor=\"#00FF00\"><strong><font size=\"2\">$newevents[$neweventlogcounter]\n";
+					}
+					if($neweventstype[$neweventlogcounter] =~ /warn.*/i){
+						print HTMLLOG "    <td valign=\"top\" nowrap width=\"5\" bgcolor=\"#C0C0C0\"><strong><font size=\"2\"></font></strong></td>\n";
+						print HTMLLOG "    <td valign=\"top\" nowrap width=\"1415\" bgcolor=\"#C0C0C0\"><strong><font size=\"2\">$newevents[$neweventlogcounter]\n";
+					}
+					if($neweventstype[$neweventlogcounter] =~ /alarm.*/i){
+						print HTMLLOG "    <td valign=\"top\" nowrap width=\"5\" bgcolor=\"#FF0000\"><strong><font size=\"2\"></font></strong></td>\n";
+						print HTMLLOG "    <td valign=\"top\" nowrap width=\"1415\" bgcolor=\"#FF0000\"><strong><font size=\"2\">$newevents[$neweventlogcounter]\n";
+					}
+					print HTMLLOG "    </font></strong></td>\n";
+					print HTMLLOG "  </tr>\n";
+				}
+			}
+		
+			#Add old events
+			if($logfileeventcounter > 0 && $oldeventloglines[$logfileeventcounter-1] ne ""){
+				print LOGFILE "$oldeventloglines[$logfileeventcounter-1]";
+				#print "Writing oldevent ($logfileeventcounter): $oldeventloglines[$logfileeventcounter-1]<br>";
+				my($htmldate,$htmltime,$htmleventtype,$htmlevent) = split(/ - /,$oldeventloglines[$logfileeventcounter-1]);
+				print HTMLLOG "  <tr>\n";
+				print HTMLLOG "    <td valign=\"top\" nowrap width=\"56\"><font size=\"2\">$htmldate</font></td>\n";
+				print HTMLLOG "    <td valign=\"top\" nowrap width=\"9\"><font size=\"2\">-</font></td>\n";
+				print HTMLLOG "    <td valign=\"top\" nowrap width=\"44\"><font size=\"2\">$htmltime</font></td>\n";
+				print HTMLLOG "    <td valign=\"top\" nowrap width=\"46\" bgcolor=\"#C0C0C0\" align=\"left\"><font size=\"2\">$htmleventtype</font></td>\n";
+				if($htmleventtype =~ /cool.*/i){
+					print HTMLLOG "    <td valign=\"top\" nowrap width=\"5\" bgcolor=\"#00FF00\"><strong><font size=\"2\"></font></strong></td>\n";
+					print HTMLLOG "    <td valign=\"top\" nowrap width=\"1415\" bgcolor=\"#00FF00\"><strong><font size=\"2\">$htmlevent\n";
+				}
+				if($htmleventtype =~ /warn.*/i){
+					print HTMLLOG "    <td valign=\"top\" nowrap width=\"5\" bgcolor=\"#C0C0C0\"><strong><font size=\"2\"></font></strong></td>\n";
+					print HTMLLOG "    <td valign=\"top\" nowrap width=\"1415\" bgcolor=\"#C0C0C0\"><strong><font size=\"2\">$htmlevent\n";
+				}
+				if($htmleventtype =~ /alarm.*/i){
+					print HTMLLOG "    <td valign=\"top\" nowrap width=\"5\" bgcolor=\"#FF0000\"><strong><font size=\"2\"></font></strong></td>\n";
+					print HTMLLOG "    <td valign=\"top\" nowrap width=\"1415\" bgcolor=\"#FF0000\"><strong><font size=\"2\">$htmlevent\n";
+				}
+				print HTMLLOG "    </font></strong></td>\n";
+				print HTMLLOG "  </tr>\n";
+			}		
+		}
+		print HTMLLOG "</table>\n";
+		print HTMLLOG "</body>\n";
+		print HTMLLOG "</html>\n";
+
+		close HTMLLOG;
+		close LOGFILE;
+	}
+
+	#Finally, timestamp the image
+  	my($ImgSizeX,$ImgSizeY) = $ImageData->getBounds;
+	
+	$Today=&datestr(time);
+	my $stampstring = "Network Status Imager for MRTG - $Today";
+	my $stringwidth = GD::Font::width(gdSmallFont) * length($stampstring);
+	$ImageData->string(gdSmallFont,$ImgSizeX - $stringwidth - 3,$ImgSizeY - 13,"$stampstring",$colors{'black'});
+
+	#Write the whole thing to the status map
+	open (STATUSMAP,">$$cfg{'workdir'}\\\\$$cfg{statusmapimagename}") || die "ERROR: Couldn't write to status map image $$cfg{'workdir'}\\\\$$cfg{statusmapimagename}";
+	binmode STATUSMAP;
+	print STATUSMAP $ImageData->gif;
+	close STATUSMAP;
+
+	# OK we are done, remove the lock files ... 
+	print "Removing Lockfiles\n";
+	close LOCK; unlink ($templock, $lockfile);
+	print "\nMRTG - Network Status Imager unloading, gone and done...\n\n" if $main::DEBUG;
+}
+
+main;
+exit(0);
+
+
+
+
+sub readcfg {
+	my ($first,$second,$key);
+	my (%seen);
+	my (@routers);
+	my (%rcfg,%cfg,%pre,%post,%deflt,%defaulted);
+	my ($cfgfile) = pop(@ARGV);
+	open (CFG, $cfgfile) || do { print "ERROR: unable to open config file: $cfgfile\n\n"; &printusage };
+	while (<CFG>) {
+	  s/\s+$//g; #remove whitespace at the end of the line
+	  s/\s/ /g;  #replace whitespace by space
+	  next if /^\s*\#/; #ignore comment lines
+	  next if /^\s*$/;  #ignore empty lines
+	  # oops spelling error
+	  s/^supress/suppress/gi;
+
+	  #Trashcan leading zeros in action statements
+	  s/^action\.0+/action\./gi;
+	  
+     #Also lets record the number of the highest action given for later
+	  if ($first =~ /^action.+/){
+			$actionnumber = $first;
+			$actionnumber =~ s/action\.//gi;
+			if($actionnumber > $rcfg{'maxaction'}{$second}){
+				$rcfg{'maxaction'}{$second} = $actionnumber;
+			}
+	  }
+
+	  # append mode
+	  if ($first && /^\s+(.*\S)\s*$/) {
+	    if ($second eq '^') {
+	$pre{$first} .= " $1";
+	next;
+	    }
+	    if ($second eq '$' ) {
+	$post{$first} .= " $1";
+	next;
+	    }
+	    if ($second eq '_') {
+	$deflt{$first} .= " $1";
+	next;
+	    }
+
+	    if ($second) {
+	$rcfg{$first}{$second} .= " $1";
+	    } else {
+	$cfg{$first} .= " $1";
+	    }
+	    next;
+	  }
+	  
+	  if ($first && $second && $post{$first} && ($second !~ /^[\$^_]$/)) {
+	    if ($defaulted{$first}{$second}) {
+	      $rcfg{$first}{$second} = $post{$first};
+	      delete $defaulted{$first}{$second};
+	    } else {
+	      $rcfg{$first}{$second} .= " $post{$first}"
+	    }
+	  }
+
+	  if ($first && exists $deflt{$first} && ($second eq '_')) {
+	    &quickcheck($first,$second,$deflt{$first},$.)
+	  } elsif ($first && $second && ($second !~ /^[\$^_]$/)) {
+	    &quickcheck($first,$second,$rcfg{$first}{$second},$.)
+	  } elsif ($first && ($second !~ /^[\$^_]$/)) {
+	    &quickcheck($first,0,$cfg{$first},$.)
+	  }
+
+	  if (/^([A-Za-z0-9\.]+)\[(\S+)\]\s*:\s*(.*\S?)\s*$/) {
+	    print "readcfg: rcfg $1 $2  = $3\n" if $main::DEBUG > 1; 
+	    
+	    $first = lc($1);
+	    $second = lc($2);
+	    if ($second eq '^')
+	      { if ($3 ne '') {$pre{$first}=$3} else {delete $pre{$first}}; next; }
+	    if ($second eq '$')
+	      { if ($3 ne '') {$post{$first}=$3} else {delete $post{$first}}; next; }
+	    if ($second eq '_')
+	      { if ($3 ne '') {$deflt{$first}=$3} else {delete $deflt{$first}}; next; }
+
+	    push (@routers, $second) unless grep (/^$second$/, @routers); 
+	    
+	    # make sure that default tags spring into existance upon first 
+	    # call of a router
+
+	    foreach $key (keys %deflt) {
+	if (! exists $rcfg{$key}{$second}) {
+	  $rcfg{$key}{$second} = $deflt{$key};
+	  $defaulted{$key}{$second} = 1;
+	}
+	    }
+
+	    # make sure that prefix-only tags spring into existance upon first 
+	    # call of a router
+
+	    foreach $key (keys %pre) {
+	if (! exists $rcfg{$key}{$second}) {
+	        delete $defaulted{$key}{$second} if $defaulted{$key}{$second};
+	  $rcfg{$key}{$second} = "$pre{$key} ";
+	}
+	    }
+
+	    if ($seen{$first}{$second}) {
+	die ("\nLine $. in CFG file contains a duplicate definition for\n".
+	     "$first\[$second]. First definition is on line $seen{$first}{$second}\n")
+	    } else {
+	$seen{$first}{$second} = $.;
+	    }
+
+	    if ($defaulted{$first}{$second}) {
+	      $rcfg{$first}{$second} = '';
+	      delete $defaulted{$first}{$second};
+	    }
+	    $rcfg{$first}{$second} .= $3;
+
+	    next;
+
+	  }
+	  if (/^(\S+):\s*(.*\S)\s*$/) {
+	    $first = lc($1);	
+	    $cfg{$first} = $2;
+	    $second = '';
+	    next;
+	  }
+	  die ( "\nLine $. in CFG file does not make sense\n" );
+	}
+
+	# append $ stuff to the very last tag in cfg file if necessary 
+	if ($first && $second && $post{$first} && ($second !~ /^[\$^_]$/)) {
+	  if ($defaulted{$first}{$second}) {
+	    $rcfg{$first}{$second} = $post{$first};
+	    delete $defaulted{$first}{$second};
+	  } else {
+	    $rcfg{$first}{$second} .= " $post{$first}"
+	  }
+	}
+	
+	#Tobi, I don't know how you did this, but this is something else:
+   #Get highest action number for the last line in the config file...
+   if ($first =~ /^action.+/){
+		$actionnumber = $first;
+		$actionnumber =~ s/action\.//gi;
+		if($actionnumber > $rcfg{'maxaction'}{$second}){
+			$rcfg{'maxaction'}{$second} = $actionnumber;
+		}
+   }
+
+	#check the last input line
+ 	if ($first && exists $deflt{$first} && ($second eq '_')) {
+	  &quickcheck($first,$second,$deflt{$first},$.)
+	} elsif ($first && $second) {
+	  &quickcheck($first,$second,$rcfg{$first}{$second},$.)
+	} elsif ($first) {
+	  &quickcheck($first,0,$cfg{$first},$.)
+	}
+
+	close (CFG);
+	(\@routers, \%cfg, \%rcfg, $cfgfile);
+}
+
+
+sub cfgcheck {
+	my ($routers, $cfg, $rcfg) = @_;
+	my ($rou, $confname, $one_option);
+	my %node;
+	my $error="no";
+	my(@known_options) = qw(alarmifnull);
+	if (! $$cfg{workdir}) {
+	    warn ("\nERROR: \"WorkDir\" not specified\n");
+	    $error = "yes";
+	}
+
+	foreach $rou (@$routers) {
+	if ($$rcfg{'directory'}{$rou})
+	{
+		# They specified a directory for this router.  Append the
+		# pathname seperator to it (so that it can either be present or
+		# absent, and the rules for including it are the same).
+		$$rcfg{'directory'}{$rou} .= ${main::SL};
+		# remove any stray spaces ...
+		$$rcfg{'directory'}{$rou} =~ s/\s//g;
+	}
+
+	# Configure e-mail notification for this node
+	if (defined($$rcfg{'nodestatusemail'}{$rou})){
+		if($$rcfg{'nodestatusemailtarget'}{$rou} ne ""){
+			if($$rcfg{'nodestatusemail'}{$rou} =~ /[^cwa *]/i ){
+				warn ("\nERROR: NodeStatusEmail[$rou]: \"$$rcfg{'nodestatusemail'}{$rou}\" contains invalid options [cwa].\n");
+	  		  	$error="yes";
+			}else{
+				if($$rcfg{'nodestatusemail'}{$rou} =~ /c/i ){
+					$$rcfg{'email'}{'cool'}{$rou} = 1;
+				}
+				if($$rcfg{'nodestatusemail'}{$rou} =~ /w/i ){
+					$$rcfg{'email'}{'warn'}{$rou} = 1;
+				}
+				if($$rcfg{'nodestatusemail'}{$rou} =~ /a/i ){
+					$$rcfg{'email'}{'alarm'}{$rou} = 1;
+				}
+			}
+		}else{
+		  warn ("\nERROR: NodeStatusEmail[$rou]: \"$$rcfg{'nodestatusemail'}{$rou}\" is given but no NodeStatusEmailTarget[$rou] was found.\n");
+  		  $error="yes";
+		}
+	}
+
+   if (exists $$rcfg{"options"}{$rou}) {
+	    foreach $one_option (split /[,\s]+/, lc($$rcfg{"options"}{$rou})) {
+	if (grep {$one_option eq $_} @known_options) {
+	  $$rcfg{'options'}{$one_option}{$rou} = 1;
+	} else {
+	  warn ("\nERROR: Option[$rou]: \"$one_option\" is unknown\n");
+	  $error="yes";
+	}
+	    }
+	  }
+
+	  if ($error eq "yes") {
+	    die ("\n\nABORT: Please fix the error(s) in your config file\n\n");
+	  }
+	}
+	\%node;
+}
+
+sub quickcheck {
+	my ($first,$second,$arg,$line) = @_;
+	my %rules =
+	  (# General CFG
+	   'workdir' => 
+	   ['$arg && (-d $arg)','"Directory $arg does not exist"'],
+
+	   'eventlog' => 
+	   ['$arg','"Eventlog path is missing"'],
+
+	   'eventlogmax' => 
+	   ['$arg =~ /\d+/','"You must specify a value"'],
+
+	   'icondir' => 
+	   ['$arg && (-d $arg)','"Directory $arg does not exist"'],
+
+	   'statusmapbackground' => 
+	   ['$arg && (-f $arg)','"Image file $arg does not exist"'],
+	   
+	   'statusmapimagename' => 
+	   ['$arg','"Target image name is missing"'],
+
+	   'imgsourcedir' => 
+	   ['$arg && (-d $arg)','"Directory $arg does not exist"'],
+
+	   'msgfile' => 
+	   ['$arg && (-f $arg)','"Message file $arg does not exist"'],
+
+	   'statusemailorigin' => 
+	   ['$arg =~ /\w+/','"You must specify something for this option"'],
+
+	   'refresh' => 
+	   ['int($arg) >= 300', '"$arg should be 300 seconds or more"'],
+	   
+	   'interval' => 
+	   ['int($arg) >= 5','"$arg should be more than 5 Minutes"'], 
+
+	   'testnodelocations' => 
+	   ['$arg =~ /[ynYN]/','"This option is either y or n"'],
+
+	  #Nodes CFG
+	   'node[]' => 
+	   ['$arg =~ /\w+/','"You must specify something for this option"'],
+
+	   'nodecenterx[]' => 
+	   ['int($arg) >= 0', '"$arg <-- Value cannot be negative"'],
+
+	   'nodecentery[]' => 
+	   ['int($arg) >= 0', '"$arg <-- Value cannot be negative"'],
+
+	   'nodealarmthreshhold[]' => 
+	   ['$arg =~ /\d+/','"You must specify a value"'],
+
+	   'nodewarningthreshhold[]' => 
+	   ['$arg =~ /\d+/','"You must specify a value"'],
+
+	   'nodeincoolmsgid[]' => 
+	   ['$arg =~ /\w+/','"You must specify something for this option"'],
+
+	   'nodeinwarningmsgid[]' => 
+	   ['$arg =~ /\w+/','"You must specify something for this option"'],
+
+	   'nodeinalarmmsgid[]' => 
+	   ['$arg =~ /\w+/','"You must specify something for this option"'],
+
+	   'nodeoutcoolmsgid[]' => 
+	   ['$arg =~ /\w+/','"You must specify something for this option"'],
+
+	   'nodeoutwarningmsgid[]' => 
+	   ['$arg =~ /\w+/','"You must specify something for this option"'],
+
+	   'nodeoutalarmmsgid[]' => 
+	   ['$arg =~ /\w+/','"You must specify something for this option"'],
+
+	   'nodestatusemail[]' => 
+	   ['$arg =~ /\w+/','"You must specify something for this option"'],
+
+	   'nodestatusemailtarget[]' => 
+	   ['$arg =~ /\w+/','"You must specify something for this option"'],
+
+      'options[]' =>
+      ['1','"Internal Error"'],
+
+	   'action[]' => 
+	   ['$arg =~ /\w+/','"You must specify something for this option"'],
+	  );
+ 
+	my $braces = $second ? '[]':'';
+
+	#The actions are different from the other options
+	if ($first =~ /^action.+/){
+			if ($first =~ /action.\d*/) {
+	 		return 1;
+			}
+	}elsif (exists $rules{$first.$braces}) {
+	  if (eval($rules{$first.$braces}[0])) {
+	    return 1;
+	  } else {
+	    if ($second) {
+	die "\nCFG Error in \"$first\[$second\]\", line $line: ".
+	  eval($rules{$first.$braces}[1])."\n\n"; 
+	    } else {
+	die "\nCFG Error in \"$first\", line $line: ".
+	  eval($rules{$first.$braces}[1])."\n\n"; 
+	    } 
+	  }
+	}
+	die "\nCFG Error: Unknown Option \"$first\" on line $line or above.\n".
+	  "           Check readme.html for Help\n\n";
+}
+
+sub readmsgfile {
+	my ($msgfile) = @_;
+	my ($first,$second,$key);
+	my (%seen);
+	my (%rmsg,%msg,%pre,%post);
+
+	open (MSGFILE, $msgfile) || do { print "ERROR: unable to open message file: $msgfile\n\n"};
+	while (<MSGFILE>) {
+	  s/\s+$//g; #remove whitespace at the end of the line
+	  s/\s/ /g;  #replace whitespace by space
+	  next if /^\s*\#/; #ignore comment lines
+	  next if /^\s*$/;  #ignore empty lines
+
+	  # append mode
+	  if ($first && /^\s+(.*\S)\s*$/) {
+	    if ($second eq '^') {
+			$pre{$first} .= " $1";
+			next;
+	    }
+	    if ($second eq '$' ) {
+			$post{$first} .= " $1";
+			next;
+	    }
+
+	    if ($second) {
+			$rmsg{$first}{$second} .= " $1";
+	    } else {
+			$msg{$first} .= " $1";
+	    }
+	    next;
+	  }
+
+	  if (/^(\S+):\s*(.*\S)\s*$/) {
+	    $first = lc($1);	
+	    $msg{$first} = $2;
+	    $second = '';
+	    next;
+	  }
+	  die ( "\nLine $. in MSGFILE file does not make sense\n" );
+	}
+
+	close (MSGFILE);
+	(\%msg);
+}
+
+
+sub action_draw_crosshair {
+	#This one draws a crosshair symbol
+	my($ImageData, $cfg, $rcfg, $routers, $router, $cox, $coy,$color) = @_;	
+
+	$cox = nsi_eval($ImageData, $cfg, $rcfg, $routers, $router, $cox);
+	$cox = $cox + nsi_eval($ImageData, $cfg, $rcfg, $routers, $router, $$rcfg{'nodelabeloffsetx'}{$router});
+
+	$coy = nsi_eval($ImageData, $cfg, $rcfg, $routers, $router, $coy);
+	$coy = $coy + nsi_eval($ImageData, $cfg, $rcfg, $routers, $router, $$rcfg{'nodelabeloffsety'}{$router});
+
+	#Draw the crosshair...	
+   $ImageData->arc($cox,$coy,30,30,0,360,$color);
+   $ImageData->arc($cox,$coy,20,20,0,360,$color);
+	$ImageData->arc($cox,$coy,10,10,0,360,$color);
+	$ImageData->line($cox-17,$coy,$cox+17,$coy,$color);
+	$ImageData->line($cox,$coy-17,$cox,$coy+17,$color);
+}
+
+sub datestr {
+  my ($time) = shift(@_) || return 0;
+  my ($wday) = ('Sunday','Monday','Tuesday','Wednesday',
+		'Thursday','Friday','Saturday')[(localtime($time))[6]];
+  my ($month) = ('January','February' ,'March' ,'April' ,
+		 'May' , 'June' , 'July' , 'August' , 'September' , 
+		 'October' ,
+		 'November' , 'December' )[(localtime($time))[4]];
+  my ($mday,$year,$hour,$min,$sec) = (localtime($time))[3,5,2,1,0];
+  if ($min<10) {$min = "0$min";}
+  if ($sec<10) {$sec = "0$sec";}
+  return "$wday, $month $mday, ".($year+1900)." - $hour:$min:$sec";
+}
+
+sub shortdatestr {
+  my ($time) = shift(@_) || return 0;
+  my ($mday,$month,$year,$hour,$min,$sec) = (localtime($time))[3,4,5,2,1,0];
+  $month++;
+  if ($min<10) {$min = "0$min";}
+  if ($sec<10) {$sec = "0$sec";}
+  return "$month/$mday/".($year+1900)." - $hour:$min:$sec";
+}
+
+sub nsi_eval {
+	#Replace references to other nodes and evaluate expressions
+   my($ImageData, $cfg, $rcfg, $routers, $router, $evali) = @_;
+
+	#Replace .xy-references to other nodes
+	foreach $eval_node (@$routers) {	
+
+		my $lceval_node = lc($eval_node);
+	
+		#Replace "node.x"
+		$evali =~ s/[\W]$lceval_node\.x/$$rcfg{'nodecenterx'}{$eval_node}/gie;
+		$evali =~ s/^$lceval_node\.x/$$rcfg{'nodecenterx'}{$eval_node}/gie;
+
+		#Replace "node.y"
+		$evali =~ s/[\W]$lceval_node\.y/$$rcfg{'nodecentery'}{$eval_node}/gie;
+		$evali =~ s/^$lceval_node\.y/$$rcfg{'nodecentery'}{$eval_node}/gie;
+	}
+
+	#If something else expanded from the nodecenter, evaluate that too...
+	$evali = lc($evali);
+	foreach $eval_node (@$routers) {	
+
+		my $lceval_node = lc($eval_node);
+
+		#Replace "node.x"
+		$evali =~ s/[\W]$lceval_node\.x/$$rcfg{'nodecenterx'}{$eval_node}/gie;
+		$evali =~ s/^$lceval_node\.x/$$rcfg{'nodecenterx'}{$eval_node}/gie;
+
+		#Replace "node.y"
+		$evali =~ s/[\W]$lceval_node\.y/$$rcfg{'nodecentery'}{$eval_node}/gie;
+		$evali =~ s/^$lceval_node\.y/$$rcfg{'nodecentery'}{$eval_node}/gie;
+	}
+
+	#Evaluate and format the expression
+	$evali = sprintf("%.0f",eval($evali));
+	return $evali;
+}
+
+sub getnodevalues {
+	my ($target, $rou, $rcfg, $cfg) = @_;
+
+  	my $period = 0;
+	my $lastperiod = 0;
+	my $incurrent=0;
+  	my $outcurrent=0;
+	my $inlast = 0;
+	my $outlast = 0;
+	
+	open (LOG, "<$$cfg{'workdir'}\\\\$target.log") or die "ERROR: Can't open .log file for this node: $target\n";
+	my($counterline,$line,$lastline) = <LOG>;
+	($period,$incurrent,$outcurrent)=split(/\D/,$line);	
+	($lastperiod,$inlast,$outlast)=split(/\D/,$lastline);
+	close LOG;
+
+	#Check the period (if we're too far out, we've probably lost contact with the node)
+   $time = time unless defined $time;
+
+	my($timediff)=$time - $period;
+
+	#Give it 2 more minutes, then report the node as down
+	if($timediff > $$cfg{'interval'} * 60 + 120){
+		$incurrent = -1;
+		$outcurrent = -1;
+	}
+  	($incurrent, $outcurrent, $inlast, $outlast);
+}
+
+sub getnodestatus{
+	my ($incurrent,$outcurrent,$target, $router, $rcfg, $cfg) = @_;
+	
+	my $nodeinstatus = "cool";
+	my $nodeoutstatus = "cool";
+
+	#Node down?
+	if($incurrent eq -1){
+		$nodeinstatus = "alarm";
+		$nodeoutstatus = "alarm";
+	}else{
+		#Which direction are we looking?
+		if($$rcfg{'nodealarmthreshhold'}{$router} >= $$rcfg{'nodewarningthreshhold'}{$router}){
+			#Straight forward
+			if($incurrent > $$rcfg{'nodewarningthreshhold'}{$router}){
+				$nodeinstatus = "warning";
+			}
+			if($outcurrent > $$rcfg{'nodewarningthreshhold'}{$router}){
+				$nodeoutstatus = "warning";
+			}
+			if($incurrent > $$rcfg{'nodealarmthreshhold'}{$router}){
+				$nodeinstatus = "alarm";
+			}
+			if($outcurrent > $$rcfg{'nodealarmthreshhold'}{$router}){
+				$nodeoutstatus = "alarm";
+			}
+		}else{
+			#Backwards
+			if($incurrent < $$rcfg{'nodewarningthreshhold'}{$router}){
+				$nodeinstatus = "warning";
+			}
+			if($outcurrent < $$rcfg{'nodewarningthreshhold'}{$router}){
+				$nodeoutstatus = "warning";
+			}
+			if($incurrent < $$rcfg{'nodealarmthreshhold'}{$router}){
+				$nodeinstatus = "alarm";
+			}
+			if($outcurrent < $$rcfg{'nodealarmthreshhold'}{$router}){
+				$nodeoutstatus = "alarm";
+			}
+		}
+	}
+
+	#Check for nulls
+	if($$rcfg{'options'}{'alarmifnull'}{$router}){
+		if($incurrent eq "0"){
+			$nodeinstatus = "alarm";
+		}
+		if($outcurrent eq "0"){
+			$nodeoutstatus = "alarm";
+		}
+	}
+	($nodeinstatus,$nodeoutstatus);
+}
+
+sub drawnodeline{
+	my ($ImageData, $gdstyles, $cfg, $rcfg, $routers, $router, $msg, $nodeinstatus, $nodeoutstatus, $incurrent, $outcurrent, $direction, $cond, $source, $destination, $style) = @_;
+	
+	#Expand our numeric arguments
+	my $sourcex = nsi_eval($ImageData, $cfg, $rcfg, $routers, $router, "$source.x");
+	my $sourcey = nsi_eval($ImageData, $cfg, $rcfg, $routers, $router, "$source.y");
+	my $destinationx = nsi_eval($ImageData, $cfg, $rcfg, $routers, $router, "$destination.x");
+	my $destinationy = nsi_eval($ImageData, $cfg, $rcfg, $routers, $router, "$destination.y");
+
+	my $absnodestatus = "$direction$cond";
+	my $absnodeinstatus = "in$nodeinstatus";
+	my $absnodeoutstatus = "out$nodeoutstatus";
+
+	#Draw something depending on the node's status
+	if ($absnodestatus eq $absnodeinstatus || $absnodestatus =~ /always/i){
+		$ImageData->setStyle(split(/,/,$$gdstyles{$style}{'style'}));
+		#$ImageData->setStyle($$gdstyles{$style}{'style'});
+		$ImageData->line($sourcex,$sourcey,$destinationx,$destinationy,gdStyled);
+	}
+
+}
+
+sub copyimage{
+	my ($ImageData, $gdstyles, $cfg, $rcfg, $routers, $router, $msg, $nodeinstatus, $nodeoutstatus, $incurrent, $outcurrent, $direction, $cond, $image, $coordx, $coordy) = @_;
+	#Expand our numeric arguments
+
+	my $coordx = nsi_eval($ImageData, $cfg, $rcfg, $routers, $router, "$coordx");
+	my $coordy = nsi_eval($ImageData, $cfg, $rcfg, $routers, $router, "$coordy");
+
+	my $absnodestatus = "$direction$cond";
+	my $absnodeinstatus = "in$nodeinstatus";
+	my $absnodeoutstatus = "out$nodeoutstatus";
+
+	#Draw something depending on the node's status
+	if ($absnodestatus eq $absnodeinstatus || $absnodestatus =~ /always/i){
+		open (SRCIMG,"<$$cfg{'icondir'}\\\\$image") || die "ERROR: Can't open source image for copy: $$cfg{'icondir'}\\\\$image\n";
+   	my($srcImageData) = newFromGif GD::Image(SRCIMG) || die "ERROR: GD::newFromGif\n";
+   	close SRCIMG;
+   	my($srcImgDataSizeX,$srcImgDataSizeY) = $srcImageData->getBounds;
+		$ImageData->copy($srcImageData,$coordx,$coordy,0,0,$srcImgDataSizeX,$srcImgDataSizeY);
+	}
+}
+
+
+sub multicopyimage{
+	my ($ImageData, $gdstyles, $cfg, $rcfg, $routers, $router, $msg, $nodeinstatus, $nodeoutstatus, $incurrent, $outcurrent, $direction, $cond, $image, $coordx, $coordy, $howoften, $minoften, $maxoften, $stepsize, $angle) = @_;
+	#Expand our numeric arguments
+
+	print "Coordinates: $coordx/$coordy\n";
+
+	my $coordx = nsi_eval($ImageData, $cfg, $rcfg, $routers, $router, "$coordx");
+	my $coordy = nsi_eval($ImageData, $cfg, $rcfg, $routers, $router, "$coordy");
+	my $howoften = nsi_eval($ImageData, $cfg, $rcfg, $routers, $router, "$howoften");
+	
+	print "Coordinates: $coordx/$coordy\n";
+
+	if ($howoften < $minoften){
+		$howoften = $minoften;
+	}
+	if ($howoften > $maxoften){
+		$howoften = $maxoften;
+	}
+
+	my $absnodestatus = "$direction$cond";
+	my $absnodeinstatus = "in$nodeinstatus";
+	my $absnodeoutstatus = "out$nodeoutstatus";
+
+	#Draw something depending on the node's status
+	if ($absnodestatus eq $absnodeinstatus || $absnodestatus =~ /always/i){
+		open (SRCIMG,"<$$cfg{'icondir'}\\\\$image") || die "ERROR: Can't open source image for copy: $$cfg{'icondir'}\\\\$image\n";
+   	my($srcImageData) = newFromGif GD::Image(SRCIMG) || die "ERROR: GD::newFromGif\n";
+   	close SRCIMG;
+
+		my($srcImgDataSizeX,$srcImgDataSizeY) = $srcImageData->getBounds;
+		my $rad = ($angle * 3.141592654) / 180;
+
+		if ($stepsize >= 0){
+			for($multicounter = 0; $multicounter < $howoften; $multicounter++){
+	  			my $hyp = $multicounter * $stepsize;
+				my $a = sprintf("%.0f",sin($rad) * $hyp);
+				my $b = sprintf("%.0f",cos($rad) * $hyp);
+				#print "Angle: $angle, Rad: $rad, a: $a, b: $b\n";
+				$ImageData->copy($srcImageData,$coordx + $b,$coordy - $a,0,0,$srcImgDataSizeX,$srcImgDataSizeY);
+			}
+		}else{
+			$stepsize = abs($stepsize);
+			for($multicounter = $howoften - 1; $multicounter >= 0; $multicounter--){
+	  			my $hyp = $multicounter * $stepsize;
+				my $a = sprintf("%.0f",sin($rad) * $hyp);
+				my $b = sprintf("%.0f",cos($rad) * $hyp);
+				#print "Angle: $angle, Rad: $rad, a: $a, b: $b\n";
+				$ImageData->copy($srcImageData,$coordx + $b,$coordy - $a,0,0,$srcImgDataSizeX,$srcImgDataSizeY);
+			}
+		}
+	}
+}
+
+
+sub drawtext{
+	my ($ImageData, $gdstyles, $cfg, $rcfg, $routers, $router, $msg, $nodeinstatus, $nodeoutstatus, $incurrent, $outcurrent, $direction, $cond, $font, $coordx, $coordy, $textid, $color) = @_;
+	#Expand our numeric arguments
+	my $coordx = nsi_eval($ImageData, $cfg, $rcfg, $routers, $router, "$coordx");
+	my $coordy = nsi_eval($ImageData, $cfg, $rcfg, $routers, $router, "$coordy");
+
+	my $absnodestatus = "$direction$cond";
+	my $absnodeinstatus = "in$nodeinstatus";
+	my $absnodeoutstatus = "out$nodeoutstatus";
+
+	#Draw something depending on the node's status
+	if ($absnodestatus eq $absnodeinstatus || $absnodestatus =~ /always/i){
+		if(!defined($$msg{$textid})){
+			$$msg{$textid} = "MSG not defined!";
+		}
+		if($font eq 1){$ImageData->string(gdTinyFont,$coordx,$coordy,$$msg{$textid},$colors{$color});}
+		if($font eq 2){$ImageData->string(gdSmallFont,$coordx,$coordy,$$msg{$textid},$colors{$color});}
+		if($font eq 3){$ImageData->string(gdMediumBoldFont,$coordx,$coordy,$$msg{$textid},$colors{$color});}
+		if($font eq 4){$ImageData->string(gdLargeFont,$coordx,$coordy,$$msg{$textid},$colors{$color});}
+	}
+}
+
+sub transeventvar{
+	my ($cfg, $rcfg, $routers, $router, $incurrent, $outcurrent, $transstring) = @_;
+
+
+	my @transsplit = split(/\$/,$transstring);
+	my $maxelements = $transsplit;
+
+	print "MAXELEMNTS: $transstring\n";
+
+	for ($transcounter = 0; $transcounter <= $maxelements; $transcounter++){
+		$transstring =~ s/\$NodeWarningThreshhold/$$rcfg{nodewarningthreshhold}{$router}/i;
+		$transstring =~ s/\$NodeAlarmThreshhold/$$rcfg{nodealarmthreshhold}{$router}/i;
+		$transstring =~ s/\$NodeIn/$incurrent/i;
+		$transstring =~ s/\$NodeOut/$outcurrent/i;
+	}
+
+	return $transstring;
+}
+
+sub sendmail{
+	my ($cfg, $rcfg, $routers, $router, $incurrent, $outcurrent, $event, $eventtype, $address) = @_;
+	print "Sending e-mail to: $address from $$cfg{'statusemailorigin'}\n";
+	
+	my $smtp = Net::SMTP->new('hampton.lam.liebherr.com'); # connect to an SMTP server
+
+	foreach $target (split(/;/,$address)){
+	   $smtp->mail( $$cfg{'statusemailorigin'} );     # use the sender's address here
+	   $smtp->to($target);        			# recipient's address
+	   $smtp->data();                      # Start the mail
+
+	   # Send the header.
+	   $smtp->datasend("To: $address\n");
+	   $smtp->datasend("From: $$cfg{'statusemailorigin'}\n");
+		$smtp->datasend("Subject: $eventtype on Node \"$router\"\n");
+	   $smtp->datasend("\n");
+
+   	# Send the body.
+	   $smtp->datasend("$event\n");
+		$smtp->datasend("\n");
+		$smtp->datasend("\n");
+		$smtp->datasend("*******************************************************\n");
+		$smtp->datasend("***   This was an automated network status update   ***\n");
+		$smtp->datasend("***             message generated by:               ***\n");
+		$smtp->datasend("***    NSI v1.0 for MRTG, Created by Mac Kloberg    ***\n");
+		$smtp->datasend("***  <mac.kloberg\@lam.liebherr.com> <mac\@nacs.net>  ***\n");
+		$smtp->datasend("*******************************************************\n");
+	   $smtp->dataend();                   # Finish sending the mail
+	}
+	$smtp->quit;                        # Close the SMTP connection
+}
+

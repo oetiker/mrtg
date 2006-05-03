@@ -1,0 +1,70 @@
+#!/usr/bin/perl
+##################################################################
+#
+# Copyright (c) 1997 by Balthasar Indermuehle <balthasar@indermuehle.com>
+# Currently supports Linux 2.0.25
+# All Rights Reserved.
+# 
+# See the file COPYRIGHT in the distribution for the exact terms.
+# Based on the mrtg-ping-probe script Copyright 1997 by Peter W. Osel <pwo@guug.de>
+#
+##################################################################
+require 5.003;
+use Getopt::Std;
+use File::Basename;
+use Config;
+
+$ProgName = "mrtg-blast";
+$Usage = "Usage: $ProgName hostname portnumber packets\nTypically: $ProgName my.host.com 9 500\n";
+
+# Parse Command Line:
+die $Usage unless getopts('');
+
+if (@ARGV > 3) {
+	print STDERR "$ProgName: WARNING: ignoring but the first three arguments\n";
+	}
+
+if (@ARGV < 3) {
+	print STDERR "$ProgName ERROR:\nPlease enter a hostname port number and packets to blast (e.g. 9 or 21) as argument\n";
+	print STDERR "$Usage";
+	exit(1);
+	}
+
+
+($HostToBlast, $PortToBlast, $Packets) = @ARGV;
+
+($blastres) = blast($HostToBlast, $PortToBlast, $Packets);
+
+# The external mrtg probe returns up to 4 lines of output:
+#	1. Line: current state of the 'incoming bytes counter'
+#	2. Line: current state of the 'outgoing bytes counter'
+#	3. Line: string, telling the uptime of the target.
+#	4. Line: telling the name of the target.
+# We leave out line 3, and 4.
+
+print "$blastres\n$blastres\n";
+
+exit(0);
+
+##################################################################
+# Do the actual blasting 
+#
+sub blast {
+	my($host, $port, $packets) = @_;
+
+	# The following path to tcpblast needs to be adjusted for your system
+	unless (open(BLAST, "/home/netadmin/mrtg-2.1/tcpblast -r -t $host $packets -p$port|")) {
+		print STDERR "${ProgName}: FATAL: Can't open tcpblast: $!";
+		exit(1);
+		}
+
+	while (<BLAST>) {
+		# Handle output from 'real' tcpblast which looks like this:
+		# 100 KB in 1979 msec  =  413946.4 b/s  =  51743.3 B/s  =  50.5 KB/s
+		close(BLAST), return("$4.$5") if /^(\d+) KB in (\d+) msec  =  (\d+)\.\d b\/s  =  (\d+)\.\d B\/s  =  (\d+)\.\d KB\/s/;
+		}
+
+	#Could not get blast results, link may be down, return 0
+	close(BLAST), return(0);
+}
+

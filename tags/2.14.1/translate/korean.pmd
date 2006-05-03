@@ -1,0 +1,130 @@
+###### PATCHTAG00 ####################################################
+###      Korean
+###      => Kensoon Hwang <lovesh@static.co.kr>
+###         CHOI Junho <cjh@kr.FreeBSD.org>
+###### PATCHTAG10 ####################################################
+  &korean
+###### PATCHTAG20 ####################################################
+  'korean'      => \&korean,
+###### PATCHTAG30 ####################################################
+# korean
+   ,'korean' =>
+   "한글메시지 번역:
+				<a href=\"mailto:lovesh\@static.co.kr\">황건순</a>,
+				<a href=\"mailto:cjh\@kr.FreeBSD.org\">최준호</a>",
+###### PATCHTAG40 ####################################################
+$credits::LOCALE{'korean'}=$credits::LOCALE{'korean'};
+###### PATCHTAG50 ####################################################
+# Korean
+
+sub korean
+{
+  my $string = shift;
+return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+  # charset=iso-2022-jp
+
+  %translations =
+  (  
+     'iso-8859-1'                             => 'euc-kr',
+     'Maximal 5 Minute Incoming Traffic'      => '5분간 최대 수신',
+     'Maximal 5 Minute Outgoing Traffic'      => '5분간 최대 송신',
+     'the device'                             => '장치',
+     'The statistics were last updated(.*)'   => '최종 갱신 일시: $1',
+     ' Average\)'                             => ' 평균값 기준)',
+     'Average'                                => '평균',
+     'Max'                                    => '최대',
+     'Current'                                => '현재',
+     'version'                                => '버전',
+     '`Daily\' Graph \((.*) Minute'           => '일간 그래프 ($1 분 단위',
+     '`Weekly\' Graph \(30 Minute'            => '주간 그래프 (30 분 단위' ,
+     '`Monthly\' Graph \(2 Hour'              => '월간 그래프 (2 시간 단위',
+     '`Yearly\' Graph \(1 Day'                => '연간 그래프 (1 일 단위', 
+     'Incoming Traffic in (\S+) per Second'   => '초당 수신된 트래픽 ($1)',
+     'Outgoing Traffic in (\S+) per Second'   => '초당 송신된 트래픽 ($1)',
+     'at which time (.*) had been up for(.*)' => '$1의 가동 시간: $2',
+     '([kMG]?)([bB])/s'                       => '$1$2/초',
+     '([kMG]?)([bB])/min'                     => '$1$2/분',
+     '([kMG]?)([bB])/h'                       => '$1$2/시',
+     'Bits'                                   => '비트',
+     'Bytes'                                  => '바이트',
+     'In'                                     => '수신',
+     'Out'                                    => '송신',
+     'Percentage'                             => '퍼센트',
+     'Ported to OpenVMS Alpha by'             => 'OpenVMS Alpha 포팅', 
+     'Ported to WindowsNT by'                 => 'WindowsNT 포팅',
+     'and'                                    => '와',
+     '^GREEN'                                 => '녹색',
+     'BLUE'                                   => '청색',
+     'DARK GREEN'                             => '진한녹색',
+     'MAGENTA'                                => '분홍색',
+     'AMBER'                                  => '주황색'
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => '일요일',    'Sun' => '일',
+      'Monday'    => '월요일',    'Mon' => '월',
+      'Tuesday'   => '화요일',    'Tue' => '화',
+      'Wednesday' => '수요일',    'Wed' => '수',
+      'Thursday'  => '목요일',    'Thu' => '목',
+      'Friday'    => '금요일',    'Fri' => '금',
+      'Saturday'  => '토요일',    'Sat' => '토' 
+
+    );
+
+%month = 
+    (
+      'January'   => '1월',  'February'  => '2월' ,  'March'     => '3월',
+      'Jan'       => '1월',  'Feb'       => '2월',   'Mar'       => '3월',
+      'April'     => '4월',  'May'       => '5월',   'June'      => '6월', 
+      'Apr'       => '4월',  'May'       => '5월',   'Jun'       => '6월',
+      'July'      => '7월',  'August'    => '8월',   'September' => '9월', 
+      'Jul'       => '7월',  'Aug'       => '8월',   'Sep'       => '9월', 
+      'October'   => '10월', 'November'  => '11월',  'December'  => '12월', 
+      'Oct'       => '10월', 'Nov'       => '11월',  'Dec'       => '12월' 
+    );
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+  {
+    if($foo[3]=~(/(.*)at(.*)/))
+    { 
+      @quux=split(/at/,$foo[3]);
+#      $foo[3]=$quux[0]." kl.".$quux[1]; 
+      $foo[3]=$quux[0];
+      $foo[4]=$quux[1]; 
+    };
+    return $foo[3]."년 $month{$foo[2]} $foo[1]일 $wday{$foo[0]} $foo[4]";
+#    return "$wday{$foo[0]} den $foo[1]. $month{$foo[2]} $foo[3]"; 
+
+  };
+
+#
+# handle two different time/date formats:  
+# return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
+#
+
+# handle nontranslated strings which ought to be translated
+# print STDERR "$_\n" or print DEBUG "not translated $_";
+# but then again we might not want/need to translate all strings
+  
+ return $string;
+};
+
