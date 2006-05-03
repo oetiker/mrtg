@@ -1,3 +1,8 @@
+Changes 2.14.1, 2006-05-03
+--------------------------
+From: Peter W. Osel pwo qimonda.com
+* remove superfluous ^M from rateup.c
+
 Changes 2.14.0, 2006-05-02
 --------------------------
 From: tobi
