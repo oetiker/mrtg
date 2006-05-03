@@ -129,9 +129,9 @@
 .\" ========================================================================
 .\"
 .IX Title "MRTG-NT-GUIDE 1"
-.TH MRTG-NT-GUIDE 1 "2006-05-02" "2.14.0" "mrtg"
+.TH MRTG-NT-GUIDE 1 "2006-05-03" "2.14.1" "mrtg"
 .SH "NAME"
-mrtg\-nt\-guide \- The Windows Guide to MRTG 2.14.0
+mrtg\-nt\-guide \- The Windows Guide to MRTG 2.14.1
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
 Installing \s-1MRTG\s0 on a Windows box is not quite as \*(L"click and point\*(R" as some
@@ -146,7 +146,7 @@ For Example ActivePerl from
 http://www.activestate.com/Products/Download/Download.plex?id=ActivePerl
 .IP "\(bu" 4
 The latest version of \s-1MRTG\s0 from
-http://oss.oetiker.ch/mrtg/pub Look for mrtg\-2.14.0.zip
+http://oss.oetiker.ch/mrtg/pub Look for mrtg\-2.14.1.zip
 or better. The archive also contains a precompiled copy of rateup.exe for
 Win32.
 .SH "INSTALLING"
@@ -156,7 +156,7 @@ which, in this case, is also a web server. All examples are for doing things
 to a \s-1LOCAL\s0 machine.
 .IP "First" 4
 .IX Item "First"
-Unzip \s-1MRTG\s0 to C:\emrtg\-2.14.0 on the Windows machine of your choice.
+Unzip \s-1MRTG\s0 to C:\emrtg\-2.14.1 on the Windows machine of your choice.
 .IP "Next" 4
 .IX Item "Next"
 Install Perl on the same Windows machine. You might want to make sure
@@ -169,7 +169,7 @@ that the Perl binary directory is listed in your system path.
 You can manually check this by going to [Control Panel]\->[System]\->[Environment]
 .PP
 To see if everything is installed properly you can open a Command Shell
-and go into \fIc:\emrtg\-2.14.0\ebin\fR. Type:
+and go into \fIc:\emrtg\-2.14.1\ebin\fR. Type:
 .PP
 .Vb 1
 \& perl mrtg
@@ -195,7 +195,7 @@ Catalyst 5000) with Community string \fBpublic\fR. We are interested in monitori
 traffic, and the \s-1CPU\s0 load. Let's begin.
 .PP
 The first thing we do in setting up \s-1MRTG\s0 is making a default config file.
-Get to a cmd prompt and change to the \fIc:\emrtg\-2.14.0\ebin\fR directory. Type the
+Get to a cmd prompt and change to the \fIc:\emrtg\-2.14.1\ebin\fR directory. Type the
 following command:
 .PP
 .Vb 1
@@ -281,7 +281,7 @@ This section determines how the web page headers will look
 .Ve
 .PP
 And that's a very basic \s-1MRTG\s0 config file. You can run this and see your
-results by going into the \fIc:\emrtg\-2.14.0\ebin\fR directory and typing:
+results by going into the \fIc:\emrtg\-2.14.1\ebin\fR directory and typing:
 .PP
 .Vb 1
 \& perl mrtg mrtg.cfg
@@ -313,7 +313,7 @@ Add the option
 to your mrtg.cfg file and start it with:
 .PP
 .Vb 1
-\& start /Dc:\emrtg-2.14.0\ebin wperl mrtg --logging=eventlog mrtg.cfg
+\& start /Dc:\emrtg-2.14.1\ebin wperl mrtg --logging=eventlog mrtg.cfg
 .Ve
 .PP
 If you use \fBwperl\fR instead of \fBperl\fR, no console window will show. \s-1MRTG\s0 is now
@@ -326,7 +326,7 @@ If you put a shortcut with
 .PP
 .Vb 2
 \& Target:    wperl mrtg --logging=eventlog mrtg.cfg
-\& Start in:  c:\emrtg-2.14.0\ebin
+\& Start in:  c:\emrtg-2.14.1\ebin
 .Ve
 .PP
 into your start-up folder, \s-1MRTG\s0 will now start whenever you login to your \s-1NT\s0
