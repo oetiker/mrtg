@@ -84,7 +84,7 @@ use Getopt::Long;
 use Math::BigFloat;
 
 # search for binaries in the bin and bin/../lib  directory
-use MRTG_lib "2.100015";
+use MRTG_lib "2.100016";
 
 # $SNMP_Session::suppress_warnings = 2;
 use locales_mrtg "0.07";
@@ -305,7 +305,7 @@ sub main {
     # Check the config and create the target object
     debug('base', "Checking Config File");
     my @target;
-    cfgcheck(\@routers, \%cfg, \%rcfg, \@target);
+    cfgcheck(\@routers, \%cfg, \%rcfg, \@target, \%opts);
 
     # exit here if we only check the config file
     # in case of an error, cfgcheck() already exited

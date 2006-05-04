@@ -59,7 +59,7 @@ require Exporter;
 	     populateconfcache readconfcache writeconfcache
 	     v4onlyifnecessary);
 
-$VERSION = 2.100015;
+$VERSION = 2.100016;
 
 %timestrpospattern =
       (
@@ -604,8 +604,8 @@ sub mkdirhier ($){
     }
 }
 
-sub cfgcheck ($$$$) {
-    my ($routers, $cfg, $rcfg, $target) = @_;
+sub cfgcheck ($$$$$) {
+    my ($routers, $cfg, $rcfg, $target,$opts) = @_;
     my ($rou, $confname, $one_option);
     # Target index hash. Keys are "int:community@router" target definition
     # strings and values are indices of the @$target array. Used to avoid
@@ -624,7 +624,7 @@ sub cfgcheck ($$$$) {
                 if ($OS eq 'NT' or $OS eq 'OS2') and $$cfg{workdir} =~ /\s/;
         ensureSL(\$$cfg{workdir});
         $$cfg{logdir}=$$cfg{htmldir}=$$cfg{imagedir}=$$cfg{workdir};
-        mkdirhier "$$cfg{workdir}";
+        mkdirhier "$$cfg{workdir}"  unless $opts->{check};
         
     } elsif ( not (defined $$cfg{logdir} or defined $$cfg{htmldir} or defined $$cfg{imagedir})) {
           die ("ERROR: \"WorkDir\" not specified in mrtg config file\n");
@@ -635,21 +635,21 @@ sub cfgcheck ($$$$) {
             $error = "yes";
         } else {
           ensureSL(\$$cfg{logdir});
-          mkdirhier $$cfg{logdir};
+          mkdirhier $$cfg{logdir} unless $opts->{check};
         }
         if (! defined $$cfg{htmldir}) {
             warn ("WARNING: \"HtmlDir\" not specified\n");
             $error = "yes";
         } else {
           ensureSL(\$$cfg{htmldir});
-          mkdirhier $$cfg{htmldir};
+          mkdirhier $$cfg{htmldir}  unless $opts->{check};
         }
         if (! defined $$cfg{imagedir}) {
             warn ("WARNING: \"ImageDir\" not specified\n");
             $error = "yes";
         } else {
           ensureSL(\$$cfg{imagedir});
-          mkdirhier $$cfg{imagedir};
+          mkdirhier $$cfg{imagedir}  unless $opts->{check};
         }
     }
     # build relativ path from htmldir to image dir.
@@ -768,7 +768,7 @@ sub cfgcheck ($$$$) {
             # absent, and the rules for including it are the same).
 	    ensureSL(\$$rcfg{'directory'}{$rou});
             for my $x (qw(imagedir logdir htmldir)) {
-                mkdirhier $$cfg{$x}.$$rcfg{directory}{$rou};
+                mkdirhier $$cfg{$x}.$$rcfg{directory}{$rou}  unless $opts->{check};
             }                   
             $$rcfg{'directory_web'}{$rou} = $$rcfg{'directory'}{$rou};
 	    $$rcfg{'directory_web'}{$rou} =~ s/\Q${MRTG_lib::SL}\E+/\//g;
