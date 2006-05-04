@@ -50,7 +50,7 @@ use FindBin;
 use lib "${FindBin::Bin}";
 use lib "${FindBin::Bin}${main::SL}..${main::SL}lib${main::SL}mrtg2";
 
-use MRTG_lib "2.100015";
+use MRTG_lib "2.100016";
 use Getopt::Long;
 use Pod::Usage;
 

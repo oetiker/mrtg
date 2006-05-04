@@ -1,3 +1,10 @@
+Changes 2.14.2, 2006-05-03
+--------------------------
+From: Mike Mitchell
+* updated SNMP_util.pm and Net_SNMP_util.pm
+From: Tobi
+* do not create directories in --check mode
+
 Changes 2.14.1, 2006-05-03
 --------------------------
 From: Peter W. Osel pwo qimonda.com
