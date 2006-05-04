@@ -1,7 +1,7 @@
 #! /usr/bin/perl -w
 # -*- mode: Perl -*-
 ##################################################################
-# MRTG 2.14.1  --- Index Generator
+# MRTG 2.14.2  --- Index Generator
 ##################################################################
 #
 # This reads a mrtg.cfg file form std input or cmdline argument
@@ -50,7 +50,7 @@ use FindBin;
 use lib "${FindBin::Bin}";
 use lib "${FindBin::Bin}${main::SL}..${main::SL}lib${main::SL}mrtg2";
 
-use MRTG_lib "2.100015";
+use MRTG_lib "2.100016";
 use Getopt::Long;
 use Pod::Usage;
 
@@ -499,7 +499,7 @@ ECHO
     # -----------------------------------------------------------
 
 
-    my $VERSION = "2.14.1";
+    my $VERSION = "2.14.2";
     $index .= <<ECHO;
 <td></td>
 </tr>
@@ -608,7 +608,7 @@ sub options ($) {
 	$$opt{prefix} .= '/';
 	$$opt{prefix} =~ s|/+$|/|;
     }
-    die ("Indexmaker for mrtg-2.14.1\n") if $$opt{version};
+    die ("Indexmaker for mrtg-2.14.2\n") if $$opt{version};
     pod2usage(-exitval => 1, -verbose => 2) if $$opt{man};
     pod2usage(-verbose => 1) if not @ARGV;
     
@@ -638,7 +638,7 @@ __END__
 
 =head1 NAME
 
-indexmaker - Creates index files for mrtg web sites (mrtg-2.14.1)
+indexmaker - Creates index files for mrtg web sites (mrtg-2.14.2)
 
 =head1 SYNOPSIS
 
