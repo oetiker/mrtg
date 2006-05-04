@@ -1,3 +1,8 @@
+Changes 2.14.3, 2006-05-05
+--------------------------
+From: Tobi
+* fix regression in indexmaker due to --check fix
+
 Changes 2.14.2, 2006-05-03
 --------------------------
 From: Mike Mitchell

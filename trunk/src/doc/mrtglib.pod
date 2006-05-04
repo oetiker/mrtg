@@ -2,7 +2,7 @@
 package MRTG_lib;
 
 ###################################################################
-# MRTG 2.14.2  Support library MRTG_lib.pm
+# MRTG 2.14.3  Support library MRTG_lib.pm
 ###################################################################
 # Created by Tobias Oetiker <tobi.ch>
 #            and Dave Rand <dlr@bungi.com>
@@ -604,8 +604,12 @@ sub mkdirhier ($){
     }
 }
 
-sub cfgcheck ($$$$$) {
-    my ($routers, $cfg, $rcfg, $target,$opts) = @_;
+sub cfgcheck ($$$$;$) {
+    my $routers = shift;
+    my $cfg = shift;
+    my $rcfg = shift;
+    my $target = shift;
+    my $opts = shift || {};
     my ($rou, $confname, $one_option);
     # Target index hash. Keys are "int:community@router" target definition
     # strings and values are indices of the @$target array. Used to avoid
