@@ -1,0 +1,730 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w= 
+"urn:schemas-microsoft-com:office:word" xmlns= 
+"http://www.w3.org/TR/xhtml1/strict">
+<head>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=windows-1252" />
+<meta name="ProgId" content="Word.Document" />
+<meta name="Generator" content="Microsoft Word 9" />
+<meta name="Originator" content="Microsoft Word 9" />
+<link rel="File-List" href="./howto_files/filelist.xml" />
+<title>Monitoring Cisco BPX ATM Switches with MRTG:</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Daniel Newman</o:Author>
+  <o:Template>Normal</o:Template>
+  <o:LastAuthor>oetiker</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>61</o:TotalTime>
+  <o:Created>2001-05-27T18:25:00Z</o:Created>
+  <o:LastSaved>2001-05-27T18:25:00Z</o:LastSaved>
+  <o:Pages>3</o:Pages>
+  <o:Words>728</o:Words>
+  <o:Characters>4155</o:Characters>
+  <o:Company>TELERGYINC</o:Company>
+  <o:Lines>34</o:Lines>
+  <o:Paragraphs>8</o:Paragraphs>
+  <o:CharactersWithSpaces>5102</o:CharactersWithSpaces>
+  <o:Version>9.4402</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEvery>
+  <w:DisplayVerticalDrawingGridEvery>0</w:DisplayVerticalDrawingGridEvery>
+  <w:UseMarginsForDrawingGridOrigin/>
+  <w:Compatibility>
+   <w:FootnoteLayoutLikeWW8/>
+   <w:ShapeLayoutLikeWW8/>
+   <w:AlignTablesRowByRow/>
+   <w:ForgetLastTabAlignment/>
+   <w:LayoutRawTableWidth/>
+   <w:LayoutTableRowsApart/>
+  </w:Compatibility>
+ </w:WordDocument>
+</xml><![endif]-->
+<style type="text/css">
+<!--
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+    {mso-style-parent:"";
+    margin:0cm;
+    margin-bottom:.0001pt;
+    mso-pagination:widow-orphan;
+    font-size:10.0pt;
+    font-family:"Times New Roman";
+    mso-fareast-font-family:"Times New Roman";
+    mso-ansi-language:EN-US;}
+h1
+    {mso-style-next:Normal;
+    margin-top:12.0pt;
+    margin-right:0cm;
+    margin-bottom:3.0pt;
+    margin-left:0cm;
+    mso-pagination:widow-orphan;
+    page-break-after:avoid;
+    mso-outline-level:1;
+    font-size:14.0pt;
+    mso-bidi-font-size:10.0pt;
+    font-family:Arial;
+    mso-bidi-font-family:"Times New Roman";
+    mso-font-kerning:14.0pt;
+    mso-ansi-language:EN-US;
+    mso-bidi-font-weight:normal;}
+h2
+    {mso-style-next:Normal;
+    margin-top:12.0pt;
+    margin-right:0cm;
+    margin-bottom:3.0pt;
+    margin-left:0cm;
+    mso-pagination:widow-orphan;
+    page-break-after:avoid;
+    mso-outline-level:2;
+    font-size:12.0pt;
+    mso-bidi-font-size:10.0pt;
+    font-family:Arial;
+    mso-bidi-font-family:"Times New Roman";
+    mso-ansi-language:EN-US;
+    mso-bidi-font-weight:normal;
+    font-style:italic;
+    mso-bidi-font-style:normal;}
+h3
+    {mso-style-next:Normal;
+    margin-top:12.0pt;
+    margin-right:0cm;
+    margin-bottom:3.0pt;
+    margin-left:0cm;
+    mso-pagination:widow-orphan;
+    page-break-after:avoid;
+    mso-outline-level:3;
+    font-size:12.0pt;
+    mso-bidi-font-size:10.0pt;
+    font-family:Arial;
+    mso-bidi-font-family:"Times New Roman";
+    mso-ansi-language:EN-US;
+    font-weight:normal;}
+p.Preformatted, li.Preformatted, div.Preformatted
+    {mso-style-name:Preformatted;
+    margin:0cm;
+    margin-bottom:.0001pt;
+    mso-pagination:widow-orphan;
+    tab-stops:0cm 47.95pt 95.9pt 143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt 479.5pt;
+    font-size:10.0pt;
+    font-family:"Courier New";
+    mso-fareast-font-family:"Times New Roman";
+    mso-bidi-font-family:"Times New Roman";
+    mso-ansi-language:EN-US;
+    layout-grid-mode:line;}
+@page Section1
+    {size:612.0pt 792.0pt;
+    margin:72.0pt 72.0pt 72.0pt 72.0pt;
+    mso-header-margin:72.0pt;
+    mso-footer-margin:72.0pt;
+    mso-paper-source:0;}
+div.Section1
+    {page:Section1;}
+-->
+</style>
+</head>
+<body lang="EN-GB" style='tab-interval:36.0pt'>
+<div class="Section1">
+<h1><span lang="EN-US">Monitoring Cisco BPX ATM Switches with
+MRTG:</span></h1>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<h3><b style='mso-bidi-font-weight:normal'><span lang="EN-US">These
+OIDs work for monitoring total cells transmitted and received
+on<span style="mso-spacerun: yes">&nbsp;</span> a trunk on the
+Cisco BPX Switch.</span></b></h3>
+
+<p class="MsoNormal"><span lang="EN-US">X=slot number
+Y=1<sup>st</sup> digit of port number Z=2<sup>nd</sup> digit of
+port number(If single digit number ie.8, Z=0)</span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+.1.3.6.1.4.1.351.100.4.2.4.4.1.25.X0YZ000</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+atmTrkStatsTotalCellsTxtoLns</span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US">OBJECT-TYPE -- FROM <span
+style='mso-tab-count: 1'>&nbsp;&nbsp;</span> <span style= 
+'mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+STRATACOM-MIB</span></p>
+
+<p class="MsoNormal" style='text-indent:36.0pt'><span lang="EN-US">
+SYNTAX <span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Counter</span></p>
+
+<p class="MsoNormal" style='text-indent:36.0pt'><span lang="EN-US">
+MAX-ACCESS <span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+read-only</span></p>
+
+<p class="MsoNormal" style='text-indent:36.0pt'><span lang="EN-US">
+STATUS <span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Mandatory</span></p>
+
+<p class="MsoNormal" style='text-indent:36.0pt'><span lang="EN-US">
+DESCRIPTION <span style='mso-tab-count:1'>&nbsp;&nbsp;</span> <span
+style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+"The number of total cells transmitted to the line."</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">::= { iso(1) org(3) dod(6)
+internet(1) private(4) enterprises(1) stratacom(351)
+snmpAgents(100) strmSwitchMIB(4) switchServiceObjects(2)
+trunkServiceObjects(4) atmTrunkStatsTable(4) atmTrkStatsEntry(1)
+atmTrkStatsTotalCellsTxtoLns(25)</span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+.1.3.6.1.4.1.351.100.4.2.4.4.1.26.X0YZ000</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+atmTrkStatsTotalCellsRxFromPorts</span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US">OBJECT-TYPE-- FROM<span
+style='mso-tab-count:
+1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+STRATACOM-MIB</span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><span style=
+'mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+SYNTAX<span style=
+'mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Counter</span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><span style=
+'mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+MAX-ACCESS<span style=
+'mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+read-only</span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><span style=
+'mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+STATUS<span style=
+'mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Mandatory</span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><span style=
+'mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+DESCRIPTION<span style="mso-spacerun: yes">&nbsp;&nbsp;</span>
+<span style='mso-tab-count:1'></span> "The number of total cells
+received from the port."</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">::= { iso(1) org(3) dod(6)
+internet(1) private(4) enterprises(1) stratacom(351)
+snmpAgents(100) strmSwitchMIB(4) switchServiceObjects(2)
+trunkServiceObjects(4) atmTrunkStatsTable(4) atmTrkStatsEntry(1)
+atmTrkStatsTotalCellsRxFromPorts(26)</span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US">example MRTG.cfg
+entry:</span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><span style="mso-spacerun: 
+yes">&nbsp;</span>
+Target[Switchname_2.1]:.1.3.6.1.4.1.351.100.4.2.4.4.1.25.X0YZ000&amp;.1.3.6.1.4.1.351.100.4.2.4.4.1.26.X0YZ000:community@x.x.x.x*53</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">#multiply above by 53(53
+bytes in a cell)</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+Options[Switchname_2.1]:bits</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">PageTop[
+Switchname_2.1]:&lt;H1&gt;Traffic for switchname, FDR trunk 2.1 to
+switchname(MGX)&lt;/H1&gt;</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+AbsMax[Switchname_2.1]:149759768</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+MaxBytes[Switchname_2.1]:149759768</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+Directory[Switchname_2.1]:xxxxx</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+Ylegend[Switchname_2.1]:Bits per second</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+ShortLegend[Switchname_2.1]:bps</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+Title[Switchname_2.1]:Traffic for Switchname, FDR trunk 2.1 to
+switchname(MGX)</span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<h3><b style='mso-bidi-font-weight:normal'><span lang="EN-US">These
+OIDs work for monitoring total cells transmitted and received on a
+port on the Cisco BPX Switch.</span></b></h3>
+
+<p class="MsoNormal"><span lang="EN-US">X=slot number Y=port
+number</span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US">.1.3.6.1.4.1.351.100.4.2.2.3.1.8.X.Y</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US">atmPortStatCellsRxs OBJECT-TYPE</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> -- FROM<span
+style=
+'mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+STRATACOM-MIB</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> SYNTAX<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span
+style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Counter</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> MAX-ACCESS<span
+style=
+'mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+read-only</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> STATUS<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span
+style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Mandatory</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> DESCRIPTION<span
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;</span> "Total numbers
+of cells received."</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US">::= { iso(1) org(3) dod(6) internet(1) private(4)
+enterprises(1) stratacom(351) snmpAgents(100) strmSwitchMIB(4)
+switchServiceObjects(2) atmServiceObjects(2) atmPortStatTable(3)
+atmPortStatEntry(1) 8 }</span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US">.1.3.6.1.4.1.351.100.4.2.2.3.1.12.X.Y</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US">atmPortStatCellsTxs OBJECT-TYPE</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> -- FROM<span
+style=
+'mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+STRATACOM-MIB</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> SYNTAX<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span
+style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Counter</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> MAX-ACCESS<span
+style=
+'mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+read-only</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> STATUS<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span
+style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Mandatory</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> DESCRIPTION<span
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;</span> "Total numbers
+of cells transmitted."</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US">::= { iso(1) org(3) dod(6) internet(1) private(4)
+enterprises(1) stratacom(351) snmpAgents(100) strmSwitchMIB(4)
+switchServiceObjects(2) atmServiceObjects(2) atmPortStatTable(3)
+atmPortStatEntry(1) 12 }</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><[!if !supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US">Example MRTG.cfg entry:</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><[!if !supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><[!if !supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+Target[SYRTGB01_6.10]:.1.3.6.1.4.1.351.100.4.2.2.3.1.8.6.10&amp;.1.3.6.1.4.1.351.100.4.2.2.3.1.12.6.10:public@10.1.1.34*53</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">#multiply cells by 53 to
+convert to bytes</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+Options[Switchname_6.10]:bits</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+PageTop[Switchname_6.10]:&lt;H1&gt;Port Bandwidth
+DS-3&lt;/H1&gt;</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+MaxBytes[Switchname_6.10]:4608000</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+Directory[Switchname_6.10]:xxxxxx</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+Ylegend[Switchname_6.10]:Bits per second</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+ShortLegend[Switchname_6.10]:bps</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">Title[Switchname_6.10]:Port
+Bandwidth<span style="mso-spacerun: yes">&nbsp;</span>
+DS-3</span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<h1><span lang="EN-US">Monitoring Cisco MGX Frame Relay connections
+with MRTG:</span></h1>
+
+<h3><b style='mso-bidi-font-weight:normal'><span lang="EN-US">These
+OIDs work for monitoring total cells transmitted and received on a
+port on the Cisco BPX Switch.</span></b></h3>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><[!if !supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US">.1.3.6.1.4.1.351.110.2.5.1.1.4.1</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US">xmtCells OBJECT-TYPE</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> -- FROM<span
+style=
+'mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+AXIPOP-MIB</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> SYNTAX<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span
+style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Counter</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> MAX-ACCESS<span
+style=
+'mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+read-only</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> STATUS<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span
+style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Mandatory</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> DESCRIPTION<span
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;</span> "The number of
+cells transmitted on this channel."</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US">::= { iso(1) org(3) dod(6) internet(1) private(4)
+enterprises(1) stratacom(351) basis(110) cardGeneric(2)
+sarChannelCounter(5) sarChannelCounterTable(1)
+sarChannelCounterEntry(1) xmtCells(4) 1 }</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><[!if !supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US">.1.3.6.1.4.1.351.110.2.5.1.1.12.1</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US">rcvCells OBJECT-TYPE</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> -- FROM<span
+style=
+'mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+AXIPOP-MIB</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> SYNTAX<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span
+style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Counter</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> MAX-ACCESS<span
+style=
+'mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+read-only</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> STATUS<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span
+style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Mandatory</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><span style='mso-tab-count:1'>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> DESCRIPTION<span
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;</span> "The number of
+cells that were received on this channel."</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US">::= { iso(1) org(3) dod(6) internet(1) private(4)
+enterprises(1) stratacom(351) basis(110) cardGeneric(2)
+sarChannelCounter(5) sarChannelCounterTable(1)
+sarChannelCounterEntry(1) rcvCells(12) 1 }</span></p>
+
+<p class="Preformatted" style='tab-stops:0cm 47.95pt 95.9pt 
+143.85pt 191.8pt 239.75pt 287.7pt 335.65pt 383.6pt 431.55pt'><span
+lang="EN-US"><[!if !supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+######enterprises.351.110.2.5.1.1.4.1.x.yy =Transmit Cells from
+SAR</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+######enterprises.351.110.2.5.1.1.12.1.x.yy =Recieve Cells from
+SAR</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+######x=slotnumber</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">######yy=channel
+number</span></p>
+
+<p class="MsoNormal"><span lang="EN-US"><[!if
+!supportEmptyParas]>&nbsp;<[!endif]></span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+Target[Switchname_11_142]:enterprises.351.110.2.5.1.1.4.1.x.yy&amp;enterprises.351.110.2.5.1.1.12.1.x.yy:POPEYE\@SM_11@10.1.1.35*53</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">#\@ the \breaks out of Perl
+so the @ is not processedthanks Tobi.</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">#POPEYE is always the
+community name of the switch, SM_11 means service module 11, if you
+need stats from #the active PXM the community is
+POPEYE@PXM_ACTIVE</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">Options[Switchname_11_142]:
+bits</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+PageTop[Switchname_11_142]:&lt;H1&gt;xxxx Frame
+Statistics&lt;/H1&gt;</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+AbsMax[Switchname_11_142]:1536000</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">#Port Speed</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+MaxBytes[Switchname_11_142]:1536000</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">#MaxBytes=CIR</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+Directory[Switchname_11_142]:xxxx</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+Ylegend[Switchname_11_142]:Bits per second</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">
+ShortLegend[Switchname_11_142]:bps</span></p>
+
+<p class="MsoNormal"><span lang="EN-US">Title[Switchname_11_142]:
+11.19.0.17 DLCI 17</span></p>
+</div>
+</body>
+</html>
+

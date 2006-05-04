@@ -1,0 +1,234 @@
+MRTGLIB(1)                     mrtg                    MRTGLIB(1)
+
+
+
+NNAAMMEE
+       MRTG_lib.pm - Library for MRTG and support scripts
+
+SSYYNNOOPPSSIISS
+        use MRTG_lib;
+        my ($configfile, @target_names, %globalcfg, %targetcfg);
+        readcfg($configfile, \@target_names, \%globalcfg, \%targetcfg);
+        my (@parsed_targets);
+        cfgcheck(\@target_names, \%globalcfg, \%targetcfg, \@parsed_targets);
+
+DDEESSCCRRIIPPTTIIOONN
+       MRTG_lib is part of MRTG, the Multi Router Traffic Gra-
+       pher. It was separated from MRTG to allow other programs
+       to easily use the same config files. The main part of
+       MRTG_lib is the config file parser but some other funcions
+       are there too.
+
+       $MRTG_lib::OS
+           Type of OS: WIN, UNIX, VMS
+
+       $MRTG_lib::SL
+           _S_l_a_s_h in the current OS.
+
+       $MRTG_lib::PS
+           Path separator in PATH variable
+
+       "readcfg"
+           "readcfg($file, \@targets, \%globalcfg, \%targetcfg [,
+           $prefix, \%extrules])"
+
+           Reads a config file, parses it and fills some arrays
+           and hashes. The mandatory arguments are: the name of
+           the config file, a ref to an array which will be
+           filled with a list of the target names, a hashref for
+           the global configuration, a hashref for the target
+           configuration.
+
+           The configuration file syntax is:
+
+            globaloption: value
+            targetoption[targetname]: value
+            aprefix*extglobal: value
+            aprefix*exttarget[target2]: value
+
+           E.g.
+
+            workdir: /var/stat/mrtg
+            target[router1]: 2:public@router1.local.net
+            14all*columns: 2
+
+           The global config hash has the structure
+
+            $globalcfg{configoption} = 'value'
+
+           The target config hash has the structure
+
+            $targetcfg{configoption}{targetname} = 'value'
+
+           See mrtg-reference for more information about the MRTG
+           configuration syntax.
+
+           "readcfg" can take two additional arguments to extend
+           the config file syntax. This allows programs to put
+           their configuration into the mrtg config file. The
+           fifth argument is the prefix of the extension, the
+           sixth argument is a hash with the checkrules for these
+           extension settings. E.g. if the prefix is "14all"
+           "readcfg" will check config lines that begin with
+           "14all*", i.e. all lines like
+
+            14all*columns: 2
+            14all*graphsize[target3]: 500 200
+
+           against the rules in %extrules. The format of this
+           hash is:
+
+            $extrules{option} = [sub{$_[0] =~ m/^\d+$/}, sub{"Error message for $_[0]"}]
+                i.e.
+            $extrules{option}[0] -> a test expression
+            $extrules{option}[1] -> error message if test fails
+
+           The first part of the array is a perl expression to
+           test the value of the option. The test can access this
+           value in the variable "$arg". The second part of the
+           array is an error message to display when the test
+           fails. The failed value can be integrated by using the
+           variable "$arg".
+
+           Config settings with an different prefix than the one
+           given in the "readcfg" call are not checked but
+           inserted into _%_g_l_o_b_a_l_c_f_g and _%_t_a_r_g_e_t_c_f_g.  Prefixed
+           settings keep their prefix in the config hashes:
+
+            $targetcfg{'14all*graphsize'}{'target3'} = '500 200'
+
+       "cfgcheck"
+           "cfgcheck(\@target_names, \%globalcfg, \%targetcfg,
+           \@parsed_targets)"
+
+           Checks the configuration read by "readcfg". Checks the
+           values in the config for syntactical and/or semantical
+           errors. Sets defaults for some options.  Parses the
+           "target[...]" options and filles the array
+           @parsed_targets ready for mrtg functions.
+
+           The first three arguments are the same as for "read-
+           cfg". The fourth argument is an arrayref which will be
+           filled with the parsed target defs.
+
+           "cfgcheck" converts the values of target settings
+           _o_p_t_i_o_n_s, e.g.
+
+            options[router1]: bits, growright
+
+           to a hash:
+
+            $targetcfg{'option'}{'bits'}{'router1'} = 1
+            $targetcfg{'option'}{'growright'}{'router1'} = 1
+
+           This is not done by "readcfg" so if you don't use
+           "cfgcheck" you have to check the scalar variable _$_t_a_r_-
+           _g_e_t_c_f_g_{_'_o_p_t_i_o_n_'_}_{_'_r_o_u_t_e_r_1_'_} (MRTG allows options to be
+           separated by space or ',').
+
+       "ensureSL"
+           "ensureSL(\$pathname)"
+
+           Checks that the _p_a_t_h_n_a_m_e does not contain double path
+           separators and ends with a path separator. It uses
+           $MRTG_lib::SL as path separator which will be / or \
+           depending on the OS.
+
+       "log2rrd"
+           "log2rrd ($router,\%globalcfg,\%targetcfg)"
+
+           Convert log file to rrd format. Needs rrdtool.
+
+       "datestr"
+           "datestr(time)"
+
+           Returns the time given in the argument as a nicely
+           formated date string.  The argument has to be in UNIX
+           time format (seconds since 1970-1-1).
+
+       "timestamp"
+           "timestamp()"
+
+           Return a string representing the current time.
+
+       "setup_loghandlers"
+           "setup_loghandlers(filename)"
+
+           Install signalhandlers for __DIE__ and __WARN__ making
+           the errors go the the specified destination. If file-
+           name is 'eventlog' mrtg will log to the windows event
+           logger.
+
+       "expistr"
+           "expistr(time)"
+
+           Returns the time given in the argument formatted suit-
+           able for HTTP Expire-Headers.
+
+       "create_pid"
+           "create_pid()"
+
+           Creates a pid file for the mrtg daemon
+
+       "demonize_me"
+           "demonize_me()"
+
+           Puts the running program into background, detaching it
+           from the terminal.
+
+       "populatecache"
+           "populatecache(\%confcache, $host, $reread, $snmpopt-
+           shash)"
+
+           Reads the SNMP variables _i_f_D_e_s_c_r, _i_p_A_d_E_n_t_I_f_I_n_d_e_x,
+           _i_f_P_h_y_s_A_d_d_r_e_s_s, _i_f_N_a_m_e from the _h_o_s_t and stores the
+           values in _%_c_o_n_f_c_a_c_h_e as follows:
+
+            $confcache{$host}{'Descr'}{ifDescr}{oid} = (ifDescr or 'Dup')
+            $confcache{$host}{'IP'}{ipAdEntIfIndex}{oid} = (ipAdEntIfIndex or 'Dup')
+            $confcache{$host}{'Eth'}{ifPhysAddress}{oid} = (ifPhysAddress or 'Dup')
+            $confcache{$host}{'Name'}{ifName}{oid} = (ifName or 'Dup')
+            $confcache{$host}{'Type'}{ifType}{oid} = (ifType or 'Dup')
+
+           The value (at the right side of =) is 'Dup' if a value
+           was retrieved muliple times, the retrieved value else.
+
+       "readconfcache"
+           "my $confcache = readconfcache($file)"
+
+           Preload the confcache from a file.
+
+       "readfromconfcache"
+           "writeconfcache($confcache,$file)"
+
+           Store the current confcache into a file.
+
+       "writeconfcache"
+           "writeconfcache($confcache,$file)"
+
+           Store the current confcache into a file.
+
+       "storeincache"
+           "storeincache($confcache,$host,$method,$key,$value)"
+
+       "readfromcache"
+           "readfromcache($confcache,$host,$method,$key)"
+
+       "clearfromcache"
+           "clearfromcache($confcache,$host)"
+
+       "debug"
+           "debug($type, $message)"
+
+           Prints the _m_e_s_s_a_g_e on STDERR if debugging is enabled
+           for type _t_y_p_e.  A debug type is enabled if _t_y_p_e is in
+           array @main::DEBUG.
+
+AAUUTTHHOORRSS
+       Rainer Bawidamann <Rainer.Bawidamann@rz.uni-ulm.de>
+
+       (This Manpage)
+
+
+
+2.14.3                      2006-05-05                 MRTGLIB(1)

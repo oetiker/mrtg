@@ -1,0 +1,67 @@
+MRTG-CONTRIB(1)                mrtg               MRTG-CONTRIB(1)
+
+
+
+NNAAMMEE
+       mrtg-contrib - Contribution Guidelines for MRTG
+
+DDEESSCCRRIIPPTTIIOONN
+       If you have written an extension to mrtg or created a bug
+       fix, please consider contributing it to the project. As I
+       get quite a number of contributions every week, here are a
+       few guidelines which explain how to contribute so that I
+       can use the contribution without too much additional work.
+
+       TTrraannssllaattiioonnss
+
+       MRTG messages have been translated to a number of lan-
+       guages but there are still many which have not been cov-
+       ered yet. If you want to add yours, go into the
+       _m_r_t_g_-_2_._1_4_._3_/_t_r_a_n_s_l_a_t_e directory and follow the instruc-
+       tions given in the _R_E_A_D_M_E file.
+
+       PPaattcchheess
+
+       When you have created your modification or extension to
+       mrtg and want to submit it to me, please crate a patch for
+       the files which you have modified.  Do not send entire
+       files unless they are new.
+
+       To create a patch, get hold of a copy of GNU diff (Many
+       Unix systems will have this installed already. In the NT
+       world you might want to get http://sources.redhat.com/cyg-
+       win/ to get all the nice GNU tools available.)  and type
+
+        diff --unified --ignore-space-change old-file new-file > simple.patch
+
+       or if you have modified several files do
+
+        diff --recursive --unified --ignore-space-change old-dir/ new-dir/ >long.patch
+
+       DDooccuummeennttaattiioonn
+
+       All documentation of mrtg is done with the perl PPOODD sys-
+       tem. If you want to learn about it, type
+
+        perldoc perlpod
+
+       and read the instructions. If you have bugfixes or addi-
+       tions to the existing documents, make sure you modify the
+       PPOODD files and not the html or txt versions.
+
+       I take documentation very seriously. Whenever you create a
+       new feature for mrtg which you want to get included in the
+       official release, your patch must also contain modifica-
+       tions for the relevant ppoodd file in the _d_o_c tree or for the
+       documentation sections of _c_f_g_m_a_k_e_r and _i_n_d_e_x_m_a_k_e_r.
+
+AADDDDRREESSSS
+       Send your patches, translations and contributions to
+       Tobias Oetiker <tobi.ch>
+
+AAUUTTHHOORR
+       Tobias Oetiker <tobi.ch>
+
+
+
+2.14.3                      2006-05-05            MRTG-CONTRIB(1)

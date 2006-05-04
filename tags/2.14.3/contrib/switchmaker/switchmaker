@@ -1,0 +1,270 @@
+#!/usr/local/bin/perl
+#######################################################
+# switchmaker for MRTG
+#######################################################
+#   Author: Markley Dykeman - 04/27/99
+#  Purpose: This program makes an MRTG configuration 
+#           file for Cisco 5500 switches.
+#    Usage: switchmaker <fqdm> <snmpRO>
+# Requires: SNMP-Util-1.6 and SNMP-1.8
+#######################################################
+
+my $testing = 0;
+
+# Libraries
+use SNMP::Util;
+use Socket;
+use strict;
+
+# Environment
+$ENV{'MAX_LOG_LEVEL'} = 'status';
+
+# Usage display
+if (@ARGV < 1){
+   print "Usage: \n";
+   print "      switchmaker <IP> <community string>\n";
+   print "\n";
+   print "       IP = IP address or Switch name\n";
+   print "       comm = defaults to hostname\n";
+   exit;
+}
+
+# Arrays
+my(%iftype)=(	'1'=>'other',
+		'2'=>'cddi',
+		'3'=>'fddi',
+		'4'=>'tppmd',
+		'5'=>'mlt3',
+		'6'=>'sddi',
+		'7'=>'smf',
+		'8'=>'e10BaseT',
+		'9'=>'e10BaseF',
+		'10'=>'scf',
+		'11'=>'e100BaseTX',
+		'12'=>'e100BaseT4',
+		'13'=>'e100BaseF',
+		'14'=>'atmOc3mmf',
+		'15'=>'atmOc3smf',
+		'16'=>'atmOc3utp',
+		'17'=>'e100BaseFsm',
+		'18'=>'e10a100BaseTX',
+		'19'=>'mii',
+		'20'=>'vlanRouter',
+		'22'=>'tokenring',
+		'23'=>'atmOc12mmf',
+		'24'=>'atmOc12smf',
+		'25'=>'atmDs3',
+		'26'=>'tokenringMmf',
+		'27'=>'e1000BaseLX'
+		);
+
+# Declare working variables
+my ($sysDescr, $sysName, $sysIpAddr, %portGrp, $portIfIndex, $interfacecnt, @result, @oid_list, $iphost);
+my (@oid_cutoff, $i);  
+
+# Get command line arguments
+my $IP = $ARGV[0];
+my $Comm_string = $ARGV[1];
+
+# Open connection to device
+my $snmp = new SNMP::Util(-device    => $IP,
+                       -community => $Comm_string);
+
+########################
+# Get system information
+########################
+
+@result = $snmp->next( 'ne', '1.3.6.1.2.1.1.1'); #sysDescr
+$sysDescr = $result[1];
+
+@result = $snmp->next( 'ne', '1.3.6.1.2.1.1.5'); #sysName
+$sysName = $result[1];
+
+@result = $snmp->next( 'ne', '1.3.6.1.4.1.9.5.1.1.2'); #sysIpAddr
+$sysIpAddr = $result[1];
+
+$iphost = gethostbyaddr(pack('C4',split(/\./,$sysIpAddr)), AF_INET); #iphost
+if (!defined $iphost || ($iphost eq '')){
+   $iphost = 'Unknown DNS name';
+}
+
+#########################
+# Walk through ports
+#########################
+@oid_list = (	'1.3.6.1.4.1.9.5.1.4.1.1.11', #portIfIndex
+		'1.3.6.1.4.1.9.5.1.4.1.1.5',  #portType
+		'1.3.6.1.4.1.9.5.1.4.1.1.10', #portDuplex
+		'1.3.6.1.4.1.9.5.1.4.1.1.1',  #portModuleIndex
+		'1.3.6.1.4.1.9.5.1.4.1.1.2',  #portIndex
+		'1.3.6.1.4.1.9.5.1.4.1.1.4',  #portName
+		);
+@oid_cutoff = 	'1.3.6.1.4.1.9.5.1.4.1.1.11';
+
+# Walk the MIBs...
+my ($more) = 1;
+while ($more) {
+   @result = $snmp->next(	-format => 'one',
+				-oids => \@oid_list,
+                    		);
+
+   # Are we done walking?
+   if (@result[0] !~ /@oid_cutoff/) {
+     $more = 0;
+   }
+
+   # if not, process the data
+   if ($more) {
+      $portIfIndex = $result[2];
+      $interfacecnt = $result[2];
+      $portGrp{$portIfIndex}{'portIfIndex'} = $result[2];
+      $portGrp{$portIfIndex}{'portType'} = $result[5];
+      $portGrp{$portIfIndex}{'portDuplex'} = $result[8];
+      $portGrp{$portIfIndex}{'portModuleIndex'} = $result[11];
+      $portGrp{$portIfIndex}{'portIndex'} = $result[14];
+      $portGrp{$portIfIndex}{'portName'} = $result[17];
+   }
+
+   # Update OID for snmp->next
+   @oid_list = ($result[0],$result[3],$result[6],$result[9],$result[12],$result[15]);
+
+}
+
+##############################
+# Walk through MIB2 interfaces 
+##############################
+@oid_list = (	'1.3.6.1.2.1.2.2.1.1', #ifIndex
+		'1.3.6.1.2.1.2.2.1.2', #ifDescr
+		'1.3.6.1.2.1.2.2.1.3', #ifType
+		'1.3.6.1.2.1.2.2.1.5', #ifSpeed
+		'1.3.6.1.2.1.2.2.1.7', #ifAdminStatus
+		'1.3.6.1.2.1.2.2.1.8', #ifOperStatus
+		);
+@oid_cutoff =	'1.3.6.1.2.1.2.2.1.1';
+
+
+# Walk the MIBs...
+my ($more) = 1;
+while ($more) {
+   @result = $snmp->next(	-format => 'one',
+     				-oids => \@oid_list,
+                    		);
+
+   # Are we done walking?
+   if (@result[0] !~ /@oid_cutoff/) {
+     $more = 0;
+   }
+
+   # if not, process the data
+   if ($more) {
+      $portIfIndex = $result[2];
+
+      # deal with non-workgroup ports (1 & 2
+      if ($portGrp{$portIfIndex}{'portIfIndex'} eq "") {
+         $portGrp{$portIfIndex}{'portIfIndex'} = $result[2];
+         if ($portIfIndex eq "1") {
+            $portGrp{$portIfIndex}{'portName'} =  $iphost
+         } else {
+            $portGrp{$portIfIndex}{'portName'} = $result[5];
+            $portGrp{$portIfIndex}{'ifDescr'} = $result[8];
+         }
+      }
+      $portGrp{$portIfIndex}{'ifDescr'} = $result[5] if (!($portGrp{$portIfIndex}{'ifDescr'} eq $result[8]));
+      $portGrp{$portIfIndex}{'ifType'} = $result[8];
+      $portGrp{$portIfIndex}{'ifSpeed'} = $result[11];
+      $portGrp{$portIfIndex}{'ifAdminStatus'} = $result[14];
+      $portGrp{$portIfIndex}{'ifOperStatus'} = $result[17];
+   }
+
+   # Update OID for snmp->next
+   @oid_list = ($result[0],$result[3],$result[6],$result[9],$result[12],$result[15]);
+
+}
+
+if ($testing) {
+   print "Summary for $sysName ($sysIpAddr), $sysDescr\n";
+   for ($i = 1;$i <= $interfacecnt; $i++) {
+      print "$portGrp{$i}{'portIfIndex'} ";
+      print "$portGrp{$i}{'portType'} ";
+      print "$portGrp{$i}{'portDuplex'} ";
+      print "$portGrp{$i}{'portModuleIndex'}/";
+      print "$portGrp{$i}{'portIndex'} ";
+      print "$portGrp{$i}{'portName'}\n";
+      print "$portGrp{$i}{'ifDescr'} ";
+      print "$portGrp{$i}{'ifType'} ";
+      print "$portGrp{$i}{'ifSpeed'} ";
+      print "$portGrp{$i}{'ifAdminStatus'} ";
+      print "$portGrp{$i}{'ifOperStatus'}\n";
+   }
+}
+
+#######################################
+# Start creating the configuration file
+#######################################
+print "# Add a WorkDir: /some/path line to this file\n\n";
+
+for ($i = 1;$i <= $interfacecnt; $i++) {
+
+   my $slash;
+   if ($portGrp{$i}{'portModuleIndex'} eq '') {
+      $slash = " ";
+   } else {
+      $slash = "/";
+   }
+
+   my $c;
+   my $ifSpeed = $portGrp{$i}{'ifSpeed'};
+   my $speedStr = &fmi($ifSpeed);
+
+   if (!($portGrp{$i}{'ifAdminStatus'} eq "up")) {
+      print <<ECHO;
+########
+######## This Interface is one of the following
+######## - administratively not UP
+######## - it is in test mode
+######## - it is a softwareLoopback interface
+######## - has a unrealistic speed setting
+######## It is commented out for this reason.
+########
+ECHO
+      $c="# ";
+   } else {
+      $c = '';
+   }
+   print <<ECHO;
+${c}
+${c}Target[$iphost.$i]: $i:$Comm_string\@$sysIpAddr
+${c}MaxBytes[$iphost.$i]: $ifSpeed
+${c}Title[$iphost.$i]: $portGrp{$i}{'portModuleIndex'}$slash$portGrp{$i}{'portIndex'} $portGrp{$i}{'portName'} -- $portGrp{$i}{'ifDescr'}
+${c}Options[$iphost.$i]: growright, bits
+${c}PageTop[$iphost.$i]: <H1>Traffic Analysis for $portGrp{$i}{'portModuleIndex'}$slash$portGrp{$i}{'portIndex'} $portGrp{$i}{'portName'} </H1>
+${c} <TABLE>
+${c}   <TR><TD>System:</TD><TD>$iphost.$i</TD></TR>
+${c}   <TR><TD>Interface:</TD><TD> $portGrp{$i}{'portModuleIndex'}$slash$portGrp{$i}{'portIndex'} $portGrp{$i}{'portName'} -- $portGrp{$i}{'ifDescr'} ($i)</TD></TR>
+${c}   <TR><TD>Max Speed:</TD>
+${c}       <TD> $speedStr ($portGrp{$i}{'portType'}) ($portGrp{$i}{'portDuplex'})</TD></TR>
+${c}  </TABLE>
+${c}
+##---------------------------------------------------------------
+ECHO
+
+}
+
+##############################
+# Any errors?
+##############################
+my $error = $snmp->error;
+if ($error){
+   print "error = $error\n";
+}
+
+sub fmi {
+  my($number) = $_[0];
+  my(@short);
+  $number=$number;
+  @short = ("b/s","kb/s","Mb/s","Gb/s");
+  my $digits=length("".$number);
+  my $divm=0;
+  while ($digits-$divm*3 > 4) { $divm++; }
+  my $divnum = $number/10**($divm*3);
+  return sprintf("%1.1f %s",$divnum,$short[$divm]);
+}
