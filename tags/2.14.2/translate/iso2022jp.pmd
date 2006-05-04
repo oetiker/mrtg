@@ -1,0 +1,133 @@
+###### PATCHTAG00 ####################################################
+###      日本語(ISO-2022-JP)
+###      => Fuminori Uematsu <uematsu@kgz.com>
+###### PATCHTAG10 ####################################################
+  &iso2022jp
+###### PATCHTAG20 ####################################################
+  'iso2022jp'    => \&iso2022jp,
+  'iso-2022-jp'  => \&iso2022jp, 
+###### PATCHTAG30 ####################################################
+# iso2022jp/iso-2022-jp
+   'iso2022jp' =>
+   "\e\$BF|K\\8lLu\e(B(ISO-2022-JP)\e\$B:n\@.\e(B
+				<a href=\"http://www.kgz.com/~uematsu/\">\e\$B?\">>\e(B \e\$BJ8FA\e(B</a>
+				<a href=\"mailto:uematsu\@kgz.com\">&lt;uematsu\@kgz.com&gt;</a>",
+###### PATCHTAG40 ####################################################
+$credits::LOCALE{'iso-2022-jp'}=$credits::LOCALE{'iso2022jp'};
+###### PATCHTAG50 ####################################################
+# iso2022jp
+
+sub iso2022jp
+{
+  my $string = shift;
+  return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+  # charset=iso-2022-jp
+
+  %translations =
+  (  
+     '^iso-8859-1'                            => 'iso-2022-jp',
+     '^Maximal 5 Minute Incoming Traffic'     => '\e\\$B:GBg\e(B5\e\\$BJ,<u?.NL\e(B',
+     '^Maximal 5 Minute Outgoing Traffic'     => '\e\\$B:GBg\e(B5\e\\$BJ,Aw?.NL\e(B',
+     '^the device'                            => '\e\\$B%G%P%\\$%9\e(B',
+     '^The statistics were last updated (.*)' => '\e\\$B99?7F|;~\e(B $1',
+     '^Average\)'                             => '\e\\$BJ?6Q\e(B)',
+     '^Average$'                              => '\e\\$BJ?6Q\e(B',
+     '^Max$'                                  => '\e\\$B:GBg\e(B',
+     '^Current'                               => '\e\\$B:G?7\e(B',
+     '^`Daily\' Graph \((.*) Minute'          => '\e\\$BF|%0%i%U\e(B($1\e\\$BJ,4V\e(B',
+     '^`Weekly\' Graph \(30 Minute'           => '\e\\$B=5%0%i%U\e(B(30\e\\$BJ,4V\e(B',
+     '^`Monthly\' Graph \(2 Hour'             => '\e\\$B7n%0%i%U\e(B(2\e\\$B;~4V\e(B',
+     '^`Yearly\' Graph \(1 Day'               => '\e\\$BG/%0%i%U\e(B(1\e\\$BF|\e(B',
+     '^Incoming Traffic in (\S+) per Second'  => '\e\\$BKhIC\\$N<u?.\e(B$1\e\\$B?t\e(B',
+     '^Incoming Traffic in (\S+) per Minute'  => '\e\\$BKhJ,\\$N<u?.\e(B$1\e\\$B?t\e(B',
+     '^Incoming Traffic in (\S+) per Hour'    => '\e\\$BKh;~\\$N<u?.\e(B$1\e\\$B?t\e(B',
+     '^Outgoing Traffic in (\S+) per Second'  => '\e\\$BKhIC\\$NAw?.\e(B$1\e\\$B?t\e(B',
+     '^Outgoing Traffic in (\S+) per Minute'  => '\e\\$BKhJ,\\$NAw?.\e(B$1\e\\$B?t\e(B',
+     '^Outgoing Traffic in (\S+) per Hour'    => '\e\\$BKh;~\\$NAw?.\e(B$1\e\\$B?t\e(B',
+     '^at which time (.*) had been up for (.*)' => '$1\e\\$B\\$N2TF/;~4V\e(B $2',
+     '^Average max 5 min values for `Daily\' Graph \((.*) Minute interval\):' => '\e\\$BF|%0%i%U\\$G\\$N:GBg\e(B5\e\\$BJ,CM\\$NJ?6Q\e(B($1\e\\$BJ,4V3V\e(B):',
+     '^Average max 5 min values for `Weekly\' Graph \(30 Minute interval\):' => '\e\\$B=5%0%i%U\\$G\\$N:GBg\e(B5\e\\$BJ,CM\\$NJ?6Q\e(B(30\e\\$BJ,4V3V\e(B):',
+     '^Average max 5 min values for `Monthly\' Graph \(2 Hour interval\):' => '\e\\$B7n%0%i%U\\$G\\$N:GBg\e(B5\e\\$BJ,CM\\$NJ?6Q\e(B(2\e\\$B;~4V4V3V\e(B):',
+     '^Average max 5 min values for `Yearly\' Graph \(1 Day interval\):' => '\e\\$BG/%0%i%U\\$G\\$N:GBg\e(B5\e\\$BJ,CM\\$NJ?6Q\e(B(1\e\\$BF|4V3V\e(B):',
+     #'^([kMG]?)([bB])/s'                      => '$1$2/\e\\$BIC\e(B',
+     #'^([kMG]?)([bB])/min'                    => '$1$2/\e\\$BJ,\e(B',
+     #'^([kMG]?)([bB])/h'                      => '$1$2/\e\\$B;~\e(B',
+     '^Bits$'                                 => '\e\\$B%S%C%H\e(B',
+     '^Bytes$'                                => '\e\\$B%P%\\$%H\e(B',
+     '^In$'                                   => '\e\\$B<u?.\e(B',
+     '^Out$'                                  => '\e\\$BAw?.\e(B',
+     '^Percentage'                            => '\e\\$BHfN(\e(B',
+     '^Ported to OpenVMS Alpha by'            => 'OpenVMS Alpha\e\\$B\\$X\\$N0\\\?"\e(B',
+     '^Ported to WindowsNT by'                => 'WindowsNT\e\\$B\\$X\\$N0\\\?"\e(B',
+     #'^and'                                   => 'and',
+     '^GREEN'                                 => '\e\\$BNP\e(B',
+     '^BLUE'                                  => '\e\\$B\\@D\e(B',
+     '^DARK GREEN'                            => '\e\\$B?<NP\e(B',
+     '^MAGENTA'                               => '\e\\$B%^%<%s%?\e(B',
+     '^AMBER'                                 => '\e\\$B`h`a\e(B'
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => "(\e\$BF|\e(B)",
+      'Monday'    => "(\e\$B7n\e(B)",
+      'Tuesday'   => "(\e\$B2P\e(B)",
+      'Wednesday' => "(\e\$B?e\e(B)",
+      'Thursday'  => "(\e\$BLZ\e(B)",
+      'Friday'    => "(\e\$B6b\e(B)",
+      'Saturday'  => "(\e\$BEZ\e(B)",
+    );
+
+%month = 
+    (
+      'January'   => "1\e\$B7n\e(B",    'February' => "2\e\$B7n\e(B",
+      'March'     => "3\e\$B7n\e(B",    'April'    => "4\e\$B7n\e(B",
+      'May'       => "5\e\$B7n\e(B",    'June'     => "6\e\$B7n\e(B",
+      'July'      => "7\e\$B7n\e(B",    'August'   => "8\e\$B7n\e(B",
+      'September' => "9\e\$B7n\e(B",    'October'  => "10\e\$B7n\e(B",
+      'November'  => "11\e\$B7n\e(B",   'December' => "12\e\$B7n\e(B",
+    );
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)\s+(.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+    {
+	if($foo[3]=~/at/)
+      { 
+        @quux=split(/\s+at\s+/,$foo[3]);
+      }
+	else
+      { 
+        @quux=split(/ /,$foo[3],2);
+      };
+      return "$quux[0]\e\$BG/\e(B$month{$foo[2]}$foo[1]\e\$BF|\e(B$wday{$foo[0]} $quux[1]"; 
+    };
+
+#
+# handle two different time/date formats:  
+# return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
+#
+
+# handle nontranslated strings which ought to be translated
+# print STDERR "$_\n" or print DEBUG "not translated $_";
+# but then again we might not want/need to translate all strings
+  
+  return $string;
+
+};

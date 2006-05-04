@@ -1,0 +1,868 @@
+#! /bin/bash
+
+# This is a wrapper script to simulate ipfwadm 2.3a.  It ain't pretty,
+# but it should work (for valid commands).  `-V' is translated to `-W'
+# or ignored if a `-W' option is already there, but always warned
+# about.
+
+# Paul ``Rusty'' Russell, Nov-1997.  ipchains@rustcorp.com.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# Version: 1.0.1: Fixed -t (no longer de-hexizes).
+#
+# Version: 1.0.2: Fixed undocumented `-a masq'.
+#                 Should be OK now with bash v1.
+#                 If we can't find ip_fwnames, call /sbin/ipfwadm.real
+#
+# Version: 1.1: Fixed printing counts for accounting chains list.
+#		Fixed -A -z and -A -f cases to do all 3 acct. rules.
+#
+# Version: 1.1.1: Fixed syntax error by escaping ( and ).
+#
+# Version: 1.1.2: Fixed REDIR thanks to Ambrose Li.
+#		  Fixed "printf --" thanks to Alain Knaff.
+#		  Fixed masquerade policy
+#		  Fixed bug report message unquoted `;'.
+#		  Fixed -k/-y and -S/-D options [ found by Charlie Brady ]
+#		  Barf on all ipchains failures.
+if [ -n "$DEBUG_IPFWADM" ]; then IPCHAINS=print_ipchains;
+else IPCHAINS=/sbin/ipchains;
+fi
+PROC_FIREWALL_NAMES="/proc/net/ip_fwnames"
+SPECIAL_CHAIN="IpFwAdM!"
+START_MARK=10000
+
+barf()
+{
+    echo "$@"
+    echo
+    echo If this command worked with the original ipfwadm 2.3, please
+    echo submit a bug report to \`ipchains@rustcorp.com\'.  Note that you
+    echo now need to be root, even to list the chains \(complain to Alan Cox\).
+    echo
+    echo The best way to do this is to submit the output of \`$0 --version\',
+    echo the command used to obtain this error, any previous ipfwadm
+    echo commands, and the output of \`ipchains-save\'.
+    echo
+    echo Then try flushing all the rules \`ipchains -F\; ipchains -X\',
+    echo setting the DEBUG_IPFWADM variable \`export DEBUG_IPFWADM=1\' or
+    echo \`setenv DEBUG_IPFWADM 1\' and rerunning the command\(s\) which
+    echo caused this error.
+    exit 1
+}
+
+print_ipchains()
+{
+    echo ipchains "$@" 1>&2
+    /sbin/ipchains "$@"
+}
+
+setup_chains()
+{
+    if [ `wc -l < $PROC_FIREWALL_NAMES` != 3 -a -z "$DEBUG_IPFWADM" ]
+    then
+	echo You cannot mix the \`ipfwadm\' wrapper with ipchains. 1>&2
+	echo You must delete all user chains and flush all built-in chains 1>&2
+	echo if you want to use the \`ipfwadm\' wrapper. 1>&2
+	exit 1
+    fi
+    $IPCHAINS -N acctin
+    $IPCHAINS -N acctout
+    $IPCHAINS -N acctboth
+    $IPCHAINS -N inp
+    $IPCHAINS -N out
+    $IPCHAINS -N fwd
+
+    # Let all fragments through like the old code used to.
+    $IPCHAINS -A input -f -j ACCEPT
+    $IPCHAINS -A output -f -j ACCEPT
+    $IPCHAINS -A forward -f -j ACCEPT
+
+    # Jump to accounting rules.  Order of traversal of acct rules
+    # doesn't matter.
+    $IPCHAINS -A input -j acctin
+    $IPCHAINS -A input -j acctboth
+    $IPCHAINS -A output -j acctout
+    $IPCHAINS -A output -j acctboth
+
+    # Now go to `real' chains.
+    $IPCHAINS -A input -j inp
+    $IPCHAINS -A output -j out
+    $IPCHAINS -A forward -j fwd
+
+    # Create dummy chains to mark this as an ipfwadm-emulation firewall.
+    $IPCHAINS -N $SPECIAL_CHAIN
+    # Insert min and max mark values.
+    $IPCHAINS -A $SPECIAL_CHAIN -m $START_MARK
+    $IPCHAINS -A $SPECIAL_CHAIN -m $(($START_MARK + 1))
+}
+
+# SIGH.  We use identical marks to indicate which rules are actually
+# the same rule (to simulate multiple ports, and -y without -P tcp).
+
+# We start the marks at 1,000,000, so we can insert before them or append
+# after them.
+
+# In the accounting chain, marks are unique between the three acct* chains,
+# so we can tell ordering.
+
+print_count()
+{
+    count=$(($1))
+    if let $(($count > 99999))
+    then
+	cntkb=$((($count + 500) / 1000))
+	if let $((cntkb > 9999))
+	then
+	    cntmb=$((($count + 500000) / 1000000))
+	    printf "%4sM " $cntmb
+	else
+	    printf "%4sK " $cntkb
+	fi
+    else
+	printf "%5s " $count
+    fi
+}
+
+dump_rule()
+{
+# ARGS: $LIST_VERBOSE $EXPAND_NUMBERS $BIDIR $SYN_NO_PROTO $SRCPORTS $DSTPTS
+# $PCNT $BCNT $TARG $PROTO $FLAGS $TOSA $TOSX $IFNM $NUM $SRCIP $DSTIP $REDIR
+# $PRINT_COUNTS
+
+# The ipfwadm code looks like: (* = -e only)
+# *    *               *    *    *    *    *       
+# pcnt bcnt kind proto bkyo TOSA TXOR IFNM IFADD SRC DST SPTs -> DPTs REDIR
+    if [ -n "$1" -o -n "${19}" ]
+    then
+	# Packet and byte counts.
+	if [ -n "$2" ]; then printf "%8u " $7; else print_count $7; fi
+	if [ -n "$2" ]; then printf "%8u " $8; else print_count $8; fi
+    fi
+
+    # Kind
+    case "$9" in
+	in) printf "%-3s " "$9" ;;
+	out) printf "%-3s " "$9" ;;
+	i/o) printf "%-3s " "$9" ;;
+	*) printf "%-5s " "$9" ;;
+    esac
+
+    # Proto
+    printf "%-5s" "${10}"
+
+    if [ -n "$1" ]
+    then
+	# Flags
+	if [ "$3" != 0 ]; then printf "b"; else printf "%s" "-"; fi
+	case "${11}" in
+	    *!y*) printf "k-" ;;
+	    *y*) printf "%s" "-y" ;;
+	    *) printf "%s" "--" ;;
+	esac
+	case "${11}" in
+	    *l*) printf "l " ;;
+	    *) printf "%s" "- " ;;
+	esac
+
+	# TOS
+	printf "${12} ${13} "
+
+	# Interface name
+	printf "%-7.16s " "${14}"
+
+	# Interface address
+	if [ -n "${15}" ]; then printf "%-15s " 0.0.0.0;
+	else printf "%-15s " any;
+	fi
+    fi
+
+    # Source and dest.
+    printf "%-20s " "${16}"
+    printf "%-20s" "${17}"
+
+    # Source Ports.
+    if [ "${10}" != tcp -a "${10}" != udp -a "${10}" != icmp ]
+    then
+	echo " n/a"
+	return
+    fi
+    printf " "
+    printf "$5" | tr ' ' ','
+
+    if [ "${10}" = icmp ]
+    then
+	echo
+	return
+    fi
+
+    # Dest ports.
+    if [ "$5" != "n/a" ]
+    then
+	printf " -> " 
+	printf "$6" | tr ' ' ','
+    fi
+
+    # redirect ports.
+    if [ "$9" = "acc/r" ]
+    then
+	printf " => %s" "${18}"
+    fi
+    echo
+}
+
+get_policy() # CHAIN
+{
+    case "`ipchains -L $1 | head -1`" in
+    *ACCEPT*)
+	echo accept;;
+    *MASQ*)
+	echo accept/masquerade;;
+    *REJECT*)
+	echo reject;;
+    *DENY*)
+	echo deny;;
+    *)
+	barf "Unknown policy for \`$1' - `ipchains -L $1 2>&1`"
+    esac
+}
+
+list_chain() # $CHAIN $LIST_VERBOSE $NUMERIC $EXPAND_NUMBERS
+{
+# if (!(format & FMT_NOCOUNTS)) {
+# 	if (format & FMT_KILOMEGA) {
+# 		fprintf(fp, FMT("%5s ","%s "), "pkts");
+# 		fprintf(fp, FMT("%5s ","%s "), "bytes");
+# 	} else {
+# 		fprintf(fp, FMT("%8s ","%s "), "pkts");
+# 		fprintf(fp, FMT("%10s ","%s "), "bytes");
+# 	}
+# }
+    IS_ACCT=""
+    case "$1" in
+    acct*) IS_ACCT="Y";;
+    inp) printf "IP firewall input rules, default policy: " 
+	get_policy input
+	;;
+    out) printf "IP firewall output rules, default policy: " 
+	get_policy output
+	;;
+    fwd) printf "IP firewall forward rules, default policy: " 
+	get_policy forward
+	;;
+    *) barf "Unknown chain for list_chain - \`$1'"
+	;;
+    esac
+
+    if [ -n "$2" -o -n "$IS_ACCT" ]
+    then
+	if [ -z "$4" ]
+	then
+	    printf "%5s " pkts
+	    printf "%5s " bytes
+	else
+	    printf "%8s " pkts
+	    printf "%10s " bytes
+	fi
+    fi
+
+# if (!(format & FMT_NOKIND)) {
+# 	if (chain == CHN_ACCT)
+# 		fprintf(fp, FMT("%-3s ","%s "), "dir");
+# 	else
+# 		fprintf(fp, FMT("%-5s ","%s "), "type");
+# }
+    case "$1" in
+    acct*) printf "%-3s " dir ;;
+    *) printf "%-5s " type ;;
+    esac
+
+# fputs("prot ", fp);
+    printf "prot "
+
+# if (format & FMT_OPTIONS)
+# 	fputs("opt  ", fp);
+# if (format & FMT_TOS)
+# 	fputs("tosa tosx ", fp);
+# if (format & FMT_VIA) {
+# 	fprintf(fp, FMT("%-7s ","(%s "), "ifname");
+# 	fprintf(fp, FMT("%-15s ","%s) "), "ifaddress");
+# }
+    if [ -n "$2" ]
+    then
+	printf "opt  tosa tosx %-7s %-15s " ifname ifaddress
+    fi
+
+# fprintf(fp, FMT("%-20s ","%s "), "source");
+# fprintf(fp, FMT("%-20s ","%s "), "destination");
+# fputs("ports\n", fp);
+# }
+    printf "%-20s %-20s ports" source destination
+    echo
+
+    case "$1" in
+	acct*) shift;
+		(list_chain_real acctin "$@" "1" "1"
+		 list_chain_real acctout "$@" "1" "1" 
+		 list_chain_real acctboth "$@" "1" "1") | sort -n | cut -c11-;;
+	*) list_chain_real "$@" ;;
+    esac
+}
+
+list_chain_real() # $CHAIN $LIST_VERBOSE $NUMERIC $EXPAND_NUMBERS $PRINT_COUNTS $PREPEND_MARK
+{
+    CHAIN="$1"
+    LIST_VERBOSE="$2"
+    NUMERIC="$3"
+    EXPAND_NUMBERS="$4"
+    PRINT_COUNTS="$5"
+    PREPEND_MARK="$6"
+
+    # The ipfwadm code looks like: (* = -e only)
+    # *    *               *    *    *    *    *       
+    # pcnt bcnt kind proto bkyo TOSA TXOR IFNM IFADD SRC DST SPTs -> DPTs REDIR
+    #
+    # The ipchains code looks like: (* = -v only)
+    # *    *               *    *    *    *    *       
+    # pcnt bcnt targ proto !yfl TOSA TXOR IFNM MARK SRC DST SPTs -> DPTs REDIR
+    LAST_MARK=xxx
+
+    BIDIR=0
+    SYN_NO_PROTO=0
+    SRCPORTS=""
+    DSTPORTS=""
+
+    [ -z "$NUMERIC" ] || NUMERIC="-n"
+    $IPCHAINS -L $CHAIN -v -x $NUMERIC | tail +3 |
+    while true
+    do
+	if ! read PCNT BCNT TARG PROTO FLAGS TOSA TOSX IFNM MARK SRCIP DSTIP SRCPTS IGN1 DSTPTS REDIR
+	then
+	    # Dump last rule.
+	    if [ "$LAST_MARK" != "xxx" ] 
+	    then
+		[ -z "$PREPEND_MARK" ] || printf "%-10s " "$LAST_MARK"
+		dump_rule "$LIST_VERBOSE" "$EXPAND_NUMBERS" $BIDIR $SYN_NO_PROTO "$SRCPORTS" "$DSTPORTS" $LAST_PCNT $LAST_BCNT $LAST_TARG $LAST_PROTO $LAST_FLAGS $LAST_TOSA $LAST_TOSX "$LAST_IFNM" "$NUMERIC" $LAST_SRCIP $LAST_DSTIP "$LAST_REDIR" "$PRINT_COUNTS"
+	    fi
+	    return
+	fi
+	[ -z "$DEBUG_IPFWADM" ] || echo RULE is "$PCNT $BCNT $TARG $PROTO $FLAGS $TOSA $TOSX "$IFNM" $MARK $SRCIP $DSTIP $SRCPTS $IGN1 $DSTPTS $REDIR" 1>&2
+
+	if [ "$LAST_MARK" = "$MARK" ]
+	then
+# Fold rules back together.
+	
+# We combine for any of the following reasons:
+# -k or -y used with no protocol: first rule has proto TCP and 'y'.
+# -b used: SRC & DST reversed.
+# Multiple ports: all the same but for port.
+
+# Worst cases:
+# ipfwadm -I -a accept -b -P tcp -S 0/0 1 4 -D 1/1 5 9
+# => pcnt bcnt targ proto !yfl TOSA TXOR IFNM MARK SRC DST SPTs -> DPTs REDIR
+#    ?    ?    ?    TCP   ?    ?    ?    ?    ?    0/0 1/1 1       5
+#    ?    ?    ?    TCP   ?    ?    ?    ?    ?    1/1 0/0 5       1
+#    ?    ?    ?    TCP   ?    ?    ?    ?    ?    0/0 1/1 1       9
+#    ?    ?    ?    TCP   ?    ?    ?    ?    ?    1/1 0/0 9       1
+#    ?    ?    ?    TCP   ?    ?    ?    ?    ?    0/0 1/1 4       5
+#    ?    ?    ?    TCP   ?    ?    ?    ?    ?    1/1 0/0 5       4
+#    ?    ?    ?    TCP   ?    ?    ?    ?    ?    0/0 1/1 4       9
+#    ?    ?    ?    TCP   ?    ?    ?    ?    ?    1/1 0/0 9       4
+#
+# ipfwadm -I -a accept -b -y -S 0/0 -D 1/1
+# => pcnt bcnt targ proto !yfl TOSA TXOR IFNM MARK SRC DST SPTs -> DPTs REDIR
+#    ?    ?    ?    TCP   ?y?? ?    ?    ?    ?    0/0 1/1
+#    ?    ?    ?    TCP   ?y?? ?    ?    ?    ?    1/1 0/0
+#    ?    ?    ?    ANY   ?-?? ?    ?    ?    ?    0/0 1/1
+#    ?    ?    ?    ANY   ?-?? ?    ?    ?    ?    1/1 0/0
+# 	    if [ -n "$DEBUG_IPFWADM" ]
+# 	    then
+#		echo LAST_PROTO = \`"$LAST_PROTO"\'
+#		echo PROTO = \`"$PROTO"\'
+# 		echo LAST_SRCIP = \`"$LAST_SRCIP"\'
+# 		echo DSTIP = \`"$DSTIP"\'
+# 		echo LAST_DSTIP = \`"$LAST_DSTIP"\'
+# 		echo SRCIP = \`"$SRCIP"\'
+# 		echo LAST_SRCPTS = \`"$LAST_SRCPTS"\'
+# 		echo DSTPTS = \`"$DSTPTS"\'
+# 		echo LAST_DSTPTS = \`"$LAST_DSTPTS"\'
+# 		echo SRCPTS = \`"$SRCPTS"\'
+# 	    fi
+	    if [ "$LAST_PROTO" = \!tcp -a "$PROTO" = tcp ]
+	    then
+		[ -n "$DEBUG_IPFWADM" ] && echo "Found SYN rule."
+		SYN_NO_PROTO=1
+		PCNT=$(($LAST_PCNT + $PCNT))
+		BCNT=$(($LAST_BCNT + $BCNT))
+		PROTO="all"
+	    elif [ "$LAST_SRCIP" = "$DSTIP" -a "$LAST_DSTIP" = "$SRCIP" -a "$LAST_SRCPTS" = "$DSTPTS" -a "$LAST_DSTPTS" = "$SRCPTS" ]
+	    then
+		[ -n "$DEBUG_IPFWADM" ] && echo "Found bidir rule."
+		BIDIR=1
+		LAST_PCNT=$(($LAST_PCNT + $PCNT))
+		LAST_BCNT=$(($LAST_BCNT + $BCNT))
+		# Don't transfer this rule to LAST_ vars - effectively ignore.
+		continue;
+	    else
+		[ -n "$DEBUG_IPFWADM" ] && echo "Found port rule."
+		# For n source ports and m dest ports, there will be
+		# n x m rules.  So, we add to SRCPORTS when we see a new
+		# SRCPTS, but only add to DSTPORTS for the first SRCPORTS.
+		if [ "$SRCPTS" != "$LAST_SRCPTS" ]
+		then
+		    SRCPORTS="$SRCPORTS $SRCPTS"
+		fi
+		if [ "$SRCPORTS" = "$SRCPTS" ]
+		then
+		    DSTPORTS="$DSTPORTS $DSTPTS"
+		fi
+		PCNT=$(($LAST_PCNT + $PCNT))
+		BCNT=$(($LAST_BCNT + $BCNT))
+	    fi
+	else
+	    # Dump last rule.
+	    if [ "$LAST_MARK" != "xxx" ]
+	    then
+		[ -z "$PREPEND_MARK" ] || printf "%-10s " "$LAST_MARK"
+		dump_rule "$LIST_VERBOSE" "$EXPAND_NUMBERS" $BIDIR $SYN_NO_PROTO "$SRCPORTS" "$DSTPORTS" $LAST_PCNT $LAST_BCNT $LAST_TARG $LAST_PROTO $LAST_FLAGS $LAST_TOSA $LAST_TOSX "$LAST_IFNM" "$NUMERIC" $LAST_SRCIP $LAST_DSTIP "$LAST_REDIR" "$PRINT_COUNTS"
+	    fi
+
+	    BIDIR=0
+	    SYN_NO_PROTO=0
+	    SRCPORTS="$SRCPTS"
+	    DSTPORTS="$DSTPTS"
+	fi
+
+	# Save for next iteration, in case mark the same.
+	LAST_PCNT=$PCNT
+	LAST_BCNT=$BCNT
+	LAST_PROTO=$PROTO
+	LAST_FLAGS=$FLAGS
+	LAST_TOSA=$TOSA
+	LAST_TOSX=$TOSX
+	LAST_IFNM="$IFNM"
+	LAST_MARK=$MARK
+	LAST_SRCIP=$SRCIP
+	LAST_DSTIP=$DSTIP
+	LAST_REDIR="$REDIR"
+	LAST_SRCPTS="$SRCPTS"
+	LAST_DSTPTS="$DSTPTS"
+	case "$CHAIN" in
+	acctin) LAST_TARG=in ;;
+	acctout) LAST_TARG=out ;;
+	acctboth) LAST_TART=i/o ;;
+	*)
+	    case "$TARG" in
+	    REDIRECT) LAST_TARG="acc/r" ;;
+	    MASQ) LAST_TARG="acc/m" ;;
+	    ACCEPT) LAST_TARG="acc" ;;
+	    REJECT) LAST_TARG="rej" ;;
+	    DENY) LAST_TARG="deny" ;;
+	    *) barf Unknown target \`"$TARG"\'. ;;
+	    esac
+	    ;;
+	esac
+    done
+}
+
+############################################################################
+
+if [ ! -f $PROC_FIREWALL_NAMES ]
+then
+    if [ -f /proc/net/ip_input -o -f /proc/net/ip_acct ]
+    then
+	# Old kernel.  Let's play nice.
+	[ -x /sbin/ipfwadm.real ] && exec /sbin/ipfwadm.real "$@" 
+    fi
+    echo "Generic IP Firewall Chains not in this kernel" 1>&2
+    exit 1
+fi
+
+while [ $# != 0 ]
+do
+    case "$1" in
+    -A)
+	case x"$2" in
+	x-*) CHAIN=acctboth ;;
+	xboth) CHAIN=acctboth; shift ;;
+	xin) CHAIN=acctin; shift ;;
+	xout) CHAIN=acctout; shift ;;
+	x) CHAIN=acctboth ;;
+ 	*) barf Unknown option \`"$2"\' ;;
+	esac
+	;;
+    -I)
+	CHAIN=inp
+	;;
+    -O)
+	CHAIN=out
+	;;
+    -F)
+	CHAIN=fwd
+	;;
+    -M)
+	MASQ_MODE=1
+	;;
+    -a)
+	COMMAND=-A
+	case x"$2" in
+	x-*) TARGET="" ;;
+	x) TARGET="" ;;
+	xr*) TARGET=REJECT; shift ;;
+	xd*) TARGET=DENY; shift ;;
+	xa*) TARGET=ACCEPT; shift ;;
+	xm*) TARGET=ACCEPT; MASQ=1; shift ;;
+ 	*) barf Unknown policy for append: \`"$2"\' ;;
+	esac
+	;;
+    -i)
+	COMMAND="-I "
+	case x"$2" in
+	x-*) TARGET="" ;;
+	x) TARGET="" ;;
+	xr*) TARGET=REJECT; shift ;;
+	xd*) TARGET=DENY; shift ;;
+	xa*) TARGET=ACCEPT; shift ;;
+ 	*) barf Unknown policy for insert: \`"$2"\' ;;
+	esac
+	;;
+    -d)
+	COMMAND=-D
+	case x"$2" in
+	x-*) TARGET="" ;;
+	x) TARGET="" ;;
+	xr*) TARGET=REJECT; shift ;;
+	xd*) TARGET=DENY; shift ;;
+	xa*) TARGET=ACCEPT; shift ;;
+ 	*) barf Unknown policy for delete: \`"$2"\' ;;
+	esac
+	;;
+    -l)
+	LIST=1
+	;;
+    -z)
+	COMMAND=-Z
+	;;
+    -f)
+	COMMAND=-F
+	;;
+    -p)
+	COMMAND=-P
+	case "$2" in
+	r*) TARGET=REJECT; shift ;;
+	d*) TARGET=DENY; shift ;;
+	a*) TARGET=ACCEPT; shift ;;
+	m*) TARGET=MASQ; shift ;;
+ 	*) barf Unknown policy for -p: \`"$2"\' ;;
+	esac
+	;;
+
+    -s)
+	COMMAND=-S
+	OPTIONS="$2 $3 $4"
+	shift 3
+	;;
+    -c)
+	COMMAND=-C
+	;;
+    -h)
+	print_help
+	;;
+    -P)
+	PROTOCOL="-p $2"
+	shift
+	;;
+    -S)
+	SRC_OPTIONS="-s $2"
+	shift
+	while true
+	do
+	    case x"$2" in
+		x) break ;;
+		x-*) break ;;
+		x?*) SRC_PORTS="$2 $SRC_PORTS" ;;
+	    esac
+	    shift
+	done
+	;;
+    -D)
+	DST_OPTIONS="-d $2"
+	shift
+	while true
+	do
+	    case x"$2" in
+		x) break ;;
+		x-*) break ;;
+		x?*) DST_PORTS="$2 $DST_PORTS" ;;
+	    esac
+	    shift
+	done
+	;;
+    -V)
+	VIA_ADDR="$2"
+	shift
+	;;
+    -W)
+	INTERFACE="$2"
+	OPTIONS="$OPTIONS -i $2"
+	shift
+	;;
+    -b)
+	OPTIONS="$OPTIONS -b"
+	;;
+    -e)
+	LIST_VERBOSE=1
+	;;
+    -k)
+	TCPSYN="! -y"
+	;;
+    -m)
+	MASQ=1
+	;;
+    -n)
+	NUMERIC=1
+	;;
+    -o)
+	OPTIONS="$OPTIONS -l"
+	;;
+    -r)
+	case x"$2" in
+	    x-*) REDIR=0 ;;
+	    x) REDIR=0 ;;
+	    x?*) REDIR="$2"; shift ;;
+	esac
+	;;
+    -t)
+	TOSAND=$(($2 | 0x01))
+	TOSXOR=$(($3 & 0xFE))
+	OPTIONS="$OPTIONS -t "`printf "0x%02x 0x%02x" $TOSAND $TOSXOR`
+	shift 2
+	;;
+    -v)
+	OPTIONS="$OPTIONS -v"
+	;;
+    -x)
+	EXPAND_NUMBERS=1;
+	;;
+    -y)
+	TCPSYN="-y"
+	;;
+
+    --version)
+	echo "ipfwadm wrapper version 1.1.2"
+	exit 0
+	;;
+
+    -??*)
+	echo "ERROR: Please separate arguments, eg \`-Mle' => \`-M -l -e'." >&2
+	exit 1
+	;;
+
+    *) barf Unexpected argument \`"$1"\'.
+	;;
+    esac
+    shift
+done
+
+# Variables to worry about:
+#  $CHAIN - actual chain to work on.
+# X$MASQ_MODE - set if -M given.
+# X$COMMAND - set if this is a simple command conversion.
+# X$TARGET - set for COMMAND of -A, -I, -D or -P (but see REDIR and MASQ).
+# X$LIST - set if they want a list.
+# X$NUMERIC - list with -n.
+# X$LIST_VERBOSE - list all info.
+# X$EXPAND_NUMBERS - list full numbers.
+# X$OPTIONS - miscellaneous easy-to-convert options.
+# X$SRC_OPTIONS - set if a source address is specified.
+# X$SRC_PORTS - space-separated list of specified source ports/ranges.
+# X$DST_OPTIONS - set if a dest address is specified.
+# X$DST_PORTS - space-separated list of specified dest ports/ranges.
+#  $VIA_ADDR - an interface address if one is specified.
+#  $INTERFACE - an interface name if one is specified.
+# X$TCPSYN - set if `-k' or `-y' is specified.
+# X$MASQ - set if `-m' is specified.
+# X$REDIR - set to the port if `-r port' is specified
+
+if [ -n "$MASQ_MODE" ]
+then
+    if [ -n "$LIST" ]
+    then
+	$IPCHAINS -M -L $OPTIONS
+    else
+	$IPCHAINS $COMMAND $OPTIONS
+    fi
+elif [ -n "$LIST" ]
+then
+    if ! grep -q IpFwAdM! < $PROC_FIREWALL_NAMES
+    then
+	echo "Chains are empty. (ie. ipfwadm has not been used on them)." 1>&2
+	exit 0
+    fi
+    # Construct a list.
+    if [ x$COMMAND = x-Z ]
+    then
+	# We have to atomically zero and list a chain.  This is
+	# currently impossible, so we:
+	# 1) stop all packets on the given chain. 
+	# 2) list the values.
+	# 3) clear the counters.
+	# 4) resume on the given chain.
+	case "$CHAIN" in
+	    acct*)
+		$IPCHAINS -I 1 input -j DENY
+		$IPCHAINS -I 1 output -j DENY
+		;;
+	    inp)
+		$IPCHAINS -I 1 input -j DENY
+		;;
+	    out)
+		$IPCHAINS -I 1 output -j DENY
+		;;
+	    fwd)
+		$IPCHAINS -I 1 forward -j DENY
+		;;
+	    *) barf Unknown chain to stop: \`"$CHAIN"\'.
+	esac
+
+	list_chain $CHAIN "$LIST_VERBOSE" "$NUMERIC" "$EXPAND_NUMBERS"
+	$IPFWADM -Z $CHAIN
+	
+	case "$CHAIN" in
+	    acct*)
+		$IPCHAINS -D 1 input
+		$IPCHAINS -D 1 output
+		;;
+	    inp)
+		$IPCHAINS -D 1 input
+		;;
+	    out)
+		$IPCHAINS -D 1 output
+		;;
+	    fwd)
+		$IPCHAINS -D 1 forward
+		;;
+	    *) barf Unknown chain to restart: \`"$CHAIN"\'.
+	esac
+    else
+	list_chain $CHAIN "$LIST_VERBOSE" "$NUMERIC" "$EXPAND_NUMBERS"
+    fi
+elif [ x"$COMMAND" = x"-F" -o x"$COMMAND" = x"-Z" -o x"$COMMAND" = x"-C" ]
+then
+    if ! grep -q IpFwAdM! < $PROC_FIREWALL_NAMES
+    then
+	echo "Chains are empty. (ie. ipfwadm has not been used on them)." 1>&2
+	exit 0
+    fi
+    if [ "$CHAIN" = acctboth ]
+    then
+	# Do it to all of them.
+	$IPCHAINS $COMMAND acctin $OPTIONS
+	$IPCHAINS $COMMAND acctout $OPTIONS
+    fi
+    $IPCHAINS $COMMAND $CHAIN $OPTIONS
+else
+    grep -q IpFwAdM! < $PROC_FIREWALL_NAMES || setup_chains
+
+    # Figure out what the target should be.
+    if [ -n "$REDIR" ]
+    then
+	TARGET="REDIRECT $REDIR"
+    elif [ -n "$MASQ" ]
+    then
+	TARGET=MASQ
+    fi
+
+    if [ x"$COMMAND" = x"-P" ]
+    then
+	case "$CHAIN" in
+	inp) CHAIN=input ;;
+	out) CHAIN=output ;;
+	fwd) CHAIN=forward ;;
+	*) barf Illegal chain for -P: \`"$CHAIN"\'.;;
+	esac
+	$IPCHAINS $COMMAND $CHAIN $TARGET $OPTIONS
+    else
+	# If they used -V, and not -W, then try to figure out interface
+	# name.  ALWAYS warn about difference.
+	if [ -n "$VIA_ADDR" ]
+	then
+	    if [ -n "$INTERFACE" ]
+	    then
+		echo Warning: \`-V $VIA_ADDR\' option ignored\; using \`-W $INTERFACE\' only.
+	    else
+		INTERFACE=`ifconfig | awk -v ADDR=$VIA_ADDR '/^[a-z0-9A-Z]/ { IFNAME=$1 } $0 ~ "^[^A-Za-z0-9:]*inet addr:" ADDR { print IFNAME}'`
+		if [ -z "$INTERFACE" ]
+		then
+		    echo Can\'t handle -V option: can\'t find interface name for the address \`$VIA_ADDR\'. 1>&2
+		    echo Please replace the -V with the appropriate -W option. 1>&2
+		    exit 1
+		fi
+		echo Replacing \`-V $VIA_ADDR\' with \`-W $INTERFACE\'.
+		OPTIONS="$OPTIONS -i $INTERFACE"
+	    fi
+	fi
+
+	# Insert, append or delete.
+	case $COMMAND in
+	    # For Insert, get (and decrement) minimal mark #.
+	    -I*) MARK=$(set $($IPCHAINS -L $SPECIAL_CHAIN -v | head -3 | tail -1); echo $9)
+		$IPCHAINS -R $SPECIAL_CHAIN 1 -m $(($MARK - 1))
+		MARK="-m $MARK"
+		;;
+
+	    # For Append, get (and increment) maximum mark #.
+	    -A) MARK=$(set $($IPCHAINS -L $SPECIAL_CHAIN -v | head -4 | tail -1); echo $9)
+		$IPCHAINS -R $SPECIAL_CHAIN 2 -m $(($MARK + 1))
+		MARK="-m $MARK"
+		;;
+	esac
+
+	# Only care about TCP SYN if -p TCP not specified.
+	if [ -n "$TCPSYN" ]
+	then
+	    case "$PROTOCOL" in
+		*[Tt][Cc][Pp]) 
+		    OPTIONS="$OPTIONS $PROTOCOL $TCPSYN"
+		    TCPSYN=""
+		;;
+	    esac
+	else
+	    OPTIONS="$OPTIONS $PROTOCOL"
+	fi
+
+	# Mangle source port and dest port args.
+	if [ -z "$SRC_PORTS" ]; then SRC_PORTS="X"; fi
+	if [ -z "$DST_PORTS" ]; then DST_PORTS="X"; fi
+
+	[ -n "$TARGET" ] && TARGET="-j $TARGET"
+	for SRC in $SRC_PORTS
+	do
+	    if [ $SRC = "X" ]; then SRC=""; fi
+	    for DST in $DST_PORTS
+	    do
+		if [ $DST = "X" ]; then DST=""; fi
+		if [ -n "$TCPSYN" ]
+		then
+		    $IPCHAINS $COMMAND $CHAIN $SRC_OPTIONS $SRC $DST_OPTIONS $DST $OPTIONS -p ! tcp $TARGET $MARK || barf "ipchains failed!"
+		    $IPCHAINS $COMMAND $CHAIN $SRC_OPTIONS $SRC $DST_OPTIONS $DST $OPTIONS -p tcp $TCPSYN $TARGET $MARK  || barf "ipchains failed!"
+		else
+		    $IPCHAINS $COMMAND $CHAIN $SRC_OPTIONS $SRC $DST_OPTIONS $DST $OPTIONS $TARGET $MARK || barf "ipchains failed!"
+		fi
+	    done
+	done
+    fi
+fi

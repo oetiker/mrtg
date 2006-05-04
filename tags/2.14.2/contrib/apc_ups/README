@@ -1,0 +1,9 @@
+From: Klaus_Klein@mckinsey.com
+Date: Thu, 3 May 2001 16:31:45 +0200
+
+Hi tobias,
+
+As suggested, I send you some of my configuration files: these ones are
+using a PERL script to extract the load % and remaining battery time from
+APC UPS systems.
+prerequisite: have PERL and an SNMP suite installed.

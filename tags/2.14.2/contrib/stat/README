@@ -1,0 +1,59 @@
+# $Id: README,v 1.1.1.1 2002/02/26 10:16:37 oetiker Exp $
+
+stat.pl
+    
+    You could use this script to monitor youre DNS activities.
+    Its a very simple perl script and youre free to do any updates on
+    it, but please send a copy to me calle@volvo.se.
+    you have to do some small changes like hostname and path to named.stats.
+    if youre using it please let me know so i could send you updates.
+
+
+INSTALLATION:
+    
+    To get it to work do execute the script once before you make mrtg to do
+    it for you. This will make an OLD file with the last requested queries.
+    You might get an error messages , but the next time you execute it the
+    stats will come as you want it.
+
+
+
+USAGE:
+    
+    If you run this on a DNS server just add an script that will make a stat
+    file (Bind 4 (kill -ABRT `/var/run/named.pid`)), 
+    (Bind 8.1. (kill -ILL `/var/run/named.pid)) and remove the old named.stats.
+    and put this into cron.
+    For Bind 8.2.1 you will need to be using ndc (ndc stats).
+    
+    ex. script to run from cron
+
+    #!/bin/sh
+    rm /var/tmp/named.stats
+    kill -ABRT `cat /var/run/named.pid`
+    <PATH to MRTG>/mrtg  <PATH to mrtg.cfg>
+
+
+MRTG:
+    
+    To set up this in MRTG:
+    Target[dns]: `/<PATH to stat.pl>/stat.pl`
+
+REMOTE:
+   I did a small script called dns.named that will collect named from a
+   remote DNS, but i strongly recomend to rewrite this so instead of using
+   FTP use scp.
+   this script requires expect.
+
+  
+UPDATES:
+   
+   The new stat.pl you could use 2 diffrent graph in one session , that is lets say you want to
+   logg all Requested queries and maybe count of zone transfers.
+   all you have to do is to specify these in $OUTGOING and $INCOMING in stat.pl.
+   The script also looks how for how long the named have been runing without a reset.
+   
+ 
+
+ 
+     

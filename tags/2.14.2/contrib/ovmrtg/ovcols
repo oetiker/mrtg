@@ -1,0 +1,41 @@
+#!/usr/local/bin/perl5
+# -*- mode: Perl -*-
+##################################################################
+# Config file creator
+##################################################################
+# Created by Laurie Gellatly <gellatly@one.net.au>
+# based on mrtg cfgmaker by Tobias Oetiker <oetiker@ee.ethz.ch>
+# this produces a config file for one router, by pulling info
+# off the router via snmp and then writing files ready for
+# snmpCollect to use (via xnmcollect) and later ovcvtfile calls
+#################################################################
+#
+# Distributed under the GNU copyleft
+#
+# $Id: ovcols,v 1.1.1.1 2002/02/26 10:16:36 oetiker Exp $
+#
+use Socket;
+use strict;
+use vars '$DEBUG';
+use ovmrtg;
+my $DEBUG = 0;
+my($op,$router,@res);
+
+sub main {
+  $op = $ARGV[0];
+  $router = $ARGV[1];
+  die <<USAGE  unless ($router && (($op eq "+") || ($op eq "-")));
+
+USAGE: ovcols +/- 'router IP ADDRESS/S'
+
+EXAMPLE:  ovcols + 193.21.1.2 
+
+USAGE
+   @res=ovcols(@ARGV);
+   for($op=0;$op<@res;++$op){
+      print $res[$op]."\n";
+   }
+}  
+main;
+exit(0);
+

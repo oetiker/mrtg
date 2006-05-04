@@ -1,0 +1,125 @@
+###### PATCHTAG00 ####################################################
+###      Greek/Ellinika
+###      => Simos Xenitellis <simos@hellug.gr>
+###### PATCHTAG10 ####################################################
+  &greek
+###### PATCHTAG20 ####################################################
+  'greek'    	 => \&greek,
+  'ellinika' 	 => \&greek,
+###### PATCHTAG30 ####################################################
+# Greek/Ellinika
+   'greek' =>
+   "Προετοιμασία στα ελληνικά από το
+				<a href=\"http://hq.hellug.gr/~nls\">Σίμο Ξενιτέλλη</a>
+				<a href=\"mailto:S.Xenitellis\@hellug.gr\">&lt;S.Xenitellis\@hellug.gr&gt;</a>",
+###### PATCHTAG40 ####################################################
+$credits::LOCALE{'ellinika'}=$credits::LOCALE{'greek'};
+###### PATCHTAG50 ####################################################
+# Greek 
+
+sub greek
+{
+  my $string = shift;
+return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+  # charset=iso-2022-jp
+
+  %translations =
+  (  
+     'iso-8859-1'                             => 'iso-8859-7',
+     'Maximal 5 Minute Incoming Traffic'      => 'Μέγιστο Εισερχόμενο Φορτίο στα 5 Λεπτά',
+     'Maximal 5 Minute Outgoing Traffic'      => 'Μέγιστο Εξερχόμενο Φορτίο στα 5 Λεπτά',
+     'the device'                             => 'η συσκευή',
+     'The statistics were last updated(.*)'   => 'Τα στατιστικά ενημερώθηκαν τελευταία φορά τη(ν)/το $1',
+     ' Average\)'                             => ' Μέσος Όρος)',
+     'Average'                                => 'Μέσος Όρος',
+     'Max'                                    => 'Μέγιστο',
+     'Current'                                => 'Τρέχον',
+     'version'                                => 'έκδοση',
+     '`Daily\' Graph \((.*) Minute'           => 'Ημερήσιο Γράφημα (κάθε $1 λεπτά :',
+     '`Weekly\' Graph \(30 Minute'            => 'Εβδομαδιαίο Γράφημα (κάθε 30 λεπτά :' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Μηνιαίο Γράφημα  (κάθε 2 ώρες :',
+     '`Yearly\' Graph \(1 Day'                => 'Ετήσιο Γράφημα (κάθε 1 μέρα :', 
+     'Incoming Traffic in (\S+) per Second'   => 'Εισερχόμενο Φορτίο σε $1 ανά δευτερόλεπτο',
+     'Outgoing Traffic in (\S+) per Second'   => 'Εξερχόμενο Φορτίο σε $1 ανά δευτερόλεπτο',
+     'at which time (.*) had been up for(.*)' => 'στον οποίο χρόνο $1 ήταν ενεργή για $2',
+     # '([kMG]?)([bB])/s'                      => '\$1\$2/s',
+     # '([kMG]?)([bB])/min'                    => '\$1\$2/min',
+     '([kMG]?)([bB])/h'                       => '$1$2/t',
+     # 'Bits'                                  => 'Bits',
+     # 'Bytes'                                 => 'Bytes'
+     'In'                                     => 'Εισερχόμενα',
+     'Out'                                    => 'Εξερχόμενα',
+     'Percentage'                             => 'Ποσοστό',
+     'Ported to OpenVMS Alpha by'             => 'Μεταφερμένο σε OpenVMS Alpha από',
+     'Ported to WindowsNT by'                 => 'Μεταφερμένο σε WindowsNT από',
+     'and'                                    => 'και',
+     '^GREEN'                                  => 'ΠΡΑΣΙΝΟ',
+     'BLUE'                                   => 'ΜΠΛΕ',
+     'DARK GREEN'                             => 'ΣΚΟΥΡΟ ΠΡΑΣΙΝΟ',
+     'MAGENTA'                                => 'ΜΩΒ',
+     'AMBER'                                  => 'ΠΟΡΤΟΚΑΛΙ'
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => 'Κυριακή',		'Sun' => 'Κυρ',
+      'Monday'    => 'Δευτέρα',		'Mon' => 'Δευ',
+      'Tuesday'   => 'Τρίτη',		'Tue' => 'Τρι',
+      'Wednesday' => 'Τετάρτη',		'Wed' => 'Τετ',
+      'Thursday'  => 'Πέμπτη',		'Thu' => 'Πεμ',
+      'Friday'    => 'Παρασκευή',	'Fri' => 'Παρ',
+      'Saturday'  => 'Σάββατο',		'Sat' => 'Σαβ' 
+    );
+
+%month = 
+    (
+      'January'   => 'Ιανουρίου',   'February'  => 'Φεβρουαρίου' ,  'March'     => 'Μαρτίου',
+      'Jan'       => 'Ιαν',          'Feb'       => 'Φεβ',           'Mar'       => 'Μαρ',
+      'April'     => 'Απριλίου',     'May'       => 'Μαΐου',         'June'      => 'Ιουνίου', 
+      'Apr'       => 'Απρ',          'May'       => 'Μαι',           'Jun'       => 'Ιου',
+      'July'      => 'Ιουλίου',      'August'    => 'Αυγούστου',     'September' => 'Σεπτεμβρίου', 
+      'Jul'       => 'Ιου',          'Aug'       => 'Αυγ',           'Sep'       => 'Σεπ', 
+      'October'   => 'Οκτωβρίου',    'November'  => 'Νοεμβρίου',     'December'  => 'Δεκεμβρίου', 
+      'Oct'       => 'Οκτ',          'Nov'       => 'Νοε',           'Dec'       => 'Δεκ' 
+    );
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+    {
+	if($foo[3]=~(/(.*)at(.*)/))
+      { 
+        @quux=split(/at/,$foo[3]);
+        $foo[3]=$quux[0]." στις ".$quux[1]; 
+      };
+      return "$wday{$foo[0]} $foo[1] $month{$foo[2]} $foo[3]"; 
+    };
+
+#
+# handle two different time/date formats:  
+# return "$wday, $mday $month ".($year+1900)." &agrave; $hour:$min";
+# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
+#
+
+# handle nontranslated strings which ought to be translated
+# print STDERR "$_\n" or print DEBUG "not translated $_";
+# but then again we might not want/need to translate all strings
+  
+  return $string;
+
+};
