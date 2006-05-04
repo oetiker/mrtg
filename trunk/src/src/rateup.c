@@ -1,5 +1,5 @@
 /*
- MRTG 2.14.1  -- Rateup
+ MRTG 2.14.2  -- Rateup
  *********************
 
  Rateup is a fast add-on to the great MRTG Traffic monitor.  It makes
@@ -83,7 +83,7 @@
 #include <gd.h>
 #include <gdfonts.h>
 
-char *VERSION = "2.14.1";
+char *VERSION = "2.14.2";
 char *program, *router, *routerpath;
 int histvalid;
 

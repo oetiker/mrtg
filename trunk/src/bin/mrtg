@@ -2,7 +2,7 @@
 # -*- mode: cperl -*-
 
 ###################################################################
-# MRTG 2.14.1  Multi Router Traffic Grapher
+# MRTG 2.14.2  Multi Router Traffic Grapher
 ###################################################################
 # Created by Tobias Oetiker <tobi.ch>
 #            and Dave Rand <dlr@bungi.com>
@@ -1295,7 +1295,7 @@ sub writehtml {
     my $dirrel = "../" x ($$rcfg{'directory_web'}{$router} =~ tr|/|/|);
 
     $Today=&$LOC(datestr(time));
-    $VERSION = "2.14.1";
+    $VERSION = "2.14.2";
     open (HTML,">$$cfg{'htmldir'}$$rcfg{'directory'}{$router}$router.$$rcfg{'extension'}{$router}") || 
       do { warn ("$NOW: WARNING: Writing $router.$$rcfg{'extension'}{$router}: $!");
       	   next };
@@ -1710,7 +1710,7 @@ sub printusage {
     print <<USAGEDESC;
 Usage: mrtg <config-file>
 
-mrtg-2.14.1 - Multi Router Traffic Grapher
+mrtg-2.14.2 - Multi Router Traffic Grapher
 
 Copyright 1995-2006 by Tobias Oetiker
 Licensed under the Gnu GPL.
