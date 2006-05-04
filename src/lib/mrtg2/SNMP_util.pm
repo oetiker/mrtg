@@ -43,7 +43,7 @@ use BER "1.02";
 use SNMP_Session "1.00";
 use Socket;
 
-$VERSION = '1.06';
+$VERSION = '1.08';
 
 @ISA = qw(Exporter);
 
@@ -1038,15 +1038,14 @@ sub toOID(@) {
 sub snmpmapOID(@)
 {
   my(@vars) = @_;
-  my($oid, $txt, $ind);
+  my($oid, $txt);
 
-  $ind = 0;
-  while($ind <= $#vars) {
-    $txt = $vars[$ind++];
-    next unless($txt =~ /^(([a-zA-Z][a-zA-Z\d\-]*\.)*([a-zA-Z][a-zA-Z\d\-]*))$/);
+  while($#vars >= 0) {
+    $txt = shift @vars;
+    $oid = shift @vars;
 
-    $oid = $vars[$ind++];
-    next unless($oid =~ /^((\d+.)*\d+)$/);
+    next unless($txt =~ /^[a-zA-Z][\w\-]*(\.[a-zA-Z][\w\-])*$/);
+    next unless($oid =~ /^\d+(\.\d+)*$/);
 
     $SNMP_util::OIDS{$txt} = $oid;
     $RevNeeded = 1;
@@ -1075,13 +1074,23 @@ sub snmpLoad_OID_Cache ($) {
   }
 
   while(<CACHE>) {
-    s/#.*//;
-    s/--.*--//g;
-    s/--.*//;
+    s/#.*//;				# '#' starts a comment
+    s/--.*--//g;			# comment delimited by '--', like MIBs
+    s/--.*//;				# comment started by '--'
     next if (/^$/);
-    next unless (/\s/);
-    chop;
+    next unless (/\s/);			# must have whitespace as separator
+    chomp;
     ($txt, $oid) = split(' ', $_, 2);
+    $txt = $1 if ($txt =~ /^[\'\"](.*)[\'\"]/);
+    $oid = $1 if ($oid =~ /^[\'\"](.*)[\'\"]/);
+    if (($txt =~ /^\.?\d+(\.\d+)*\.?$/)
+    &&  ($oid !~ /^\.?\d+(\.\d+)*\.?$/)) {
+	my($a) = $oid;
+	$oid = $txt;
+	$txt = $a;
+    }
+    $oid =~ s/^\.//;
+    $oid =~ s/\.$//;
     &snmpmapOID($txt, $oid);
   }
   close(CACHE);
@@ -1097,7 +1106,7 @@ sub Check_OID ($) {
   my($var) = @_;
   my($tmp, $tmpv, $oid);
 
-  if ($var =~ /^(([a-zA-Z][a-zA-Z\d\-]*\.)*([a-zA-Z][a-zA-Z\d\-]*))/)
+  if ($var =~ /^[a-zA-Z][\w\-]*(\.[a-zA-Z][\w\-])*/)
   {
     $tmp = $&;
     $tmpv = $tmp;
@@ -1168,7 +1177,7 @@ sub snmpMIB_to_OID ($) {
 	next unless /"/;
 	$quote = 0;
       }
-      chop;
+      chomp;
 #
 #	$buf = "$buf $_";
 # Previous line removed (and following replacement)
@@ -1213,7 +1222,7 @@ sub snmpMIB_to_OID ($) {
       $buf =~ s/ IMPORTS .*\;//;
       $buf =~ s/ SEQUENCE {.*}//;
       $buf =~ s/ SYNTAX .*//;
-      $buf =~ s/ [\w-]+ ::= OBJECT IDENTIFIER//;
+      $buf =~ s/ [\w\-]+ ::= OBJECT IDENTIFIER//;
       $buf =~ s/ OBJECT IDENTIFIER .* ::= {/ OBJECT IDENTIFIER ::= {/;
       $buf =~ s/".*"//;
       if ($buf =~ /"/) {

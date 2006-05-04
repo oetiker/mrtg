@@ -63,7 +63,7 @@ our @EXPORT = qw(
 
 ## Version of the Net_SNMP_util module
 
-our $VERSION = v1.0.5;
+our $VERSION = v1.0.9;
 
 use Carp;
 
@@ -1177,15 +1177,14 @@ This routine doesn't return anything.
 sub snmpmapOID(@)
 {
   my(@vars) = @_;
-  my($oid, $txt, $ind);
+  my($oid, $txt);
 
-  $ind = 0;
-  while($ind <= $#vars) {
-    $txt = $vars[$ind++];
-    next unless($txt =~ /^(([a-zA-Z][a-zA-Z\d\-]*\.)*([a-zA-Z][a-zA-Z\d\-]*))$/);
+  while($#vars >= 0) {
+    $txt = shift @vars;
+    $oid = shift @vars;
 
-    $oid = $vars[$ind++];
-    next unless($oid =~ /^((\d+.)*\d+)$/);
+    next unless($txt =~ /^[a-zA-Z][\w\-]*(\.[a-zA-Z][\w\-])*$/);
+    next unless($oid =~ /^\d+(\.\d+)*$/);
 
     $Net_SNMP_util::OIDS{$txt} = $oid;
     $RevNeeded = 1;
@@ -1230,13 +1229,23 @@ sub snmpLoad_OID_Cache ($) {
   }
 
   while(<CACHE>) {
-    s/#.*//;
-    s/--.*--//g;
-    s/--.*//;
+    s/#.*//;				# '#' starts a comment
+    s/--.*--//g;			# comment delimited by '--', like MIBs
+    s/--.*//;				# comment started by '--'
     next if (/^$/);
-    next unless (/\s/);
-    chop;
+    next unless (/\s/);			# must have whitespace as separator
+    chomp;
     ($txt, $oid) = split(' ', $_, 2);
+    $txt = $1 if ($txt =~ /^[\'\"](.*)[\'\"]/);
+    $oid = $1 if ($oid =~ /^[\'\"](.*)[\'\"]/);
+    if (($txt =~ /^\.?\d+(\.\d+)*\.?$/)
+    &&  ($oid !~ /^\.?\d+(\.\d+)*\.?$/)) {
+	my($a) = $oid;
+	$oid = $txt;
+	$txt = $a;
+    }
+    $oid =~ s/^\.//;
+    $oid =~ s/\.$//;
     &snmpmapOID($txt, $oid);
   }
   close(CACHE);
@@ -1299,7 +1308,7 @@ sub snmpMIB_to_OID ($) {
 	next unless /"/;
 	$quote = 0;
       }
-      chop;
+      chomp;
 #
 #	$buf = "$buf $_";
 # Previous line removed (and following replacement)
@@ -1344,7 +1353,7 @@ sub snmpMIB_to_OID ($) {
       $buf =~ s/ IMPORTS .*\;//;
       $buf =~ s/ SEQUENCE {.*}//;
       $buf =~ s/ SYNTAX .*//;
-      $buf =~ s/ [\w-]+ ::= OBJECT IDENTIFIER//;
+      $buf =~ s/ [\w\-]+ ::= OBJECT IDENTIFIER//;
       $buf =~ s/ OBJECT IDENTIFIER .* ::= {/ OBJECT IDENTIFIER ::= {/;
       $buf =~ s/".*"//;
       if ($buf =~ /"/) {
@@ -1512,6 +1521,8 @@ sub snmpopen ($$$) {
   if (ref $vars->[0] eq 'HASH') {
     undef($debug);
     undef($maxmsgsize);
+    undef $Net_SNMP_util::ContextEngineID;
+    undef $Net_SNMP_util::ContextName;
     $opts = shift @$vars;
     foreach $type (keys %$opts) {
       if ($type =~ /^-?return_array_refs$/i) {
@@ -1585,8 +1596,6 @@ sub snmpopen ($$$) {
       undef $Net_SNMP_util::Version;
       undef $Net_SNMP_util::LHost;
       undef $Net_SNMP_util::IPv4only;
-      undef $Net_SNMP_util::ContextEngineID;
-      undef $Net_SNMP_util::ContextName;
     }
 
     $args{'-hostname'} = $host;
@@ -1625,6 +1634,10 @@ sub snmpopen ($$$) {
       if (defined($maxmsgsize) && (length($maxmsgsize) > 0));
     $Net_SNMP_util::Session->debug($debug)
       if (defined($debug) && (length($debug) > 0));
+    $Net_SNMP_util::Session->{_context_engine_id} = undef
+      if (!defined($Net_SNMP_util::ContextEngineID));
+    $Net_SNMP_util::Session->{_context_name} = undef
+      if (!defined($Net_SNMP_util::ContextName));
   }
   return $Net_SNMP_util::Session;
 }
@@ -1691,7 +1704,7 @@ sub Check_OID ($) {
   my($var) = @_;
   my($tmp, $tmpv, $oid);
 
-  if ($var =~ /^(([a-zA-Z][a-zA-Z\d\-]*\.)*([a-zA-Z][a-zA-Z\d\-]*))/)
+  if ($var =~ /^[a-zA-Z][\w\-]*(\.[a-zA-Z][\w\-])*/)
   {
     $tmp = $&;
     $tmpv = $tmp;
