@@ -349,17 +349,24 @@ ECHO
     # -----------------------------------------------------------
     my $itemnr = 0;
     my $first = $order[0];
-    my $host = $$rcfg{host}{$first} || '';
-    
-    $index .= "<a NAME=\"$host\"></a><tr><td>$$opt{headon}Interfaces of $host $$opt{headoff}</td></tr>" if $$opt{perhost};
+    my $host = $$rcfg{host}{$first};
+    if ($host){    
+       $index .= "<a NAME=\"$host\"></a><tr><td>$$opt{headon}Interfaces of $host $$opt{headoff}</td></tr>" if $$opt{perhost};
+    } else {
+       $index .= "<a NAME=\"$host\"></a><tr><td>$$opt{headon}Special Items$$opt{headoff}</td></tr>" if $$opt{perhost};
+    }
     foreach my $item (@order) {
 
 	if ($$opt{perhost}) {
-		my $newhost = $$rcfg{host}{$item};
+		my $newhost = $$rcfg{host}{$item} || 'unspecified host';
 		if (!($host eq $newhost)) {
 			$host = $newhost;
-		        $index .= "<tr><td>$$opt{headon}Interfaces of $host $$opt{headoff}</td></tr>\n";
-			$index .= "<tr>\n";
+			if ($host){
+   		          $index .= "<tr><td>$$opt{headon}Interfaces of $host $$opt{headoff}</td></tr>\n";
+                        } else {
+   		          $index .= "<tr><td>$$opt{headon}Special Items$$opt{headoff}</td></tr>\n";
+			}
+ 		        $index .= "<tr>\n";
 			$itemnr=0;
 		}
 	}
