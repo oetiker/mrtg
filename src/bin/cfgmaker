@@ -743,17 +743,17 @@ ECHO
 				<tr>
 					<td>Port Name:</td>
 					<td>$if_port_name</td>
-				</tr>\n" if defined $if_port_name;
+				</tr>" if defined $if_port_name;
                 $default_pagetop_directive .= "
 				<tr>
 					<td>Max Speed:</td>
 					<td>$if_speed_str</td>
-				</tr>\n";
+				</tr>";
                 $default_pagetop_directive .= "
 				<tr>
 					<td>Ip:</td>
 					<td>$if_ip ($if_dns_name)</td>
-				</tr>\n" if $if_ip;
+				</tr>" if $if_ip;
                 $default_pagetop_directive .= "
 			</table>
 		</div>";
