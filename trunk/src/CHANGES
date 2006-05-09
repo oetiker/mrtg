@@ -1,3 +1,8 @@
+From: Tobi
+* make install should build rateup ... 
+* indexmaker with --prehost should act sensible even with targets that have no host
+* remove extra \n from cfgmaker output in pagetop section
+
 Changes 2.14.3, 2006-05-05
 --------------------------
 From: Tobi
