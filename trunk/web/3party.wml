@@ -104,6 +104,8 @@
   <h2>Monitoring Special Devices and Applications</h2>
 
   <ul>
+    <li><a href="http://www.timewind.se/rsyncmrtg/index_eng.html">Monitoring an Rsync Server</a> by Stefan Sundberg</li>
+
     <li><a href="http://alex.kruijff.org/FreeBSD/Traffic_Report.html">Monitoring FreeBSD IPFW with MRTG</a> by Alex de Kruijff</li>
 
     <li><a href="http://forge.novell.com/modules/xfmod/project/?mrtgext">MRTG Extensions for Netware</a> by <a href="mailto:drews{at}engr.wisc.edu">James Drews</a></li>
