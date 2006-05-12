@@ -53,8 +53,8 @@ for the documentation sections of F<cfgmaker> and F<indexmaker>.
 =head1 ADDRESS
 
 Send your patches, translations and contributions to Tobias Oetiker
-E<lt>tobi.chE<gt>
+E<lt>tobi@oetiker.chE<gt>
 
 =head1 AUTHOR
 
-Tobias Oetiker E<lt>tobi.chE<gt>
+Tobias Oetiker E<lt>tobi@oetiker.chE<gt>

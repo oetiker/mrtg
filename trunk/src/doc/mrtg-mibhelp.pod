@@ -190,4 +190,4 @@ Note these are not real MIB entities but mrtg hacks
 
 =head1 AUTHOR
 
-Tobias Oetiker E<lt>tobi.chE<gt>
+Tobias Oetiker E<lt>tobi@oetiker.chE<gt>

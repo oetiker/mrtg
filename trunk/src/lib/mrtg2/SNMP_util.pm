@@ -11,13 +11,13 @@
 ###
 ### Contributions and fixes by:
 ###
-### Tobias Oetiker <tobi.ch>:  Basic layout
+### Tobias Oetiker <tobi@oetiker.ch>:  Basic layout
 ### Simon Leinen <simon@switch.ch>: SNMP_session.pm/BER.pm
 ### Jeff Allen <jeff.allen@acm.org>: length() of undefined value
 ### Johannes Demel <demel@zid.tuwien.ac.at>: MIB file parse problem
 ### Simon Leinen <simon@switch.ch>: more OIDs from Interface MIB
 ### Jacques Supcik <supcik@ip-plus.net>: Specify local IP, port
-### Tobias Oetiker <tobi.ch>: HASH as first OID to set SNMP options
+### Tobias Oetiker <tobi@oetiker.ch>: HASH as first OID to set SNMP options
 ### Simon Leinen <simon@switch.ch>: 'undefined port' bug
 ### Daniel McDonald <dmcdonald@digicontech.com>: request for getbulk support
 ### Laurent Girod <it.fb@net2000.ch>: code for snmpwalkhash

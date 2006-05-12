@@ -44,7 +44,7 @@ clean:
 	-rm -f config.cache
 	-rm -f bin/rateup.o
 
-install:
+install: all
 	$(MKINSTALLDIRS) $(DESTDIR)$(bindir)
 	for x in $(top_srcdir)/bin/mrtg $(top_srcdir)/bin/cfgmaker $(top_srcdir)/bin/indexmaker; do \
 	  $(INSTALL) -m 755 $$x $(DESTDIR)$(bindir); done
