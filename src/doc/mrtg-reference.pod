@@ -1973,4 +1973,4 @@ indicates that at least one of the targets was succesful.  A partial listing of 
 
 =head1 AUTHOR
 
-Tobias Oetiker E<lt>tobi.chE<gt> and many contributors
+Tobias Oetiker E<lt>tobi@oetiker.chE<gt> and many contributors

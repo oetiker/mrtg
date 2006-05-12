@@ -402,7 +402,7 @@ mrtg, please see the rest of the documentation.
 
 =head1 AUTHORS
 
-Tobi Oetiker E<lt>tobi.chE<gt>,
+Tobi Oetiker E<lt>tobi@oetiker.chE<gt>,
 David S. Divins E<lt>ddivins@moon.jic.comE<gt>,
 Steve Pierce E<lt>MRTG@HDL.comE<gt>,
 Artyom Adjemov E<lt>one.bofh@gmail.comE<gt>,

@@ -281,5 +281,5 @@ mrtg.cfg file.
 
 =head1 AUTHOR
 
-Tobias Oetiker E<lt>tobi.chE<gt>
+Tobias Oetiker E<lt>tobi@oetiker.chE<gt>
 

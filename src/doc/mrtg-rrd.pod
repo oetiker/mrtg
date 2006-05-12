@@ -121,4 +121,4 @@ But don't wait for it ... get going B<now>!
 
 =head1 AUTHOR
 
-Tobias Oetiker E<lt>tobi.chE<gt>
+Tobias Oetiker E<lt>tobi@oetiker.chE<gt>

@@ -3,7 +3,7 @@
 ##################################################################
 # MRTG 2.14.3  -- Config file creator
 ##################################################################
-# Created by Tobias Oetiker <tobi.ch>
+# Created by Tobias Oetiker <tobi@oetiker.ch>
 # this produces an mrtg config file for one router or more routers
 # by pulling info off the router via snmp
 ##################################################################
