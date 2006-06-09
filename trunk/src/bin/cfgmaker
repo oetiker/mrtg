@@ -162,8 +162,8 @@ sub InterfaceInfo($$$$$) {
     my $snmphost = v4onlyifnecessary($router, $routers->{$router}{ipv4only});
 
     if ($routers->{$router}{deviceinfo}{Vendor} eq 'cisco' &&
-        $routers->{$router}{deviceinfo}{sysDescr} =~ m/Version\s+(\d\d\.\d+)/) {
-        push @Variables,  ($1 > 11.0) ? "ifAlias" : "CiscolocIfDescr";
+        $routers->{$router}{deviceinfo}{sysDescr} =~ m/Version\s+(\d+\.\d+)/) {
+        push @Variables,  ($1 > 11.0 or $1 < 10.0 ) ? "ifAlias" : "CiscolocIfDescr";
         if ($1 > 11.2) {push @Variables, "vmVlan";};
     } elsif ( $routers->{$router}{deviceinfo}{Vendor} =~ /(?:hp|juniper|foundry|dellLan|force10|extremenetworks)/) {
         push @Variables, "ifAlias";
