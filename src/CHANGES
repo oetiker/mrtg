@@ -1,3 +1,6 @@
+From: Pierfrancesco Caci p.caci seabone.net
+* cfgmaker should know that IOS-XR version 3.x is newer that IOS  11.x
+
 From: Tobi
 * make install should build rateup ... 
 * indexmaker with --prehost should act sensible even with targets that have no host
