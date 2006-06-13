@@ -244,6 +244,20 @@ for debuging
     }\
   }
 
+static double logscale(double y, double maxy)
+{
+     y = (y * (maxy - 1) / maxy) + 1;
+     y = log(y) / log (maxy) * maxy;
+     if (y < 0) return 0;
+     if (y > maxy) return maxy;
+     return y;
+}
+
+static double expscale(double y, double maxy)
+{
+    y = exp(y / maxy * log(maxy));
+    return (y - 1) * maxy / (maxy - 1);
+}
 
 static void
 image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
@@ -727,7 +741,7 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
   origmaxvo = (origmaxvo * muli / nmax ) * maxy;
 
   /* Log and second-mean scaling added by Benjamin Despres, 2004-10-13 */
-  if ((options & OPTION_LOGGRAPH) || (options & OPTION_MEANOVER))
+  if (options & OPTION_MEANOVER)
     {
       lmx1 = lmx2 = mea1 = mea2 = temp = 0.0;
       for (x = 0; x < maxx; x++)
@@ -758,8 +772,6 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	origmaxvo = 1.0;
 
       mea1 /= (double) maxx;
-      if (options & OPTION_MEANOVER)
-	{
 	  for (x = 0; x < maxx; x++)
 	    {
 	      y =
@@ -783,19 +795,6 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	      if (lhist[x].outmax > mea2)
 		lhist[x].outmax = mea2;
 	    }
-	}
-      if (options & OPTION_LOGGRAPH)
-	{
-	  for (x = 0; x < maxx; x++)
-	    {
-	      lhist[x].in = log (lhist[x].in);
-	      lhist[x].out = log (lhist[x].out);
-	      lhist[x].inmax = log (lhist[x].inmax);
-	      lhist[x].outmax = log (lhist[x].outmax);
-	    }
-	  origmaxvi = log (origmaxvi);
-	  origmaxvo = log (origmaxvo);
-	}
       for (x = 0; x < maxx; x++)
 	{
 	  if (lhist[x].in > lmx2)
@@ -819,9 +818,20 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
       origmaxvi *= lmx2;
       origmaxvo *= lmx2;
 
-      if (options & OPTION_MEANOVER)
-	sca_max_q *= ((float) mea2 / (float) maxy);
-    }				/* end of primary log and second-mean scaling code (more below) */
+      sca_max_q *= ((float) mea2 / (float) maxy);
+    }
+  else if (options & OPTION_LOGGRAPH)
+    {
+      for (x = 0; x < maxx; x++)
+        {
+          lhist[x].in = logscale (lhist[x].in, maxy);
+          lhist[x].out = logscale (lhist[x].out, maxy);
+          lhist[x].inmax = logscale (lhist[x].inmax, maxy);
+          lhist[x].outmax = logscale (lhist[x].outmax, maxy);
+        }
+      origmaxvi = logscale (origmaxvi, maxy);
+      origmaxvo = logscale (origmaxvo, maxy);
+    }	/* end of primary log and second-mean scaling code (more below) */
 
   /* the graph is made ten pixels higher to acomodate the x labels */
   graph = gdImageCreate (XSIZE, YSIZE);
@@ -994,34 +1004,6 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 		       (unsigned char *) longup, i_grid);
     }
 
-  /* secondary log and second-mean scale code block follows */
-  if (options & OPTION_LOGGRAPH)
-    {
-      for (i = 0; i <= ytics; i++)
-	{
-	  gdImageLine (graph, xtr (-2), ytr (i * maxy / ytics), xtr (1),
-		       ytr (i * maxy / ytics), i_grid);
-	  gdImageLine (graph, xtr (maxx + 2), ytr (i * maxy / ytics),
-		       xtr (maxx - 1), ytr (i * maxy / ytics), i_grid);
-	  gdImageLine (graph, xtr (0), ytr (i * maxy / ytics), xtr (maxx),
-		       ytr (i * maxy / ytics), gdStyled);
-	  temp = exp ((log ((float) maxy) / (float) ytics) * (float) i) - 1.0;
-	  temp *= ((float) sca_max_q * (float) ytics) / (float) maxy;
-	  sprintf (ylab, "%6.1f %s", temp, short_si_out);
-	  gdImageString (graph, gdFontSmall, 23,
-			 ytr (i * maxy / ytics + gdFontSmall->h / 2),
-			 (unsigned char *) ylab, i_grid);
-	  if (options & OPTION_DORELPERCENT)
-	    {
-	      sprintf (ylab, "% 6.1f%%", (float) 100 / ytics * i);
-	      gdImageString (graph, gdFontSmall, 77 + ((maxx) * xscale) + 1,
-			     ytr (i * maxy / ytics + gdFontSmall->h / 2),
-			     (unsigned char *) ylab, i_outpg);
-	    }
-	}
-    }
-  else				/* end of secondary log and second-mean scaling code */
-    {
       for (i = 0; i <= ytics; i++)
 	{
 
@@ -1038,7 +1020,12 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
     	sprintf(ylab,"%6.1f %s",sca_max_q*i,short_si[digits/3]);
 */
 /*    	sprintf(ylab,"%6.1f %s",sca_max_q*i*yticsf,short_si_out);  */
-	  sprintf (ylab, "%6.1f %s", sca_max_q * i, short_si_out);
+	  temp = sca_max_q * i;
+	  if (options & OPTION_LOGGRAPH)
+	     temp = expscale(maxy * i / ytics, maxy) * ytics * sca_max_q / maxy;
+	  else
+	     temp = sca_max_q * i;
+	  sprintf (ylab, "%6.1f %s", temp, short_si_out);
 
 /*        sprintf(ylab,"%6.1f %s",sca_max_q*i,short_si_out); */
 	  gdImageString (graph, gdFontSmall, 23,
@@ -1048,13 +1035,12 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	  if (options & OPTION_DORELPERCENT)
 	    {
 	      /* sprintf(ylab,"% 6.1f%%",(float)25.*i); */
-	      sprintf (ylab, "% 6.1f%%", (float) 100 / ytics * i);
+	      sprintf (ylab, "% 6.1f%%", (float) (temp / (sca_max_q * ytics) * 100));
 	      gdImageString (graph, gdFontSmall, 77 + ((maxx) * xscale) + 1,
 			     ytr (i * maxy / ytics + gdFontSmall->h / 2),
 			     (unsigned char *) ylab, i_outpg);
 	    }
 	}
-    }
 
   /* draw vertical grid and horizontal labels */
   for (x = 0; x < maxx; x++)
