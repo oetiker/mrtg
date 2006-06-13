@@ -109,7 +109,8 @@ struct tm * stLocal;
 time_t timestamp;
 char bufftime[32];
 
-char *short_si[] = { "", "k", "M", "G", "T" };
+char *short_si_def[] = { "", "k", "M", "G", "T" };
+char **short_si = short_si_def;
 char *longup = NULL;
 char *shortup = NULL;
 char *pngtitle = NULL;
@@ -152,7 +153,6 @@ int col_outp[3];
 
 long long kilo = (long long) 1000;
 char *kMG = (char *) NULL;
-char *kMGcopy = (char *) NULL;	/* JML bugfix */
 int kMGnumber = 0;
 
 #define MAXL	200		/* Maximum length of last in & out fields */
@@ -275,7 +275,7 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
   char ylab[30];
   /* scaling helpers */
   long long maxv_q;
-  long long valsamp, maxin, maxout, digits, maxpercent = 0;
+  long long valsamp, maxin, maxout, digits, digits1, maxpercent = 0;
   long long sca_ten, sca_hun;
   double nmax_q;
   double avmxin, avmxout, avin, avout, latestout = 0, latestin =
@@ -461,12 +461,25 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 
   if (kMG)
     {
-      char *string = kMG;
-      kMGnumber = 0;
-      while (strchr (string, ','))
-	{
-	  string = strchr (string, ',') + 1;
-	  kMGnumber++;
+      if (short_si[0] != kMG)
+        {
+          short_si_out = kMG;
+          kMGnumber = 0;
+          while ((short_si_out = strchr (short_si_out, ',')) != NULL)
+	    {
+	      short_si_out++;
+	      kMGnumber++;
+	    }
+
+          short_si = calloc(kMGnumber + 1, sizeof(*short_si));
+          short_si_out = kMG;
+          for (kMGnumber = 0; ; kMGnumber++)
+            {
+	      short_si[kMGnumber] = short_si_out;
+	      short_si_out = strchr(short_si_out, ',');
+	      if (short_si_out == NULL) break;
+	      short_si_out++;
+	    }
 	}
     }
   else
@@ -492,7 +505,8 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
     /* yes this should be kilo, but then the log and pow bits below
        should be base 'kilo' as well and not base 10 */
 
-    while (number >= (double) 1000 && digits < (long long) kMGnumber * 3)
+    while (digits < (long long) kMGnumber * 3 &&
+           (number >= (double) 1000 || short_si[digits / 3][0] == '-'))
       {
 	number /= (double) 1000;
 	digits += 3;
@@ -506,43 +520,24 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
       (pow ((double) 10., (double) (int) (log10 ((double) number))));
   }
 
-  if (kMG)
-    {
-      int count = (int) digits;
-      short_si_out = kMGcopy;	/* JML bugfix */
-      strcpy (kMGcopy, kMG);	/* JML bugfix */
-      while (count >= 3)
-	{
-	  count -= 3;
-	  short_si_out = strchr (short_si_out, ',') + 1;
-	}
-      if (strchr (short_si_out, ','))
-	{
-	  *((char *) strchr (short_si_out, ',')) = '\0';
-	}
-    }
-  else
-    {
-      short_si_out = short_si[min ((signed) (digits / 3), kMGnumber)];
-    }
+  short_si_out = short_si[min ((signed) (digits / 3), kMGnumber)];
 
   if (maxv_q * yticsf >= 1)
     {
-/*    	digits = log10((double)maxv_q); */
-      digits = log10 ((double) maxv_q * yticsf);
+      digits1 = log10 ((double) maxv_q * yticsf);
     }
   else
     {
-      digits = 0;
+      digits1 = 0;
     }
 
 /*  sca_ten = maxv_q / pow(10.0,(double)digits); */
 /*  sca_hun = maxv_q / pow(10.0,(double)digits-1); */
-  sca_ten = (double) maxv_q *yticsf / pow (10.0, (double) digits);
-  sca_hun = (double) maxv_q *yticsf / pow (10.0, (double) digits - 1);
-  nex_rnd = (sca_hun) * pow (10.0, (double) digits - 1);
-  nex_ten = (sca_ten + 1) * pow (10.0, (double) digits);
-  nex_hun = (sca_hun + 1) * pow (10.0, (double) digits - 1);
+  sca_ten = (double) maxv_q *yticsf / pow (10.0, (double) digits1);
+  sca_hun = (double) maxv_q *yticsf / pow (10.0, (double) digits1 - 1);
+  nex_rnd = (sca_hun) * pow (10.0, (double) digits1 - 1);
+  nex_ten = (sca_ten + 1) * pow (10.0, (double) digits1);
+  nex_hun = (sca_hun + 1) * pow (10.0, (double) digits1 - 1);
 
 /*  if (nex_ten <= (1.1 * maxv_q))  { */
   if (nex_ten <= (1.1 * maxv_q * yticsf))
@@ -560,7 +555,7 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
     }
 
   sca_max_q = nmax_q / (pow (10.0, (double) ((int) (digits / 3)) * 3));
-/*  nmax=sca_max_q*ytics*(pow((double)kilo,(double)((int)(digits/3))));  */
+/*  nmax=sca_max_q*ytics*(pow((double)kilo,(double)((int)(digits1/3))));  */
   nmax =
     (sca_max_q / yticsf) * ytics *
     (pow ((double) kilo, (double) ((int) (digits / 3))));
@@ -2193,7 +2188,6 @@ main (argc, argv)
 	case 'K':
 	  kMG = calloc (strlen (argv[argi + 1]) + 1, sizeof (char));
 	  strcpy (kMG, argv[argi + 1]);
-	  kMGcopy = calloc (strlen (argv[argi + 1]) + 1, sizeof (char));
 	  used = 2;
 	  break;
 	case 'Z':		/* Timezone name */

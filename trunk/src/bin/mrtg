@@ -1138,11 +1138,16 @@ sub fmi {
     my($number, $maxbytes, $router, @foo) = @_;
     return "?????" unless defined $number;
     my($rcfg,$LOC)=@foo;
-    my @short= (&$LOC(""),&$LOC(""),&$LOC(""),&$LOC(""));
+    my @short= ();
     my $mul = 1;
     if ($$rcfg{'kmg'}{$router}) {
         my($i);
-        if ($$rcfg{'options'}{'bits'}{$router}) {
+        if (defined $$rcfg{'shortlegend'}{$router}) {
+            foreach $i (split(/,/, $$rcfg{'kmg'}{$router})) {
+                $short[$#short+1] = "$i"."$$rcfg{'shortlegend'}{$router}";
+            }
+        }
+        elsif ($$rcfg{'options'}{'bits'}{$router}) {
             foreach $i (split(/,/, $$rcfg{'kmg'}{$router})) {
                 if ($$rcfg{'options'}{'perminute'}{$router}) {
                     $short[$#short+1] = "$i".&$LOC("b/min");
@@ -1164,11 +1169,6 @@ sub fmi {
                 }
             }
             $mul= 1;
-        }
-        if (defined $$rcfg{'shortlegend'}{$router}) {
-            foreach $i (split(/,/, $$rcfg{'kmg'}{$router})) {
-                $short[$#short+1] = "$i"."$$rcfg{'shortlegend'}{$router}";
-            }
         }
     } else {
         if (defined $$rcfg{'options'}{'bits'}{$router}) {
@@ -1204,7 +1204,8 @@ sub fmi {
     #  my $divnum = $number*$mul/10**($divm*3);
     my $divnum=$number*$mul*$$rcfg{'factor'}{$router};
     #  while ($divnum/$$rcfg{'kilo'}{$router} >= 10*$$rcfg{'kilo'}{$router} and $divnum<$#short) {
-    while ($divnum >= 10*$$rcfg{'kilo'}{$router} and $divm<$#short) {
+    while (($divnum >= 10*$$rcfg{'kilo'}{$router} or $short[$divm] =~ /^-/) and
+           $divm<$#short) {
         $divm++;
         $divnum /= $$rcfg{'kilo'}{$router};
     }
