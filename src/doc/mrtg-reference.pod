@@ -1523,7 +1523,8 @@ Change the default multiplier prefixes (,k,M,G,T,P). In the tag
 I<ShortLegend> define only the basic units.
 Format: Comma seperated list of prefixed. Two consecutive commas
 or a comma at start or end of the line gives no prefix on this item.
-Note: If you do not want prefixes, just put two consecutive commas.
+If you do not want prefixes, just put two consecutive commas.
+If you want to skip a magnitude select '-' as value.
 
 Example: velocity in nm/s (nanometers per second) displayed in nm/h.
 
