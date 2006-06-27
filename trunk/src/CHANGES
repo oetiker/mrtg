@@ -5,6 +5,8 @@ From: Tobi
 * make install should build rateup ... 
 * indexmaker with --prehost should act sensible even with targets that have no host
 * remove extra \n from cfgmaker output in pagetop section
+* cfgmaker, escape " in SetEnv MRTG_INT_DESCR output
+* allow ifalias for 3com gear
 
 Changes 2.14.3, 2006-05-05
 --------------------------
