@@ -1,0 +1,16 @@
+From anthonyr@ce.com.au Wed Feb 26 16:29:59 1997
+Date: Mon, 24 Feb 1997 11:17:36 +1100 (EST)
+From: Anthony Rumble <anthonyr@ce.com.au>
+To: mrtg@list.ee.ethz.ch
+Subject: Some handy scripts
+Resent-Date: Mon, 24 Feb 1997 01:19:13 +0100 (MET)
+Resent-From: mrtg@list.ee.ethz.ch
+
+
+Heres some handy scripts to get byte stats from apache (web server) 1.1.1 
+and better and squid (proxy server) 1.1.1 and better.
+
+-- 
+Anthony Rumble - Online Ordering Systems
+Corporate Express Australia Limited
+Phone 02-9335-0669 Fax 02-9335-0753 Mobile 015-955-042 Pager 016-634-997

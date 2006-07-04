@@ -1,0 +1,512 @@
+
+The files in this direectory have been contributed to mrtg ... If you have
+questions in connection with these please contact the authors ...
+
+adm-mrtg
+--------
+From: "Ripley, Scott" <Scott.Ripley@mail.house.gov>
+
+This script organizes config files for MRTG
+and restarts the MRTG processes cleanly.
+
+mrtg_php_portal
+---------------
+From: Damien <damien@detonate.net>
+
+Perl and Php script to provide a 'user-friendly' web interface of
+adding/removing Mrtg polled hosts
+
+iptables_acc_snmp
+----------------
+From: HERITIER Hervé <hh@handco.org>
+
+simple script to capture iptables counter on Linux 2.4 for use with snmpd
+
+apc_ups
+-------
+From: Klaus_Klein@mckinsey.com
+
+PERL script to extract the load % and remaining battery time from
+APC UPS systems.
+
+
+cisco_BPX_MGX
+-------------
+From: "Newman, Daniel" <NewmanD@telergy.net>
+
+Here is an howto on monitoring Cisco BPX and MGX switches with MRTG.
+
+
+mrtg.php
+--------
+From: David Boyer <Boyer_D@glan-hafren.ac.uk>
+ 
+Live Index of all log files
+
+TTrafic
+-------
+From: David A. Pérez <david@kamborio.com>
+
+"TTrafic is a small VBScript to analyse MRTG (http://www.mrtg.org/) log
+files. By using this script, you will be able to know which amount of
+traffic is going through your interfaces."
+
+iptables-accounting
+-------------------
+From: "Gill, Vern" <vgill@technologist.com>
+
+I have "hacked" together a module for iptables. I used the ipchainacc
+1.1.0 from the contrib directory.
+
+Total Control Modem CFG
+-----------------------
+From: Fernando Braghetto - Webmaster Hiway <webmaster@hiway.com.br>
+
+config sample for Control Modem Racks (3Com) to do user monitoring.
+
+
+routers
+-------
+From: Steven Shipway <Steven_Shipway@adsweu.com>                                
+
+check out http://www.cheshire.demon.co.uk/pub/
+for about 1000 neat tools for mrtg & rrdtool
+
+stfc
+----
+
+From: Mihai Claudiu Capatina <mihai.capatina@aignet.ro>
+
+This is a small script that I use on FreeBSD machines running ALTQ 
+This machines acts like a traffic management system and I need to see 
+the traffic for each class ( CBQ ) 
+
+gentgucci
+--------- 
+From: Kevin Benton <s1kevin@sotatech.net>   
+ 
+generate configs for 3com total control chassis
+
+procmem
+-------
+From Dimitrios Stergiou <dste@intranet.gr>
+
+Cisco CPU & Memory monitoring
+
+iptables_acc
+------------
+From: Gereon Ruetten <g.ruetten@gmx.de>
+
+i wrote a little script for using mrtg with iptables
+
+ipchainacc
+----------
+From: Ilya Konstantinov <future@galanet.net>
+
+I have tweaked version on the ipchainacc perl script provided in MRTG's contrib for
+which accounts BYTES instead of PACKETS
+
+net-hosts
+---------
+From: Adrian Turcu <adi@cfrcta.ro>
+
+monitor internet connection state on a chosen route (from traceroute)
+
+mrtgrq
+------
+From: Adrian Turcu <adi@cfrcta.ro>
+
+This script helps to monitor the amount of disk-space
+quota for each e-Mail user on the system. It allows to 
+acquire statistical data for each of user.
+
+
+linux_stat
+----------
+From: Mike Machado <mike@cheapnet.net>
+
+simple script to get the current traffic off a linux box
+
+nt_n_cisco
+----------
+From: CmdrData <CmdrData@ex-pressnet.com>
+
+running mrtg on NT and SQL db monitoring Cisco gear ...
+
+cfgmaker_dlci
+-------------
+From: Graziano Sommariva <Graziano.Sommariva@elsag.it>
+
+a modified version of the cfgmaker for people who want to
+monitor DLCIs
+
+ipchains
+--------
+From: John Lange <john.lange@darkcore.net>
+
+ipchains accounting script for use with MRTG
+
+monitor
+-------
+From: Chris Knipe <cgknipe@mweb.co.za>
+
+NT/Access/ASP based network monitoring system using mrtg technology.
+
+mrtg-archiver-script
+--------------------
+From: Oleg Krotoff <krot@tnsplus.kz>
+
+I have written a script, that allows to archieve graphs,
+produced by MRTG, organize and index them. CGI-script
+for navigation through archive is enclosed.
+
+
+get-equi
+--------
+From: Mike Gaertner <miky@forum.org.kh>
+
+The Equinox SST card does not provide SNMP support. Therefor I wrote a
+small perl script which reads out the byte counter from the Equinox SST
+board.
+
+
+nt-service
+----------
+From: Miroslaw.Maczka@bze.com.pl
+make mrtg a service under NT
+
+snmpping
+--------
+From: x <tomm02@yahoo.com>
+
+see if a device speaks snmp
+
+IxDisk
+------
+From: Miroslaw.Maczka@bze.com.pl
+
+Informix Performance monitoring
+
+accesslistmon
+-------------
+From: Roddy Strachan <roddy@satlink.com.au>
+
+Access-list Monitoring via MRTG
+
+mrtglog
+-------
+From: Vladimir Vul <vul@bds.ru> and Wolfgang Hoffmann <woho@netpark.at>
+
+This simple prog counts total traffic for given period, parsing mrtg logs.
+
+meminfo
+-------
+From: Colin Tinker <g1gsw@linux.g1gsw.ampr.org>
+
+This one checks /proc/meminfo for the used
+and free memory parsing it out for MRTG.
+
+ipfiler
+-------
+From: Ronald Florence <ron@18james.com>
+
+This script comes handy to interface ip-filter, a superb kernel-level
+packet-filtering router/firewll for Unix and Linux (
+http://coombs.anu.edu.au/~avalon/ip-filter.html ).  The script graphs
+connections through the firewall.
+
+switchmaker
+-----------
+From: Markley P. Dykeman <mdykeman@micron.net>
+
+Switchmaker will make an mrtg config file for a Cisco Catylst
+5XXX switch.
+
+cpuinfo
+-----------
+From: Matthew Schumacher <schu@schu.net>
+
+A short perl script that I wrote that will monitor system and user CPU usage
+on linux and sun machines that I would like to contrib.
+
+cisco_tftp
+----------
+From: Paul E. Erkkila <pee@gblx.net>                                                               
+
+This code will ask a cisco router to tftp it's config..                                            
+
+cisco_ipaccounting
+------------------
+From: cramer@dolphins.ch      
+
+gets IP-accounting data from a Cisco Router
+
+NSI (Network Status Imager for MRTG)
+------------------------------------
+From: "Kloberg Mac (LAM)" <mac.kloberg@lam.liebherr.com>
+
+Present network status on a map ... 
+
+14all
+-----
+From: Rainer Bawidamann <Rainer.Bawidamann@informatik.uni-ulm.de>
+
+Generates mrtg graphs on the fly. Uses RRDtool for graphing and logging. Needs
+UseRRDTool: Yes in mrtg.cfg ...
+
+mrtg-ipacc
+----------
+From: Cristian Caramida <brick@bbs.ro>
+
+Using Linux IP accounting kernel rules to feed mrtg
+
+mrtgmk
+------
+From: Iulian Radu <iulian_r@starnets.ro>
+
+"mrtgmk" is a program that scan a .cfg file and generate a mrtg.cfg
+style file + a .html file with links to the .html files generated by
+mrtg.
+
+
+cfgmaker_cisco
+--------------
+From: Jon Snyder <JON@PDX.EDU>
+
+CFGMAKER which instead of just returning an incrimenting port number on the
+graps, actually makes the following type of lable: Port 4/3, Vlan 128 ,
+multi mode fiber fast ethernet
+
+This version also grabs and shows all non-VLAN1 VLANS in a different color,
+plus provides aggregate VLAN traffic stastics as well by finding out what
+ports are in the VLAN, then adding those ports together. This means of
+course that a port will be "hit" however many times it is in a VLAN.
+
+cfgmaker_atm
+------------
+From: Henry Steinhauer <H1STEINH@hewitt.com>
+
+Bay ATM Information created from their MIB.
+
+OVmrtg
+------
+From: "Gellatly, Laurie (x8864)" <laurie.gellatly@vodafone.com.au>
+
+HP OpenView integration for MRTG ... 
+
+CiscoIndex
+----------
+From: Tim Cimarusti <cimarust@mercernet.com>
+
+This PERL script will read in the a Cisco router config file
+created by the "write network" command and create a HTML index
+for it's interfaces that corresponds with MRTG.
+
+DiskMon (getdisk.pl and showdisk.pl)
+------------------------------------
+From: Steven Micallef <smic@wire.net.au>
+
+Well, here's the scripts I use for graphing disk space on the hosts on our
+network.
+
+stat.pl
+------
+From: Calle Olsen <calle@volvo.se>
+
+this little perlscript helps to monitor your dns server
+
+whodo
+-----
+From: "Tony-Farr (Canberra)" <Tony.Farr@austrade.gov.au>
+
+Whodo is a set of Perl scripts to analyse IP accounting data from a cisco 
+router. The stats for each traffic source are fed into mrtg. Whodo also 
+generates pie graphs showing traffic split by source or destination.
+
+xlsummary
+---------
+From: "Tony-Farr (Canberra)" <Tony.Farr@austrade.gov.au>
+
+The script extracts summary figures from the MRTG log files. In particular
+it summarises all sites (i.e. as many as will fit on a page) into a single
+Excel chart. Because it uses Excel, it is only useful on Windows.
+
+TCH
+---
+From: Eric Billeter <ebilleter@cableone.net>
+
+Here are some scripts i modified to monitor the modem utilization
+of my USR Total control racks.
+
+jm
+--
+From: Joey Miller joeym@inficad.com
+
+a few perl scripts I wrote to collect stats on: # of users logged into a
+given shell machine, # of players on a quake server, and # of users
+currently reading news.
+
+get-active
+----------
+get-active From: Russ Wright <Wright@LBL.Gov>
+get-active2 From: Wee-Meng LEE <leewm@hpsgmx18.sgp.hp.com>
+
+This will look at the $trafficDir directory for MRTG generated HTML
+files, parse them and generate a listing of the most active interfaces
+in a file called "active.htlm" in the same directory
+
+cpumon
+------
+From: Matthew Ramsey <mjr@blackened.com>
+
+I use this script to monitor cpu usage on any process that
+maintains a pid file.
+
+mrtg-dynip
+----------
+From: John Heenan <johnhe@syd.net.au>
+
+Mrtg-dynip is a contribution to mrtg, enabling mrtg to generate multi
+interface traffic graphs for various hosts which do not provide a
+consistent interface name for physical interfaces, such as in a dynamic IP
+environment.
+
+
+ircstats
+--------
+From: Matt Ramsey (MR227) mjr@geeks.org, mjr@nin.com
+
+ircstats.pl is the simple perl script I use to monitor client
+loads and such on various EFnet IRC servers.
+
+ircstats2
+---------
+From: Lucas Nussbaum <lucas@ians.be>
+
+ircstats2.pl is a script used to monitor the user load on IRC networks.
+Contrary to ircstats by Matt Ramsey, it remains connected to the server.
+
+PMLines
+--------
+From: Carlos Canau <canau@dawn.EUnet.pt> and Many others
+
+Here's another script for contrib. It allows one to make a
+graph of analog/ISDN lines on a Livingston Portmaster 2/3/4.
+
+atmmaker
+--------
+From: Mark Trettin <mkt@lucent.com>
+
+I am sending a copy of our atmmaker script that generates a cfg
+for the FORE ASX switch you may add it to your contrib section.
+
+distrib
+-------
+From: Philippe Simonet <sip00@vg.swissptt.ch>
+
+'distrib' read mrtg log files and computes traffic distribution in 
+  the time. It ouputs a graph with : 
+    - in x the percentage of trafic utilisation (% bandwith)
+    - in y how many times the utilization was reached (% time)
+
+rdlog2
+------
+From: Philippe Simonet <sip00@vg.swissptt.ch>
+
+Rdlog is a small (and primitive) tool that gives indication on network
+traffic on a graphic map. It takes information from MRTG log files, and draw
+a GIF file with links that have colors based on the current traffic on your
+network. This small test explain how to use this tool.
+
+mrtg-ipget
+----------
+From: Jim Willette <mailroom@ctec.net>
+
+I have modified mrtgV2 to record stats based on interface ip address instead
+of Interface number. It does not do all the great errorchecking and no OS
+testing but it is functional for my needs.
+
+mrtgidx
+-------
+From: Axel Dunkel <ad@Dunkel.de>
+
+mrtgidx works like makeindex but the output produced looks different ...
+
+
+ascendget
+---------
+From: John-David Childs <jdc@ism.net>
+
+SHELL SCRIPT TO GET # of connected users on Ascend
+use Target[router]: `ascendget`
+
+get-multiserial
+---------------
+From: T. Pospisek <tpo@spin.ch>
+
+SHELL scripts to get active tty(-dial-in modem-) lines localy and remotely. 
+I'm using them with a cyclades board but they can be adapted at wish to
+different tasks.
+
+use Target[modems]: `get-multiserial`
+
+ping-probe
+----------
+From: "Peter W. Osel" <pwo@hl.siemens.de>
+
+A perl script to get roundtrip delays to hosts by sending a ping 
+to them. 
+
+rumb-stat
+---------
+From: Anthony Rumble <anthonyr@ce.com.au>
+
+Heres some handy scripts to get byte stats from apache (web server) 1.1.1
+and better and squid (proxy server) 1.1.1 and better.
+
+portmaster
+----------
+From: Chris Johnson <admin@nantucket.net>
+Subject: MRTG for portmasters
+
+A script and config to produce Modem statistics for Livingston
+Portmasters.
+
+mrtg-blast
+----------
+From: "Balthasar T. Indermuehle" <bi@inside.ch>
+
+This is a tcpblast interface available for MRTG 2.1. It works much like
+the famed ping-probe, instead of ping it uses tcpblast to estimate
+network bandwidth.
+ 
+GetSNMPLinesUP
+--------------
+From: Carlos Canau <canau@dawn.EUnet.pt>
+
+GetSNMPLinesUP.pl checks some SNMP  variables for a certain  value and
+returns their sum  in a format used to  feed values to MRTG.
+
+mrtgindex.cgi
+-------------
+From: Mick Ghazey <mick@lowdown.com>
+
+like mrtgindex, but runs as a cgi. Thus it will not need SSIs ...
+
+mrtg-mail
+---------
+From: Rachel Polanskis <r.polanskis@nepean.uws.edu.au>
+
+plot sendmail mailstats with mrtg
+
+there is a second version bz rick horowitz in the directory as well
+
+mrtg-archiver
+-------------
+From: Emanuele Leonardi <Emanuele.Leonardi@roma1.infn.it>
+From: Rawlin Blake <blake@nevada.edu>                                           
+
+It wakes up at 23:54 every night and copies all the current daily gifs
+for the given list of routers to a directory named with the current date
+(e.g. 970717). The Perl code is extremely straightforward so there
+should be no problem in understanding it.

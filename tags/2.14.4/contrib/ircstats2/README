@@ -1,0 +1,38 @@
+ircstats2.pl v1.3 (06/04/2001)
+
+ircstats2.pl is a perl script I use to monitor
+the user load of the Langochat.net IRC Network.
+- Lucas Nussbaum <lucas@schickler.net>
+Homepage : http://www.schickler.net/lucas/ircstats2/
+
+Usage :
+
+All the configuration is done in ircstats2.pl.
+You can look at example.cf to learn how to configure mrtg with this script.
+To restart the script if it crashes (this soft is supposed to be bug-free,
+so that shouldn't happen), you can use the crontab script included.
+
+Changes :
+
+1.3 (21/03/2001)
+	- Now counts servers and ircops too.
+1.2 (25/01/2001)
+   - Better calculation of the global user load, when the list of servers
+     isn't up to date.
+   - Now counts the number of channels too :)
+   - Can display the global users and channels count in plain text file,
+     enabling those files to be used in other scripts.
+      
+1.1 (24/08/2000)
+   - Initial public release
+
+Licence :
+
+This software is subject to the 
+   
+   GNU GENERAL PUBLIC LICENCE version 2 or above
+
+It can be found on http://www.gnu.org/copyleft/gpl.html
+
+However, if you modify something in this script, I would strongly appreciate
+that you send me a copy.

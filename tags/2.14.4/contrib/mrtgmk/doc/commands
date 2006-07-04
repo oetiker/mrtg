@@ -1,0 +1,56 @@
+0 COMMENT
+0 ENDCOMMENT
+
+0 XDEBUG on|off
+
+0 INCLUDE cfgfile
+
+0 DEFHOST hostname fcfgname port
+
+0 MRTG.CFG cfgpathdst cfgpathsrc
+0 HTMLFILE filepath
+
+0 HTMLCODE code inserted in html
+0 HTMLLINK link text
+0 LINK2DH  host text
+0 MRTGTEXT text inserted in mrtg.cfg
+
+0 CFGDIR cfg_path
+
+0 TITLE txt
+
+0 BODY body arguments
+0 NOBODY
+
+0 BASE url
+0 NOBASE
+
+0 EXEC cmd
+
+link = # or RealLink
+0 GIFD link host
+0 GIFW link host
+0 GIFM link host
+0 GIFY link host
+
+0 ALIAS alias_name alias_body
+0 DELALIAS alias_name
+0 CHECK4ALIAS yes|no
+
+0 MSG msg
+
+0 MKLINK dir host path
+
+0 MKD fcfg htmlfilename	
+0 MKW fcfg htmlfilename
+0 MKM fcfg htmlfilename
+0 MKY fcfg htmlfilename
+
+0 CHNGTRGNAME yes|no
+0 CONVIP2NAME mrtg_out_path
+0 CONVNAME2IP mrtg_out_path
+
+n HTMLCODE html code
+n HTMLLINK link text
+n LINK2DH  host text
+n DATA host text
