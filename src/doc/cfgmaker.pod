@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 # -*- mode: Perl -*-
 ##################################################################
-# MRTG 2.14.3  -- Config file creator
+# MRTG 2.14.4  -- Config file creator
 ##################################################################
 # Created by Tobias Oetiker <tobi@oetiker.ch>
 # this produces an mrtg config file for one router or more routers
@@ -162,10 +162,10 @@ sub InterfaceInfo($$$$$) {
     my $snmphost = v4onlyifnecessary($router, $routers->{$router}{ipv4only});
 
     if ($routers->{$router}{deviceinfo}{Vendor} eq 'cisco' &&
-        $routers->{$router}{deviceinfo}{sysDescr} =~ m/Version\s+(\d\d\.\d+)/) {
-        push @Variables,  ($1 > 11.0) ? "ifAlias" : "CiscolocIfDescr";
+        $routers->{$router}{deviceinfo}{sysDescr} =~ m/Version\s+(\d+\.\d+)/) {
+        push @Variables,  ($1 > 11.0 or $1 < 10.0 ) ? "ifAlias" : "CiscolocIfDescr";
         if ($1 > 11.2) {push @Variables, "vmVlan";};
-    } elsif ( $routers->{$router}{deviceinfo}{Vendor} =~ /(?:hp|juniper|foundry|dellLan|force10|extremenetworks)/) {
+    } elsif ( $routers->{$router}{deviceinfo}{Vendor} =~ /(?:hp|juniper|foundry|dellLan|force10|3com|extremenetworks)/) {
         push @Variables, "ifAlias";
     }
 
@@ -708,7 +708,9 @@ ECHO
                 $if_ref =~ s/([& :])/\\$1/g;
                 my $default_target_directive = "Target[$target_name]: $if_ref:$router_connect";
 		$default_target_directive .= "\nSnmpOptions[$target_name]: $v3options"  if $$router_ref{snmpopt_current} =~ /(?=:.*?){4}:3/ ;
-                my $default_setenv_directive = "SetEnv[$target_name]: MRTG_INT_IP=\"$if_ip\" MRTG_INT_DESCR=\"$if_snmp_descr\"";
+	        my $if_snmp_descr_save = $if_snmp_descr;
+		$if_snmp_descr_save =~ s/"/'/g;
+                my $default_setenv_directive = "SetEnv[$target_name]: MRTG_INT_IP=\"$if_ip\" MRTG_INT_DESCR=\"$if_snmp_descr_save\"";
                 my $default_directory_directive = ($directory_name ? "Directory[$target_name]: $directory_name" : "");
                 my $default_maxbytes_directive = "MaxBytes[$target_name]: $if_speed";
 
@@ -743,17 +745,17 @@ ECHO
 				<tr>
 					<td>Port Name:</td>
 					<td>$if_port_name</td>
-				</tr>\n" if defined $if_port_name;
+				</tr>" if defined $if_port_name;
                 $default_pagetop_directive .= "
 				<tr>
 					<td>Max Speed:</td>
 					<td>$if_speed_str</td>
-				</tr>\n";
+				</tr>";
                 $default_pagetop_directive .= "
 				<tr>
 					<td>Ip:</td>
 					<td>$if_ip ($if_dns_name)</td>
-				</tr>\n" if $if_ip;
+				</tr>" if $if_ip;
                 $default_pagetop_directive .= "
 			</table>
 		</div>";
@@ -1204,7 +1206,7 @@ sub options ($$) {
 	'zero-speed=s',
         '<>', $addrouter_ornf) or pod2usage(2);
 
-    die("cfgmaker for mrtg-2.14.3\n") if $$opt{version};
+    die("cfgmaker for mrtg-2.14.4\n") if $$opt{version};
     pod2usage(-exitval => 0, -verbose => 2) if $$opt{man};
     pod2usage(-verbose => 1) if not keys %$routers;
 } # end options
@@ -1490,7 +1492,7 @@ __END__
 
 =head1 NAME
 
-cfgmaker - Creates mrtg.cfg files (for mrtg-2.14.3)
+cfgmaker - Creates mrtg.cfg files (for mrtg-2.14.4)
 
 =head1 SYNOPSIS
 

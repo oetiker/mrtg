@@ -189,8 +189,8 @@ MMIIBB LLIISSTT
        Note these are not real MIB entities but mrtg hacks
 
 AAUUTTHHOORR
-       Tobias Oetiker <tobi.ch>
+       Tobias Oetiker <tobi@oetiker.ch>
 
 
 
-2.14.3                      2006-05-05            MRTG-MIBHELP(1)
+2.14.4                      2006-07-04            MRTG-MIBHELP(1)

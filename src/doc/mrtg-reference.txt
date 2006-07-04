@@ -3,7 +3,7 @@ MRTG-REFERENCE(1)              mrtg             MRTG-REFERENCE(1)
 
 
 NNAAMMEE
-       mrtg-reference - MRTG 2.14.3 configuration reference
+       mrtg-reference - MRTG 2.14.4 configuration reference
 
 OOVVEERRVVIIEEWW
        The runtime behaviour of MRTG is governed by a configura-
@@ -1515,8 +1515,9 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
        the tag _S_h_o_r_t_L_e_g_e_n_d define only the basic units.  Format:
        Comma seperated list of prefixed. Two consecutive commas
        or a comma at start or end of the line gives no prefix on
-       this item.  Note: If you do not want prefixes, just put
-       two consecutive commas.
+       this item.  If you do not want prefixes, just put two
+       consecutive commas.  If you want to skip a magnitude
+       select '-' as value.
 
        Example: velocity in nm/s (nanometers per second) dis-
        played in nm/h.
@@ -1647,9 +1648,9 @@ OOPPTTIIOONNAALL PPEERR TTAARRGGEETT KKEEYYWWOORRDDSS
        rrds are created to hold about 1 day's worth of high reso-
        lution data. (plus 1 week of 30 minute data, 2 months of 2
        hour data and 2 years of 1 day data).  With this Keyword
-       you can change the number of base interval entries
-       configured for new rrds as they get created. Note that you
-       must take the interval time into account.
+       you can change the number of base interval entries config-
+       ured for new rrds as they get created. Note that you must
+       take the interval time into account.
 
        Example:
 
@@ -1844,10 +1845,11 @@ PPEERR TTAARRGGEETT DDEEFFAAUULLTT VVAALLUUEESS
         MaxBytes[_]: 8000
         Title[myrouter.somplace.edu.2]: Traffic Analysis for myrouter.somplace.edu IF 2
 
-       The default _M_a_x_B_y_t_e_s for the target myrouter.some-
-       place.edu.2 in the above example will be 1250000, which
-       was in effect where the target name myrouter.some-
-       place.edu.2 first appeared in the config file.
+       The default _M_a_x_B_y_t_e_s for the target
+       myrouter.someplace.edu.2 in the above example will be
+       1250000, which was in effect where the target name
+       myrouter.someplace.edu.2 first appeared in the config
+       file.
 
 CCOOMMMMAANNDD LLIINNEE OOPPTTIIOONNSS
        ----uusseerr _u_s_e_r_n_a_m_e  and ----ggrroouupp _g_r_o_u_p_n_a_m_e
@@ -1965,8 +1967,8 @@ EEXXAAMMPPLLEESS
         Target[isdn2]: 3:public@router.somplace.edu
 
 AAUUTTHHOORR
-       Tobias Oetiker <tobi.ch> and many contributors
+       Tobias Oetiker <tobi@oetiker.ch> and many contributors
 
 
 
-2.14.3                      2006-05-05          MRTG-REFERENCE(1)
+2.14.4                      2006-07-04          MRTG-REFERENCE(1)

@@ -54,7 +54,7 @@ MMAAIILLIINNGG--LLIISSTT
            If you feel that you have been treated unfairly, you
            may send mail to me and explain the situation.
 
-            Tobi Oetiker <tobi.ch>
+            Tobi Oetiker <tobi@oetiker.ch>
 
        SSUUBBSSCCRRIIBBIINNGG
 
@@ -122,8 +122,8 @@ MMRRTTGG TTrrkkiiyyee
        information.
 
 AAUUTTHHOORR
-       Tobias Oetiker <tobi.ch> and many contributors
+       Tobias Oetiker <tobi@oetiker.ch> and many contributors
 
 
 
-2.14.3                      2006-05-05              MRTG-FORUM(1)
+2.14.4                      2006-07-04              MRTG-FORUM(1)
