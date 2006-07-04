@@ -196,8 +196,8 @@ RREEAADD OONN
        http://oss.oetiker.ch/mrtg
 
 AAUUTTHHOORR
-       Tobias Oetiker <tobi.ch> and many contributors
+       Tobias Oetiker <tobi@oetiker.ch> and many contributors
 
 
 
-2.14.3                      2006-05-05                    MRTG(1)
+2.14.4                      2006-07-04                    MRTG(1)

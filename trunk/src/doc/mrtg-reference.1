@@ -129,9 +129,9 @@
 .\" ========================================================================
 .\"
 .IX Title "MRTG-REFERENCE 1"
-.TH MRTG-REFERENCE 1 "2006-05-05" "2.14.3" "mrtg"
+.TH MRTG-REFERENCE 1 "2006-07-04" "2.14.4" "mrtg"
 .SH "NAME"
-mrtg\-reference \- MRTG 2.14.3 configuration reference
+mrtg\-reference \- MRTG 2.14.4 configuration reference
 .SH "OVERVIEW"
 .IX Header "OVERVIEW"
 The runtime behaviour of \s-1MRTG\s0 is governed by a configuration file. Run\-of\-
@@ -1649,7 +1649,8 @@ Change the default multiplier prefixes (,k,M,G,T,P). In the tag
 \&\fIShortLegend\fR define only the basic units.
 Format: Comma seperated list of prefixed. Two consecutive commas
 or a comma at start or end of the line gives no prefix on this item.
-Note: If you do not want prefixes, just put two consecutive commas.
+If you do not want prefixes, just put two consecutive commas.
+If you want to skip a magnitude select '\-' as value.
 .PP
 Example: velocity in nm/s (nanometers per second) displayed in nm/h.
 .PP
@@ -2103,4 +2104,4 @@ indicates that at least one of the targets was succesful.  A partial listing of 
 .Ve
 .SH "AUTHOR"
 .IX Header "AUTHOR"
-Tobias Oetiker <tobi.ch> and many contributors
+Tobias Oetiker <tobi@oetiker.ch> and many contributors

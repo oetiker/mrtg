@@ -17,7 +17,7 @@ DDEESSCCRRIIPPTTIIOONN
        MRTG messages have been translated to a number of lan-
        guages but there are still many which have not been cov-
        ered yet. If you want to add yours, go into the
-       _m_r_t_g_-_2_._1_4_._3_/_t_r_a_n_s_l_a_t_e directory and follow the instruc-
+       _m_r_t_g_-_2_._1_4_._4_/_t_r_a_n_s_l_a_t_e directory and follow the instruc-
        tions given in the _R_E_A_D_M_E file.
 
        PPaattcchheess
@@ -57,11 +57,11 @@ DDEESSCCRRIIPPTTIIOONN
 
 AADDDDRREESSSS
        Send your patches, translations and contributions to
-       Tobias Oetiker <tobi.ch>
+       Tobias Oetiker <tobi@oetiker.ch>
 
 AAUUTTHHOORR
-       Tobias Oetiker <tobi.ch>
+       Tobias Oetiker <tobi@oetiker.ch>
 
 
 
-2.14.3                      2006-05-05            MRTG-CONTRIB(1)
+2.14.4                      2006-07-04            MRTG-CONTRIB(1)

@@ -90,8 +90,8 @@ DDEETTAAIILLSS
 
 AAUUTTHHOORR
        Butch Kemper <kemper@bihs.net> and Tobias Oetiker
-       <tobi.ch>
+       <tobi@oetiker.ch>
 
 
 
-2.14.3                      2006-05-05            MRTG-LOGFILE(1)
+2.14.4                      2006-07-04            MRTG-LOGFILE(1)
