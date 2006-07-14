@@ -228,7 +228,7 @@ div#menu > ul > li > ul > li > ul > li > div a {
 }
 
 #content_container dd {
-	margin-left: px;
+	margin-left: 0px;
 }
 
 #content_container dd a {

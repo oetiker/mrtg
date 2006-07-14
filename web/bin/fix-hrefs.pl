@@ -14,8 +14,8 @@ sub startsub {
         my $text = shift;
         
 	if ($tag eq "a") {
-		$text =~ s,/home/oetiker/data/svn-checkout/rrdtool/branches/1.2/website/doc/,,;
-		$text =~ s,\.html,.en.html,;
+		$text =~ s,/home/oetiker/data/svn-checkout/mrtg/trunk/web/doc/,,;
+		$text =~ /^http/ || $text =~ s,\.html,.en.html,;
 	}
 	print $text;
 }

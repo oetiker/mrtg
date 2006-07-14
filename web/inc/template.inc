@@ -219,6 +219,12 @@ are missing, then the mirror may not have picked up the contents of either the <
 #<a href="http://www.konqueror.org">Konqueror</a> aus dem KDE Projekt.
 #</de>
 </p> 
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-374525-1";
+urchinTracker();
+</script>
 </body>
 </html>
 
