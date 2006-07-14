@@ -1,0 +1,18 @@
+Please read the INSTALL file after finishing this.
+
+I would like to express my thanks to
+
+Tobias Oetiker <oetiker@ee.ethz.ch> and Dave Rand <dlr@bungi.com>
+for writing MRTG. It's people like them that make me believe
+all software designed for hazardous environments such as
+missile and aircraft guidance systems should be run under GNU 
+and Copyleft. This would have spared many lost lives and many
+to come.
+
+Many thanks also to Daniel Karrenberg <dfk@nic.eu.net> for porting
+tcpblast to Linux!
+
+And last - but definitely not least - Peter W. Osel <pwo@guug.de>
+who wrote mrtg-ping-probe which inspired me and helped
+getting along with perl regex syntax ;)
+
