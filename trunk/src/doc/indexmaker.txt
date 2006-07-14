@@ -4,7 +4,7 @@ INDEXMAKER(1)                  mrtg                 INDEXMAKER(1)
 
 NNAAMMEE
        indexmaker - Creates index files for mrtg web sites
-       (mrtg-2.14.4)
+       (mrtg-2.14.5)
 
 SSYYNNOOPPSSIISS
        indexmaker [options] mrtg.cfg [other.cfg ...]
@@ -179,4 +179,4 @@ CCOOPPYYRRIIGGHHTT
 
 
 
-2.14.4                      2006-07-04              INDEXMAKER(1)
+2.14.5                      2006-07-14              INDEXMAKER(1)

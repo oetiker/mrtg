@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 # -*- mode: Perl -*-
 ##################################################################
-# MRTG 2.14.4  -- Config file creator
+# MRTG 2.14.5  -- Config file creator
 ##################################################################
 # Created by Tobias Oetiker <tobi@oetiker.ch>
 # this produces an mrtg config file for one router or more routers
@@ -70,7 +70,7 @@ sub main {
     # If the check fails, IPv6 is disabled.
     $ipv4only = 1;
     if ($opt{'enable-ipv6'} == 1) {
-        if ((eval {require Socket6;}) && (eval {require IO::Socket::INET6;})) {
+        if ((eval {local $SIG{__DIE__};require Socket6;}) && (eval {local $SIG{__DIE__};require IO::Socket::INET6;})) {
             debug ('base',"IPv6 libraries found, IPv6 enabled.");
             $ipv4only = 0;
         } else {
@@ -86,7 +86,7 @@ sub main {
     # Check for SNMP V3
     #
     	if (lc($opt{enablesnmpv3}) eq "yes") {
-	       if  (eval {require Net_SNMP_util;})   {
+	       if  (eval {local $SIG{__DIE__};require Net_SNMP_util;})   {
 	            import Net_SNMP_util;
 	            debug('base', "SNMP V3 libraries found, SNMP V3 enabled.");
 		    $opt{enablesnmpv3} = "yes";
@@ -411,7 +411,7 @@ ECHO
 
             my @template_lines = readline *IF_TEMPLATE;
             $@ = undef;
-            eval (join "", @template_lines);
+            eval ('local $SIG{__DIE__};'.join("", @template_lines));
 
             die  "ERROR Evaluation of the contents in the file \n\n".
                  "$$router_opt{'host-template'}\ngave the error \n\n\"$@\"\n\nExiting cfgmaker\n" if $@;
@@ -781,7 +781,7 @@ ECHO
 
                 if (defined $$router_opt{'if-filter'}) {
                     $@ = undef;
-                    if (eval($$router_opt{'if-filter'})) {
+                    if (eval('local $SIG{__DIE__};'.$$router_opt{'if-filter'})) {
                         @prob = ();
                     } else {
                         push @prob, "filter specified by --if-filter rejected the interface";
@@ -815,7 +815,7 @@ ECHO
                     my @template_lines = readline *IF_TEMPLATE;
 
                     $@ = undef;
-                    eval (join "", @template_lines);
+                    eval ('local $SIG{__DIE__};'.join( "", @template_lines));
                     die "Evaluation of the contents in the file \n\n$$router_opt{'if-template'}\n".
                         "gave the error \n\n\"$@\"\n\nExiting cfgmaker\n" if $@;
                 } else {
@@ -1206,7 +1206,7 @@ sub options ($$) {
 	'zero-speed=s',
         '<>', $addrouter_ornf) or pod2usage(2);
 
-    die("cfgmaker for mrtg-2.14.4\n") if $$opt{version};
+    die("cfgmaker for mrtg-2.14.5\n") if $$opt{version};
     pod2usage(-exitval => 0, -verbose => 2) if $$opt{man};
     pod2usage(-verbose => 1) if not keys %$routers;
 } # end options
@@ -1492,7 +1492,7 @@ __END__
 
 =head1 NAME
 
-cfgmaker - Creates mrtg.cfg files (for mrtg-2.14.4)
+cfgmaker - Creates mrtg.cfg files (for mrtg-2.14.5)
 
 =head1 SYNOPSIS
 
