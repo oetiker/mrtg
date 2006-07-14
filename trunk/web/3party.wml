@@ -30,6 +30,8 @@
 
     <li><a href="http://www.eidenberger.com/mrtg/mrtgtut1.php">Implémenter Mrtg sur une plateforme Windows Nt/2k/2k3/Xp et son serveur web IIS</a> par <a href="mailto:Manuel{at}eidenberger.com">Manuel Eidenberger</a></li>
 
+    <li><a href="http://linuxeiros.planetaclix.pt/software/mrtg.html">MRTG Install instructions in Portugese</a> par <a href="mailto:joaomiguelrebelo{at}clix.pt">João Rebelo</a></li>
+
     <li><a href="http://www.cyberciti.biz/nixcraft/linux/docs/uniqlinuxfeatures/mrtg/">Setup MRTG with Red hat Enterprise Linux 3</a> by <a href="mailto:vivek{at}nixcraft.com">Vivek G Gite</a></li>
 
     <li><a href="http://www.netmon.org/">NetMon Website</a> by Jim Hunt. It is the home of the MRTG for Dummies tutorial</li>
@@ -37,6 +39,7 @@
     <li>MRTG on Linux setup instructions in <a href="http://www.linux-sottises.net/mrtg.php">French</a> and <a href="http://www.linux-sottises.net/en_mrtg.php">English</a> by TNK</li>
 
     <li><a href="http://www.debianhelp.co.uk/mrtg.htm">MRTG Configuration in Debian</a></li>
+
     <li><a href="http://www.geocities.com/rjayasin/RH7X-mrtg-howto.htm">MRTG Installation in 6 Steps for RH7X</a> by Ruwan Jayasinghe (rjayasin-at-lausd.k12.ca.us)</li>
 
     <li><a href="http://www.leh.net/~kevin/docs/mrtg/index_1.html">Tips for how mrtg can assist a NOC or Monitoring Center in first line troubleshooting</a> by <a href="mailto:kevin{at}leh.net">Kevin Howard</a></li>
@@ -57,6 +60,8 @@
     <li><a href="http://sourceforge.net/projects/gnulsms2mrtg/">A mrtg config generator</a> supporting Allot NetEnforcer, Bluecoat/Cacheflow Security Products, Cyclades TS and ACS, Fortinet firewalls, Lucent LSMS / Brick firewalls, and any MIB2 device, Microsoft Windows 2000/XP/2003 by John Baker</li>
 
     <li><a href="http://savannah.gnu.org/projects/cfgstoragemk/">Cfgstoragemaker</a> can be used to generate a MRTG config file in order to graph all the storage devices (disk, memory and swap) of one or more specific host(s) via SNMP by <a href="mailto:cyril{at}bouthors.org">Cyril Bouthors</a></li>
+
+    <li><a href="http://www.novell.chel.ru/start.php?dir=plugin/project/mrtgwebcfg&amp;app=main&amp;lng=english">MRTGWebCfg</a> a php based web frontend to mrtg with rrdtool by <a href="mailto:neo@chel.skbkontur.ru">Michael Grigorjev</a>.</li>
   </ul>
 
   <h2>MRTG Add-Ons</h2>
