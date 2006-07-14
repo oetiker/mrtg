@@ -92,7 +92,7 @@ use locales_mrtg "0.07";
 # Import IPv6 libraries if available, as (unfortunately) they are
 # necessary for dead host detection (for IPv6 name lookups).
 BEGIN {
-    if (eval {require Socket6;})  {
+    if (eval {local $SIG{__DIE__};require Socket6;})  {
 	import Socket;
 	import Socket6
     }    
@@ -101,7 +101,7 @@ BEGIN {
 # Do not Flash Console Windows for the forked rateup process 
 BEGIN {
     if ($^O eq 'MSWin32'){
-	eval {require Win32; Win32::SetChildShowWindow(0)};
+	eval {local $SIG{__DIE__};require Win32; Win32::SetChildShowWindow(0)};
 	warn "WARNING: $@\n" if $@;
     }    
 }
@@ -258,7 +258,7 @@ sub main {
 
     # Check we have the necessary libraries for IPv6 support
     if ($cfg{enablesnmpv3} eq 'yes') {
-        if  (eval {require Net_SNMP_util;})   {
+        if  (eval {local $SIG{__DIE__};require Net_SNMP_util;})   {
 	    import Net_SNMP_util;
             debug('base', "SNMP V3 libraries found, SNMP V3 enabled.");
         } else {
@@ -283,7 +283,7 @@ sub main {
 
     # Check we have the necessary libraries for IPv6 support
     if ($cfg{enableipv6} eq 'yes') {
-        if ( (eval {require Socket6;}) and (eval {require IO::Socket::INET6;}) ) {
+        if ( (eval {local $SIG{__DIE__};require Socket6;}) and (eval {local $SIG{__DIE__};require IO::Socket::INET6;}) ) {
             debug('base', "IPv6 libraries found, IPv6 enabled.");
         } else {
             warn "$NOW: WARNING: IPv6 libraries not found, IPv6 disabled.\n";
@@ -543,7 +543,7 @@ sub getcurrent {
 				sub { $_[0] =~ /^\s*(.+?)\s*$/; $death = $1; };
 			# Calculate monitoring data. $rcfg->{ target }{ $rou } contains
 			# a Perl expression for the calculation.
-			$data = eval "$rcfg->{target}{$rou}";
+			$data = eval 'local $SIG{__DIE__};'." $rcfg->{target}{$rou}";
        		}
 		# Test for various exceptions occurring in the calculation
 		if( $warning ) {
@@ -2135,7 +2135,7 @@ sub getsnmparg ($$$){
     if( $target->{ Conversion } ) {
         foreach my $ri( 0..1 ) {
             next unless defined $res[ $ri ];
-            my $exp = "&MRTGConversion::$target->{ Conversion }( '$res[ $ri ]' )";
+            my $exp = 'local $SIG{__DIE__};'."&MRTGConversion::$target->{ Conversion }( '$res[ $ri ]' )";
             $res[ $ri ] = eval $exp;
             warn "$NOW: WARNING: evaluation of \"$exp\" failed\n$@\n" if $@;
         }
