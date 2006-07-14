@@ -110,9 +110,7 @@ when the user wants to see them. http://www.fi.muni.cz/~kas/mrtg-rrd/
 =back
 
 Paul C. Williamson has written a more in-depth page on how the whole process
-works, including some performance figures. You can find his page on
-
- http://www.geocities.com/paulcwilliamson/mrtg/rateup2rrd.html
+works, including some performance figures. You can find his page on http://www.geocities.com/paulcwilliamson/mrtg/rateup2rrd.html
 
 =head1 FUTURE
 
