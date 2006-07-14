@@ -109,9 +109,8 @@ RRRRDDTTOOOOLL IINNTTEEGGRRAATTIIOONN
 
        Paul C. Williamson has written a more in-depth page on how
        the whole process works, including some performance fig-
-       ures. You can find his page on
-
-        http://www.geocities.com/paulcwilliamson/mrtg/rateup2rrd.html
+       ures. You can find his page on http://www.geoci-
+       ties.com/paulcwilliamson/mrtg/rateup2rrd.html
 
 FFUUTTUURREE
        Just as a side note: MRTG-3 will be based entirely on rrd-
@@ -122,4 +121,4 @@ AAUUTTHHOORR
 
 
 
-2.14.4                      2006-07-04                MRTG-RRD(1)
+2.14.5                      2006-07-14                MRTG-RRD(1)
