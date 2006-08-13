@@ -1485,6 +1485,15 @@ B<logscale> displays all the available data and will always produce
 well-behaved graphs.  People often consider a logarithmically scaled graph
 counterintuitive, however, and thus hard to interpret.
 
+=item expscale
+
+The B<expscale> option causes rateup to display the data with the Y axis
+scaled exponentially.  Doing so emphasizes small changes at the top of
+the scale; this can be useful when graphing values that fluctuate by
+a small amount near the top of the scale, such as line voltage.
+
+B<expscale> is essentially the inverse of B<logscale>.
+
 =item secondmean
 
 The B<secondmean> option sets the maximum value on the graph to the mean
