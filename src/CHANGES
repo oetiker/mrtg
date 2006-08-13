@@ -1,3 +1,8 @@
+From: Russ Price gpg fubegra.net
+* Added expscale option (opposite of logscale) to emphasize the top end of
+  the scale; this improves display of line voltages that don't change a whole
+  lot
+
 Changes 2.14.5, 2006-07-14
 --------------------------
 

@@ -101,6 +101,7 @@ short options = 0;
 #define OPTION_PRINTROUTER	0x0200	/* show title in graph */
 #define OPTION_LOGGRAPH		0x0400	/* Use a logarithmic Y axis */
 #define OPTION_MEANOVER		0x0800	/* max Y = mean-above-the-mean */
+#define OPTION_EXPGRAPH		0x1000	/* exponential scale (opposite of logscale) */
 
 time_t NOW;
 
@@ -832,6 +833,18 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
       origmaxvi = logscale (origmaxvi, maxy);
       origmaxvo = logscale (origmaxvo, maxy);
     }	/* end of primary log and second-mean scaling code (more below) */
+  else if (options & OPTION_EXPGRAPH)
+    {
+      for (x = 0; x < maxx; x++)
+        {
+          lhist[x].in = expscale (lhist[x].in, maxy);
+          lhist[x].out = expscale (lhist[x].out, maxy);
+          lhist[x].inmax = expscale (lhist[x].inmax, maxy);
+          lhist[x].outmax = expscale (lhist[x].outmax, maxy);
+        }
+      origmaxvi = expscale (origmaxvi, maxy);
+      origmaxvo = expscale (origmaxvo, maxy);
+    }
 
   /* the graph is made ten pixels higher to acomodate the x labels */
   graph = gdImageCreate (XSIZE, YSIZE);
@@ -1023,6 +1036,8 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	  temp = sca_max_q * i;
 	  if (options & OPTION_LOGGRAPH)
 	     temp = expscale(maxy * i / ytics, maxy) * ytics * sca_max_q / maxy;
+	  else if (options & OPTION_EXPGRAPH)
+	     temp = logscale(maxy * i / ytics, maxy) * ytics * sca_max_q / maxy;
 	  else
 	     temp = sca_max_q * i;
 	  sprintf (ylab, "%6.1f %s", temp, short_si_out);
@@ -2016,11 +2031,13 @@ main (argc, argv)
 	    case 'l':		/* logarithmic scaling */
 	      options |= OPTION_LOGGRAPH;
 	      options &= ~OPTION_MEANOVER;
+	      options &= ~OPTION_EXPGRAPH;
 	      used = 1;
 	      break;
 	    case 'm':		/* second-mean scaling */
 	      options |= OPTION_MEANOVER;
 	      options &= ~OPTION_LOGGRAPH;
+	      options &= ~OPTION_EXPGRAPH;
 	      used = 1;
 	      break;
 	    case 'p':		/* print router name in image */
@@ -2033,6 +2050,12 @@ main (argc, argv)
 	      break;
 	    case 'T':		/* non-Transparent Image */
 	      options &= ~OPTION_TRANSPARENT;
+	      used = 1;
+	      break;
+            case 'x':		/* exponential scaling */
+	      options |= OPTION_EXPGRAPH;
+	      options &= ~OPTION_MEANOVER;
+	      options &= ~OPTION_LOGGRAPH;
 	      used = 1;
 	      break;
 	    case 'z':		/* unknown as zero */
