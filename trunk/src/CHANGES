@@ -3,6 +3,9 @@ From: Russ Price gpg fubegra.net
   the scale; this improves display of line voltages that don't change a whole
   lot
 
+From:  Stefan stefan sf-net.com
+* sample startup script for mrtg
+
 Changes 2.14.5, 2006-07-14
 --------------------------
 
