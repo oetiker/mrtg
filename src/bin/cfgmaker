@@ -597,8 +597,8 @@ ECHO
                     # foundry ATM subinterfaces always report 0 speed, make it 155Mbps instead.
                     $$i{ifSpeed} =  155000000;
                 } elsif ($$i{ifSpeed} == 0 && $$router_dev{Vendor} eq 'foundry' && $$i{ifType} == 135) {
-                    # Foundry virtual Ethernet interfaces always report 0 speed, make it 100Mbps instead.
-                    $$i{ifSpeed} = 12500000;
+                    # Foundry virtual Ethernet interfaces always report 0 speed, make it 1GB instead.
+                    $$i{ifSpeed} = 1000000000;
                 } elsif ($$i{ifSpeed} == 0 && $$router_dev{Vendor} eq 'cisco' && $$i{sysDescr} == /FWSM-Firewall / )  {
                     # Cisco PIX Firewall Switch Modules have effective backplane speed of 600 Megs
 		    $$i{ifSpeed} = 600000000;
