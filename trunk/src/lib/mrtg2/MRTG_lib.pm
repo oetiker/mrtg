@@ -621,7 +621,7 @@ sub cfgcheck ($$$$;$) {
     my(@known_options) = qw(growright bits noinfo absolute gauge nopercent avgpeak derive
 			    integer perhour perminute transparent dorelpercent 
 			    unknaszero withzeroes noborder noarrow noi noo
-			    nobanner nolegend logscale secondmean pngdate printrouter);
+			    nobanner nolegend logscale secondmean pngdate printrouter expscale);
 
     snmpmapOID('hrSystemUptime' => '1.3.6.1.2.1.25.1.1');
 
