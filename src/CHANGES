@@ -1,3 +1,6 @@
+From: Tobi
+* fixed rateup to propely support kMG option
+
 From: Akihiro Sagawa  sagawa sohgoh.net
 * fix ifspeed for foundry switches in cfgmaker
 
