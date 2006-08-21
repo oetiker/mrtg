@@ -111,6 +111,7 @@ time_t timestamp;
 char bufftime[32];
 
 char *short_si_def[] = { "", "k", "M", "G", "T" };
+int kMGnumber = 4;
 char **short_si = short_si_def;
 char *longup = NULL;
 char *shortup = NULL;
@@ -154,7 +155,7 @@ int col_outp[3];
 
 long long kilo = (long long) 1000;
 char *kMG = (char *) NULL;
-int kMGnumber = 0;
+
 
 #define MAXL	200		/* Maximum length of last in & out fields */
 
@@ -480,28 +481,16 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
         {
           short_si_out = kMG;
           kMGnumber = 0;
+	  short_si[0] = kMG;
           while ((short_si_out = strchr (short_si_out, ',')) != NULL)
 	    {
+	      short_si_out[0] = '\0';
 	      short_si_out++;
-	      kMGnumber++;
+              short_si[++kMGnumber] = short_si_out;
 	    }
-
-          short_si = calloc(kMGnumber + 1, sizeof(*short_si));
-          short_si_out = kMG;
-          for (kMGnumber = 0; ; kMGnumber++)
-            {
-	      short_si[kMGnumber] = short_si_out;
-	      short_si_out = strchr(short_si_out, ',');
-	      if (short_si_out == NULL) break;
-	      short_si_out++;
-	    }
-	}
-    }
-  else
-    {
-      kMGnumber = 4;
-    }
-
+        }
+     }
+  
   /* mangle the 0.25*maxv value so, that we get a number with either */
   /* one or two digits != 0 and these digits should be at the  */
   /* start of the number ... */
