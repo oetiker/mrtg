@@ -21,6 +21,9 @@
 <link* REL="icon" HREF="$(ROOT)/inc/favicon.ico" TYPE="image/ico" />
 ..Title!>>MRTG - Page without a Title<<..
 <title*>MRTG - {#Title#}</title*>
+<protect>
+<!--[if lt IE 7]><script src="$(ROOT)/inc/IE7/ie7-standard-p.js" type="text/javascript"></script><![endif]-->
+</protect>
 <style type="text/css">
 <!--/* <![CDATA[ */
 /* ie5 for mac thinks this comment does not end here because of the backslash \*/
@@ -29,7 +32,6 @@
 </style>
 </head>
 <body>
-<!--[if lt IE 7]><script src="$(ROOT)/inc/IE7/ie7-standard-p.js" type="text/javascript"></script><![endif]-->
 <div id="page_header">
 <small>
 <A HREF="http://oss.oetiker.ch/mrtg/<where/>">Swiss Original</A>.
