@@ -746,7 +746,7 @@ sub cfgcheck ($$$$;$) {
     if( exists $cfg->{ conversioncode } ) {
         open CONV, $cfg->{ conversioncode }
             or die "ERROR: Can't open file $cfg->{ conversioncode }\n";
-        my $code = "local $SIG{__DIE__};package MRTGConversion;\n". join( '', <CONV> ) . "1;\n";
+        my $code = "local \$SIG{__DIE__};package MRTGConversion;\n". join( '', <CONV> ) . "1;\n";
         close CONV;
         die "ERROR: File $cfg->{ conversioncode } conversion code evaluation failed\n$@\n"
             unless eval $code;
