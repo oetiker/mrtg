@@ -29,6 +29,7 @@ my @STARTARGS=($0,@ARGV);
 # fork - forking view
 # time - some timing info
 # log  - logging of data via rateup or rrdtool
+# eval - trace eval experssions
 $main::GRAPHFMT="png";
 # There older perls tend to behave peculiar with
 # large integers ...
@@ -543,7 +544,7 @@ sub getcurrent {
 				sub { $_[0] =~ /^\s*(.+?)\s*$/; $death = $1; };
 			# Calculate monitoring data. $rcfg->{ target }{ $rou } contains
 			# a Perl expression for the calculation.
-			$data = eval 'local $SIG{__DIE__};'." $rcfg->{target}{$rou}";
+			$data = eval "$rcfg->{target}{$rou}";
        		}
 		# Test for various exceptions occurring in the calculation
 		if( $warning ) {
@@ -2136,7 +2137,8 @@ sub getsnmparg ($$$){
     if( $target->{ Conversion } ) {
         foreach my $ri( 0..1 ) {
             next unless defined $res[ $ri ];
-            my $exp = 'local $SIG{__DIE__};'."&MRTGConversion::$target->{ Conversion }( '$res[ $ri ]' )";
+	    local $SIG{__DIE__};
+            my $exp = "&MRTGConversion::$target->{ Conversion }( '$res[ $ri ]' )";
             $res[ $ri ] = eval $exp;
             warn "$NOW: WARNING: evaluation of \"$exp\" failed\n$@\n" if $@;
         }
