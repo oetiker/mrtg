@@ -1,6 +1,5 @@
 # -*- mode: Perl -*-
 package MRTG_lib;
-
 ###################################################################
 # MRTG 2.14.5  Support library MRTG_lib.pm
 ###################################################################
@@ -149,7 +148,7 @@ $VERSION = 2.100016;
        [sub{length($_[0]) == 1}, sub{"$_[0] must be one character long"}],
 
        'snmpoptions' =>
-       [sub{ eval( 'local $SIG{__DIE__};{'.$_[0].'}' ); return not $@},
+       [sub{ debug('eval',"snmpotions $_[0]");local $SIG{__DIE__}; eval( '{'.$_[0].'}' ); return not $@},
         sub{"Must have the format \"OptA => Number, OptB => 'String', ... \""}],
 
        'conversioncode' =>
@@ -160,7 +159,7 @@ $VERSION = 2.100016;
        [sub{1}, sub{"Internal Error"}], #will test this later
 
        'snmpoptions[]' =>
-       [sub{ eval( 'local $SIG{__DIE__};{'.$_[0].'}' ); return not $@},
+       [sub{ debug('eval',"snmpotions[] $_[0]");local  $SIG{__DIE__}; eval('{'.$_[0].'}' ); return not $@},
         sub{"Must have the format \"OptA => Number, OptB => 'String', ... \""}],
 
        'routeruptime[]' => 
@@ -687,7 +686,9 @@ sub cfgcheck ($$$$;$) {
     }
     if(defined $$cfg{libadd}){
         ensureSL(\$$cfg{libadd});
-        eval 'local $SIG{__DIE__};'."use lib qw($$cfg{libadd})";
+        debug('eval',"libadd $$cfg{libadd}\n");
+	local $SIG{__DIE__};
+        eval "use lib qw( $$cfg{libadd} )";
 	my @match;
 	foreach my $dir (@INC){
 		push @match, $dir if -f "$dir/RRDs.pm";
@@ -728,7 +729,9 @@ sub cfgcheck ($$$$;$) {
                 unless defined $found;
     }
     if (defined $$cfg{snmpoptions}) {
-           $cfg->{snmpoptions} = eval('local $SIG{__DIE__};{'.$cfg->{snmpoptions}.'}');
+	   debug('eval',"redef snmpotions $cfg->{snmpoptions}");
+	   local $SIG{__DIE__};
+           $cfg->{snmpoptions} = eval('{'.$cfg->{snmpoptions}.'}');
     }
 
     # default interval is 5 minutes
@@ -748,6 +751,7 @@ sub cfgcheck ($$$$;$) {
             or die "ERROR: Can't open file $cfg->{ conversioncode }\n";
         my $code = "local \$SIG{__DIE__};package MRTGConversion;\n". join( '', <CONV> ) . "1;\n";
         close CONV;
+        debug('eval',"covnversioncode  $cfg->{ conversioncode }");
         die "ERROR: File $cfg->{ conversioncode } conversion code evaluation failed\n$@\n"
             unless eval $code;
     }
@@ -759,7 +763,9 @@ sub cfgcheck ($$$$;$) {
 		$rcfg->{snmpoptions}{$rou} = {%{$cfg->{snmpoptions}}}
 		  if defined $cfg->{snmpoptions};
     	} else {
-    	        $rcfg->{snmpoptions}{$rou} = eval('local $SIG{__DIE__};{'.$rcfg->{snmpoptions}{$rou}.'}');
+                debug('eval',"redef snmpoptions[$rou] $rcfg->{snmpoptions}{$rou}");
+ 		local $SIG{__DIE__};
+    	        $rcfg->{snmpoptions}{$rou} = eval('{'.$rcfg->{snmpoptions}{$rou}.'}');
         }
         $rcfg->{snmpoptions}{$rou}{avoid_negative_request_ids} = 1;
         # $rcfg->{snmpoptions}{$rou}{domain} = 'udp';

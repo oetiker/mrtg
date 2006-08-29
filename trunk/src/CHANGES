@@ -1,5 +1,9 @@
 From: Tobi
 * fixed rateup to propely support kMG option
+* fixed problem with conversioncode option throwing an exception.
+* fixed config parsing problem for libadd lines terminated by a \
+* added 'eval' debug target
+* updated local $SIG{__DIE__} locations
 
 From: Akihiro Sagawa  sagawa sohgoh.net
 * fix ifspeed for foundry switches in cfgmaker
