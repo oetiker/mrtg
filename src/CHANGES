@@ -1,4 +1,5 @@
 From: Tobi
+* timestamps in log files should be YYYY-MM-DD HH:MM:SS 
 * fixed rateup to propely support kMG option
 * fixed problem with conversioncode option throwing an exception.
 * fixed config parsing problem for libadd lines terminated by a \
