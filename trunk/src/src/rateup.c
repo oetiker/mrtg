@@ -1815,7 +1815,7 @@ main (argc, argv)
     /* jpt, april 2006 : 3 lines for date & time logging */
     (void) time(&timestamp);
     stLocal = localtime(&timestamp);
-    strftime(bufftime, 32, "%d-%m-%Y %H:%M:%S", stLocal);
+    strftime(bufftime, 32, "%Y-%m-%d %H:%M:%S", stLocal);
 
   /* Is Argv[1] a path/file to passed parameters? */
   if ((argc > 1) && (strncasecmp (argv[1], "-F", 2) == 0))
