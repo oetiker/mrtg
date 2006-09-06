@@ -1,0 +1,11 @@
+From: Kevin Benton <s1kevin@sotatech.net>                                          
+To: Tobias Oetiker <oetiker@ee.ethz.ch>                                            
+Date: Tue, 17 Oct 2000 09:42:18 -0400 (EDT)                                        
+Subject: MRTG Thanks and a contrib                                                 
+                                                                                   
+
+Please find included a nice little package which automatically generates           
+configs for 3Com Total Control chassis, but also generates a little                
+colored table to the left of the graph on the index to display usage               
+history at a glance.                                                               
+        

@@ -1,0 +1,180 @@
+#!/usr/local/bin/perl5
+# -*- mode: Perl -*-
+##################################################################
+# This file controls the deletion of the MRTG monitoring from OV
+##################################################################
+# Created by Laurie Gellatly <gellatly@one.net.au>
+#################################################################
+#
+# Distributed under the GNU copyleft
+#
+# $Id: ovdel,v 1.1.1.1 2002/02/26 10:16:36 oetiker Exp $
+#
+use Socket;
+use strict;
+use vars '$DEBUG';
+my $DEBUG = 0;
+my $company = "Company";
+my $rundir = "/opt/mrtg/run";
+my $webdir = "/var/opt/ns-fasttrack/docs/mrtg/";
+my $cronfile = "mrtgc";
+my $roothtml = "routers.html";
+my $ov_conf = "/etc/opt/OV/share/conf";
+my $ovconf = $ov_conf."/snmpCol.conf";
+my $buildhtf = "buildht";
+my $dnsfile = "ovmrtgc.csv";
+
+# Change the next line to " &" if all jobs are to be submitted at once
+my $backgrnd = " ";
+
+my($router,$sysn,$sysncfg,$sysnhtml,$head,$cnt,$at);
+my(@sysipnms,@mrtgc,@mrtgd,@sysnms,@ovconfd,@ovmrtgc,@buildhtt); 
+
+sub main {
+
+  $router = $ARGV[0];
+  die <<USAGE  unless $router;
+
+USAGE: ovdel 'router IP ADDRESS/S'
+
+EXAMPLE:  ovdel 193.21.1.2  10.21.1.2 10.21.1.1
+
+
+USAGE
+   chdir $rundir;
+   @sysipnms=`perl ovsysnms @ARGV`;
+   chomp(@sysipnms);
+# Figure out what needs not be monitored and change the conf file
+   `perl $rundir\/ovcols - @ARGV > collects`;
+   `xnmcollect -merge collects`; 
+# eventaully HP may decide to remove lines using xnmcollect and then we would
+# not need the following loop:
+   open (SNMPCOL,"<".$ovconf);
+# This next piece of code removes any lines in snmpCol.conf that start with XC
+   while(<SNMPCOL>){
+      if (/^XC /){
+	 next;
+      } else {
+	 $ovconfd[@ovconfd] = $_;
+      }
+   }
+   close (SNMPCOL);
+   open (SNMPCOL,">".$ovconf);
+   for ($cnt = 0; $cnt < @ovconfd ; $cnt++){
+      print SNMPCOL "$ovconfd[$cnt]";
+   }
+   close (SNMPCOL);
+   `xnmcollect -event`;
+
+# Remove the .cfg and .ok files as no longer needed
+   for ($cnt = 0; $cnt < @sysipnms ; $cnt++){
+      ($router,$mrtgd[@mrtgd]) = split /\,/, lc($sysipnms[$cnt]);
+      unlink($mrtgd[$cnt].".cfg",$mrtgd[$cnt].".ok");
+   }
+   @mrtgd = sort(@mrtgd);
+
+# Assumes that the mrtgc.csv file is in alpha order
+   open (DNSFILE,"<".$dnsfile);
+   $at = 0;
+   while(<DNSFILE>){
+      chomp;
+      $head = $_;
+      $sysn = lc((split /\,/,$head)[1]);
+      if ($sysn gt $mrtgd[$at]) {
+	 while($at < @mrtgd) { 
+	    if($sysn le $mrtgd[++$at]){last; }
+	 }
+      }
+      if (($sysn lt $mrtgd[$at]) || ($at >= @mrtgd)) { 
+#keep these lines
+         $mrtgc[@mrtgc] = $sysn;
+         $ovmrtgc[@ovmrtgc] = $head;
+      }
+#      }
+   }
+   close (DNSFILE);
+#Now rebuild the mrtgc.csv file
+   open (DNSFILE,">".$dnsfile);
+   for ($cnt = 0 ; $cnt < @ovmrtgc ; ++$cnt){
+      print DNSFILE "$ovmrtgc[$cnt]\n";
+   }
+   close (DNSFILE);
+
+#Build the index by keeping the original lines.
+   open (BUILDHT,"<".$buildhtf);
+   $head = 0;
+   $at = 0;
+# This next piece of code assumes that the $buildhtf file is in alpha order
+   while(<BUILDHT>){
+      chomp;
+      if (/index (.*)\.cfg/){
+	 $sysn = $1;
+	 $head = $_;
+	 if ($sysn gt $mrtgd[$at]) {
+	    while($at < @mrtgd) { 
+	       if($sysn le $mrtgd[++$at]){last; }
+	    }
+	 }
+         if (($sysn lt $mrtgd[$at]) || ($at >= @mrtgd)) { 
+	    $buildhtt[@buildhtt] = $head;
+	 }
+      }
+   }
+   close (BUILDHT);
+   open (BUILDHT,">".$buildhtf);
+   print BUILDHT <<ECHO;
+#This file builds the HTML for each device being monitored
+cd $rundir
+ECHO
+   for ($cnt = 0; $cnt < @buildhtt ; $cnt++){
+      print BUILDHT "$buildhtt[$cnt]\n";
+   }
+   close (BUILDHT);
+
+   @mrtgc = sort(@mrtgc);
+   open (HTMLF,">".$webdir.$roothtml);
+   print HTMLF <<ECHO;
+<HTML>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<CENTER><H1>$company Router MRTG Traffic Analysis </H1></CENTER> 
+
+<SPACER TYPE=VERTICAL SIZE=4>
+<CENTER><TABLE BORDER=0 WIDTH="100%" CELLSPACING=0 CELLPADDING=0>
+  <TR VALIGN=top>
+  <TD WIDTH=388 ALIGN="CENTER"><FONT FACE="Arial,Helvetica" SIZE=2>
+ECHO
+   for ($cnt = 0; $cnt < @mrtgc ; $cnt++){
+      $sysn = $mrtgc[$cnt];
+      $sysnhtml = $sysn.".html";
+      print HTMLF "<A HREF=\"$sysn\/$sysnhtml\">$sysn<\/A><br>\n";
+   }
+   print HTMLF <<ECHO;
+</FONT>
+</TD>
+</TABLE>
+</BODY>
+</HTML>
+ECHO
+   close(HTMLF);
+   open (MRTGC,">".$cronfile);
+   print MRTGC <<ECHO;
+#This file runs the MRTG for each config /opt/mrtg/run/file
+cd /opt/mrtg/run
+ECHO
+   for ($cnt = 0; $cnt < @mrtgc ; $cnt++){
+      print MRTGC "perl $rundir\/mrtg $mrtgc[$cnt].cfg $backgrnd\n";
+   }
+   print MRTGC <<ECHO;
+# Additonal commands could go here! Under NT the next line will not return
+$buildhtf
+# End of rebuild ht file
+ECHO
+   close (MRTGC);
+# send to management station
+# (local host unless run from a management console)
+`ovevent "" .1.3.6.1.4.1.11.2.17.1.0.58916873 .1.3.6.1.4.1.11.2.17.2.1.0 Integer 14 .1.3.6.1.4.1.11.2.17.2.2.0 OctetString "$ENV{OVwSessionID}" .1.3.6.1.4.1.11.2.17.2.4.0 OctetString "OVMRTG Delete for @ARGV COMPLETED"`
+}  
+main;
+exit(0);
+

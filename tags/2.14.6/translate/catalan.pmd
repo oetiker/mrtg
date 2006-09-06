@@ -1,0 +1,113 @@
+###### PATCHTAG00 ####################################################
+###      catalan/Català
+###      => LLuís Gras <lluis@seccat.com>
+###### PATCHTAG10 ####################################################
+  &catalan
+###### PATCHTAG20 ####################################################
+  'catalan'	 => \&catalan,
+  'catalan'	 => \&catalan,
+###### PATCHTAG30 ####################################################
+# catalan/catalan
+    'catalan' =>
+    "Preparat per a localització per:
+				<a hre=\"mailto:lluis\@seccat.com\">LLuís Gras</a>",
+###### PATCHTAG40 ####################################################
+$credits::LOCALE{'catalan'}=$credits::LOCALE{'catalan'};
+###### PATCHTAG50 ####################################################
+# catalan
+
+sub catalan
+{
+  my $string = shift;
+return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+
+  %translations =
+  (  
+     #'charset=iso-8859-1'                     => 'charset=iso-8859-1',
+     'Maximal 5 Minute Incoming Traffic'      => 'Tr&agrave;fic entrant m&agrave;xim en 5 minuts',
+     'Maximal 5 Minute Outgoing Traffic'      => 'Tr&agrave;fic sortint m&agrave;xim en 5 minuts',
+     'the device'                             => 'el dispositiu',
+     'The statistics were last updated(.*)'   => 'Estad&iacute;stiques actualitzades el $1',
+     ' Average\)'                             => ' Promig)',
+     'Average'                                => 'Promig',
+     'Max'                                    => 'M&agrave;xim',
+     'Current'                                => 'Actual',
+     'version'                                => 'versi&oacute',
+     '`Daily\' Graph \((.*) Minute'           => 'Gr&agrave;fic diari ($1 minuts :',
+     '`Weekly\' Graph \(30 Minute'            => 'Gr&agrave;fic setmanal (30 minuts :' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Gr&agrave;fic mensual (2 hores :',
+     '`Yearly\' Graph \(1 Day'                => 'Gr&agrave;fic anual (1 dia :', 
+     'Incoming Traffic in (\S+) per Second'   => 'Tr&agrave;fic entrant en $1 per segon',
+     'Outgoing Traffic in (\S+) per Second'   => 'Tr&agrave;fic sortint en $1 per segon',
+     'at which time (.*) had been up for(.*)' => '$1 ha estat funcionant durant $2',
+     # '([kMG]?)([bB])/s'                      => '\$1\$2/s',
+     # '([kMG]?)([bB])/min'                    => '\$1\$2/min',
+     # '([kMG]?)([bB])/h'                       => '$1$2/t',
+     # 'Bits'                                  => 'Bits',
+     # 'Bytes'                                 => 'Bytes'
+     'In'                                     => 'Entrant',
+     'Out'                                    => 'Sortint',
+     'Percentage'                             => 'Percentatge',
+     'Ported to OpenVMS Alpha by'             => 'Portat a OpenVMS Alpha per',
+     'Ported to WindowsNT by'                 => 'Portat a WindowsNT per',
+     'and'                                    => 'i',
+     '^GREEN'                                  => 'VERD',
+     'BLUE'                                   => 'BLAU',
+     'DARK GREEN'                             => 'VERD FOSC',
+     'MAGENTA'                                => 'MAGENTA',
+     'AMBER'                                  => 'AMBAR'
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => 'Diumenge',	'Sun' => 'Dg',
+      'Monday'    => 'Dilluns',		'Mon' => 'Dl',
+      'Tuesday'   => 'Dimarts',		'Tue' => 'Dm',
+      'Wednesday' => 'Dimecres',	'Wed' => 'Dc',
+      'Thursday'  => 'Dijous',		'Thu' => 'Dj',
+      'Friday'    => 'Divendres',	'Fri' => 'Dv',
+      'Saturday'  => 'Dissabte',	'Sat' => 'Ds' 
+    );
+
+%month = 
+    (
+      'January'   => 'Gener',     'February' => 'Febrer' ,    'March'     => 'Març',
+      'Jan'       => 'Gen',       'Feb'      => 'Feb',        'Mar'       => 'Mar',
+      'April'     => 'Abril',     'May'      => 'Maig',       'June'      => 'Juny', 
+      'Apr'       => 'Abr',       'May'      => 'Mai',        'Jun'       => 'Jun',
+      'July'      => 'Juliol',    'August'   => 'Agost',      'September' => 'Setembre', 
+      'Jul'       => 'Jul',       'Aug'      => 'Ago',        'Sep'       => 'Set', 
+      'October'   => 'Octubre',   'November' => 'Novembre',   'December'  => 'Desembre', 
+      'Oct'       => 'Oct',       'Nov'      => 'Nov',        'Dec'       => 'Des' 
+    );
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+    {
+	if($foo[3]=~(/(.*)at(.*)/))
+      { 
+        @quux=split(/at/,$foo[3]);
+        $foo[3]=$quux[0]." a les ".$quux[1]; 
+      };
+      return "$wday{$foo[0]} $foo[1] de $month{$foo[2]} de $foo[3]"; 
+    };
+   return $string;
+
+};
+

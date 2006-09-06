@@ -1,0 +1,54 @@
+.... backup.pl ,....
+
+Date: Thu, 17 Jul 1997 14:31:32 +0200
+From: Emanuele Leonardi <Emanuele.Leonardi@roma1.infn.it>
+To: mrtg@list.ee.ethz.ch
+
+It wakes up at 23:54 every night and copies all the current daily gifs
+for the given list of routers to a directory named with the current date
+(e.g. 970717). The Perl code is extremely straightforward so there
+should be no problem in understanding it.
+
+The cron entry I use is:
+54 23 * * * /usr/local/lib/mrtg-2.2/backup.pl 1>>
+/usr/local/lib/mrtg-2.2/backup.log 2>&1
+
+I'll be very happy to discuss any possible improvement or modification.
+
+Ciao
+
+              Emanuele
+
+
+
+... mrtg.archiver.pl .....
+
+From: Rawlin Blake <blake@nevada.edu>
+To: dlr@bungi.com, oetiker@ee.ethz.ch, Emanuele Leonardi <Emanuele.Leonardi@roma1.infn.it>
+Date: Mon, 4 Jan 1999 15:05:38 -0800 (PST)
+Subject: mrtg-archiver
+
+
+I have made some revisions to mrtg-archiver for use at my site. In the
+hopes that those changes will help others, I have appended my version.
+
+Changes include:
+Weekly archiving of week gifs, monthly archiving of month gifs, yearly
+archiving of year gifs. 
+Specification of which interfaces you want summary files saved for.
+Terse error messages. (I happen to prefer shorter messages, to each their
+own :-) )
+Creation of the archive directory if it doesn't exist.
+Symlinking of the mrtg gifs instead of copying (I have limited disk space)
+
+
+---------
+blake@nevada.edu                           http://www.nevada.edu/~blake
+
+How far would Moses have gone if he had taken a poll in Egypt? What would
+Jesus Christ have preached if he had taken a poll in the land of Israel?
+What would have happened to the Reformation if Martin Luther had taken a
+poll? It isn't polls or public opinion of the moment that counts. It is
+right and wrong and leadership.
+        -- USA President Harry S Truman
+==========================================================================
