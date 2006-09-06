@@ -100,7 +100,7 @@ man: $(MAN)
 txt: $(TXT)
 
 versync:
-	$(PERL) -i~ -p -e 's|VERSION\s*=\s*"\d+\.\d+\.\d+([a-z0-9]+)?"|VERSION = "$(VER)"|gi; s|mrtg-\d+\.\d+\.\d+([a-z0-9]+)?|mrtg-$(VER)|gi; s|MRTG\s\d+\.\d+\.\d+([a-z0-9]+)?|MRTG $(VER)|gi' bin/mrtg bin/cfgmaker bin/indexmaker lib/mrtg2/*.pm src/*.c doc/*.pod 
+	$(PERL) -i -p -e 's|VERSION\s*=\s*"\d+\.\d+\.\d+([a-z0-9]+)?"|VERSION = "$(VER)"|gi; s|mrtg-\d+\.\d+\.\d+([a-z0-9]+)?|mrtg-$(VER)|gi; s|MRTG\s\d+\.\d+\.\d+([a-z0-9]+)?|MRTG $(VER)|gi' bin/mrtg bin/cfgmaker bin/indexmaker lib/mrtg2/*.pm src/*.c doc/*.pod 
 	cd translate && $(PERL) mergelocale.pl skeleton.pm0 *.pmd && cp locales_mrtg.pm ../lib/mrtg2
 
 doc:    getpod versync man txt
@@ -124,11 +124,10 @@ tar:	doc rateupexe
 dist: tar
 	svn commit -m 'released version $(VER)'
 	svn copy -m "tagging version $(VER)" svn://svn.ee.ethz.ch/mrtg/trunk/src svn://svn.ee.ethz.ch/mrtg/tags/$(VER)
-	cp CHANGES  ${HOME}/public_html/webtools/mrtg/pub/
 	md5sum $(ARCHIVE).tar.gz >$(ARCHIVE).tar.gz.md5
-        pgps $(ARCHIVE).tar.gz.md5
-        chmod 644  $(ARCHIVE).tar.gz.md5*
-	scp $(ARCHIVE).* oposs@james.oetiker.ch:public_html/mrtg/pub/
+	pgps $(ARCHIVE).tar.gz.md5
+	chmod 644  $(ARCHIVE).tar.gz.md5*
+	scp CHANGES $(ARCHIVE).* oposs@james.oetiker.ch:public_html/mrtg/pub/
 	ssh oposs@james.oetiker.ch "cd  public_html/mrtg/pub; rm mrtg.tar.gz;ln -s $(ARCHIVE).tar.gz mrtg.tar.gz"
 
 betadist: tar
