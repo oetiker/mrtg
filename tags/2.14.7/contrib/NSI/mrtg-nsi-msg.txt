@@ -1,0 +1,115 @@
+######################################################################
+# Network Status Imager for MRTG -- Example Message File
+######################################################################
+#
+# All texts displayed by NSI have to be defined here
+#
+# * copy this file to ../run and call it mrtg-nsi-msg.txt
+#
+# Note:
+#ri
+# * Every text entry should have the syntax: <key: message>
+#
+# * Keys can be everything, but must match what you've defined in the 
+#   config file. Keys are case insensitive.
+#
+# * Empty Lines are ignored
+#
+# * Lines starting with a # sign are comments.
+#
+# * Valid variables in these lines are:
+#	 	- $NodeWarningThreshhold		#The nodes warning threshold
+#	 	- $NodeAlarmThreshhold			#The nodes alarm threshold
+#		- $NodeIn							#In value of the node
+#		- $NodeOut							#Out value of the node
+
+
+#
+# Node Names and Descriptions
+#
+
+Saline0001: Saline,
+Saline0002: Michigan
+Saline0050: Frame relay connection to Saline is back up.
+Saline0051: Frame relay connection to Saline is congested. Ping response time ($NodeInms) exceeded limit ($NodeWarningThreshholdms).
+Saline0052: Frame relay connection to Saline is down. (prt.$NodeInms/max.$NodeAlarmThreshholdms)
+
+Toronto0001: Toronto,
+Toronto0002: Ontario
+Toronto0050: Frame relay connection to Toronto is back up.
+Toronto0051: Frame relay connection to Toronto is congested. Ping response time ($NodeInms) exceeded limit ($NodeWarningThreshholdms).
+Toronto0052: Frame relay connection to Toronto is down. (prt.$NodeInms/max.$NodeAlarmThreshholdms)
+
+Montreal0001: Montreal,
+Montreal0002: Quebec
+Montreal0050: Frame relay connection to Montreal is back up.
+Montreal0051: Frame relay connection to Montreal is congested. Ping response time ($NodeInms) exceeded limit ($NodeWarningThreshholdms).
+Montreal0052: Frame relay connection to Montreal is down. (prt.$NodeInms/max.$NodeAlarmThreshholdms)
+
+Baxter0001: Baxter Springs,
+Baxter0002: Kansas
+Baxter0050: Frame relay connection to Baxter Springs is back up.
+Baxter0051: Frame relay connection to Baxter Springs is congested. Ping response time ($NodeInms) exceeded limit ($NodeWarningThreshholdms).
+Baxter0052: Frame relay connection to Baxter Springs is down. (prt.$NodeInms/max.$NodeAlarmThreshholdms)
+
+Gillette0001: Gillette,
+Gillette0002: Wyoming
+Gillette0050: Frame relay connection to Gillette is back up.
+Gillette0051: Frame relay connection to Gillette is congested. Ping response time ($NodeInms) exceeded limit ($NodeWarningThreshholdms).
+Gillette0052: Frame relay connection to Gillette is down. (prt.$NodeInms/max.$NodeAlarmThreshholdms)
+
+NewportNews0001: Newport News,
+NewportNews0002: Virginia
+
+Houston0001: Houston,
+Houston0002: Texas
+Houston0050: Frame relay connection to Houston is back up.
+Houston0051: Frame relay connection to Houston is congested. Ping response time ($NodeInms) exceeded limit ($NodeWarningThreshholdms).
+Houston0052: Frame relay connection to Houston is down. (prt.$NodeInms/max.$NodeAlarmThreshholdms)
+
+InternetGW0001: Internet Connection
+InternetGW0050: Internet Connection is back up.
+InternetGW0051: Internet Connection is congested. Ping response time ($NodeInms) exceeded limit ($NodeWarningThreshholdms).
+InternetGW0052: Internet Connection is down. (prt.$NodeInms/max.$NodeAlarmThreshholdms)
+
+Eurotunnel0001: IP-Tunnel
+Eurotunnel0050: PPTP connection to Kirchdorf is back up. (prt.$NodeInms/max.$NodeAlarmThreshholdms)
+Eurotunnel0051: PPTP connection to Kirchdorf is congested. Ping response time ($NodeInms) exceeded limit ($NodeWarningThreshholdms).
+Eurotunnel0052: PPTP connection to Kirchdorf is down. (prt.$NodeInms/max.$NodeAlarmThreshholdms)
+
+NewportNewsEmailX400Kirchdorf0050: MTA Hampton -> Kirchdorf is clearing up again (Currently $NodeIn messages in queue).
+NewportNewsEmailX400Kirchdorf0051: MTA Hampton -> Kirchdorf is starting to show signs of congestion (Currently $NodeIn messages in queue and building up).
+NewportNewsEmailX400Kirchdorf0052: MTA Hampton -> Kirchdorf is congested. (Currently $NodeIn messages in queue).
+
+NewportNewsEmailX400Baxter0050: MTA Hampton -> Baxter Springs is clearing up again (Currently $NodeIn messages in queue).
+NewportNewsEmailX400Baxter0051: MTA Hampton -> Baxter Springs is starting to show signs of congestion (Currently $NodeIn messages in queue and building up).
+NewportNewsEmailX400Baxter0052: MTA Hampton -> Baxter Springs is congested. (Currently $NodeIn messages in queue).
+
+NewportNewsEmailX400Saline0050: MTA Hampton -> Saline is clearing up again (Currently $NodeIn messages in queue).
+NewportNewsEmailX400Saline0051: MTA Hampton -> Saline is starting to show signs of congestion (Currently $NodeIn messages in queue and building up).
+NewportNewsEmailX400Saline0052: MTA Hampton -> Saline is congested. (Currently $NodeIn messages in queue).
+
+NewportNewsEmailX400Burlington0050: MTA Hampton -> Toronto is clearing up again (Currently $NodeIn messages in queue).
+NewportNewsEmailX400Burlington0051: MTA Hampton -> Toronto is starting to show signs of congestion (Currently $NodeIn messages in queue and building up).
+NewportNewsEmailX400Burlington0052: MTA Hampton -> Toronto is congested. (Currently $NodeIn messages in queue).
+
+NewportNewsEmailIMC0050: Internet Mail Service is clearing up again (Currently $NodeIn messages in queue).
+NewportNewsEmailIMC0051: Internet Mail Service is starting to show signs of congestion (Currently $NodeIn messages in queue and building up).
+NewportNewsEmailIMC0052: Internet Mail Service is congested. (Currently $NodeIn messages in queue).
+
+SalineEmailX400Hampton0050: MTA Saline -> Hampton is clearing up again (Currently $NodeIn messages in queue).
+SalineEmailX400Hampton0051: MTA Saline -> Hampton is starting to show signs of congestion (Currently $NodeIn messages in queue and building up).
+SalineEmailX400Hampton0052: MTA Saline -> Hampton is congested. (Currently $NodeIn messages in queue).
+
+TorontoEmailX400Hampton0050: MTA Toronto -> Hampton is clearing up again (Currently $NodeIn messages in queue).
+TorontoEmailX400Hampton0051: MTA Toronto -> Hampton is starting to show signs of congestion (Currently $NodeIn messages in queue and building up).
+TorontoEmailX400Hampton0052: MTA Toronto -> Hampton is congested. (Currently $NodeIn messages in queue).
+
+BaxterEmailX400Hampton0050: MTA Baxter Springs -> Hampton is clearing up again (Currently $NodeIn messages in queue).
+BaxterEmailX400Hampton0051: MTA Baxter Springs -> Hampton is starting to show signs of congestion (Currently $NodeIn messages in queue and building up).
+BaxterEmailX400Hampton0052: MTA Baxter Springs -> Hampton is congested. (Currently $NodeIn messages in queue).
+
+
+#
+# Common messages
+#
