@@ -1,6 +1,0 @@
-#!/bin/sh
-
-#this is an example of using mrtgmk
-
-clear
-./mrtgmk cfg/a.cfg
