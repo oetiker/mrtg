@@ -1,0 +1,128 @@
+###### PATCHTAG00 ####################################################
+###      Hungarian/Magyar   
+###      => Levente Nagy <levinet@euroweb.hu>
+###### PATCHTAG10 ####################################################
+  &hungarian
+###### PATCHTAG20 ####################################################
+  'hungarian'       => \&hungarian, 
+  'magyar'        => \&hungarian,
+###### PATCHTAG30 ####################################################
+# Hungarian/magyar
+   'hungarian' =>
+   "Magyaros&iacute;totta
+				Nagy Levente
+				<a href=\"mailto:levinet\@euroweb.hu\">&lt;levinet\@euroweb.hu&gt;</a>",
+# the hungarian string means: "Prepared for languages and translated to Hungarian by"
+###### PATCHTAG40 ####################################################
+$credits::LOCALE{'magyar'}=$credits::LOCALE{'hungarian'};
+###### PATCHTAG50 ####################################################
+# Hungarian
+
+
+sub hungarian
+{
+  my $string = shift;
+return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+  # charset=iso-2022-jp
+
+  %translations =
+  (  
+     #'charset=iso-8859-1'                     => 'charset=iso-8859-2',
+     'Maximal 5 Minute Incoming Traffic'      => 'Maxim&aacute;lis bej&ouml;v&otilde; forgalom 5 perc alatt',
+     'Maximal 5 Minute Outgoing Traffic'      => 'Maxim&aacute;lis kimen&otilde; forgalom 5 perc alatt',
+     'the device'                             => 'az eszk&ouml;z',
+     'The statistics were last updated(.*)'   => 'A statisztika utols&oacute; friss&iacute;t&eacute;se:$1',
+     ' Average\)'                             => ' &aacute;tlag)',
+     'Average'                                => '&Aacute;tlagos',
+     'Max'                                    => 'Maximum',
+     'Current'                                => 'Pillanatnyi',
+     'version'                                => 'verzi&oacute;',
+     '`Daily\' Graph \((.*) Minute'           => '`Napi\' grafikon ($1 perces',
+     '`Weekly\' Graph \(30 Minute'            => '`Heti\' grafikon (30 perces' ,
+     '`Monthly\' Graph \(2 Hour'              => '`Havi\' grafikon (2 &oacute;r&aacute;s',
+     '`Yearly\' Graph \(1 Day'                => '`&Eacute;ves\' grafikon (1 napos', 
+     'Incoming Traffic in (\S+) per Second'   => 'Bej&ouml;v&otilde; forgalom $1 per m&aacute;sodpercben',
+     'Outgoing Traffic in (\S+) per Second'   => 'Kimen&otilde; forgalom $1 per m&aacute;sodpercben',
+     'at which time (.*) had been up for(.*)' => 'amikor a $1 &uuml;zemideje $2 volt.',
+     # '([kMG]?)([bB])/s'                 => '\$1\$2/s',
+     # '([kMG]?)([bB])/min'              => '\$1\$2/min',
+     '([kMG]?)([bB])/h'                       => '$1$2/t',
+     'Bits'                                => 'Bit',
+     'Bytes'                              => 'Byte',
+     'In'                                     => 'be',
+     'Out'                                    => 'ki',
+     'Percentage'                             => 'sz&aacute;zale&acute;k',
+     'Ported to OpenVMS Alpha by'             => 'OpenVMS-re portolta', 
+     'Ported to WindowsNT by'                 => 'WindowsNT-re portolta',
+     'and'                                    => '&eacute;s',
+     '^GREEN'                                  => 'Z&Ouml;LD',
+     'BLUE'                                   => 'K&Eacute;K',
+     'DARK GREEN'                             => 'S&Ouml;T&Eacute;T Z&Ouml;LD',
+     'MAGENTA'                                => 'B&Iacute;BOR',
+     'AMBER'                                  => 'S&Aacute;RGA'
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => 'vas&aacute;rnap',		'Sun' => 'vas',
+      'Monday'    => 'h&eacute;tf&otilde;',	'Mon' => 'h&eacute;t',
+      'Tuesday'   => 'kedd',			'Tue' => 'kedd',
+      'Wednesday' => 'szerda',			'Wed' => 'sze',
+      'Thursday'  => 'cs&uuml;t&ouml;rt&ouml;k','Thu' => 'cs&uuml;t',
+      'Friday'    => 'p&eacute;ntek',           'Fri' => 'p&eacute;n',
+      'Saturday'  => 'szombat',    		'Sat' => 'szo' 
+
+    );
+
+%month = 
+    (
+      'January'   => 'janu&aacute;r',    'February'  => 'febru&aacute;r' ,    'March'     => 'm&aacute;rcius',
+      'Jan'       => 'jan',       'Feb'       => 'feb',         'Mar'       => 'marc',
+      'April'     => '&aacute;prilis',     'May'       => 'm&aacute;jus',         'June'      => 'j&uacute;nius', 
+      'Apr'       => 'apr',       'May'       => 'maj',         'Jun'       => 'jun',
+      'July'      => 'j&uacute;lius',      'August'    => 'augusztus',      'September' => 'szeptember', 
+      'Jul'       => 'jul',       'Aug'       => 'aug',         'Sep'       => 'szept', 
+      'October'   => 'okt&oacute;ber',   'November'  => 'november',    'December'  => 'december', 
+      'Oct'       => 'okt',       'Nov'       => 'nov',         'Dec'       => 'dec' 
+    );
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+    {
+	if($foo[3]=~(/(.*)at(.*)/))
+      { 
+        @quux=split(/at/,$foo[3]);
+        $foo[3]=$quux[0]." kl.".$quux[1]; 
+      };
+	return "$quux[0]. $month{$foo[2]} $foo[1]., $wday{$foo[0]} $quux[1]";
+    };
+
+#
+# handle two different time/date formats:  
+# return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
+#
+
+# handle nontranslated strings which ought to be translated
+# print STDERR "$_\n" or print DEBUG "not translated $_";
+# but then again we might not want/need to translate all strings
+  
+  return $string;
+
+  };

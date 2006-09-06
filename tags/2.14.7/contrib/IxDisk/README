@@ -1,0 +1,4 @@
+From: Miroslaw.Maczka@bze.com.pl
+
+This is my script for monitoring database activity, database is Informix
+version 5, system is Hewlett-Packard unix (hp-ux), versions 9,10,11.

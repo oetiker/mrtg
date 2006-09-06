@@ -1,0 +1,38 @@
+#!/bin/csh
+# You will need to use the included snmpwalk program, which has been
+# modified from the original version supplied with the SCOTTY Tcl
+# Extensions for Network Management:
+#           (http://wwwsnmp.cs.utwente.nl/~schoenw/scotty)
+# If you don't already have TCL, you will need tcl 7.5 too.
+#
+# IF YOU DON'T ALREADY HAVE IT, you will also need to download the
+# ASCEND.MIB file from Ascend's FTP site (ftp.ascend.com) and
+# autoload it in your tnm-2.1.X/library/init.tcl library file.
+# 
+# change bank1name to the domain name or IP address of your first Ascend
+# change bank2name to the domain name or IP address of your second Ascend 
+# change bank1community to the SNMP community string of bank1
+# change bank2community to the SNMP community string of bank2
+
+set bank1name="bank1.domain.com"
+set bank2name="bank2.domain.com"
+set bank1community="bank1community"
+set bank2community="bank2community"
+
+set MODEMS1=`snmpwalk $bank1name $bank2name mdmLineState|grep -i
+connect|
+wc -l`
+set MODEMS2=`snmpwalk mso2 ism2MARS mdmLineState|grep -i
+connect|
+wc -l`
+set UPTIME=`/usr/local/bin/snmpwalk mso1 ism2MARS system.sysUpTime|cut -c
+20-80`
+set DESCRIP=`/usr/local/bin/snmpwalk mso1 ism2MARS system.sysDescr|cut -c
+20-80`
+
+set MODEMS=`calc $MODEMS1 + $MODEMS2`
+
+echo $MODEMS
+echo $MODEMS
+echo $UPTIME
+echo $DESCRIP

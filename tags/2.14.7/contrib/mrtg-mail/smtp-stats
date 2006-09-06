@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# smtp-stats: invoke mailstats from a wrapper for use in inetd.
+#
+PATH=/bin:/sbin
+if [ -x "/bin/mailstats" ]
+   then
+   exec /bin/mailstats -f/etc/mail/sendmail.st
+   fi  
