@@ -1,10 +1,13 @@
+Changes 2.14.6, 2006-09-06
+--------------------------
+
 From: Tobi
-* timestamps in log files should be YYYY-MM-DD HH:MM:SS 
+* timestamps in log files to be YYYY-MM-DD HH:MM:SS 
 * fixed rateup to propely support kMG option
 * fixed problem with conversioncode option throwing an exception.
 * fixed config parsing problem for libadd lines terminated by a \
 * added 'eval' debug target
-* updated local $SIG{__DIE__} locations
+* updated local $SIG{__DIE__} locations to work as intended
 
 From: Akihiro Sagawa  sagawa sohgoh.net
 * fix ifspeed for foundry switches in cfgmaker
@@ -15,7 +18,7 @@ From: Russ Price gpg fubegra.net
   lot
 
 From:  Stefan stefan sf-net.com
-* sample startup script for mrtg
+* added sample startup script for mrtg
 
 Changes 2.14.5, 2006-07-14
 --------------------------

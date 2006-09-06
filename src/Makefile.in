@@ -1,7 +1,7 @@
 # things that the GNU standards document suggests all makefiles
 # should have.
 SHELL=/bin/sh
-VER=2.14.5
+VER=2.14.6
 .SUFFIXES:
 .SUFFIXES: .c .o .pl .pm .pod .man .1 .txt
 
@@ -125,8 +125,11 @@ dist: tar
 	svn commit -m 'released version $(VER)'
 	svn copy -m "tagging version $(VER)" svn://svn.ee.ethz.ch/mrtg/trunk/src svn://svn.ee.ethz.ch/mrtg/tags/$(VER)
 	cp CHANGES  ${HOME}/public_html/webtools/mrtg/pub/
-	mv $(ARCHIVE).* ${HOME}/public_html/webtools/mrtg/pub/
-	(cd ${HOME}/public_html/webtools/mrtg/pub; rm mrtg.tar.gz;ln -s $(ARCHIVE).tar.gz mrtg.tar.gz;gmd5sum $(ARCHIVE).tar.gz >$(ARCHIVE).tar.gz.md5;pgps  $(ARCHIVE).tar.gz.md5;chmod 644  $(ARCHIVE).tar.gz.md5*)
+	md5sum $(ARCHIVE).tar.gz >$(ARCHIVE).tar.gz.md5
+        pgps $(ARCHIVE).tar.gz.md5
+        chmod 644  $(ARCHIVE).tar.gz.md5*
+	scp $(ARCHIVE).* oposs@james.oetiker.ch:public_html/mrtg/pub/
+	ssh oposs@james.oetiker.ch "cd  public_html/mrtg/pub; rm mrtg.tar.gz;ln -s $(ARCHIVE).tar.gz mrtg.tar.gz"
 
 betadist: tar
 	mv $(ARCHIVE).* ${HOME}/public_html/webtools/mrtg/pub/beta
