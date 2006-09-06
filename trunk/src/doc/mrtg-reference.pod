@@ -499,7 +499,7 @@ for the snmp query.
 
 Example:
 
- Target[myrouter]: 2:public@wellfleet-fddi.ethz.ch
+ Target[myrouter]: 2:public@wellfleet-fddi.domain
 
 If your community contains a "@" or a " " these characters
 must be escaped with a "\".
@@ -544,7 +544,7 @@ description. It flips the incoming and outgoing traffic rates.
 
 Example:
 
- Target[ezci]: -1:public@ezci-ether.ethz.ch
+ Target[ezci]: -1:public@ezci-ether.domain
 
 =item Explicit OIDs
 
@@ -602,8 +602,8 @@ B<--ifref=ip>.
 
 Example:
 
- Target[myrouter]: /1.2.3.4:public@wellfleet-fddi.ethz.ch
- Target[ezci]: -/1.2.3.4:public@ezci-ether.ethz.ch
+ Target[myrouter]: /1.2.3.4:public@wellfleet-fddi.domain
+ Target[ezci]: -/1.2.3.4:public@ezci-ether.domain
  Target[myrouter]: 1.3.6.1.2.1.2.2.1.14/1.2.3.4&1.3.6.1.2.1.2.2.1.14/1.2.3.4:public@myrouter
  Target[myrouter]: ifInErrors/1.2.3.4&ifOutErrors/1.2.3.4:public@myrouter
 
@@ -618,8 +618,8 @@ B<--ifref=descr>.
 
 Example:
 
- Target[myrouter]: \My-Interface2:public@wellfleet-fddi.ethz.ch
- Target[ezci]: -\My-Interface2:public@ezci-ether.ethz.ch
+ Target[myrouter]: \My-Interface2:public@wellfleet-fddi.domain
+ Target[ezci]: -\My-Interface2:public@ezci-ether.domain
  Target[myrouter]: 1.3.6.1.2.1.2.2.1.14\My-Interface2&1.3.6.1.2.1.2.2.1.14\My-Interface3:public@myrouter
  Target[myrouter]: ifInErrors\My-Interface2&ifOutErrors\My-Interface3:public@myrouter
 
@@ -637,8 +637,8 @@ B<--ifref=name>.
 
 Example:
 
- Target[myrouter]: #2/11:public@wellfleet-fddi.ethz.ch
- Target[ezci]: -#2/11:public@ezci-ether.ethz.ch
+ Target[myrouter]: #2/11:public@wellfleet-fddi.domain
+ Target[ezci]: -#2/11:public@ezci-ether.domain
  Target[myrouter]: 1.3.6.1.2.1.2.2.1.14#3/7&1.3.6.1.2.1.2.2.1.14#3/7:public@myrouter
  Target[myrouter]: ifInErrors#3/7&ifOutErrors#3/7:public@myrouter
 
@@ -670,8 +670,8 @@ by using the option B<--ifref=eth>.
 
 Example:
 
- Target[myrouter]: !0a-0b-0c-0d:public@wellfleet-fddi.ethz.ch
- Target[ezci]: -!0-f-bb-05-71-22:public@ezci-ether.ethz.ch
+ Target[myrouter]: !0a-0b-0c-0d:public@wellfleet-fddi.domain
+ Target[ezci]: -!0-f-bb-05-71-22:public@ezci-ether.domain
  Target[myrouter]: 1.3.6.1.2.1.2.2.1.14!0a-00-10-23-44-51&!0a-00-10-23-44-51:public@myrouter
  Target[myrouter]: ifInErrors!0a-00-10-23-44-51&ifOutErrors!0a-00-10-23-44-51:public@myrouter
 
@@ -688,8 +688,8 @@ B<--ifref=type>.
 
 Example:
 
- Target[myrouter]: %13:public@wellfleet-fddi.ethz.ch
- Target[ezci]: -%13:public@ezci-ether.ethz.ch
+ Target[myrouter]: %13:public@wellfleet-fddi.domain
+ Target[ezci]: -%13:public@ezci-ether.domain
  Target[myrouter]: 1.3.6.1.2.1.2.2.1.14%13&1.3.6.1.2.1.2.2.1.14%14:public@myrouter
  Target[myrouter]: ifInErrors%13&ifOutErrors%14:public@myrouter
 
@@ -759,10 +759,10 @@ pipe symbol.
 
 Example:
 
-  Target[ezci]: 1:public@ezci-ether.ethz.ch:9161::4
+  Target[ezci]: 1:public@ezci-ether.domain:9161::4
 
 This would refer to the input/output octet counters for the interface
-with I<ifIndex 1> on I<ezci-ether.ethz.ch>, as known
+with I<ifIndex 1> on I<ezci-ether.domain>, as known
 by the SNMP agent listening on UDP port 9161.  The standard initial
 timeout (2.0 seconds) is used, but the number of retries is set to
 four.  The backoff value is the default.
@@ -1921,6 +1921,7 @@ Enable debug options. The argument of the debug option is a comma separated list
  fork - forking view 
  time - some timing info
  log  - logging of data via rateup or rrdtool
+ eval - print eval strings before evaluting them
 
 Example:
 
