@@ -315,6 +315,12 @@ $VERSION = 2.100016;
        'threshdir' =>
        [sub{$_[0] && (-d $_[0])}, sub{"Threshold directory $_[0] does not exist"}],
 
+       'threshmailserver' =>
+       [sub{$_[0] && gethostbyname($_[0])}, sub{"Unknown mailserver hostname $_[0]"}],
+
+       'threshmailsender' =>
+       [sub{$_[0] && ($_[0] =~ /\S+\@\S+/)}, sub{"ThreshMailAddress $_[0] does not look like an email address at all"}],
+
        'threshmini[]' =>
        [sub{1}, sub{"Internal Threshold Config Error"}],
 
@@ -341,6 +347,9 @@ $VERSION = 2.100016;
 
        'threshprogoko[]' =>
        [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
+
+       'threshmailaddress[]' =>
+       [sub{$_[0] && ($_[0] =~ /\S+\@\S+/)}, sub{"ThreshMailAddress $_[0] does not look like an email address at all"}],
 
        'timestrpos[]' => 
        [sub{$_[0] =~ /^(no|[lr][ul])$/i}, sub{"Must be a string of NO, LU, RU, LL, RL"}],
@@ -657,6 +666,15 @@ sub cfgcheck ($$$$;$) {
           mkdirhier $$cfg{imagedir}  unless $opts->{check};
         }
     }
+    if ($cfg->{threshmailserver} and not $cfg->{threshmailsender}){
+	warn ("WARNING: If \"ThreshMailServer\" is defined, then \"ThreshMailSender\" must be defined too.\n");
+        $error = "yes";
+    }
+    if ($cfg->{threshmailsender} and not $cfg->{threshmailserver}){
+	warn ("WARNING: If \"ThreshMailSender\" is defined, then \"ThreshMailServer\" must be defined too.\n");
+        $error = "yes";
+    }
+
     # build relativ path from htmldir to image dir.
     my @htmldir = split /\Q${MRTG_lib::SL}\E+/, $$cfg{htmldir};
     my @imagedir =  split /\Q${MRTG_lib::SL}\E+/, $$cfg{imagedir};
