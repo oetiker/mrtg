@@ -1,3 +1,8 @@
+From: Tobi
+* new function thresholdmail lets you send an email when a threshold
+  is reached. This feature talks directly to the mailserver and does
+  not access any external programs.
+
 Changes 2.14.7, 2006-09-06
 --------------------------
 From: Tobi

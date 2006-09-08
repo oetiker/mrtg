@@ -258,6 +258,14 @@ sub main {
         $cfg{enablesnmpv3} = 'no';
     }
 
+    if ($cfg{threshmailserver}) {
+        if  (eval {local $SIG{__DIE__};require Net::SMTP;})   {
+	    import Net::SMTP;
+            debug('base', "Loaded Net::SMTP module for ThreshMail.");
+        } else {
+            die "$NOW: WARNING: Can't load Net::SMTP module. This is required for ThreshMail.";
+        }
+    }
     # Check we have the necessary libraries for IPv6 support
     if ($cfg{enablesnmpv3} eq 'yes') {
         if  (eval {local $SIG{__DIE__};require Net_SNMP_util;})   {
@@ -1784,6 +1792,23 @@ sub lockit {
     }
 }
 
+sub threshmail ($$){
+    my $server = shift; 
+    my $message = shift;
+    my $to = 'postmaster';
+    my $from = 'mrtg-server';
+    $message =~ /^To:\.+?([^\s<]+@[^>\s]+)/ && do {$to = $1};
+    $message =~ /^From:\.+?([^\s<]+@[^>\s]+)/ && do {$from = $1};
+    my $smtp = Net::SMTP->new([split /\s*,\s*/, $server],Timeout=>5) or
+	do { warn "$NOW: ERROR: could not send thresholdmail to $to"; return };
+    $smtp->mail($from);
+    $smtp->to(split(/\s*,\s*/, $to));
+    $smtp->data();
+    $smtp->datasend($message);
+    $smtp->dataend();
+    $smtp->quit;
+}   
+
 sub threshcheck {
     # threshold checking by Tom Muggli
     # ... fsck'd up but fixed by Juha Laine
@@ -1823,41 +1848,70 @@ sub threshcheck {
                 # 2 decimals in %
                     $value = int($value / $$rcfg{"maxbytes".($dir eq 'i' ? 1 : 2)}{$router} * 10000.0) / 100; # the new code
             }
+	    my $msghead = "From: $cfg->{theshmailsender}\nTo: $rcfg->{threshmailaddress}{$router}";
+	    my $msgbody = <<MESSAGE;
+  Address: $router
+Direction: $dir
+    Bound: $bound
+Threshold: $$rcfg{'thresh'.$bound.$dir}{$router};
+  Current: $value
+MESSAGE
+	    $msgbody .= "\n$$rcfg{'threshdesc'}{$router}\n" if $$rcfg{'threshdesc'}{$router};
+	
 
             if (($bound eq 'min' and $boundval > $value) or
                 ($bound eq 'max' and $boundval < $value)) {
-
 		# threshold was broken...
-                my @exec = ( $$rcfg{'threshprog'.$dir}{$router}, $router,
-			  $$rcfg{'thresh'.$bound.$dir}{$router}, $threshval{$dir},($$rcfg{'threshdesc'}{$router} ||"No Description"), $value);
+		  my $message = <<MESSAGE;
+$msghead
+Subject: [mrtg thrs] BROKEN $router $bound $dir ( $$rcfg{'thresh'.$bound.$dir}{$router} vs $threshval{$dir})
 
-		# Check if we use the status file or not...
-		if ( defined $threshfile ) {
+Threshold BROKEN
+----------------
+$msgbody
+MESSAGE
+                  my @exec = ( $$rcfg{'threshprog'.$dir}{$router}, $router,
+			  $$rcfg{'thresh'.$bound.$dir}{$router}, $threshval{$dir},($$rcfg{'threshdesc'}{$router} ||"No Description"), $value);
+ 
+ 		  # Check if we use the status file or not...
+ 		  if ( defined $threshfile ) {
 		    if ( not -e $threshfile.".".$bound.uc($dir) ) {
 			# Create a file to indicate a threshold problem for the time after the problem
 			open THRESHTOUCH, ">".$threshfile.".".$bound.uc($dir)
 			    or warn "$NOW: WARNING: Creating $threshfile.".$bound.uc($dir).": $!\n";
 			close THRESHTOUCH;
-                        debug('base',"run treshprog$dir: ".(join ",",@exec));
+                        debug('base',"run threshprog$dir: ".(join ",",@exec));
                   	system @exec if defined $$rcfg{'threshprog'.$dir}{$router};
+			threshmail $cfg->{threshmailserver},$message if $rcfg->{threshmailaddress}{$router}
+
 		    }
-		} else {
-		    # no threshold dir so run on every 'break'
-		    system @exec if defined $$rcfg{'threshprog'.$dir}{$router};
-		}
-	    } else {
-
-		# no threshold broken ...
-		my @exec = ( $$rcfg{'threshprogok'.$dir}{$router}, $router,
+		  } else {
+		     # no threshold dir so run on every 'break'
+        	     threshmail $cfg->{thresmailserver},$message if $rcfg->{threshmailaddress}{$router};
+		     system @exec if defined $$rcfg{'threshprog'.$dir}{$router};
+		  }
+            } else {
+  		  # no threshold broken ...
+		  my @exec = ( $$rcfg{'threshprogok'.$dir}{$router}, $router,
 			  $$rcfg{'thresh'.$bound.$dir}{$router}, $threshval{$dir});
+		  my $message = <<MESSAGE;
+$msghead
+Subject: [mrtg thrs] UN-BROKEN $router $bound $dir ( $$rcfg{'thresh'.$bound.$dir}{$router} vs $threshval{$dir})
 
-		# Check if we use the status file or not...
-		if ( defined $threshfile ) {
+Threshold UN-BROKEN
+-------------------
+$msgbody
+MESSAGE
+
+		  # Check if we use the status file or not...
+		  if ( defined $threshfile ) {
 		    if ( -e $threshfile.".".$bound.uc($dir) ){
 			unlink "$threshfile.".$bound.uc($dir);
 			system  @exec if defined $$rcfg{'threshprogok'.$dir}{$router};
+			threshmail $cfg->{threshmailserver},$message if $rcfg->{threshmailaddress}{$router};
 		    }
-		}
+		  }
+                
 	    }
 
         } # foreach my $bound ...
