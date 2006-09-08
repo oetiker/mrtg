@@ -410,6 +410,7 @@ ECHO
                 or die "File $$router_opt{'host-template'} couldn't be opened.\n";
 
             my @template_lines = readline *IF_TEMPLATE;
+	    close IF_TEMPLATE;
             $@ = undef;
             eval ('local $SIG{__DIE__};'.join("", @template_lines));
 
