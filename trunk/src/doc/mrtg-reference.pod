@@ -1721,6 +1721,29 @@ Example:
 
  ThreshDir: /var/mrtg/thresh
 
+=head2 ThreshMailServer (GLOBAL)
+
+Adderss of an SMTP server which is going to accept mail about Thresholds being broken and unbroken.
+
+=head2 ThreshMailSender (GLOBAL)
+
+What is the sender address of the threshold mail.
+
+Example:
+ 
+ ThreshMailSender: mrtg@example.com
+
+=head2 ThreshMailAddress (PER TARGET)
+
+Email address for Threshold related Mails. This will only work if a mailserver has been configured.
+
+Example:
+
+ ThreshMailAddress[_]: admin@example.com
+ ThreshMailAddress[router]:
+
+This would bring threshold releaed mail to all but the target called 'router'.
+
 =head2 ThreshMinI  (PER TARGET)
 
 This is the minimum acceptable value for the Input (first) parameter.  If
@@ -1756,9 +1779,6 @@ variable the unbroken threshold value, and the current parameter value.
 
 These work the same as their *I counterparts, except on the Output (second)
 parameter.
-
-I<Note that you can use the SetEnv parameter explained above to pass
-additional information to the threshold programs.>
 
 =head2 SetEnv
 
