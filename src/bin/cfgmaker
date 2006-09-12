@@ -15,8 +15,8 @@
 # base - basic program flow
 # snpo - SNMP Polling
 # snpd - SNMP Detail
-#@main::DEBUG=qw(base snpo coca);
-@main::DEBUG=qw();
+@main::DEBUG=qw(base snpo coca);
+#@main::DEBUG=qw();
 
 require 5.005;
 use strict;
