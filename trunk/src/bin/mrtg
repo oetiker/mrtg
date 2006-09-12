@@ -249,7 +249,7 @@ sub main {
     debug('base', "Reading Config File: $cfgfile");
     readcfg($cfgfile,\@routers,\%cfg,\%rcfg);
 
-    
+    imggen($cfg{icondir} || $cfg{imagedir} || $cfg{workdir});
     
     # Enable or disable snmpv3
     if(defined $cfg{enablesnmpv3}) {
@@ -1027,7 +1027,6 @@ sub writegraphics {
     
     debug('log', "Called @exec");
 
-    imggen($$cfg{icondir} || $$cfg{imagedir});
 
     if (open (HTML,"<$$cfg{'htmldir'}$$rcfg{'directory'}{$router}$router.$$rcfg{'extension'}{$router}")) {
         for ($i=0 ; $i<200 ; $i++) {
