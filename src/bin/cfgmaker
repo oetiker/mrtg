@@ -1,4 +1,4 @@
-#! /usr/bin/perl
+#! /usr/bin/perl5~
 # -*- mode: Perl -*-
 ##################################################################
 # MRTG 2.14.7  -- Config file creator
@@ -61,7 +61,7 @@ sub main {
     my %v3opt;
     $opt{fullcmd} =
             "$0 ".(join " ",
-            map {$_ =~ /[ \[\]\*\{\}\;\>\<\&]/ ? "'$_'" : $_ } @ARGV);
+            map {$_ =~ /[ \[\]\*\{\}\;\>\<\&]/ ? qq{"$_"} : $_ } @ARGV);
     $opt{community}="public";
     $opt{interfaces}=1;
     options(\%opt,\%routers);

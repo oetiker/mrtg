@@ -58,7 +58,7 @@ my @argv = @ARGV;
 my $argz = "$0";
 foreach my $ar (@argv) {
    if ($ar =~ /[ |()]/ ) {
-      $ar = sprintf "\"%s\"", $ar;
+      $ar = sprintf qq{"%s"}, $ar;
    }
    $argz .= " $ar";
 }
