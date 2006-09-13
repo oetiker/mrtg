@@ -24,6 +24,7 @@ lib/mrtg2/locales_mrtg.pm
 bin/cfgmaker
 bin/indexmaker
 bin/mrtg
+bin/mrtg-traffic-sum
 lib/mrtg2/Pod/InputObjects.pm
 lib/mrtg2/Pod/Parser.pm
 lib/mrtg2/Pod/PlainText.pm
