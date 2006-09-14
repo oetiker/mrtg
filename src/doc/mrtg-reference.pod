@@ -183,11 +183,15 @@ Example:
  Interval: 10
 
 Note that unless you are using rrdtool you can not set Interval to less
-than 5 minutes. If you are using rrdtool you can set interval down to 1
-minute. Note though, setting the Interval for an rrdtool/mrtg setup will
-influence the initial creation of the database. If you change the interval
-later, all existing databases will remain at the resolution they were
-initially created with.
+than 5 minutes. If you are using rrdtool you can set interval in the format 
+
+ Interval: MM[:SS]
+
+Down to 1 second. Note though, setting the Interval for an rrdtool/mrtg
+setup will influence the initial creation of the database. If you change the
+interval later, all existing databases will remain at the resolution they
+were initially created with. Also note that you must make sure that your
+mrtg-rrd Web-frontend can deal with this kind of Interval setting.
 
 =head2 MaxAge
 
