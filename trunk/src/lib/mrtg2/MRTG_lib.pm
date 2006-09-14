@@ -99,7 +99,9 @@ $VERSION = 2.100016;
        [sub{((lc($_[0])) eq 'yes' or (lc($_[0])) eq 'no')}, sub{"$_[0] must be yes or no"}],
 
        'interval' => 
-       [sub{int($_[0]) >= 1 and int($_[0]) <= 60}, sub{"$_[0] should be at least 1 Minute and no more than 60 Minutes"}], 
+       [sub{/(\d+)(?::(\d+))/ ; 
+            my $int = $1*60; $int += $2 if $2;
+            $int >= 1 and $int <= 60*60}, sub{"$_[0] should be at least 1 Second (0:01) and no more than 60 Minutes (60)"}], 
 
        'writeexpires' =>  
        [sub{1}, sub{"Internal Error"}],
@@ -753,10 +755,15 @@ sub cfgcheck ($$$$;$) {
     }
 
     # default interval is 5 minutes
-    $$cfg{interval} = 5 unless defined $$cfg{interval};
+    if ($cfg->{interval} =~ /(\d+)(?::(\d+))/){
+	$cfg->{interval} = $1;
+	$cfg->{interval} += $2/60.0 if $2;
+    } else {
+        $cfg->{interval} = 5;
+    }
     unless ($$cfg{logformat} eq 'rrdtool') {
         # interval has to be 5 minutes at least without userrdtool
-        if ($$cfg{interval} < 5) {
+        if ($$cfg{interval} < 5.0) {
             die "ERROR: CFG Error in \"Interval\": should be at least 5 Minutes (unless you use rrdtool)";
         }
     }
@@ -1056,7 +1063,7 @@ sub datestr ($) {
 # create expire date for expiery in ARG Minutes
 
 sub expistr ($) {
-    my ($time) = time+$_[0]*60+5;
+    my ($time) = time+int($_[0]*60)+5;
     my ($wday) = ('Sun','Mon','Tue','Wed','Thu','Fri','Sat')[(gmtime($time))[6]];
     my ($month) = ('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep', 
                    'Oct','Nov','Dec')[(gmtime($time))[4]];
@@ -1762,7 +1769,7 @@ sub log2rrd ($$$) {
 	$DST = 'COUNTER'
     }
 
-    my $MHB = $$cfg{interval} * 60 * 2;
+    my $MHB = int($$cfg{interval} * 60 * 2);
 
     my $MAX1 =
       $$rcfg{'absmax'}{$router}
