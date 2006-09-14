@@ -1,7 +1,7 @@
 # -*- mode: Perl -*-
 package MRTG_lib;
 ###################################################################
-# MRTG 2.14.7  Support library MRTG_lib.pm
+# MRTG 2.15.0  Support library MRTG_lib.pm
 ###################################################################
 # Created by Tobias Oetiker <tobi@oetiker.ch>
 #            and Dave Rand <dlr@bungi.com>
@@ -99,7 +99,7 @@ $VERSION = 2.100016;
        [sub{((lc($_[0])) eq 'yes' or (lc($_[0])) eq 'no')}, sub{"$_[0] must be yes or no"}],
 
        'interval' => 
-       [sub{/(\d+)(?::(\d+))?/ ; 
+       [sub{$_[0] =~ /(\d+)(?::(\d+))?/ ; 
             my $int = $1*60; $int += $2 if $2;
             $int >= 1 and $int <= 60*60}, sub{"$_[0] should be at least 1 Second (0:01) and no more than 60 Minutes (60)"}], 
 
