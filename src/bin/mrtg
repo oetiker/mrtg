@@ -365,7 +365,7 @@ sub main {
         debug 'time', "loop start ".localtime(time);
 
         #if we run as daemon, we sleep in between collection cycles
-        $sleep_time=  ($cfg{interval}*60)-(time-$last_time);
+        $sleep_time=  (int($cfg{interval}*60))-(time-$last_time);
         if ($sleep_time > 0 ) { #If greater than 0 the sleep that amount of time
 	    debug('time', "Sleep time $sleep_time seconds");
             sleep ($sleep_time);
@@ -377,7 +377,7 @@ sub main {
         # set meta expires if there is an index file
         # 2000/05/03 Bill McGonigle <bill@zettabyte.net>
         if (defined $cfg{'writeexpires'}) {
-           my $exp = &expistr($cfg{'interval'} ? $cfg{'interval'} : 5);
+           my $exp = &expistr($cfg{'interval'});
            my $fil;
            $fil = "$cfg{'htmldir'}index.html"  if -e "$cfg{'htmldir'}index.html";
            $fil = "$cfg{'htmldir'}index.htm"  if -e "$cfg{'htmldir'}index.htm";
@@ -768,10 +768,10 @@ sub writegraphics {
             debug('base',"create $dotrrd");
             # create the rrd if it doesn't exist
             # don't fail if interval is not set
-            my $interval = $$cfg{interval} || 5;
+            my $interval = $$cfg{interval};
             my $minhb = int($$cfg{interval} * 60)*2;
             $minhb = 600 if ($minhb <600); 
-            my $rows = $$rcfg{'rrdrowcount'}{$router} || ( 4000 / $interval);
+            my $rows = $$rcfg{'rrdrowcount'}{$router} || int( 4000 / $interval);
             my @args = ($dotrrd, '-b', $time-10, '-s', int($interval * 60),
                          "DS:ds0:$up_abs:$minhb:0:$absi",
                          "DS:ds1:$up_abs:$minhb:0:$abso",
@@ -937,7 +937,7 @@ sub writegraphics {
               $sign*$maxvi, $sign*$maxvo, $maxx, $maxy, ,$xscale, $yscale, $growright, $step, $bits, $ytics, $yticsf, $timestrfmt, $timestrpos);
         @mxvls = ("d");
         push (@metas, "$$cfg{'imagedir'}$$rcfg{'directory'}{$router}${router}-day.${main::GRAPHFMT}",
-              $$cfg{'interval'} ? $$cfg{'interval'} : 5);
+              $$cfg{'interval'});
        }
   
 
@@ -1315,7 +1315,7 @@ sub writehtml {
     # print HTML '<?xml version="1.0" encoding="' . &$LOC('iso-8859-1') . '"?>' . "\n";
     print HTML '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/dtd/xhtml11.dtd">' . "\n";
     print HTML "<html>\n";
-    my $interval =$$cfg{'interval'} ? $$cfg{'interval'} : 5;
+    my $interval =$$cfg{'interval'};
     my $expiration = &expistr($interval);
     my $refresh =  $$cfg{'refresh'} ? $$cfg{'refresh'} : 300;
     my $namestring = &$LOC("the device");  
