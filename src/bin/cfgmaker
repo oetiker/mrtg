@@ -891,11 +891,9 @@ sub IsCounterBroken ($$$) {
              my $error = $SNMP_Session::errmsg;
              $SNMP_Session::errmsg = undef;
              $error =~ s/\n/\n###     /g;
-             $SNMP_Session::suppress_warnings = $old_state;
              return $error;
          }
     }
-    $SNMP_Session::suppress_warnings = $old_state;
     return 0;
 } # end IsCounterBroken
 
@@ -1443,13 +1441,13 @@ sub oid_pick ($$$;@){
     local $SNMP_Session::suppress_warnings = 3;
     foreach my $oid (@oids){
         local $SNMP_Session::errmsg = undef;
-        my $counter = snmpget($router_connect,$v3opt,$oid);
+        my $counter = snmpget($router,$v3opt,$oid);
         if (not defined $SNMP_Session::errmsg and defined $counter) {
-            debug('base',"oid_picker - found $oid to work for $router_connect");
+            debug('base',"oid_pick - found $oid to work for $router");
 	    return $oid;
         }	    
     }
-    debug('base',"oid_picker - none of ".(join ",",@oids)." seem to work for $router_connect");
+    debug('base',"oid_pick - none of ".(join ",",@oids)." seem to work for $router");
     return undef;
 }
 
