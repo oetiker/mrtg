@@ -1,4 +1,4 @@
-#! /usr/bin/perl5~
+#! /usr/bin/perl
 # -*- mode: Perl -*-
 ##################################################################
 # MRTG 2.14.7  -- Config file creator
@@ -862,9 +862,8 @@ sub IsCounterBroken ($$$) {
     my $router_ref = shift;
     my $v3opt = shift;
     my $router = $$router_ref{routerkey};
-    my $old_state = $SNMP_Session::suppress_warnings;
     $$router_ref{snmpopt_current} = $$router_ref{'snmp-options'};
-    $SNMP_Session::suppress_warnings = 3;
+    local $SNMP_Session::suppress_warnings = 3;
 
     my $ipv4only = $$router_ref{ipv4only};
     my $snmphost = v4onlyifnecessary($router, $ipv4only);
@@ -881,7 +880,6 @@ sub IsCounterBroken ($$$) {
             $$router_ref{snmpopt_current} =~ s/:+[23]$//;
             debug('base',"check for HighspeedCounters failed ... Dropping back to V1");
         } else {
-           $SNMP_Session::suppress_warnings = $old_state;
            return 0;
         }
     }
@@ -1437,6 +1435,24 @@ sub html_escape ($) {
     $s =~ s/[\n\r]+([^\n\r])/<BR>\n $1/g;
     return $s;
 } # end html_escape
+
+sub oid_pick ($$$;@){
+    my $router = shift;
+    my $v3opt = shift;
+    my @oids = @_;
+    local $SNMP_Session::suppress_warnings = 3;
+    foreach my $oid (@oids){
+        local $SNMP_Session::errmsg = undef;
+        my $counter = snmpget($router_connect,$v3opt,$oid);
+        if (not defined $SNMP_Session::errmsg and defined $counter) {
+            debug('base',"oid_picker - found $oid to work for $router_connect");
+	    return $oid;
+        }	    
+    }
+    debug('base',"oid_picker - none of ".(join ",",@oids)." seem to work for $router_connect");
+    return undef;
+}
+
 
 sub parsev3 ($) {
     my $opt = shift;
@@ -2512,6 +2528,12 @@ where the following substitutions has been done:  the chars "<", ">" and
 "&" are replaced by "&lt;", "&gt;" and "&amp;" and that newlines embedded
 in the string are prepended with "<BR>" and appended with a space character
 (newlines at the end of the string are not touched).
+
+=item B<oid_pick($router_connect,$v3opt,"oid1","oid2"...)>
+
+This function will try to poll each of the oids specified until
+it is successful or has run out of oids. It will return the name of the
+first oid that worked or undef if it is not successful
 
 =back
 
