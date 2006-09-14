@@ -1791,13 +1791,12 @@ sub lockit {
     }
 }
 
-sub threshmail ($$){
+sub threshmail ($$$$){
     my $server = shift; 
+    my $from = shift;
+    my $to = shift;
     my $message = shift;
-    my $to = 'postmaster';
-    my $from = 'mrtg-server';
-    $message =~ /^To:\.+?([^\s<]+@[^>\s]+)/ && do {$to = $1};
-    $message =~ /^From:\.+?([^\s<]+@[^>\s]+)/ && do {$from = $1};
+    debug('base',"sending threshmail from $from to $to");
     my $smtp = Net::SMTP->new([split /\s*,\s*/, $server],Timeout=>5) or
 	do { warn "$NOW: ERROR: could not send thresholdmail to $to"; return };
     $smtp->mail($from);
@@ -1847,12 +1846,12 @@ sub threshcheck {
                 # 2 decimals in %
                     $value = int($value / $$rcfg{"maxbytes".($dir eq 'i' ? 1 : 2)}{$router} * 10000.0) / 100; # the new code
             }
-	    my $msghead = "From: $cfg->{theshmailsender}\nTo: $rcfg->{threshmailaddress}{$router}";
+	    my $msghead = "From: $cfg->{threshmailsender}\nTo: $rcfg->{threshmailaddress}{$router}";
 	    my $msgbody = <<MESSAGE;
-  Address: $router
+   Target: $router
 Direction: $dir
     Bound: $bound
-Threshold: $$rcfg{'thresh'.$bound.$dir}{$router};
+Threshold: $rcfg->{'thresh'.$bound.$dir}{$router}
   Current: $value
 MESSAGE
 	    $msgbody .= "\n$$rcfg{'threshdesc'}{$router}\n" if $$rcfg{'threshdesc'}{$router};
@@ -1863,7 +1862,7 @@ MESSAGE
 		# threshold was broken...
 		  my $message = <<MESSAGE;
 $msghead
-Subject: [mrtg thrs] BROKEN $router $bound $dir ( $$rcfg{'thresh'.$bound.$dir}{$router} vs $threshval{$dir})
+Subject: [MRTG-TH] BROKEN $router $bound $dir ( $$rcfg{'thresh'.$bound.$dir}{$router} vs $threshval{$dir})
 
 Threshold BROKEN
 ----------------
@@ -1879,15 +1878,24 @@ MESSAGE
 			open THRESHTOUCH, ">".$threshfile.".".$bound.uc($dir)
 			    or warn "$NOW: WARNING: Creating $threshfile.".$bound.uc($dir).": $!\n";
 			close THRESHTOUCH;
-                        debug('base',"run threshprog$dir: ".(join ",",@exec));
-                  	system @exec if defined $$rcfg{'threshprog'.$dir}{$router};
-			threshmail $cfg->{threshmailserver},$message if $rcfg->{threshmailaddress}{$router}
+			if (defined $$rcfg{'threshprog'.$dir}{$router}){
+                             debug('base',"run threshprog$dir: ".(join ",",@exec));
+                     	     system @exec;
+			}
+			threshmail $cfg->{threshmailserver},$cfg->{threshmailsender},$rcfg->{threshmailaddress}{$router},$message
+			   if $rcfg->{threshmailaddress}{$router}
 
+		    } else {
+			debug('base',"NOT acting on BROKEN threshold since $threshfile.$bound$dir exists");
 		    }
 		  } else {
 		     # no threshold dir so run on every 'break'
-        	     threshmail $cfg->{thresmailserver},$message if $rcfg->{threshmailaddress}{$router};
-		     system @exec if defined $$rcfg{'threshprog'.$dir}{$router};
+		     if (defined $$rcfg{'threshprog'.$dir}{$router}){
+                             debug('base',"run threshprog$dir: ".(join ",",@exec));
+                     	     system @exec;
+  		     }
+        	     threshmail $cfg->{thresmailserver},$cfg->{threshmailsender},$rcfg->{threshmailaddress}{$router},$message
+                           if $rcfg->{threshmailaddress}{$router};
 		  }
             } else {
   		  # no threshold broken ...
@@ -1895,7 +1903,7 @@ MESSAGE
 			  $$rcfg{'thresh'.$bound.$dir}{$router}, $threshval{$dir});
 		  my $message = <<MESSAGE;
 $msghead
-Subject: [mrtg thrs] UN-BROKEN $router $bound $dir ( $$rcfg{'thresh'.$bound.$dir}{$router} vs $threshval{$dir})
+Subject: [MRTG-TH] UN-BROKEN $router $bound $dir ( $$rcfg{'thresh'.$bound.$dir}{$router} vs $threshval{$dir})
 
 Threshold UN-BROKEN
 -------------------
@@ -1906,8 +1914,12 @@ MESSAGE
 		  if ( defined $threshfile ) {
 		    if ( -e $threshfile.".".$bound.uc($dir) ){
 			unlink "$threshfile.".$bound.uc($dir);
-			system  @exec if defined $$rcfg{'threshprogok'.$dir}{$router};
-			threshmail $cfg->{threshmailserver},$message if $rcfg->{threshmailaddress}{$router};
+		        if (defined $$rcfg{'threshprog'.$dir}{$router}){
+                             debug('base',"run threshprog$dir: ".(join ",",@exec));
+                     	     system @exec;
+    		        }
+			threshmail $cfg->{threshmailserver},$cfg->{threshmailsender},$rcfg->{threshmailaddress}{$router},$message
+                            if $rcfg->{threshmailaddress}{$router};
 		    }
 		  }
                 

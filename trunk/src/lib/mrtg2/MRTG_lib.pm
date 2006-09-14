@@ -773,10 +773,18 @@ sub cfgcheck ($$$$;$) {
         die "ERROR: File $cfg->{ conversioncode } conversion code evaluation failed\n$@\n"
             unless eval $code;
     }
+    my $thresh_error;
 
     foreach $rou (@$routers) {
         # and now for the testing
-
+	if (defined $rcfg->{threshmailaddress}{$rou}){
+	    if (not defined  $cfg->{threshmailserver} and not $thresh_error){
+		warn (qq{ERROR: ThreshMailAddress[$rou]: specified without "ThreshMailServer:"});
+		$error = "yes";
+		$thresh_error = "yes";
+            }
+	    # the dependency between sender and server is taken care of already
+	}	
 	if (! defined $rcfg->{snmpoptions}{$rou}) {
 		$rcfg->{snmpoptions}{$rou} = {%{$cfg->{snmpoptions}}}
 		  if defined $cfg->{snmpoptions};
