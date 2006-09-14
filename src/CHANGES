@@ -13,6 +13,12 @@ From: Tobi
 * added new tool mrtg-traffic-sum to build traffic stats based on the
   content of your mrtg log (not rrd) files.
 
+* mrtg running with rrdtool can now do sub-minute resolution if the interval
+  is specified like that: 0:30 ... note that you can not change the
+  resolution of an existing rrd file. So this will only have the desired
+  effect on new rrds. Also note that the graphing frontend may need changes too to be
+  able to deal with the new interval type. Internally interval is now a float!
+ 
 Changes 2.14.7, 2006-09-06
 --------------------------
 From: Tobi
