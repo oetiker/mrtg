@@ -755,7 +755,7 @@ sub cfgcheck ($$$$;$) {
     }
 
     # default interval is 5 minutes
-    if ($cfg->{interval} =~ /(\d+)(?::(\d+))/){
+    if ($cfg->{interval} and $cfg->{interval} =~ /(\d+)(?::(\d+))/){
 	$cfg->{interval} = $1;
 	$cfg->{interval} += $2/60.0 if $2;
     } else {
