@@ -2,6 +2,8 @@ From: Tobi
 * new function thresholdmail lets you send an email when a threshold
   is reached. This feature talks directly to the mailserver and does
   not access any external programs.
+* new template writers helper function in cfgmaker - oid_picker. It tests if a
+  device is willing to supply information regarding a particular oid
 
 Changes 2.14.7, 2006-09-06
 --------------------------
