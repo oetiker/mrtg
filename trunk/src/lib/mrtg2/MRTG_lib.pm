@@ -99,7 +99,7 @@ $VERSION = 2.100016;
        [sub{((lc($_[0])) eq 'yes' or (lc($_[0])) eq 'no')}, sub{"$_[0] must be yes or no"}],
 
        'interval' => 
-       [sub{/(\d+)(?::(\d+))/ ; 
+       [sub{/(\d+)(?::(\d+))?/ ; 
             my $int = $1*60; $int += $2 if $2;
             $int >= 1 and $int <= 60*60}, sub{"$_[0] should be at least 1 Second (0:01) and no more than 60 Minutes (60)"}], 
 
@@ -755,7 +755,7 @@ sub cfgcheck ($$$$;$) {
     }
 
     # default interval is 5 minutes
-    if ($cfg->{interval} and $cfg->{interval} =~ /(\d+)(?::(\d+))/){
+    if ($cfg->{interval} and $cfg->{interval} =~ /(\d+)(?::(\d+))?/){
 	$cfg->{interval} = $1;
 	$cfg->{interval} += $2/60.0 if $2;
     } else {
