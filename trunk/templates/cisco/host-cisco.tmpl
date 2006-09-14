@@ -7,7 +7,7 @@ $head_lines .= <<ECHO;
 ECHO
 
 # 
-my $cpu_oid = oid_pick("1.3.6.1.4.1.9.2.1.58.0","1.3.6.1.4.1.9.9.109.1.1.1.1.3.9");
+my $cpu_oid = oid_pick($router_connect,$v3opt,"1.3.6.1.4.1.9.2.1.58.0","1.3.6.1.4.1.9.9.109.1.1.1.1.3.9");
 if ($cpu_oid){
   my $target_name = $router_name . ".cpu";
 
@@ -33,7 +33,7 @@ PageTop[$target_name]: <h1>$sysname CPU use</h1>
 ECHO
 }
 
-my $mem_oid = oid_pick("1.3.6.1.4.1.9.2.1.8.0","1.3.6.1.4.1.9.9.48.1.1.1.6.1");
+my $mem_oid = oid_pick($router_connect,$v3opt,"1.3.6.1.4.1.9.2.1.8.0","1.3.6.1.4.1.9.9.48.1.1.1.6.1");
 if ($mem_oid) {
   my $target_name = $router_name . ".mem";
 
