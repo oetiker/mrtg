@@ -11,8 +11,8 @@ You can download MRTG from several places:
 Windows, you will be happier with the *.zip files.</p>
 
 <UL>
- <LI><A HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/pub/?M=D">Stable Release</A></LI>
- <LI><A HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/pub/beta/?M=D">Development SnapShots</A></LI>
+ <LI><A HREF="pub/?M=D">Stable Release</A></LI>
+ <LI><A HREF="pub/beta/?M=D">Development SnapShots</A></LI>
 </UL>
 
 <p>You might want to read the <a href="doc/">documentation</a> for inspiration on

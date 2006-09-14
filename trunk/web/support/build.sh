@@ -1,6 +1,6 @@
 #!/bin/sh
 sect=doc
-src=/home/oetiker/data/svn-checkout/mrtg/trunk/src/
+src=/home/oetiker/checkouts/mrtg/trunk/src/
 . ../bin/pod2wml.sh
 
 pod2descr() {
