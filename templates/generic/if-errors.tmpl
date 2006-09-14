@@ -22,16 +22,11 @@ LegendO$2 &nbsp;Out:
 Options$2 perminute
 LEGEND
   $target_lines = $default_target_lines."\n";
-  local $SNMP_Session::suppress_warnings = 3;
-  local $SNMP_Session::errmsg = undef;
-  my ($counter)=snmpget($router_connect,$v3opt,"ifInErrors.$if_index");
-  $target_lines =~ s/<h1>/<h1>Traffic on /;
-  $el =~ s/<h1>/<h1>Errors on /;
-  if (defined $SNMP_Session::errmsg) {
-	debug('base',"no if*Errors counter on $router_name interface $if_index / $if_snmp_name");
-  } else {
+  if (oid_pick($router_connect,$v3opt,"ifInErrors.$if_index"){
 	debug('base',"snmpget $router_connect for ifInErrors.$if_index -> $counter");  
         $target_lines .= $el;
+  } else {
+	debug('base',"no if*Errors counter on $router_name interface $if_index / $if_snmp_name");
   }
   $target_lines =~ s{<tr>\s+<td>(.+?)</td>\s+<td>(.+?)</td>\s*</tr>}{<tr><td>$1</td>\t<td>$2</td></tr>}g;
 } else {
