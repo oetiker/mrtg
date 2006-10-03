@@ -1792,7 +1792,7 @@ sub lockit {
 }
 
 sub threshmail ($$$$){
-    my $server = shift; 
+    my $server = shift;
     my $from = shift;
     my $to = shift;
     my $message = shift;
@@ -1894,7 +1894,7 @@ MESSAGE
                              debug('base',"run threshprog$dir: ".(join ",",@exec));
                      	     system @exec;
   		     }
-        	     threshmail $cfg->{thresmailserver},$cfg->{threshmailsender},$rcfg->{threshmailaddress}{$router},$message
+        	     threshmail $cfg->{threshmailserver},$cfg->{threshmailsender},$rcfg->{threshmailaddress}{$router},$message
                            if $rcfg->{threshmailaddress}{$router};
 		  }
             } else {
