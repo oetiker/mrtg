@@ -51,7 +51,7 @@ while (<STATS>) {
 			$found++;
 		}
 	} else {
-		if ($line =~ /^\s+$interface:\s*(\d+)\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+(\d+)\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+$/) {
+		if ($line =~ /^\s*$interface:\s*(\d+)\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+(\d+)\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+$/) {
 			$in = $1;
 			$out = $2;
 			$found = 1;
