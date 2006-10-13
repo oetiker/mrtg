@@ -6,9 +6,11 @@
 #if($if_ok) { #we are only interested in 'running' interfaces
     
  my $el = $default_target_lines;
- $el =~ s/^(Target\S+:\s+)([^ :]{2,})/${1}ifInErrors${2}&ifOutErrors${2}/m; # Error Target
+ $el =~ s/^(Target\S+:\s+).+/${1}ifInErrors$if_ref&ifOutErrors$if_ref:$router_connect/m; # Error Target
  $el =~ s/^([^\s\]]+)/${1}.error/gm; # Filename for error log and graphs
- $el =~ s/Traffic/Error/g;
+ $el =~ s|</h1>| - Errors</h1>|i;
+ $el =~ s|^(Title\[.+)|$1 - Errors|mi;
+ $el =~ s/Traffic/Error/;
  $el =~ s/^(MaxBytes)(\S+)\s+\d+/$1$2 10000/m;  # more than 10'000 errors a second are BIG trouble anyway
  $el .= <<LEGEND;
 YLegend$2 Errors per Minute
@@ -23,7 +25,7 @@ Options$2 perminute
 LEGEND
 
   $target_lines = $default_target_lines."\n";
-  if (oid_pick($router_connect,$v3opt,"ifInErrors.$if_index")){
+  if (oid_pick($router_connect,$v3opt,"ifInErrors.$if_index") and oid_pick($router_connect,$v3opt,"ifOutErrors.$if_index")){
         $target_lines .= $el;
   }
   $target_lines =~ s{<tr>\s+<td>(.+?)</td>\s+<td>(.+?)</td>\s*</tr>}{<tr><td>$1</td>\t<td>$2</td></tr>}g;
