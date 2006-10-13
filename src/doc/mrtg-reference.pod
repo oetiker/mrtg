@@ -4,10 +4,10 @@ mrtg-reference - MRTG 2.15.0 configuration reference
 
 =head1 OVERVIEW
 
-The runtime behaviour of MRTG is governed by a configuration file. Run-of-
-ther-mill configuration files can be generated with B<cfgmaker>. (Check
-L<cfgmaker>). But for more elaborate configurations some hand-tuning is
-required.
+The runtime behaviour of MRTG is governed by a configuration file.
+Run-of-the-mill configuration files can be generated with B<cfgmaker>.
+(Check L<cfgmaker>). But for more elaborate configurations some hand-tuning
+is required.
 
 This document describes all the configuration options understood by
 the mrtg software.
@@ -1946,6 +1946,7 @@ Enable debug options. The argument of the debug option is a comma separated list
  time - some timing info
  log  - logging of data via rateup or rrdtool
  eval - print eval strings before evaluting them
+ prof - add hires timing info the rrd calls
 
 Example:
 
