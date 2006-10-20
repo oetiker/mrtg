@@ -407,6 +407,6 @@ David S. Divins E<lt>ddivins@moon.jic.comE<gt>,
 Steve Pierce E<lt>MRTG@HDL.comE<gt>,
 Artyom Adjemov E<lt>one.bofh@gmail.comE<gt>,
 Ilja Ivanov E<lt>ivanov@bseu.byE<gt>
-Karel Fajkus E<lt>karel@fajkus.czE<gt>
+Karel Fajkus E<lt>http://fajkus.cz/E<gt>
 
 
