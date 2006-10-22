@@ -2,14 +2,11 @@
 case $1 in
 *.html)
    tidy -latin1 -wrap 0 -q -asxhtml $1  >$1.fixed  2>$1.report
-#   cat $1  >$1.fixed  
-#  touch $1.report
+   TIDY_RET=$?
    perl -i -0777 -p -e 's/^\s*//;s{="mailto:(oetiker|tobi|tobias)@(oetiker.ch|ee.ethz.ch)"}{="http://tobi.oetiker.ch/"}g;s{="mailto:(\S*?)\@(\S*?)"}{="mailto:$1@..delete..this..$2"}g' $1.fixed
    # yes, beleive it or not IE chockes on propper xhtml pages ... sigh
    perl -i -0777 -p -e 's/^\s*<\?xml.+?\?>\s*//;'  $1.fixed
-
-#   perl -i -0777 -p -e 's{</head>}{<!--[if lt IE 7]><script src="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/inc/IE7/ie7-standard-p.js" type="text/javascript"></script><![endif]-->\n</head>}' $1.fixed 
-   if [ $? != 0 ]; then
+   if [ $TIDY_RET != 0 ]; then
         echo Parsing: $1
         egrep -v "^(HTML Tidy|$1:|To learn|Please send|HTML and CSS|Lobby your)" $1.report
         rm $1.report

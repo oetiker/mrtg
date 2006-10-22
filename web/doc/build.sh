@@ -15,7 +15,7 @@ pod2descr() {
 rm -f navbar.inc
 rm -f index.inc
 
-for pod in  mrtg.pod mrtg-unix-guide.pod mrtg-nt-guide.pod mrtg-nw-guide.pod mrtg-reference.pod cfgmaker.pod indexmaker.pod mrtg-contrib.pod mrtg-faq.pod mrtg-ipv6.pod mrtg-logfile.pod mrtg-mibhelp.pod mrtg-rrd.pod mrtg-webserver.pod ; do
+for pod in  mrtg.pod mrtg-unix-guide.pod mrtg-nt-guide.pod mrtg-nw-guide.pod mrtg-reference.pod cfgmaker.pod indexmaker.pod mrtg-contrib.pod mrtg-faq.pod mrtg-ipv6.pod mrtg-logfile.pod mrtg-mibhelp.pod mrtg-rrd.pod mrtg-webserver.pod mrtg-traffic-sum.pod; do
  base=`echo $pod |sed 's,.pod,,'` 
  echo $base
  cat  $src/doc/$pod > $base.pod
