@@ -85,7 +85,7 @@ sub main {
     }
     # Check for SNMP V3
     #
-    	if (lc($opt{enablesnmpv3}) eq "yes") {
+    	if (exists($opt{username}) or lc($opt{enablesnmpv3}) eq "yes" ) {
 	       if  (eval {local $SIG{__DIE__};require Net_SNMP_util;})   {
 	            import Net_SNMP_util;
 	            debug('base', "SNMP V3 libraries found, SNMP V3 enabled.");
@@ -1198,7 +1198,7 @@ sub options ($$) {
         'output=s',
         'global=s@',
         'enable-ipv6',
-        'enable-snmpv3',
+        'enablesnmpv3',
         'use-16bit',
 	'zero-speed=s',
         '<>', $addrouter_ornf) or pod2usage(2);
