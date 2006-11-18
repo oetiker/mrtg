@@ -1897,7 +1897,7 @@ sub debug ($$) {
     my $tag = shift;
     my $msg = shift;
     return unless grep {$_ eq $tag} @main::DEBUG;
-    warn "--",$tag,": ",$msg,"\n";
+    warn "--".$tag.": ".$msg."\n";
     return;
 }
 
