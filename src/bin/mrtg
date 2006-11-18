@@ -30,6 +30,8 @@ my @STARTARGS=($0,@ARGV);
 # time - some timing info
 # log  - logging of data via rateup or rrdtool
 # eval - trace eval experssions
+# prof - add timeing info some interesting bits of code
+
 $main::GRAPHFMT="png";
 # There older perls tend to behave peculiar with
 # large integers ...
@@ -154,7 +156,6 @@ exit(0);
 
 sub main {
 
-    debug 'time', "prog start ".localtime(time);
     
     # read in the config file
     my @routers;
@@ -171,6 +172,15 @@ sub main {
 	        $SNMP_util::Debug = 1 if grep /^snpo2$/, @main::DEBUG;
 	}
     }
+    if (grep /^prof$/, @main::DEBUG){
+	require Time::HiRes;
+        eval "sub gettimeofday() {return Time::HiRes::time()}";
+	# note this will crash if the module is missing
+	# so only use the --debug=prof if you have Time::HiRes installed
+    } else {
+	eval "sub gettimeofday() {return time()}";
+    }
+    debug 'time', "prog start ".localtime(time);
 
     my $uid = $<;
     my $gid = $(;
@@ -787,13 +797,16 @@ sub writegraphics {
             my $e = RRDs::error();
             die "$NOW: ERROR: Cannot create logfile: $e\n" if $e;
             debug('log', "Called: RRDs::create(@args)");
-        } else {
+        } elsif ( -M $dotrrd > 0 ) {
             # update the minimum/maximum according to maxbytes/absmax
             # and (re)set the data-source-type to reflect cfg changes
             # cost: 1 read/write cycle, but update will reuse the buffered data
+            # in daemon mode this will only happen in the first round
             my @args = ($dotrrd, '-a', "ds0:$absi", '-a', "ds1:$abso",
                        '-d', "ds0:$up_abs", '-d', "ds1:$up_abs");
+            my $start = gettimeofday();
             RRDs::tune(@args);
+	    debug('prof',sprintf("RRDs::tune $dotrrd - %.3fs",gettimeofday()-$start));
             my $e = RRDs::error();
             warn "$NOW: ERROR: Cannot tune logfile: $e\n" if $e;
             debug('log', "Called: RRDs::tune(@args)");
@@ -802,26 +815,43 @@ sub writegraphics {
         $inlast  = 'U' unless defined $inlast  and $inlast  =~ /\S/ and $inlast  ne '##UNDEF##';
         $outlast = 'U' unless defined $outlast and $outlast =~ /\S/ and $outlast ne '##UNDEF##';
         debug('log', "Calling: RRDs::update($dotrrd, '$time:$inlast:$outlast')");
-        RRDs::update("$dotrrd", "$time:$inlast:$outlast");
+        my $start = gettimeofday();
+	my $rrddata;
+	if ( $RRDs::VERSION > 1.2 ){
+	    $rrddata=RRDs::updatev("$dotrrd", "$time:$inlast:$outlast");
+        } else {
+            RRDs::update("$dotrrd", "$time:$inlast:$outlast");
+        }
+        debug('prof',sprintf("RRDs::update $dotrrd - %.3fs",gettimeofday()-$start));
         my $e = RRDs::error(); 
         warn "$NOW: ERROR: Cannot update $dotrrd with '$time:$inlast:$outlast' $e\n" if ($e);
 
-        # get the rrdtool-processed values back from rrdtool
-        # for the threshold checks (we cannot use the fetched data)
-        my $info =  RRDs::info($dotrrd);
-        my $lasttime =  $info->{last_update} - $info->{last_update} % $info->{step};        
-        debug('log', "Called: RRDs::info($dotrrd)");
-        $e = RRDs::error(); 
-        warn "$NOW: ERROR: Cannot 'info' $dotrrd: $e\n" if ($e);
-        my $fetch = (RRDs::fetch($dotrrd,'AVERAGE','-s',$lasttime-1,'-e',$lasttime))[3];
-        $e = RRDs::error(); 
-        warn "$NOW: ERROR: Cannot 'fetch' $dotrrd: $e\n" if ($e);
-        debug('log', "Called: RRDs::fetch($dotrrd,'AVERAGE','-s',$lasttime,'-e',$lasttime)");        
-        my $in = $fetch->[0][0] ?  $fetch->[0][0] : "NaN" ;
-        my $out = $fetch->[0][1] ? $fetch->[0][1] : "NaN" ;
-        debug('log', "  got: $in/$out");
-        $cuin{'d'}{$router} = $fetch->[0][0];
-        $cuout{'d'}{$router} = $fetch->[0][1];
+	if ( $RRDs::VERSION < 1.2 ){
+             # get the rrdtool-processed values back from rrdtool
+             # for the threshold checks (we cannot use the fetched data)
+	     $start = gettimeofday();
+             my $info =  RRDs::info($dotrrd);
+	     debug('prof',sprintf("RRDs::info $dotrrd - %.3fs",gettimeofday()-$start));
+	     my $lasttime =  $info->{last_update} - $info->{last_update} % $info->{step};        
+             debug('log', "Called: RRDs::info($dotrrd)");
+             $e = RRDs::error(); 
+             warn "$NOW: ERROR: Cannot 'info' $dotrrd: $e\n" if ($e);
+             $start = gettimeofday();
+             my $fetch = (RRDs::fetch($dotrrd,'AVERAGE','-s',$lasttime-1,'-e',$lasttime))[3];
+             debug('prof',sprintf("RRDs::fetch $dotrrd - %.3fs",gettimeofday()-$start));
+             $e = RRDs::error(); 
+             warn "$NOW: ERROR: Cannot 'fetch' $dotrrd: $e\n" if ($e);
+             debug('log', "Called: RRDs::fetch($dotrrd,'AVERAGE','-s',$lasttime,'-e',$lasttime)");        
+             my $in = $fetch->[0][0] ?  $fetch->[0][0] : "NaN" ;
+             my $out = $fetch->[0][1] ? $fetch->[0][1] : "NaN" ;
+             debug('log', "  got: $in/$out");
+             $cuin{'d'}{$router} = $fetch->[0][0];
+             $cuout{'d'}{$router} = $fetch->[0][1];
+        } else {
+             my $utime = $time - $time % $cfg->{interval};
+	     $cuin{'d'}{$router} = $rrddata->{"[$utime]RRA[AVERAGE][1]DS[ds0]"} || 'NaN';
+	     $cuin{'d'}{$router} = $rrddata->{"[$utime]RRA[AVERAGE][1]DS[ds1]"} || 'NaN';
+        }
         # the html pages and the graphics are created at "call time" so that's it!
         # (the returned hashes are empty, it's just to minimize the changes to mrtg)
         if ($$rcfg{'options'}{'dorelpercent'}{$router}) {  

@@ -1,6 +1,13 @@
 Changes 2.15.0, 2006-09-14
 --------------------------
 From: Tobi
+
+* When doing threshold checking with rrdtool, there was a very expensive
+  'getting the data back with rrdinfo and rrdfetch' cycle after each rrdupdate 
+  with rrdtool 1.2 and the updatev function this is not necessary anymore
+  the new code speeds up rrd updating by a factor of 3 to 10 depending on your
+  platform.
+
 * new function thresholdmail lets you send an email when a threshold
   is broken. This feature talks directly to the mailserver and does
   not require any external programs.
@@ -18,6 +25,8 @@ From: Tobi
   resolution of an existing rrd file. So this will only have the desired
   effect on new rrds. Also note that the graphing frontend may need changes too to be
   able to deal with the new interval type. Internally interval is now a float!
+
+* new debug option 'prof' to see how long rrdtool spends on its writes ...
  
 Changes 2.14.7, 2006-09-06
 --------------------------
