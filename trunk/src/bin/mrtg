@@ -846,7 +846,6 @@ sub writegraphics {
              $cuout{d}{$router} = $fetch->[0][1];
         } else {
              my $utime = $time - ($time % int($cfg->{interval}*60));
-	     warn "$utime\n";
 	     $cuin{d}{$router} = $rrddata->{"[$utime]RRA[AVERAGE][1]DS[ds0]"};
 	     $cuout{d}{$router} = $rrddata->{"[$utime]RRA[AVERAGE][1]DS[ds1]"};
         }
