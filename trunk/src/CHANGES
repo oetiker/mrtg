@@ -8,6 +8,9 @@ From: Tobi
   the new code speeds up rrd updating by a factor of 3 to 10 depending on your
   platform.
 
+* Threshold Un-Borken Messages will only be generated when the value is 10%
+  away from the threshold again. Configurable via ThreshHyst
+
 * new function thresholdmail lets you send an email when a threshold
   is broken. This feature talks directly to the mailserver and does
   not require any external programs.
@@ -27,7 +30,10 @@ From: Tobi
   able to deal with the new interval type. Internally interval is now a float!
 
 * new debug option 'prof' to see how long rrdtool spends on its writes ...
- 
+
+From: Daniel J McDonald dan.mcdonald austinenergy.com
+* fixed snmpv3 support in cfgmaker
+
 Changes 2.14.7, 2006-09-06
 --------------------------
 From: Tobi

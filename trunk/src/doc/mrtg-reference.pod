@@ -1725,6 +1725,17 @@ Example:
 
  ThreshDir: /var/mrtg/thresh
 
+=head2 ThreshHyst (GLOBAL)
+
+If a threshold is broken, and you have a threshdir defined, then mrtg will
+send mail once the threshold becomes 'unborken' to avoid situations where
+broken and un-broken messages get sent in close succession, we only send an unbroken message once the curent value is 0.1 (10%) away from the threshold.
+using the ThreshHyst config variable you can customize this value.
+
+Example for 5%:
+
+ ThreshHyst: 0.05
+
 =head2 ThreshMailServer (GLOBAL)
 
 Adderss of an SMTP server which is going to accept mail about Thresholds being broken and unbroken.

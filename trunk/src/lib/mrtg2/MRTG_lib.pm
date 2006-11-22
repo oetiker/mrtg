@@ -316,6 +316,10 @@ $VERSION = 2.100016;
 
        'threshdir' =>
        [sub{$_[0] && (-d $_[0])}, sub{"Threshold directory $_[0] does not exist"}],
+ 
+       'threshhyst' =>
+       [sub{($_[0] =~ /^[0-9]+(?:\.[0-9]+)?$/)},
+        sub{"$_[0] must be a Number xxx.xxx"}],
 
        'threshmailserver' =>
        [sub{$_[0] && gethostbyname($_[0])}, sub{"Unknown mailserver hostname $_[0]"}],
@@ -676,7 +680,8 @@ sub cfgcheck ($$$$;$) {
 	warn ("WARNING: If \"ThreshMailSender\" is defined, then \"ThreshMailServer\" must be defined too.\n");
         $error = "yes";
     }
-
+ 
+    $cfg->{threshhyst} = 0.1 unless $cfg->{threshhyst};
     # build relativ path from htmldir to image dir.
     my @htmldir = split /\Q${MRTG_lib::SL}\E+/, $$cfg{htmldir};
     my @imagedir =  split /\Q${MRTG_lib::SL}\E+/, $$cfg{imagedir};
