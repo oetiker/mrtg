@@ -164,7 +164,7 @@ sub main {
     my %opts; 
     my $EXITCODE = 0;
     
-    GetOptions(\%opts, 'user=s', 'group=s', 'lock-file=s','confcache-file=s','logging=s', 'check', 'fhs', 'daemon',  'pid-file=s','debug=s', 'log-only');
+    GetOptions(\%opts, 'user=s', 'group=s', 'lock-file=s','confcache-file=s','logging=s', 'check', 'fhs', 'daemon',  'pid-file=s','debug=s', 'log-only') or die "Please use valid Options\n";
 
     if (defined $opts{debug}){
         @main::DEBUG = split /\s*,\s*/, $opts{debug};
@@ -793,10 +793,10 @@ sub writegraphics {
                          ( $interval < 30  ? ("RRA:MAX:0.5:".int(30/$interval).":800"):()),
                          "RRA:MAX:0.5:".int(120/$interval).":800",
                          "RRA:MAX:0.5:".int(1440/$interval).":800");
+            debug('log', "RRDs::create(@args)");
             RRDs::create(@args);
             my $e = RRDs::error();
-            die "$NOW: ERROR: Cannot create logfile: $e\n" if $e;
-            debug('log', "Called: RRDs::create(@args)");
+            die "$NOW: ERROR: Cannot create $dotrrd - $e\n" if $e;
         } elsif ( -M $dotrrd > 0 ) {
             # update the minimum/maximum according to maxbytes/absmax
             # and (re)set the data-source-type to reflect cfg changes
@@ -804,23 +804,23 @@ sub writegraphics {
             # in daemon mode this will only happen in the first round
             my @args = ($dotrrd, '-a', "ds0:$absi", '-a', "ds1:$abso",
                        '-d', "ds0:$up_abs", '-d', "ds1:$up_abs");
+            debug('log', "RRDs::tune(@args)");
             my $start = gettimeofday();
             RRDs::tune(@args);
 	    debug('prof',sprintf("RRDs::tune $dotrrd - %.3fs",gettimeofday()-$start));
             my $e = RRDs::error();
             warn "$NOW: ERROR: Cannot tune logfile: $e\n" if $e;
-            debug('log', "Called: RRDs::tune(@args)");
         }
         # update the rrd
         $inlast  = 'U' unless defined $inlast  and $inlast  =~ /\S/ and $inlast  ne '##UNDEF##';
         $outlast = 'U' unless defined $outlast and $outlast =~ /\S/ and $outlast ne '##UNDEF##';
-        debug('log', "Calling: RRDs::update($dotrrd, '$time:$inlast:$outlast')");
+        debug('log', "RRDs::update($dotrrd, '$time:$inlast:$outlast')");
         my $start = gettimeofday();
 	my $rrddata;
-	if ( $RRDs::VERSION > 1.2 ){
-	    $rrddata=RRDs::updatev("$dotrrd", "$time:$inlast:$outlast");
+	if ( $RRDs::VERSION >= 1.2 ){
+	    $rrddata=RRDs::updatev($dotrrd, "$time:$inlast:$outlast");
         } else {
-            RRDs::update("$dotrrd", "$time:$inlast:$outlast");
+            RRDs::update($dotrrd, "$time:$inlast:$outlast");
         }
         debug('prof',sprintf("RRDs::update $dotrrd - %.3fs",gettimeofday()-$start));
         my $e = RRDs::error(); 
@@ -833,7 +833,7 @@ sub writegraphics {
              my $info =  RRDs::info($dotrrd);
 	     debug('prof',sprintf("RRDs::info $dotrrd - %.3fs",gettimeofday()-$start));
 	     my $lasttime =  $info->{last_update} - $info->{last_update} % $info->{step};        
-             debug('log', "Called: RRDs::info($dotrrd)");
+             debug('log', "RRDs::info($dotrrd)");
              $e = RRDs::error(); 
              warn "$NOW: ERROR: Cannot 'info' $dotrrd: $e\n" if ($e);
              $start = gettimeofday();
@@ -841,17 +841,18 @@ sub writegraphics {
              debug('prof',sprintf("RRDs::fetch $dotrrd - %.3fs",gettimeofday()-$start));
              $e = RRDs::error(); 
              warn "$NOW: ERROR: Cannot 'fetch' $dotrrd: $e\n" if ($e);
-             debug('log', "Called: RRDs::fetch($dotrrd,'AVERAGE','-s',$lasttime,'-e',$lasttime)");        
-             my $in = $fetch->[0][0] ?  $fetch->[0][0] : "NaN" ;
-             my $out = $fetch->[0][1] ? $fetch->[0][1] : "NaN" ;
-             debug('log', "  got: $in/$out");
-             $cuin{'d'}{$router} = $fetch->[0][0];
-             $cuout{'d'}{$router} = $fetch->[0][1];
+             debug('log', "RRDs::fetch($dotrrd,'AVERAGE','-s',$lasttime,'-e',$lasttime)");        
+             $cuin{d}{$router} = $fetch->[0][0];
+             $cuout{d}{$router} = $fetch->[0][1];
         } else {
-             my $utime = $time - $time % $cfg->{interval};
-	     $cuin{'d'}{$router} = $rrddata->{"[$utime]RRA[AVERAGE][1]DS[ds0]"} || 'NaN';
-	     $cuin{'d'}{$router} = $rrddata->{"[$utime]RRA[AVERAGE][1]DS[ds1]"} || 'NaN';
+             my $utime = $time - ($time % int($cfg->{interval}*60));
+	     warn "$utime\n";
+	     $cuin{d}{$router} = $rrddata->{"[$utime]RRA[AVERAGE][1]DS[ds0]"};
+	     $cuout{d}{$router} = $rrddata->{"[$utime]RRA[AVERAGE][1]DS[ds1]"};
         }
+        my $in = defined $cuin{d}{$router} ?  $cuin{d}{$router} : "???" ;
+        my $out = defined  $cuout{d}{$router} ? $cuout{d}{$router} : "???" ;
+        debug('log', " got: $in/$out");
         # the html pages and the graphics are created at "call time" so that's it!
         # (the returned hashes are empty, it's just to minimize the changes to mrtg)
         if ($$rcfg{'options'}{'dorelpercent'}{$router}) {  
@@ -1055,7 +1056,7 @@ sub writegraphics {
 
     }
     
-    debug('log', "Called @exec");
+    debug('log', join(" ", @exec));
 
 
     if (open (HTML,"<$$cfg{'htmldir'}$$rcfg{'directory'}{$router}$router.$$rcfg{'extension'}{$router}")) {
@@ -1347,7 +1348,7 @@ sub writehtml {
     print HTML "<html>\n";
     my $interval =$$cfg{'interval'};
     my $expiration = &expistr($interval);
-    my $refresh =  $$cfg{'refresh'} ? $$cfg{'refresh'} : 300;
+    my $refresh =  defined $$cfg{'refresh'} ? $$cfg{'refresh'} : 300;
     my $namestring = &$LOC("the device");  
     print HTML "<!-- Begin Head -->\n";
     print HTML <<"TEXT";    
@@ -1842,11 +1843,7 @@ sub threshcheck {
     # ... fsck'd up but fixed by Juha Laine
     my ($cfg,$rcfg,$cfgfile,$router,$cuin,$cuout) = @_;
     my $threshfile;
-    my %threshval;
-
-    $threshval{i} = $$cuin{'d'}{$router};
-    $threshval{o} = $$cuout{'d'}{$router};
-
+    my %cu = ( i=> $cuin, o=>$cuout );
     # are we going to keep state ?
     if (defined $$cfg{'threshdir'}){
         ensureSL(\$$cfg{'threshdir'});
@@ -1861,45 +1858,59 @@ sub threshcheck {
     }
 
     foreach my $dir (qw(i o)){ # in and out
+        next unless defined $cu{$dir}{d}{$router};
+        my $threshval = sprintf "%.1f", $cu{$dir}{d}{$router};
         foreach my $bound (qw(min max)){
 	    # skip unless a threshold is defined for this "$router"
             next unless defined $$rcfg{'thresh'.$bound.$dir}{$router};
             # we can not deal with unknown data here
-            $threshval{$dir} = 0 if not defined $threshval{$dir} and $$rcfg{'options'}{'unknaszero'}{$router};            
+            $threshval = 0 if not defined $threshval and $$rcfg{'options'}{'unknaszero'}{$router};            
             warn "$NOW: WARNING: can't do threshold checking for target $router($dir) -- No valid current data\n"
-                unless defined $threshval{$dir};
- 	    my $value = $threshval{$dir};
-            next unless defined $value;
+                unless defined $threshval;
             my $boundval = $$rcfg{'thresh'.$bound.$dir}{$router};
             next unless defined $boundval;
+            my $realval = "";
+	    my $realthresh = "";
             if ($boundval =~ s/%$//) { # defined in % of maxbytes
-                # 2 decimals in %
-                    $value = int($value / $$rcfg{"maxbytes".($dir eq 'i' ? 1 : 2)}{$router} * 10000.0) / 100; # the new code
+                # 2 decimals in %   
+		 $realval = "% ($threshval)";
+	         $realthresh = "% (".sprintf("%.1f",($rcfg->{"maxbytes".($dir eq 'i' ? 1 : 2)}{$router} * $boundval / 100)).")";
+                 $threshval = sprintf "%.1f", ($threshval / $$rcfg{"maxbytes".($dir eq 'i' ? 1 : 2)}{$router} * 100); # the new code
             }
 	    my $msghead = "From: $cfg->{threshmailsender}\nTo: $rcfg->{threshmailaddress}{$router}";
+	    my $pagetop = $rcfg->{pagetop}{$router};
+	    $pagetop =~ s|\s*<tr>\s*<td>(.*?)</td>\s*<td>(.*?)</td>\s*</tr>\s*|$1 $2\n|g;
+	    $pagetop =~ s|\s*<.+?>\s*\n?||g;
+
 	    my $msgbody = <<MESSAGE;
+
+$rcfg->{title}{$router}
+
    Target: $router
 Direction: $dir
     Bound: $bound
-Threshold: $rcfg->{'thresh'.$bound.$dir}{$router}
-  Current: $value
+Threshold: $boundval$realthresh
+  Current: $threshval$realval
+
+$pagetop
+
 MESSAGE
 	    $msgbody .= "\n$$rcfg{'threshdesc'}{$router}\n" if $$rcfg{'threshdesc'}{$router};
 	
 
-            if (($bound eq 'min' and $boundval > $value) or
-                ($bound eq 'max' and $boundval < $value)) {
+            if (($bound eq 'min' and $boundval > $threshval) or
+                ($bound eq 'max' and $boundval < $threshval)) {
 		# threshold was broken...
 		  my $message = <<MESSAGE;
 $msghead
-Subject: [MRTG-TH] BROKEN $router $bound $dir ( $$rcfg{'thresh'.$bound.$dir}{$router} vs $threshval{$dir})
+Subject: [MRTG-TH] BROKEN $router $bound $dir ( $boundval$realthresh vs $threshval$realval )
 
 Threshold BROKEN
 ----------------
 $msgbody
 MESSAGE
                   my @exec = ( $$rcfg{'threshprog'.$dir}{$router}, $router,
-			  $$rcfg{'thresh'.$bound.$dir}{$router}, $threshval{$dir},($$rcfg{'threshdesc'}{$router} ||"No Description"), $value);
+			  $$rcfg{'thresh'.$bound.$dir}{$router}, $threshval,($$rcfg{'threshdesc'}{$router} ||"No Description"));
  
  		  # Check if we use the status file or not...
  		  if ( defined $threshfile ) {
@@ -1918,7 +1929,10 @@ MESSAGE
 		    } else {
 			debug('base',"NOT acting on BROKEN threshold since $threshfile.$bound$dir exists");
 		    }
-		  } else {
+		  } elsif ( not defined $cfg->{threshhyst} or 
+	                    ($bound eq 'min' and $boundval - $cfg->{threshhyst}* $boundval < $threshval) or
+                            ($bound eq 'max' and $boundval + $cfg->{threshhyst}* $boundval > $threshval)
+  			  ) {
 		     # no threshold dir so run on every 'break'
 		     if (defined $$rcfg{'threshprog'.$dir}{$router}){
                              debug('base',"run threshprog$dir: ".(join ",",@exec));
@@ -1930,10 +1944,10 @@ MESSAGE
             } else {
   		  # no threshold broken ...
 		  my @exec = ( $$rcfg{'threshprogok'.$dir}{$router}, $router,
-			  $$rcfg{'thresh'.$bound.$dir}{$router}, $threshval{$dir});
+			  $$rcfg{'thresh'.$bound.$dir}{$router}, $threshval);
 		  my $message = <<MESSAGE;
 $msghead
-Subject: [MRTG-TH] UN-BROKEN $router $bound $dir ( $$rcfg{'thresh'.$bound.$dir}{$router} vs $threshval{$dir})
+Subject: [MRTG-TH] UN-BROKEN $router $bound $dir ( $$rcfg{'thresh'.$bound.$dir}{$router} vs $threshval)
 
 Threshold UN-BROKEN
 -------------------
