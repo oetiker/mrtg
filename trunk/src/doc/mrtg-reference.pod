@@ -697,6 +697,19 @@ Example:
  Target[myrouter]: 1.3.6.1.2.1.2.2.1.14%13&1.3.6.1.2.1.2.2.1.14%14:public@myrouter
  Target[myrouter]: ifInErrors%13&ifOutErrors%14:public@myrouter
 
+=item Extended positioning of ifIndex
+
+
+There are OIDs that contain the interface index at some inner position within
+the OID. To use the above mentioned Interface by IP/Description/Name/Type methods 
+in the target definition the keyword 'IndexPOS' can be used to indicate the 
+position of ifIndex. If 'IndexPOS' is not used the ifIndex will be appended at the
+end of the OID.
+
+Example:
+
+ Target[myrouter]: .1.3.6.1.4.1.9.10.117.1.1.4.1.10.IndexPOS.1/1.2.3.4&.1.3.6.1.4.1.9.10.117.1.1.4.1.11.IndexPOS.1/1.2.3.4:public@myrouter
+
 =item Extended Host Name Syntax
 
 In all places where ``community@router'' is accepted, you can add
