@@ -1,5 +1,9 @@
 Changes 2.15.0, 2006-09-14
 --------------------------
+From: Stefan.Schnitter t-systems.com
+* Free positioning of a generated ifIndex in the OID string using 
+  the magic IndexPOS keyword
+  
 From: Tobi
 
 * When doing threshold checking with rrdtool, there was a very expensive

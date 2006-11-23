@@ -2136,7 +2136,7 @@ sub getsnmparg ($$$){
     my $targtemp = $$target{Community}.'@'.$$target{Host}.$$target{SnmpOpt};
     $targtemp = v4onlyifnecessary($targtemp, $$target{ipv4only});
     
-    my @snmpoids = grep !/^(Pseudo|WaLK|GeTNEXT)/, @OID;
+    my @snmpoids = grep !/^(Pseudo|WaLK|GeTNEXT)|IndexPOS/, @OID;
         
     if (defined $$cfg{singlerequest}){
 #LH        local $BER::pretty_print_timeticks = 0;
@@ -2154,6 +2154,8 @@ sub getsnmparg ($$$){
                           debug('snpo',"snmpwalk '$oid' -> ".($newret[-1]||'UNDEF'));next};
         s/^GeTNEXT// && do { my $oid=$_;push @newret, (split /:/, snmpgetnext($targtemp,$$target{snmpoptions},$oid),2)[1]; 
                           debug('snpo',"snmpgetnext '$oid' -> ".($newret[-1]||'UNDEF'));next};
+        /IndexPOS.*\.(\d*)/ && do { my $idx=$1; s/IndexPOS/$idx/; s/\.\d*$//; push @newret, snmpget($targtemp,$$target{snmpoptions},$_); 
+                          debug('snpo', "snmpget of oid '$_' after replacement of IndexPOS"); next};
         push @newret, shift @ret;
     }
     @ret = @newret;

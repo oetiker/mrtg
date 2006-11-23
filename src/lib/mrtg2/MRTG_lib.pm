@@ -1320,7 +1320,7 @@ sub targparser( $$$$$ ) {
 	# will match. Therefore the match must be postprocessed to check that
 	# $ifOID and $ifAlt are not both null.
 	my $ifComplex =
-		'([-a-zA-Z0-9]*(?:\.\d+)*?)' .	# OID possibly starting with a MIB name ($if->{OID})
+		'((?:\.\d+)*?\.?[-a-zA-Z0-9]*(?:\.\d+)*?)' .	# OID possibly starting with a MIB name ($if->{OID})
 		'(' .							# Interface specification alternatives: ($if->{Alt})
 			'\.' .						#  separator
 			$ifSimple .					#  simple alternatives (6 variables)
