@@ -303,24 +303,25 @@ $metaCmdLine =~ s/>/&gt;/g;
     <TITLE>$$opt{title}</TITLE>
     <!-- Command line is easier to read using "View Page Properties" of your browser -->
     <!-- But not all browsers show that information. :-(                             -->
-    <META NAME="Command-Line" CONTENT="$metaCmdLine">
-    <META HTTP-EQUIV="Refresh" CONTENT="$refresh">
-    <META HTTP-EQUIV="Cache-Control" content="no-cache">
-    <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
-    <META HTTP-EQUIV="Expires" CONTENT="$expiration">
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-15" />
+    <META NAME="Command-Line" CONTENT="$metaCmdLine" />
+    <META HTTP-EQUIV="Refresh" CONTENT="$refresh" />
+    <META HTTP-EQUIV="Cache-Control" content="no-cache" />
+    <META HTTP-EQUIV="Pragma" CONTENT="no-cache" />
+    <META HTTP-EQUIV="Expires" CONTENT="$expiration" />
     <LINK HREF="${gifPath}favicon.ico" rel="shortcut icon" />
     $headeradd
 ECHO
-    $index .= <<ECHO if ($$opt{addhead});
-    $$opt{addhead}
-ECHO
+
     $index .= <<ECHO if ($$opt{optlog});
 <style type="text/css">
-<!--
 /* commandline was: $argz */
 /* sorry, no style, just abusing this to place the commandline and pass validation */
--->
 </style>
+ECHO
+
+    $index .= <<ECHO if ($$opt{addhead});
+    $$opt{addhead}
 ECHO
 
     $index .= <<ECHO;
@@ -430,9 +431,9 @@ ECHO
 
     if (not $image) {
            if ($$cfg{logformat} eq 'rrdtool') {
-                my $sep = $$opt{rrdviewer} =~ /\?/ ? '&' : '?'; 
+                my $sep = $$opt{rrdviewer} =~ /\?/ ? '&amp;' : '?'; 
                 $index .= 
-               "<A HREF=\"$$opt{rrdviewer}".$sep."log=$item&cfg=$$cfgfile{$item}\">".
+               "<A HREF=\"$$opt{rrdviewer}".$sep."log=$item&amp;cfg=$$cfgfile{$item}\">".
                        "$$opt{boldon}".
                      "$section$$opt{boldoff}</A>";
             } else {
@@ -463,10 +464,10 @@ ECHO
 		    if ( !($picfirstloop^$$opt{picfirst}) ) {
 		    	# figure show name for rrd viewer
 			    if ($$cfg{logformat} eq 'rrdtool') {
-               my $sep = $$opt{rrdviewer} =~ /\?/ ? '&' : '?'; 
-               $index .= "<A HREF=\"$$opt{rrdviewer}".$sep."log=$item&cfg=$$cfgfile{$item}\">".
+               my $sep = $$opt{rrdviewer} =~ /\?/ ? '&amp;' : '?'; 
+               $index .= "<A HREF=\"$$opt{rrdviewer}".$sep."log=$item&amp;cfg=$$cfgfile{$item}\">".
 		                          "<IMG BORDER=$$opt{imgborder} ALT=\"$item Traffic Graph\" ".
- "SRC=\"$$opt{rrdviewer}".$sep."log=$item&cfg=$$cfgfile{$item}&png=$$opt{show}.".
+ "SRC=\"$$opt{rrdviewer}".$sep."log=$item&amp;cfg=$$cfgfile{$item}&amp;png=$$opt{show}.".
 					  "s&small=1\"></A>"
 			    } else {
 				$index .= "<A HREF=\"".cleanurl($$opt{prefix}.
