@@ -303,13 +303,13 @@ $metaCmdLine =~ s/>/&gt;/g;
     <TITLE>$$opt{title}</TITLE>
     <!-- Command line is easier to read using "View Page Properties" of your browser -->
     <!-- But not all browsers show that information. :-(                             -->
-    <meta http-equiv="content-type" content="text/html; charset=iso-8859-15" />
-    <META NAME="Command-Line" CONTENT="$metaCmdLine" />
-    <META HTTP-EQUIV="Refresh" CONTENT="$refresh" />
-    <META HTTP-EQUIV="Cache-Control" content="no-cache" />
-    <META HTTP-EQUIV="Pragma" CONTENT="no-cache" />
-    <META HTTP-EQUIV="Expires" CONTENT="$expiration" />
-    <LINK HREF="${gifPath}favicon.ico" rel="shortcut icon" />
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-15" >
+    <META NAME="Command-Line" CONTENT="$metaCmdLine" >
+    <META HTTP-EQUIV="Refresh" CONTENT="$refresh" >
+    <META HTTP-EQUIV="Cache-Control" content="no-cache" >
+    <META HTTP-EQUIV="Pragma" CONTENT="no-cache" >
+    <META HTTP-EQUIV="Expires" CONTENT="$expiration" >
+    <LINK HREF="${gifPath}favicon.ico" rel="shortcut icon" >
     $headeradd
 ECHO
 
@@ -468,7 +468,7 @@ ECHO
                $index .= "<A HREF=\"$$opt{rrdviewer}".$sep."log=$item&amp;cfg=$$cfgfile{$item}\">".
 		                          "<IMG BORDER=$$opt{imgborder} ALT=\"$item Traffic Graph\" ".
  "SRC=\"$$opt{rrdviewer}".$sep."log=$item&amp;cfg=$$cfgfile{$item}&amp;png=$$opt{show}.".
-					  "s&small=1\"></A>"
+					  "s&amp;small=1\"></A>"
 			    } else {
 				$index .= "<A HREF=\"".cleanurl($$opt{prefix}.
 					  $$rcfg{directory_web}{$item}).$item.
