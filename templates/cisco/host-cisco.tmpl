@@ -7,12 +7,15 @@ $head_lines .= <<ECHO;
 ECHO
 
 # 
+
 my $cpu_oid = oid_pick($router_connect,$v3opt,"1.3.6.1.4.1.9.2.1.58.0","1.3.6.1.4.1.9.9.109.1.1.1.1.3.9");
 if ($cpu_oid){
   my $target_name = $router_name . ".cpu";
-
+  my $dir = '';
+  $dir = "Directory[$target_name]: $directory_name" if $directory_name;
   $target_lines .= <<ECHO;
 
+$dir
 YLegend[$target_name]: CPU use in %
 ShortLegend[$target_name]: %
 Legend1[$target_name]: CPU use in %
@@ -36,9 +39,11 @@ ECHO
 my $mem_oid = oid_pick($router_connect,$v3opt,"1.3.6.1.4.1.9.2.1.8.0","1.3.6.1.4.1.9.9.48.1.1.1.6.1");
 if ($mem_oid) {
   my $target_name = $router_name . ".mem";
-
+  my $dir = '';
+  $dir = "Directory[$target_name]: $directory_name" if $directory_name;
   $target_lines .= <<ECHO;
 
+$dir
 YLegend[$target_name]: Free Memory  
 ShortLegend[$target_name]: Bytes  
 Legend1[$target_name]: Free Memory  

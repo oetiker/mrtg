@@ -5,9 +5,9 @@
  <nav:but demo           "Demo"		           http://www.stat.ee.ethz.ch/mrtg/  />
  <nav:but doc            "Documentation"           doc/index 	       doc       />
  <nav:but 3party         "3rd Party Docs"          3party                        />
- <nav:but doc_mrtg-forum "Support"                 support/index                      />
- <nav:but trac           "MRTG Trac"               http://oss.oetiker.ch/mrtg-trac/ />
- <nav:but sponsor        "Sponsorship"             sponsor                       />
+ <nav:but doc_mrtg-forum "Mailinglists"            support/index                      />
+ <nav:but trac           "Bug Reports, Wiki"       http://oss.oetiker.ch/mrtg-trac/ />
+ <nav:but sponsor        "Project Sponsors"        sponsor                       />
  <nav:but cast           "Cast" 	           cast/index                         />
 </nav:bar>
 
