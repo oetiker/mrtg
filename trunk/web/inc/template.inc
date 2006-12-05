@@ -66,9 +66,14 @@
 </div>
 <br/>
 <br/>
+<p><b>Gold Sponsors</b></p>
+<p><a href="http://it.oetiker.ch/monitoring/sponsoring.var"><img border="0" alt="MRTG Gold Sponsor" src="$(ROOT)/inc/mrtg-gold.png"/></a></p>
+<p><a href="http://it.oetiker.ch/monitoring/sponsoring.var"><img border="0" alt="MRTG Gold Sponsor" src="$(ROOT)/inc/mrtg-gold.png"/></a></p>
+<p><a href="$(ROOT)/sponsor.<lang:star: */>.html">Silver Sponsors ...</a></p>
+<br/>
 <br/>
 <div>
-<a href="http://people.ee.ethz.ch/oetiker/wish/"><img border="0" alt="Make Tobi Happy" src="$(ROOT)/inc/button.png"/></a>
+<a href="http://tobi.oetiker.ch/wish/"><img border="0" alt="Make Tobi Happy" src="$(ROOT)/inc/happy-tobi.png"/></a>
 </div>
 <br/>
 <br/>
@@ -153,7 +158,7 @@ foreach my $l (qw($(LANGS))){
         my $text=$1; my $url=$2; $url =~ s/<(\S+)(?:\@|_at_)(\S+)>/mailto:$1\@$2/;
         my $LANG = uc("LANG_$l");
         print <<LINE
-[$LANG:$date by <A HREF="$url">$text</A>:$LANG]
+[$LANG:$date | <A HREF="$url">$text</A> | <A HREF="http://it.oetiker.ch/monitoring/">OETIKER+PARTNER AG</a>:$LANG]
 LINE
 }
 </protect>
