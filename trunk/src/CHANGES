@@ -1,4 +1,4 @@
-Changes 2.15.0, 2006-09-14
+Changes 2.15.0, 2006-12-05
 --------------------------
 From: Stefan.Schnitter t-systems.com
 * Free positioning of a generated ifIndex in the OID string using 
@@ -7,21 +7,21 @@ From: Stefan.Schnitter t-systems.com
 From: Tobi
 
 * When doing threshold checking with rrdtool, there was a very expensive
-  'getting the data back with rrdinfo and rrdfetch' cycle after each rrdupdate 
-  with rrdtool 1.2 and the updatev function this is not necessary anymore
-  the new code speeds up rrd updating by a factor of 3 to 10 depending on your
-  platform.
+  'getting the data back with rrdinfo and rrdfetch' cycle after each
+  rrdupdate.  with rrdtool 1.2 and the updatev function this is not
+  necessary anymore the new code speeds up mrtg cycle time by a factor of 3
+  to 10 depending on your platform.
 
 * Threshold Un-Borken Messages will only be generated when the value is 10%
-  away from the threshold again. Configurable via ThreshHyst
+  away from the threshold. Configurable via ThreshHyst
 
-* new function thresholdmail lets you send an email when a threshold
+* New function thresholdmail lets you send an email when a threshold
   is broken. This feature talks directly to the mailserver and does
   not require any external programs.
 
-* new template writers helper function in cfgmaker - oid_pick. It tests if a
-  device is willing to supply information regarding a particular oid. This makes
-  template writing much more plesant.
+* New template writers helper function in cfgmaker - oid_pick. It tests if a
+  device is willing to supply information regarding a particular oid. This
+  makes template writing much more plesant. 
   http://oss.oetiker.ch/mrtg-trac/browser/trunk/templates/cisco/host-cisco.tmpl
 
 * added new tool mrtg-traffic-sum to build traffic stats based on the
