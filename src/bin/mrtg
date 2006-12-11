@@ -1876,7 +1876,9 @@ sub threshcheck {
 	         $realthresh = "% (".sprintf("%.1f",($rcfg->{"maxbytes".($dir eq 'i' ? 1 : 2)}{$router} * $boundval / 100)).")";
                  $threshval = sprintf "%.1f", ($threshval / $$rcfg{"maxbytes".($dir eq 'i' ? 1 : 2)}{$router} * 100); # the new code
             }
-	    my $msghead = "From: $cfg->{threshmailsender}\nTo: $rcfg->{threshmailaddress}{$router}";
+	    my $msghead = "";
+	    $msghead = "From: $cfg->{threshmailsender}\nTo: $rcfg->{threshmailaddress}{$router}"
+		if $rcfg->{threshmailaddress}{$router};
 	    my $pagetop = $rcfg->{pagetop}{$router};
 	    $pagetop =~ s|<h1>.*?</h1>||;
 	    $pagetop =~ s|\s*<tr>\s*<td>(.*?)</td>\s*<td>(.*?)</td>\s*</tr>\s*|$1 $2\n|g;
