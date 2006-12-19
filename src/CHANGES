@@ -1,5 +1,6 @@
 From: Tobi
 * be happy even if no threshmail sending is configured
+* add install target for traffic-summer
 
 Changes 2.15.0, 2006-12-05
 --------------------------
@@ -24,7 +25,7 @@ From: Tobi
 
 * New template writers helper function in cfgmaker - oid_pick. It tests if a
   device is willing to supply information regarding a particular oid. This
-  makes template writing much more plesant. 
+  makes template writing much more pleasant. 
   http://oss.oetiker.ch/mrtg-trac/browser/trunk/templates/cisco/host-cisco.tmpl
 
 * added new tool mrtg-traffic-sum to build traffic stats based on the

@@ -154,7 +154,7 @@ B<mrtg-traffic-sum> [I<options>...] B<config-file>
      --man           show man-page and exit
  -h, --help          display this help and exit
      --version       output version information and exit
-     --catch=regexp  filter our a identifying string
+     --catch=regexp  filter our an identifying string
      --email=address email the result
      --min=gigabytes minimal number of gigabites required for report
 
