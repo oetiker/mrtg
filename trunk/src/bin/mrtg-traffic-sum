@@ -35,8 +35,8 @@ $sendmail = "/usr/sbin/sendmail" if -x "/usr/sbin/sendmail";
 
 # main loop
 my %opt = ( 
-#    'catch' => '(?:description|port name):</td>\s*<td>\s*([^<\s]+[^<]*?)\s*</td', 
-    'catch' => 'td>\s*([^<\s]+COLO[^<]*?)\s*</td', 
+    'catch' => '(?:description|port name):</td>\s*<td>\s*([^<\s]+[^<]*?)\s*</td', 
+#    'catch' => 'td>\s*([^<\s]+COLO[^<]*?)\s*</td', 
     'min' => 500 );
 sub walklog ($$$$);
 sub sumlog($$$);
@@ -154,7 +154,7 @@ B<mrtg-traffic-sum> [I<options>...] B<config-file>
      --man           show man-page and exit
  -h, --help          display this help and exit
      --version       output version information and exit
-     --catch=regexp  filter our an identifying string
+     --catch=regexp  filter out things that match this in PageTop
      --email=address email the result
      --min=gigabytes minimal number of gigabites required for report
 
@@ -176,7 +176,7 @@ sum. By default the catch is set to:
  (?:description|port name):</td>\s*<td>\s*([^< ]*?[^<]*?)\s*</td
 
 By default only traffic which is over 500 gigabytes gets reportet. Use the
-B<--min> switch to change this number
+B<--min> switch to change this number.
 
 =head1 COPYRIGHT
 
