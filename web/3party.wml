@@ -8,7 +8,7 @@
   <h2>MRTG Comunities and Portals</h2>
 
   <ul>
-    <li><a href="http://www.somix.com/support/mrtg_repository.php">Somix MRTG Configuration Template Archive</a></li>
+    <li><a href="http://www.plixer.com/support/mrtg_repository.php">Plixer MRTG Configuration Template Archive</a></li>
 
     <li><a href="http://howto.aphroland.org/HOWTO/MRTG">MRTG Howto Collection</a> by <a href="mailto:mrtg{at}aphroland.org">nate</a></li>
 
@@ -111,6 +111,10 @@
   <h2>Monitoring Special Devices and Applications</h2>
 
   <ul>
+    <li><a href="http://www.david-taylor.myby.co.uk/mrtg/daily_ntp.html">NTP Monitoring</a> by David J. Taylor</li>
+
+    <li><a href="http://www.david-taylor.myby.co.uk/mrtg/Eumetcast.html">Satelite Signal Quality Monitoring</a> by David J. Taylor</li>
+
     <li><a href="http://www.timewind.se/rsyncmrtg/index_eng.html">Monitoring an Rsync Server</a> by Stefan Sundberg</li>
 
     <li><a href="http://alex.kruijff.org/FreeBSD/Traffic_Report.html">Monitoring FreeBSD IPFW with MRTG</a> by Alex de Kruijff</li>
