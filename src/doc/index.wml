@@ -230,9 +230,9 @@ Sometimes you just can't seem to find an answer to your MRTG problems even when 
 reading the documentation. Then it is best ask someone who can help.
 </LINK>
 
-<LINK TITLE="Somix MRTG Configuration Template Archive"
-      HREF="http://www.somix.com/support/mrtg_repository.php">
-Somix has a huge archive of custom templates to get information
+<LINK TITLE="Plixer MRTG Configuration Template Archive"
+      HREF="http://www.plixer.com/support/mrtg_repository.php">
+Plixer has a huge archive of custom templates to get information
 out of your SNMP manageable devices they probably didn't even know they had before your asked them :-).
 </LINK>
 
