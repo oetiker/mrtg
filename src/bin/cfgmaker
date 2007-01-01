@@ -119,6 +119,7 @@ sub main {
 			$routers{$router}{'snmp-options'} = join(":",@snmpopt);
 		} else {
 			die "SNMP V3 requires a --username parameter as part of the User Security Model for router $routers{$router}{routerkey}" if $opt{enablesnmpv3} eq "no";
+			$routers{$router}{enablesnmpv3} = $opt{enablesnmpv3};
 			%v3opt = parsev3(\%opt);
 		}
 	} else {
@@ -165,6 +166,7 @@ sub InterfaceInfo($$$$$) {
         $routers->{$router}{deviceinfo}{sysDescr} =~ m/Version\s+(\d+\.\d+)/) {
         push @Variables,  ($1 > 11.0 or $1 < 10.0 ) ? "ifAlias" : "CiscolocIfDescr";
         if ($1 > 11.2) {push @Variables, "vmVlan";};
+       if ($1 > 11.3) {push @Variables, "vlanTrunkPortDynamicStatus";};
     } elsif ( $routers->{$router}{deviceinfo}{Vendor} =~ /(?:hp|juniper|foundry|dellLan|force10|3com|extremenetworks)/) {
         push @Variables, "ifAlias";
     }
@@ -174,6 +176,10 @@ sub InterfaceInfo($$$$$) {
         $descr =~ m/Catalyst\sOperating\sSystem|Cisco\sSystems\sWS-C2900/ ) {
         push @Variables,  "CiscoCatalystPortName";
         push @Variables, "vmVlan";
+    }
+    if ($routers->{$router}{deviceinfo}{Vendor} eq 'cisco' &&
+        $descr =~ m/Catalyst/ ) {
+        push @Variables,  "vlanTrunkPortDynamicStatus";
     }
 
     foreach my $var (@Variables) {
@@ -483,6 +489,7 @@ ECHO
                 my $if_cisco_descr = $$i{CiscolocIfDescr};
                 my $if_dns_name = $$i{DNSName};
                 my $if_vlan_id = $$i{vmVlan};
+                my $if_cisco_trunk = ($$i{vlanTrunkPortDynamicStatus} ==1);
 		my $if_MTU = $$i{ifMtu};
 
                 # For Nokia IPSO, find non-ethernet interfaces with IP addresses
@@ -1497,6 +1504,7 @@ sub init () {
   snmpmapOID('sysObjectID' => '1.3.6.1.2.1.1.2.0',
              'CiscolocIfDescr' => '1.3.6.1.4.1.9.2.2.1.1.28',
              'CiscoCatalystPortName' => '1.3.6.1.4.1.9.5.1.4.1.1.4',
+            'vlanTrunkPortDynamicStatus'=> '1.3.6.1.4.1.9.9.46.1.6.1.1.14',
              'vmVlan' => '1.3.6.1.4.1.9.9.68.1.2.2.1.2',
              'ifAlias' => '1.3.6.1.2.1.31.1.1.1.18');
 } # end init
@@ -1878,8 +1886,14 @@ earlier on the command line.
 
 =head2 SNMP V3 Options
 
-B<Cfgmaker> supports SNMP V3.  There are optional parameters affecting SNMP operation.
+B<Cfgmaker> supports SNMP V3 using the B<Net:SNMP> perl module.  There are optional 
+parameters affecting SNMP operation.
 
+=item --enablesnmpv3 {yes|no}
+
+The B<--enablesnmpv3> option is an optional flag to check for the presence of 
+the B<Net::SNMP> libraries.  B<Cfgmaker> will try to determine whether this flag is
+required and will set the values automatically.
 
 =head3 SNMPv3 Arguments
 
@@ -2147,7 +2161,13 @@ word Vlan or VLAN in their ifdescs)
 
 Returns the vlan id associated with a specific port
 on Cisco Catalyst switches under both Catalyst OS
-and IOS.  If it is not a vlan interface, will return undef.
+and IOS, and 3Com switches.  If it is not a vlan interface, will return undef.
+
+=item B<$if_cisco_trunk>
+
+Returns the trunking state of a specific port
+on Cisco Catalyst switches under both Catalyst OS
+and IOS.  Returns "1" if the interface is a trunk, undef otherwise.
 
 =item B<$if_MTU>
 
