@@ -1,6 +1,10 @@
+From: Dan.McDonald austinenergy.com
+* more cfgmaker smarts and documentation for snmpv3 
+
 From: Tobi
 * be happy even if no threshmail sending is configured
 * add install target for traffic-summer
+* fix mrtg-traffic-sum default catch expression to be in sync with docs
 
 Changes 2.15.0, 2006-12-05
 --------------------------
