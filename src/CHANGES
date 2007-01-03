@@ -1,3 +1,6 @@
+From: Mike Mitchell <Mike.Mitchell@sas.com>
+* latest Net_SNMP_util.pm with many small fixes
+
 From: Dan.McDonald austinenergy.com
 * more cfgmaker smarts and documentation for snmpv3 
 
