@@ -13,6 +13,12 @@
 ###
 ### Laszlo Herczeg <laszlo.herczeg@austinenergy.com>
 ###	ignore unimplemented SNMP_Session.pm options
+###
+### Daniel McDonald <dmcdonald@digicontech.com>
+### 	make sure snmpwalk_flg stops when last instance in table is fetched
+###
+### Alexander Kozlov <avk@post.eao.ru>
+###	Leave snmpwalk_flg early if no OIDs are passed
 ######################################################################
 
 package Net_SNMP_util;
@@ -63,7 +69,7 @@ our @EXPORT = qw(
 
 ## Version of the Net_SNMP_util module
 
-our $VERSION = v1.0.9;
+our $VERSION = v1.0.11;
 
 use Carp;
 
@@ -1725,8 +1731,9 @@ sub Check_OID ($) {
 sub snmpwalk_flg ($$@) {
   my($host, $hash_sub, @vars) = @_;
   my($session, %args, @enoid, @poid, $toid, $oid, $got);
-  my($val, $ret, %soid, @retvals, $tmp);
+  my($val, $ret, %soid, %nsoid, @retvals, $tmp);
   my(%rethash, $h_ref, @tmprefs);
+  my($stop);
 
   $session = &snmpopen($host, 0, \@vars);
   if (!defined($session)) {
@@ -1754,6 +1761,7 @@ sub snmpwalk_flg ($$@) {
   foreach $oid (0..$#enoid)  {
     my $tmparray = [];
     $tmprefs[$oid] = $tmparray;
+    $nsoid{$oid} = $oid;
   }
 
   $got = 0;
@@ -1769,7 +1777,7 @@ sub snmpwalk_flg ($$@) {
       if (defined($Net_SNMP_util::ContextName));
   }
 
-  do {
+  while($#poid >= 0) {
     $args{'-varbindlist'} = \@poid;
     if (($Net_SNMP_util::Version > 1)
     && ($Net_SNMP_util::MaxRepetitions > 1)) {
@@ -1779,14 +1787,17 @@ sub snmpwalk_flg ($$@) {
     }
     last if (!defined($ret));
 
-    undef %soid;
+    %soid = %nsoid;
+    undef %nsoid;
+    $stop = 0;
     foreach $oid (&Net::SNMP::oid_lex_sort(keys %$ret)) {
       $got = 1;
       $tmp = -1;
       foreach $toid (@enoid) {
 	$tmp++;
-	if (&Net::SNMP::oid_base_match($toid, $oid)) {
-	  $soid{$toid} = $oid;
+	if (&Net::SNMP::oid_base_match($toid, $oid)
+	&& (!exists($soid{$toid}) || ($oid ne $soid{$toid}))) {
+	  $nsoid{$toid} = $oid;
 	  if (defined($hash_sub)) {
 	    #
 	    # extract name of the oid, if possible, the rest becomes the
@@ -1839,12 +1850,14 @@ sub snmpwalk_flg ($$@) {
 	    $tmpo = substr($oid, length($toid)+1);
 	    push @{$tmprefs[$tmp]}, "$tmpo:$tmpv";
 	  }
+	} else {
+	  $stop = 1 if ($#enoid == 0);
 	}
       }
     }
     undef @poid;
-    @poid = values %soid;
-  } while($#poid >= 0);
+    @poid = values %nsoid if (!$stop);
+  }
   if ($got) {
     if (defined($hash_sub)) {
 	return ($h_ref) if ($Net_SNMP_util::ReturnHashRefs);
