@@ -8,7 +8,7 @@
   <h2>MRTG Comunities and Portals</h2>
 
   <ul>
-    <li><a href="http://www.plixer.com/support/mrtg_repository.php">Plixer MRTG Configuration Template Archive</a></li>
+    <li><a href="http://www.somix.com/support/mrtg_repository.php">Plixer MRTG Configuration Template Archive</a></li>
 
     <li><a href="http://howto.aphroland.org/HOWTO/MRTG">MRTG Howto Collection</a> by <a href="mailto:mrtg{at}aphroland.org">nate</a></li>
 
@@ -70,7 +70,7 @@
   <ul>
     <li><a href="http://ipsyn.net/projects/rotate_url/">Rotate MRTG graphs inside a single web browser session</a> by <a href="mailto:nstefani{at}ipsyn.net">Nicolas STEFANI</a></li>
 
-    <li><a href="http://www.seanadams.com/95/">95%ile with MRTG</a> by <a href="mailto:www{at}seanadams.com">Sean Adams</a></li>
+    <li><a href="http://www.ronny-goerner.de/patch/">95%ile patch for MRTG-2.4.17</a> by <a href="mailto:support{at}pghosting.de">pgHosting</a></li>
 
     <li><a href="http://www.geocities.com/aisvc">MRTG-Central front end</a> by <a href="mailto:aisvc{at}yahoo.com">Mark Anderson</a></li>
 
@@ -140,6 +140,8 @@
     <li><a href="http://www.geocities.com/passportmrtg/">Using MRTG with Nortel Passport Devices</a></li>
 
     <li><a href="http://members.cox.net/jeepnsam/linksys.html">Monitoring Linksys Router</a> by Brian Akins</li>
+
+    <li><a href="http://www.networktechinc.com/enviro-sems-mrtg-app.html">NTI's ENVIROMUX Server Environment Monitoring System Graphs Critical Environmental Conditions with MRTG by Deepa Nair.</li>
 
     <li><a href="http://www.triponthis.net/Matt/USGII/index.htm">Notes on monitoring the Nomadix Universal Service Gateway II</a> by <a href="mailto:mevans3%20.%20triad.rr.com">Matthew Evans</a></li>
 
