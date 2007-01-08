@@ -1152,6 +1152,7 @@ sub demonize_me ($) {
               require 'POSIX.pm';
               POSIX::setsid() or die "Can't start a new session: $!";
               open STDOUT,'>/dev/null' or die "ERROR: Redirecting STDOUT to /dev/null: $!";
+              open STDERR,'>/dev/null' or die "ERROR: Redirecting STDERR to /dev/null: $!";
               open STDIN, '</dev/null' or die "ERROR: Redirecting STDIN from /dev/null: $!";
       }
    }
