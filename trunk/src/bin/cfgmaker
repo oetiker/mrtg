@@ -893,12 +893,14 @@ sub IsCounterBroken ($$$) {
     $router = "$$router_ref{community}\@$$router_ref{routername}$$router_ref{'snmp-options'}";
     $snmphost = v4onlyifnecessary($router, $ipv4only);
     if ( $$router_ref{snmpopt_current} !~ /:[23]/) {
-         snmpget($snmphost, 'ifInOctets.'.$if);
+         my $counter = (snmpget($snmphost, 'ifInOctets.'.$if))[0];
          if (defined $SNMP_Session::errmsg) {
              my $error = $SNMP_Session::errmsg;
              $SNMP_Session::errmsg = undef;
              $error =~ s/\n/\n###     /g;
              return $error;
+         } elsif (not defined $counter or $counter eq '') {
+              return "No counter exists for $if";
          }
     }
     return 0;
@@ -1449,7 +1451,7 @@ sub oid_pick ($$$;@){
     foreach my $oid (@oids){
         local $SNMP_Session::errmsg = undef;
         my $counter = snmpget($router,$v3opt,$oid);
-        if (not defined $SNMP_Session::errmsg and defined $counter) {
+        if (not defined $SNMP_Session::errmsg and defined $counter and $counter ne '' ) {
             debug('base',"oid_pick - found $oid to work for $router");
 	    return $oid;
         }	    

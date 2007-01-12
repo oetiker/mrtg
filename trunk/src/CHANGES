@@ -1,3 +1,6 @@
+From: Gosselin, Gerry GGosselin onecommunications.com
+* make cfgmaker detect broken snmpv1 counters more reliably
+
 From: Mike Mitchell <Mike.Mitchell@sas.com>
 * latest Net_SNMP_util.pm with many small fixes
 
