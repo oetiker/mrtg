@@ -125,7 +125,7 @@ dist: tar
 	svn commit -m 'released version $(VER)'
 	svn copy -m "tagging version $(VER)" svn://svn.oetiker.ch/mrtg/trunk/src svn://svn.oetiker.ch/mrtg/tags/$(VER)
 	md5sum $(ARCHIVE).tar.gz >$(ARCHIVE).tar.gz.md5
-	pgps $(ARCHIVE).tar.gz.md5
+	gpg -s $(ARCHIVE).tar.gz.md5
 	chmod 644  $(ARCHIVE).tar.gz.md5*
 	scp CHANGES $(ARCHIVE).* oposs@james.oetiker.ch:public_html/mrtg/pub/
 	ssh oposs@james.oetiker.ch "cd  public_html/mrtg/pub; rm mrtg.tar.gz;ln -s $(ARCHIVE).tar.gz mrtg.tar.gz"
