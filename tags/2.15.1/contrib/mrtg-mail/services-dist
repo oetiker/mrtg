@@ -1,3 +1,0 @@
-# You can add this simply by doing "cat services-dist >> /etc/services"
-
-smtp-stats      7256/tcp                        # smtp-stats
