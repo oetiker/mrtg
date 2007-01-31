@@ -1,7 +1,7 @@
 # things that the GNU standards document suggests all makefiles
 # should have.
 SHELL=/bin/sh
-VER=2.15.0
+VER=2.15.1
 .SUFFIXES:
 .SUFFIXES: .c .o .pl .pm .pod .man .1 .txt
 
@@ -106,16 +106,16 @@ versync:
 doc:    getpod versync man txt
 
 rateupexe:
-	i386-mingw32msvc-gcc -Wall -Wno-format -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -O3 -mwindows -Ilibs-i386-mingw32msvc/zlib -Ilibs-i386-mingw32msvc/libpng -Ilibs-i386-mingw32msvc/gd -c src/strftime.c -o src/strftime.o
-	i386-mingw32msvc-gcc -Wall -Wno-format -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -O3 -mwindows -Ilibs-i386-mingw32msvc/zlib -Ilibs-i386-mingw32msvc/libpng -Ilibs-i386-mingw32msvc/gd -c src/rateup.c -o src/rateup.o -Dstrftime=strftime_
-	i386-mingw32msvc-gcc -Llibs-i386-mingw32msvc/zlib -Llibs-i386-mingw32msvc/libpng -Llibs-i386-mingw32msvc/gd  src/rateup.o src/strftime.o -o bin/rateup.exe -lgd -lpng -lz
-	i386-mingw32msvc-strip bin/rateup.exe
+	i686-pc-mingw32-gcc -Wall -Wno-format -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -O3 -mwindows -Ilibs-i386-mingw32msvc/zlib -Ilibs-i386-mingw32msvc/libpng -Ilibs-i386-mingw32msvc/gd -c src/strftime.c -o src/strftime.o
+	i686-pc-mingw32-gcc -Wall -Wno-format -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -O3 -mwindows -Ilibs-i386-mingw32msvc/zlib -Ilibs-i386-mingw32msvc/libpng -Ilibs-i386-mingw32msvc/gd -c src/rateup.c -o src/rateup.o -Dstrftime=strftime_
+	i686-pc-mingw32-gcc -Llibs-i386-mingw32msvc/zlib -Llibs-i386-mingw32msvc/libpng -Llibs-i386-mingw32msvc/gd  src/rateup.o src/strftime.o -o bin/rateup.exe -lgd -lpng -lz
+	i686-pc-mingw32-strip bin/rateup.exe
 
 tar:	doc rateupexe
 	autoconf
 	gchmod -R u=rwX,go=rX .
 	(cd .. ; ln -s src $(DIRNAME))
-	(cd .. ; sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | gtar -czv --files-from=- -f $(DIRNAME)/$(ARCHIVE).tar.gz --exclude='*~' --exclude=".svn")
+	(cd .. ; sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | tar -czv --files-from=- -f $(DIRNAME)/$(ARCHIVE).tar.gz --exclude='*~' --exclude=".svn")
 	$(PERL) -0777 -pi -e 's@GRAPHFMT="...";@GRAPHFMT="png";@' bin/mrtg bin/indexmaker
 	# build rateup for windows ...
 	(cd .. ; touch $(DIRNAME)/contrib/a~;sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | xargs zip -r $(DIRNAME)/$(ARCHIVE).zip; zip $(DIRNAME)/$(ARCHIVE).zip $(DIRNAME)/bin/rateup.exe  $(DIRNAME)/bin/rateup.nlm $(DIRNAME)/bin/rateup.nlm; zip -d $(DIRNAME)/$(ARCHIVE).zip '*~' '*.svn*')
@@ -123,7 +123,7 @@ tar:	doc rateupexe
 
 dist: tar
 	svn commit -m 'released version $(VER)'
-	svn copy -m "tagging version $(VER)" svn://svn.ee.ethz.ch/mrtg/trunk/src svn://svn.ee.ethz.ch/mrtg/tags/$(VER)
+	svn copy -m "tagging version $(VER)" svn://svn.oetiker.ch/mrtg/trunk/src svn://svn.oetiker.ch/mrtg/tags/$(VER)
 	md5sum $(ARCHIVE).tar.gz >$(ARCHIVE).tar.gz.md5
 	pgps $(ARCHIVE).tar.gz.md5
 	chmod 644  $(ARCHIVE).tar.gz.md5*
