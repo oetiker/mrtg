@@ -1,0 +1,79 @@
+#!/bin/bash
+#
+# mrtg          This shell script starts mrtg
+#
+# Author:       Stefan SF <stefan@sf-net.com>
+#
+# chkconfig:    345 90 35
+#
+# description:  mrtg The Multi Router Traffic Grapher
+# processname:  mrtg
+# config:       /etc/mrtg/mrtg.conf
+#
+### BEGIN INIT INFO
+# Provides: mrtg
+# Required-Start: $network
+# Default-Stop: 0 1 6
+# Short-Description: Starts the The Multi Router Traffic Grapher
+# Description: The Multi Router Traffic Grapher (MRTG) is a tool to monitor \
+#              the traffic load on network-links. MRTG generates HTML pages \
+#              containing GIF/PNG images which provide a live visual \
+#              representation of this traffic.
+### END INIT INFO
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+MRTG="/usr/bin/mrtg"
+CONFIG="/etc/mrtg/mrtg.cfg"
+PIDFILE="/var/run/mrtg.pid"
+LOCKFILE="/var/lock/mrtg/mrtg"
+OPTIONS="--daemon"
+
+RETVAL=0
+
+start() {
+	echo -n $"Enabling MRTG: "
+	rm -f ${LOCKFILE} 2> /dev/null
+	env LANG=C ${MRTG} --pid-file=${PIDFILE} --lock-file=${LOCKFILE} ${OPTIONS} ${CONFIG}
+	RETVAL=$?
+	echo
+}
+
+stop() {
+	echo -n $"Disabling MRTG: "
+	kill `cat ${PIDFILE}` && rm -f ${LOCKFILE}
+	RETVAL=$?
+	echo
+}
+
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop) 
+	stop
+	;;
+  restart|force-reload)
+	restart
+	;;
+  status)
+	if [ -f $LOCKFILE ]; then
+		echo $"MRTG is enabled."
+		RETVAL=0
+	else
+		echo $"MRTG is disabled."
+		RETVAL=3
+	fi
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|status|restart|force-reload}"
+	exit 1
+esac
+
+exit $RETVAL

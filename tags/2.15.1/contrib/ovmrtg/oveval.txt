@@ -1,0 +1,29 @@
+OVMRTG evaluation questions:
+============================
+
+
+What is your name:
+
+What is your company name:
+
+Your E-mail address:
+
+What HPOV platform do you run (Unix/NT & Version):
+
+What types of systems are you monitoring (Manufacturer & Router/Hub..):
+
+How many systems are you monitoring with OVMRTG:
+
+Can you comment on the resource utilisation from OVMRTG and the original MRTG?
+
+Any suggestions for OVMRTG improvements?
+
+What other details might be useful in understanding problems with OVMRTG?
+
+
+===================================
+
+Please E-mail this page to :
+
+net_improvement@hotmail.com
+

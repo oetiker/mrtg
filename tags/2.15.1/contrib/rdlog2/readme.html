@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage 2.0">
+<title>RDLOG tool for MRTG</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h1>RDLOG2 tool for MRTG</h1>
+
+<h2>Introduction</h2>
+
+<p>Rdlog is a small (and primitive) tool that gives indication on
+network traffic on a graphic map. It takes information from <a
+href="http://www.ee.ethz.ch/~oetiker/webtools/mrtg/mrtg.html">MRTG</a>
+log files, and draw a GIF file with links that have colors based
+on the current traffic on your network. This small test explain
+how to use this tool : </p>
+
+<ul>
+    <li><a href="#History list">history list</a></li>
+    <li><a href="#RDLOG configuration file">how to build a RDLOG2
+        draw file</a></li>
+    <li><a href="#Building RDLOG">how to compile RDLOG2</a></li>
+    <li><a href="#Calling RDLOG">RDLOG2 command-line arguments</a></li>
+    <li><a href="#remarks">your remarks</a></li>
+</ul>
+
+<h2><a name="History list">History list</a></h2>
+
+<p>v 1.1, 5.5.97 : </p>
+
+<ul>
+    <li>from a proposition of <a
+        href="mailto:Christophe.Denervaud@swisstelecom.com">Christophe.Denervaud@swisstelecom.com</a>,
+        add depth possibilies,</li>
+    <li>add 'in' and 'out' difference,</li>
+    <li>use the gifarea background color</li>
+</ul>
+
+<p>v1.0, feb. 1997: initial revision, port from rdlog</p>
+
+<h2><a name="RDLOG configuration file">RDLOG2 configuration file</a></h2>
+
+<p>To build a gif, RDLOG2 needs a configuration file, that you
+must build with XGIF (ftp.x.org, in
+/contrib/applications/drawing_tools/xfig), a 'X draw' program
+(tested with version 3.1). You can look at the example (wan.fig)
+in order to understand how works RDLOG2. When you draw with XFIG,
+you must observe some rules :</p>
+
+<h4>General Rules</h4>
+
+<p>You can draw : text, polylines, rectangles. Don't try to make
+rounded corners, arrows, splines, play with line style and width
+... All your draw must be 'flat', except for special object.
+Don't group/ungroup all your objects. The order of object drawing
+is defined with the xfig 'DEPTH' parameter (biggest first). Here
+follow a description of all you must know to build a RDLOG2 FIG
+file : </p>
+
+<h4>Draw text</h4>
+
+<p>RDLOG use the 'gd' package to build GIF files. You can only
+use one font, one size, and 2 orientations (0°, 90°). Use the
+font 'courier 10' to have the better matching between XFIG and
+the gif output.</p>
+
+<h4>Draw rectangles</h4>
+
+<p>The rectangle are the only figure that you can fill with
+colors. You can specify a border and a fill color.</p>
+
+<h4>Draw polylines</h4>
+
+<p>The polylines has only a color attribute.</p>
+
+<h4>Rate colors definition</h4>
+
+<p>For each link defined in the FIG file, the color is computed
+based on the traffic. There are 10 different color, (0-10 %,
+10-20%, ...). And they are define with a special text string,
+that contains 'color:x' (x is 0 for 0-10%, 1 for 10-20%, ...).
+The text color define the link color for the corresponding rate.</p>
+
+<h4>Draw 'links'</h4>
+
+<p>A link is a polyline whose color change, depending on traffic
+present on this link (in the mrtg log file). To build a link, you
+must group the following elements : </p>
+
+<ul>
+    <li>a polyline the represent the link, with a default color,</li>
+    <li>a text string that define the maximum speed for this
+        link, with the following form 'speed:ssssssss'</li>
+    <li>a text string with the mrtg log file name, of style
+        'log:link33.log' (maximum input or output), or of style
+        'log:&gt;link33.log' (maximum output) or 'log:&lt;link33.log'
+        (maximum input)</li>
+</ul>
+
+<p>The link must only contains this 3 objects.</p>
+
+<h4>Define GIF area</h4>
+
+<p>The GIF area is define with 2 elements, that must be grouped :
+</p>
+
+<ul>
+    <li>a rectangle that define the GIF region. The color of the
+        rectangle define the background color of the GIF file.</li>
+    <li>a text string, containing 'gifarea'</li>
+</ul>
+
+<h4>Define clickable region</h4>
+
+<p>With the '-m' command line option, RDLOG2 build a html file,
+that contains the GIF file, and where you can click to reach the
+corresponding mrtg files. You must define the clickable region,
+by creating a group with the following elements : </p>
+
+<ul>
+    <li>a rectangle that define the clickable region</li>
+    <li>a text string, containing 'url:linkname.html'</li>
+</ul>
+
+<h2><a name="Building RDLOG">Building RDLOG</a></h2>
+
+<p>RDLOG use the <a href="http://www.boutell.com/gd/">gd library</a>.
+In order to built it, you must have the following files :</p>
+
+<ul>
+    <li><tt>RDLOG2.C</tt></li>
+</ul>
+
+<p>and from the gd library,</p>
+
+<ul>
+    <li><tt>GDFONTS.H</tt></li>
+    <li><tt>GDFONTS.C</tt></li>
+    <li><tt>MTABLES.C</tt></li>
+    <li><tt>GD.H</tt></li>
+    <li><tt>GD.C</tt></li>
+</ul>
+
+<p>To build it, on unix , you can type : </p>
+
+<p><tt>gcc rdlog2.c -I/yourgdinclude -L/yourgdlibrary -lgd -lm -o
+RDLOG2 </tt></p>
+
+<p>On a PC with NT or 95, make a project with <tt>RDLOG2.C, GD.C,
+GDFONTS.C</tt></p>
+
+<h2><a name="Calling RDLOG">Calling RDLOG</a></h2>
+
+<p>The command-line parameters are : </p>
+
+<p><tt>rdlog2 -i cfile -o gfile [-m htmlfile] -r rounds</tt></p>
+
+<ul>
+    <li><tt>ifile : </tt>input config file name</li>
+    <li><tt>gfile : </tt>output gif file (will be overwritten)</li>
+    <li><tt>mfile : </tt><font size="4" face="Times New Roman"><tt>html
+        file with clickable map</tt></font> (optional, will be
+        overwritten)</li>
+    <li><tt>rounds : </tt>number of 5 min intervals to take</li>
+</ul>
+
+<p>for example : <tt>rdlog2 -i wan.fig -o wan.gif -m wan.html -r
+12 &gt; wan1.txt</tt></p>
+
+<p>You can so make an average of the x last 5 minutes intervals.
+Here, the map is drawn for the last hour.</p>
+
+<p>5.5.97, <a name="remarks">Philippe Simonet</a>, <a
+href="mailto:philippe.simonet@swisstelecom.com">philippe.simonet@swisstelecom.com</a></p>
+</body>
+</html>

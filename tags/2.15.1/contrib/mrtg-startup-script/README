@@ -1,0 +1,18 @@
+From: Stefan <stefan@sf-net.com>
+Date: Thu, 3 Aug 2006 14:47:59 +0200
+Subject: mrtg startup script
+
+Hi,
+
+while discussing on a fedora irc channel about a startup script
+(/etc/init.d/mrtg) for the mrtg daemon we came to a conclussion that it
+would be the best to include such a script in the main sourcecode
+distribution. Many people don't run mrtg through cron and a startup script
+is very handy. But we don't want to confuse them while installing a startup
+script + a cron file. The best sollution we came out would be to include a
+startup file in the contrib directory of mrtg. There is also a bugzilla
+entry for the file and a little conclussio. Maybe you could add the file to
+the contrib directory so that it's easier to run mrtg as a daemon.
+
+Best regards,
+Stefan

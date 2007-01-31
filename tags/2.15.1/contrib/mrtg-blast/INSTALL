@@ -1,0 +1,69 @@
+*************************************************************************
+You need the following software installed on your system:
+
+	- perl 5.003
+		http://www.perl.com/perl/info/software.html
+	- MRTG 2.1
+		http://www.ee.ethz.ch/~oetiker/webtools/mrtg/mrtg.html
+	- gcc to successfully compile tcpblast.c
+
+*************************************************************************
+mrtg-blast has been tested successfully under:
+
+                       Linux 2.0.25 (S.u.S.E. 4.3) 
+	        
+       (other versions / OSes might work, but have not been tested.)
+            -------------------------------------------------
+            The latest version should always be available from 
+
+                   ftp://ftp.inside.ch/pub/mrtg-blast
+
+            If you create a new version, please send it to me so I
+                    can keep the archive up to date.  
+*************************************************************************
+
+YOU NEED TO CHANGE THE FOLLOWING:
+tcpblast:
+	1 - Type 'make tcpblast' to compile the tcpblast executable
+	2 - Copy tcpblast to your mrtg binary directory
+
+In mrtg-blast:
+	1 - Line 1:		Adjust perl path to your system
+	2 - Line 55:	Adjust tcpblast path to where you put tcpblast
+	3 - Copy mrtg-blast to your mrtg binary directory
+
+Edit your mrtg-blast.cfg file to add statements for the devices you want to
+blast.  See mrtg-blast.cfg for an example.
+
+PLEASE NOTE: Blasting causes traffic, which it inherently does. ;) So please
+don't flood the whole wide world, keep it as local as possible. 
+Blasting can't be that bad though, considering internet radio and tv... at least
+it tells us something: How fast our next video conference will pass, for example.
+
+The program returns traffic estimates which can be off sometimes. Use with care,
+caution and much love.
+Here are some estimates I tested at our site locally. Your mileage will most 
+definitely vary, but as a guideline I always use 500 packets if I'm close to 
+the site being blasted otherwise 200 is good enough. 
+
+Link: 256 kbps = 32 kB/s
+
+#of packets:    bandwidth as estimated 
+                 by tcpblast [kB/s]:      Error in %:
+
+    100                  50                  +53 %
+    200                  38                  +16 %
+    300                  35                  +5 %
+    400                  34                  +4 %
+    500                  32                   0 %
+    800                  32                   0 %
+
+You should decide yourself how accurate you're trying to be. Once again:
+Your mileage will vary.
+
+Have fun!
+
+Balthasar Indermuehle <balthasar@indermuehle.com>, March 12, Early in the morning...
+ 
+
+

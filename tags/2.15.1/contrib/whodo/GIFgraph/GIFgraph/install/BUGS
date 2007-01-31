@@ -1,0 +1,91 @@
+UNRESOLVED BUGS
+
++ two_axes doesn't work correctly with negative numbers and zero_axis
++ y_max_value doesn't get adapted for bars and area if all negative values
++ init_graph does too much work for pies. Needs to be split up.
++ area chart doesn't do overwrite? Workaround: sum up your data sets, 
+  and order them backwards (highest one first). Output graph will look 
+  like it's incremental.
++ only bar charts do overwrite. Necessary to implement generally?
+
+NOT REALLY BUGS
+
+- The whole naming of x_label.*, x_tick.*, x_axis.* is very confused
+  and confusing. Hard to fix without breaking backward compatibility.
+- overwrite == 2 only makes sense if all the data is either positive,
+  or negative
+- A positive y_min_value doesn't work with bars or area, bars and area 
+  always are set off against 0. Wether this is a bug, or wanted behaviour
+  might be a point for discussion.
+- y_min_value doesn't automatically get adapted for bars and area if 0
+  is not included in the range, but only if user sets it. If left to
+  figure it out itself, GIFgraph does it right.
+
+FIXED IN 1.10
+
+! When first value of a dataset is undef for a lines graph, things go 
+  wrong.
+  (report by Arto Nurmela <arto.nurmela@nmp.nokia.com>)
+
+FIXED IN 1.04
+
+! logo positioning and legends don't work very well together.
+
+FIXED IN 1.03
+
+! When data values are large, and x_min_value is larger than 0, the
+  horizontal axis doesn't get drawm correctly. (check zero_axis option)
+  (see sample41)
+  (problem found after report from jackb@pgw.picker.com)
+
+FIXED IN 1.02
+
+! GIFgraph::Colour::read_rgb() falls over on comment lines.
+	(reported: adamm@genomecorp.com)
+! GIFgraph::Colour::read_rgb() contains inline my-declaration of $line, 
+  breaks perl5.003 
+	(reported: Pat Becker <pmb@iss.net>)
+! if a colour name doesn't exist, program falls over with a cryptic message
+  about some undefined array index.
+	(reported: adamm@genomecorp.com)
+! x_label_skip doesn't skip ticks. (also added x_all_ticks option)
+	(reported: adamm@genomecorp.com)
+
+FIXED IN 1.01
+
+! for loops break in 5.003 because of 'my' scoping (grrrr) 
+	(reported: Brian Eitrem <beitrem@digitalriver.com>)
+! ticks get drawn in front of the data set 
+	(reported: Honza Pazdziora <adelton@informatics.muni.cz>)
+! length estimate of y labels needs to be done better
+	(reported: Honza Pazdziora <adelton@informatics.muni.cz>)
+
+FIXED IN 1.00
+
+! GIFgraph::colour::sorted_colour_list() syntax error
+! GIFgraph::colour pod documentation fixed
+! placement of title is centered on gif, not on graph.
+! linespoints graph type initialises two GD::Image objects
+! 'make test' fails on all tests on win32. binmode() needed.
+
+FIXED IN 0.99
+
+! Cannot use any 'null' values in graphs
+	(reported: Lee Khandelwal <lee_khandelwal@il.us.swissbank.com>)
+
+FIXED IN 0.95
+
+! filled markers don't fill correctly when overlapping
+
+FIXED IN 0.94
+
+! area doesn't work with negative numbers
+! Right axis doesn't get drawn when box_axis == 0 and two_axes == 1
+! Color on front of 3D pies wrong with some data sets
+	(reported: by various people)
+
+FIXED IN 0.91
+
+! Segmentation fault for 3d pies where last slice is small
+	(reported: Dave Stafford <Dave.Stafford@mpn.cp.philips.com>)
+

@@ -1,0 +1,110 @@
+=head1 NAME
+
+mrtg-logfile - description of the mrtg-2 logfile format
+
+=head1 SYNOPSIS
+
+This document provides a description of the contents of
+the mrtg-2 logfile.
+
+=head1 OVERVIEW
+
+The logfile consists of two main sections. 
+
+=over
+
+=item The first Line
+
+It stores the traffic counters from the most recent run of mrtg.
+
+=item The rest of the File
+
+Stores past traffic rate averates and maxima at increassing
+intervals.
+
+=back
+
+The first number on each line is a unix time stamp. It represents
+the number of seconds since 1970.
+
+=head1 DETAILS
+
+=head2 The first Line
+
+The first line has 3 numbers which are:
+
+=over
+
+=item A (1st column)
+
+A timestamp of when MRTG last ran for this interface.  The timestamp is the
+number of non-skip seconds passed since the standard UNIX "epoch" of midnight
+on 1st of January 1970 GMT.
+
+=item B (2nd column)
+
+The "incoming bytes counter" value.
+
+=item C (3rd column)
+
+The "outgoing bytes counter" value.
+
+=back
+
+=head2 The rest of the File
+
+The second and remaining lines of the file contains 5 numbers
+which are:
+
+=over
+
+=item A (1st column)
+
+The Unix timestamp for the point in time the data on this line is relevant.
+Note that the interval between timestamps increases as you prograss through the
+file. At first it is 5 minutes and at the end it is one day between two lines.
+
+This timestamp may be converted in OpenOffice Calc or MS Excel by using the
+following formula
+
+ =(x+y)/86400+DATE(1970;1;1)
+
+(instead of ";" it may be that you have to use "," this depends on the context and your locale settings)
+
+you can also ask perl to help by typing
+
+ perl -e 'print scalar localtime(x),"\n"'
+
+B<x> is the unix timestamp and B<y> is the offset in seconds
+from UTC. (Perl knows B<y>).
+
+
+=item B (2nd column)
+
+The average incoming transfer rate in bytes per second. This is valid
+for the time between the A value of the current line and the A value of the
+previous line.
+
+=item C (3rd column)
+
+The average outgoing transfer rate in bytes per second since the previous
+measurement.
+
+=item D (4th column)
+
+The maximum incoming transfer rate in bytes per second for the current
+interval. This is calculated from all the updates which have occured in the
+current interval. If the current interval is 1 hour, and updates have
+occured every 5 minutes, it will be the biggest 5 minute transfer rate seen
+during the hour.
+
+=item E (5th column)
+
+The maximum outgoing transfer rate in bytes per second for the current interval.
+
+=back
+
+=head1 AUTHOR
+
+Butch Kemper E<lt>kemper@bihs.netE<gt> and
+Tobias Oetiker E<lt>tobi@oetiker.chE<gt> 

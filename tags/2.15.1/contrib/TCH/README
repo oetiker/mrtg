@@ -1,0 +1,13 @@
+Date: Tue, 16 Feb 1999 16:44:12 -0700
+From: Eric Billeter <ebilleter@cableone.net>
+
+Here are some scripts i modified to monitor the modem utilization
+of my USR Total control racks.  They work great even though I am 
+not a programmer.  If there is anything you see that would work 
+more efficiently it would be appreciated.
+The files are as follows
+
+dualt1.pl    - TCH with dual t1 card.
+dualpri.pl   - TCH with dual pri card.
+hiperdsp.pl  - TCH with hiperdsp cards.
+mrtg-cfg.txt - snippet of cfg file 
