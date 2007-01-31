@@ -1,0 +1,5 @@
+203.167.223.13[456]	Exchange
+203.167.216.32		Exchange
+203.167.216.(25|48|5[56]|199)	PlOps_Monitoring
+172				DFAT_Addresses
+192.168.[23][0-9]	Test_Nets

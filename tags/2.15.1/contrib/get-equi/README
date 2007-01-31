@@ -1,0 +1,9 @@
+From: Mike Gaertner <miky@forum.org.kh>
+Date: Tue, 25 Apr 2000 19:06:52 +0700 (ICT)
+
+The Equinox SST card does not provide SNMP support. Therefor I wrote a
+small perl script which reads out the byte counter from the Equinox SST
+board.
+
+Regards Mike Gaertner
+

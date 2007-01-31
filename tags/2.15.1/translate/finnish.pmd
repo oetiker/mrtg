@@ -1,0 +1,138 @@
+###### PATCHTAG 00 ###################################################
+###      Finnish/Suomi
+###      => Jussi Siponen <jussi.siponen@online.tietokone.fi>
+###### PATCHTAG 10 ###################################################
+  &german
+###### PATCHTAG 20 ###################################################
+  'finnish'       => \&finnish, 
+  'suomi'        => \&finnish,
+###### PATCHTAG 30 ###################################################
+# Finnish/Suomi
+   'finnish' =>
+   "Lokalisoinut
+				Jussi Siponen
+				<a href=\"mailto:jussi.siponen\@online.tietokone.fi\">&lt;jussi.siponen\@online.tietokone.fi&gt;</a>",
+# the Finnish string means: "Localized by"
+###### PATCHTAG 40 ###################################################
+$credits::LOCALE{'finnish'}=$credits::LOCALE{'finnish'};
+###### PATCHTAG 50 ###################################################
+# Finnish
+
+sub finnish
+{
+  my $string = shift;
+return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+  # charset=iso-2022-jp
+
+  %translations =
+  (  
+     #'charset=iso-8859-1'                     => 'charset=iso-8859-1',
+     'Maximal 5 Minute Incoming Traffic'      => 'Tulevan liikenteen maksimi 5 minuutin aikana',
+     'Maximal 5 Minute Outgoing Traffic'      => 'L&auml;htev&auml;n liikenteen maksimi 5 minuutin aikana',
+     'the device'                             => 'laite',
+     'The statistics were last updated(.*)'   => 'Tiedot p&auml;ivitetty viimeksi $1',
+     ' Average\)'                             => '',
+     'Average'                                => 'Keskim&auml;&auml;rin',
+     'Max'                                    => 'Maksimi',
+     'Current'                                => 'T&auml;ll&auml; hetkell&auml;',
+     'version'                                => 'versio',
+     '`Daily\' Graph \((.*) Minute'           => 'P&auml;iv&auml;raportti (skaala $1 minuutti(a))',
+     '`Weekly\' Graph \(30 Minute'            => 'Viikkoraportti (skaala 30 minuuttia)' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Kuukausiraportti (skaala 2 tuntia)',
+     '`Yearly\' Graph \(1 Day'                => 'Vuosiraportti (skaala 1 vuorokausi)', 
+     'Incoming Traffic in (\S+) per Second'   => 'Tuleva liikenne $1 sekunnissa',
+     'Outgoing Traffic in (\S+) per Second'   => 'L&auml;htev&auml; liikenne $1 sekunnissa',
+     'Incoming Traffic in (\S+) per Minute'   => 'Tuleva liikenne $1 minuutissa',
+     'Outgoing Traffic in (\S+) per Minute'   => 'L&auml;htev&auml; liikenne $1 minuutissa',
+     'Incoming Traffic in (\S+) per Hour'     => 'Tuleva liikenne $1 tunnissa',
+     'Outgoing Traffic in (\S+) per Hour'     => 'L&auml;htev&auml; liikenne $1 tunnissa',
+     'at which time (.*) had been up for(.*)' => 'jolloin $1 on toiminut yht&auml;jaksoisesti $2',
+     '(\S+) per minute'			      => '$1 minuutissa',
+     '(\S+) per hour'			      => '$1 tunnissa',    
+     '(.+)/s$'                                => '$1/s',
+     # '(.+)/min'                             => '$1/min',
+     #'(.+)/h$'                               => '$1/h',
+     #'([kMG]?)([bB])/s'                      => '$1$2/s',
+     #'([kMG]?)([bB])/min'                    => '$1$2/min',
+     #'([kMG]?)([bB])/h'                      => '$1$2/h',
+     'Bits'                                   => 'bitti&auml;',
+     'Bytes'                                  => 'tavua',
+     'In'                                     => 'Tuleva',
+     'Out'                                    => 'L&auml;htev&auml;',
+     'Percentage'                             => 'Prosenttia',
+     'Ported to OpenVMS Alpha by'             => 'OpenVMS -j&auml;rjestelm&auml;lle sovittanut', 
+     'Ported to WindowsNT by'                 => 'WindowsNT -j&auml;rjestelm&auml;lle sovittanut',
+     'and'                                    => 'ja',
+     '^GREEN'                                 => 'VIHRE&Auml;',
+     'BLUE'                                   => 'SININEN',
+     'DARK GREEN'                             => 'TUMMANVIHRE&Auml;',
+     'MAGENTA'                                => 'PINKKI',
+     'AMBER'                                  => 'PUNAINEN',
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => 'Sunnuntai',   'Sun' => 'Su',
+      'Monday'    => 'Maanantai',   'Mon' => 'Ma',
+      'Tuesday'   => 'Tiistai',     'Tue' => 'Ti',
+      'Wednesday' => 'Keskiviikko', 'Wed' => 'Ke',
+      'Thursday'  => 'Torstai',     'Thu' => 'To',
+      'Friday'    => 'Perjantai',   'Fri' => 'Pe',
+      'Saturday'  => 'Lauantai',    'Sat' => 'La' 
+    );
+
+%month = 
+    (
+      'January'   => 'Tammi',      'February'  => 'Helmi' , 'March'     => 'Maalis',
+      'Jan'       => 'Tam',        'Feb'       => 'Hel',    'Mar'       => 'Maa',
+      'April'     => 'Huhti',      'May'       => 'Touko',  'June'      => 'Kes&auml;', 
+      'Apr'       => 'Huh',        'May'       => 'Tou',    'Jun'       => 'Kes',
+      'July'      => 'Hein&auml;', 'August'    => 'Elo',    'September' => 'Syys', 
+      'Jul'       => 'Hei',        'Aug'       => 'Elo',    'Sep'       => 'Syy', 
+      'October'   => 'Loka',       'November'  => 'Marras', 'December'  => 'Joulu', 
+      'Oct'       => 'Lok',        'Nov'       => 'Mar',    'Dec'       => 'Kou' 
+    );
+
+#
+# handle two different time/date formats:  
+# return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
+#
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
+  if( $wday{$foo[0]} && $month{$foo[2]} )
+    {
+	if($foo[3]=~(/(.*)at(.*)/))
+      { 
+        @quux=split(/at/,$foo[3]);
+        $foo[3]=$quux[0]." kello ".$quux[1]; 
+      };
+      return "$wday{$foo[0]}, $foo[1]. $month{$foo[2]} $foo[3]"; 
+    };
+
+# handle nontranslated strings which ought to be translated
+# print STDERR "$_\n" or print DEBUG "not translated $_";
+# but then again we might not want/need to translate all strings
+  
+  return $string;
+
+};
+
+
+

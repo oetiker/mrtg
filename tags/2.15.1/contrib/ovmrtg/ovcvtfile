@@ -1,0 +1,135 @@
+#!/usr/local/bin/perl5
+# -*- mode: Perl -*-
+##################################################################
+# Extract Input and Output values for target
+##################################################################
+# Created by Laurie Gellatly <gellatly@one.net.au>
+# This reads an OV_DB file for the target and interface
+# and prints a single line for In, Out, "UPTIME" and Target
+#################################################################
+#
+# Distributed under the GNU copyleft
+#
+# $Id: ovcvtfile,v 1.1.1.1 2002/02/26 10:16:36 oetiker Exp $
+#
+use strict;
+use vars '$DEBUG';
+my $ov_db = "/var/opt/OV/share/databases";
+my $DEBUG = 0;
+   my($target, $interface, $io , $in, $out, $uptime) ;
+   my ($cnt, $data, $recno, $junk);
+   my @names = ( "IfInErrors", "IfOutErrors", 
+     "IfInOctets", "IfOutOctets", "avgBusy5", "sysUpTime");
+   my @namext = (".err", "", ".cpu");
+   my ($val);
+   my $recsz = 24;
+   my ($oldtime) = time - 550;
+
+
+sub main {
+
+   my($extn) = "";
+   $target = $ARGV[0];
+   $interface = $ARGV[1];
+   $io = $ARGV[2];
+   die <<USAGE  unless (defined($target) && defined($interface) && defined($io));
+
+USAGE: ovcvtfile 'IPADDress Interface# io=1|err=0|cpu=2'
+
+EXAMPLE:  ovcvtfile 193.20.1.1 4 1
+
+Read target 193.20.1.1 for interface 4 Input and Output Octets
+
+
+USAGE
+   if ($ov_db eq ""){
+     $ov_db = "/var/opt/OV/share/databases";
+   }
+   $ov_db= $ov_db."/snmpCollect/";
+   $extn =  $namext[$io];
+   $uptime = pretty_uptime_value();
+   $in = get(2*$io,$interface);
+   if ($io == 2) {
+      $out = $in;
+   } else {
+      $out = get(1+2*$io,$interface);
+   }
+
+print <<ECHO;
+$in
+$out
+$uptime
+$target.$interface$extn
+ECHO
+}
+  
+main;
+exit(0);
+
+sub get {
+   my ($ind,$interface) = @_;
+   my ($file) = $ov_db.$names[$ind].".".$interface;
+   open (RAWIN , $file) or die "Could not open $file";
+   my ($junk, $junk, $junk, $junk, $junk, $junk, $junk, $recno) = stat $file;
+   my ($starttime, $entime, $IPAdd1, $IPAdd2, $IPAdd3, $IPAdd4, $cnt, $val) ;
+   $recno = ($recno / $recsz) - 1 ;
+   my ($notfound) = $recno > -1;
+   binmode(RAWIN);
+   while ($notfound){
+# Read from the end of file backwards
+      seek(RAWIN,$recno * $recsz, 0);
+      read(RAWIN, $data, $recsz);
+      ($starttime, $entime, $IPAdd1, $IPAdd2, $IPAdd3, $IPAdd4, $junk, $cnt, $val) =
+      unpack("NNCCCCNNN",$data);
+      if ($oldtime > $entime) {
+         $val = 0;
+	 $notfound = 0;
+      } elsif ($target eq $IPAdd1.".".$IPAdd2.".".$IPAdd3.".".$IPAdd4){
+         if((pack"s",1) eq (pack"v",1)){
+            $notfound = $cnt;
+            $cnt = $val;
+            $val = $notfound;
+         }
+         $notfound = 0;
+         $val = unpack"d",pack"LL",$cnt,$val;
+      } else {
+	 $recno--;
+	 if ( $recno < 0 ){
+            $notfound = 0;
+	 }
+      }
+   }
+   close (RAWIN);
+   if ($ind < 2){
+      $val = $val * ($entime - $starttime);
+   }
+   $val = int($val);
+   return ($val);
+}
+
+sub pretty_uptime_value () {
+   my ($uptime) = get(5,0);
+   if ($uptime == 0){
+      return "An unknown amount of time";
+   }
+   my ($seconds,$minutes,$hours,$days,$result);
+## We divide the uptime by hundred since we're not interested in
+## sub-second precision.
+   $uptime = int ($uptime / 100);
+   $days = int ($uptime / (60 * 60 * 24));
+   $uptime %= (60 * 60 * 24);
+   $hours = int ($uptime / (60 * 60));
+   $uptime %= (60 * 60);
+   $minutes = int ($uptime / 60);
+   $seconds = $uptime % 60;
+   if ($days == 0){
+      $result = sprintf ("%d:%02d:%02d", $hours, $minutes, $seconds);
+   } elsif ($days == 1) {
+      $result = sprintf ("%d day, %d:%02d:%02d",
+      $days, $hours, $minutes, $seconds);
+   } else {
+      $result = sprintf ("%d days, %d:%02d:%02d",
+      $days, $hours, $minutes, $seconds);
+   }
+   return $result;
+}

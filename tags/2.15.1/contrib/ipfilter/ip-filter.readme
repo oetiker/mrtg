@@ -1,0 +1,34 @@
+I've found the simple enclosed perl script useful to use mrtg to graph
+traffic through our IP-Filter firewall.  The script may need some
+fiddling with the regular expressions to graph what you need at your
+site; our if-filter configuration blocks everything on the WAN
+interface by default and allows specific protocols in with `pass in
+quick' and `block in quick' rules on groups from 100-190; hence the
+simple regular expressions.
+
+The usage in mrtg.cfg here is:
+
+# firewall
+
+Target[firewall]: `./fw.pl`
+
+Options[firewall]: growright, noinfo, perhour
+
+MaxBytes[firewall]: 50000
+
+Title[firewall]: IP-Filter
+
+PageTop[firewall]: <center>
+		   <h1><font color=red>Firewall Traffic Analysis</font></h1>
+                   <h3>Syn/Ack Packets Passed (Connections) on le1 (24.7.4.75)</h3>
+		   </center>
+
+YLegend[firewall]: Packets per Hour
+ShortLegend[firewall]: pkts/hr
+Legend1[firewall]: Inbound connections per hour
+Legend2[firewall]: Outbound connections per hour
+
+--
+
+Ronald Florence			http://members.home.net/18james
+

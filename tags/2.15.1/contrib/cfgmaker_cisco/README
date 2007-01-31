@@ -1,0 +1,23 @@
+Folks,
+     Jon Snyder here at Portland State University, made some
+modifications to the CFGMAKER file which instead of just returning
+an incrimenting port number on the graps, actually makes the following
+type of lable:
+Port 4/3, Vlan 128 , multi mode fiber fast ethernet
+
+     This version also grabs and shows all non-VLAN1 VLANS in a
+different color, plus provides aggregate VLAN traffic stastics as well by
+finding out what ports are in the VLAN, then adding those ports together.
+This means of course that a port will be "hit" however many times it is in
+a VLAN.
+     Anyhow, as it is such a small file, I included it as an
+attachment. We don't exacily have the time to provide support for this
+CFGMAKER modification, but if you have questions or comments, please
+direct them to JON@PDX.EDU.
+Michael P. Burton
+________________________________________________________________________
+Michael P. Burton          "Love is like racing across the frozen tundra
+Network Engineer, DCII      on a snowmobile which flips over,
+Portland State University   trapping you underneath.
+                            At night, the ice-weasels come." - Nietchze
+------------------------------------------------------------------------
