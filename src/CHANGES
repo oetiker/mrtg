@@ -1,3 +1,7 @@
+From: Günter Knauf
+* Updated Makefiles for Win32 and Netware
+* New Netware version of rateup.nlm
+
 Changes 2.15.1, 2007-02-01
 --------------------------
 From: Gosselin, Gerry GGosselin onecommunications.com
