@@ -18,7 +18,7 @@
 ### 	make sure snmpwalk_flg stops when last instance in table is fetched
 ###
 ### Alexander Kozlov <avk@post.eao.ru>
-###	Leave snmpwalk_flg early if no OIDs are passed
+###	Leave snmpwalk_flg early if no OIDs are returned
 ######################################################################
 
 package Net_SNMP_util;
@@ -56,7 +56,7 @@ BEGIN
 
 ## Handle importing/exporting of symbols
 
-use vars qw( @ISA @EXPORT $VERSION );
+use vars qw( @ISA @EXPORT $VERSION $ErrorMessage);
 use Exporter;
 
 our @ISA = qw( Exporter );
@@ -64,12 +64,12 @@ our @ISA = qw( Exporter );
 our @EXPORT = qw(
     snmpget snmpgetnext snmpwalk snmpset snmptrap snmpgetbulk snmpmaptable
     snmpmaptable4 snmpwalkhash snmpmapOID snmpMIB_to_OID snmpLoad_OID_Cache
-    snmpQueue_MIB_File
+    snmpQueue_MIB_File ErrorMessage
 );
 
 ## Version of the Net_SNMP_util module
 
-our $VERSION = v1.0.11;
+our $VERSION = v1.0.12;
 
 use Carp;
 
@@ -388,6 +388,7 @@ sub Check_OID ($);
 sub snmpLoad_OID_Cache ($);
 sub snmpQueue_MIB_File (@);
 sub ASNtype ($);
+sub error_msg ($);
 
 sub version () { $VERSION; }
 
@@ -573,9 +574,7 @@ sub snmpget ($@) {
     return wantarray ? @retvals : $retvals[0];
   }
   $ret = join(' ', @vars);
-  $oid = $session->error();
-  carp "SNMPGET Problem for $ret on $host : $oid"
-    unless ($Net_SNMP_util::SuppressWarnings > 1);
+  error_msg("SNMPGET Problem for $ret on ${host}: " . $session->error());
   return undef;
 }
 
@@ -634,9 +633,7 @@ sub snmpgetnext ($@) {
     return wantarray ? @retvals : $retvals[0];
   }
   $ret = join(' ', @vars);
-  $oid = $session->error();
-  carp "SNMPGETNEXT Problem for $ret on $host : $oid"
-    unless ($Net_SNMP_util::SuppressWarnings > 1);
+  error_msg("SNMPGETNEXT Problem for $ret on ${host}: " . $session->error());
   return undef;
 }
 
@@ -694,7 +691,7 @@ sub snmpgetbulk ($$$@) {
 
   $session = &snmpopen($host, 0, \@vars);
   if (!defined($session)) {
-    carp "SNMPGETBULK Problem for $host\n"
+    carp "SNMPGETBULK Problem for $host"
       unless ($Net_SNMP_util::SuppressWarnings > 1);
     return undef;
   }
@@ -730,9 +727,7 @@ sub snmpgetbulk ($$$@) {
     return (@retvals);
   } else {
     $ret = join(' ', @vars);
-    $oid = $session->error();
-    carp "SNMPGETBULK Problem for $ret on $host : $oid\n"
-      unless ($Net_SNMP_util::SuppressWarnings > 1);
+    error_msg("SNMPGETBULK Problem for $ret on ${host}: " . $session->error());
     return undef;
   }
 }
@@ -830,7 +825,7 @@ sub snmpset($@) {
     $value = shift @vars;
     $type  = ASNtype($ret);
     if (!defined($type)) {
-      carp "unknown SNMP type: $type\n"
+      carp "Unknown SNMP type: $type\n"
 	unless ($Net_SNMP_util::SuppressWarnings > 1);
     }
     push @vals, $oid, $type, $value;
@@ -848,9 +843,7 @@ sub snmpset($@) {
     return wantarray ? @retvals : $retvals[0];
   }
   $ret = join(' ', @enoid);
-  $oid = $session->error();
-  carp "SNMPSET Problem for $ret on $host : $oid"
-    unless ($Net_SNMP_util::SuppressWarnings > 1);
+  error_msg("SNMPSET Problem for $ret on ${host}: " . $session->error());
   return undef;
 }
 
@@ -919,7 +912,7 @@ sub snmptrap($$$$$@) {
 
   $session = &snmpopen($host, 1, \@vars);
   if (!defined($session)) {
-    carp "SNMPTRAP Problem for $host\n"
+    carp "SNMPTRAP Problem for $host"
       unless ($Net_SNMP_util::SuppressWarnings > 1);
     return undef;
   }
@@ -940,7 +933,7 @@ sub snmptrap($$$$$@) {
     $value = shift @vars;
     $type  = ASNtype($ret);
     if (!defined($type)) {
-      carp "unknown SNMP type: $type\n"
+      carp "unknown SNMP type: $type"
 	unless ($Net_SNMP_util::SuppressWarnings > 1);
     }
     push @vals, $oid, $type, $value;
@@ -958,9 +951,7 @@ sub snmptrap($$$$$@) {
 
   if (!$ret) {
     $ret = join(' ', @enoid);
-    $oid = $session->error();
-    carp "SNMPTRAP Problem for $ret on $host : $oid"
-      unless ($Net_SNMP_util::SuppressWarnings > 1);
+    error_msg("SNMPTRAP Problem for $ret on ${host}: " . $session->error());
   }
   return $ret;
 }
@@ -1058,7 +1049,7 @@ sub snmpmaptable4($$$@) {
 
   $session = &snmpopen($host, 0, \@vars);
   if (!defined($session)) {
-    carp "SNMPMAPTABLE Problem for $host\n"
+    carp "SNMPMAPTABLE Problem for $host"
       unless ($Net_SNMP_util::SuppressWarnings > 1);
     return undef;
   }
@@ -1100,9 +1091,7 @@ sub snmpmaptable4($$$@) {
     return($nr);
   } else {
     $ret = join(' ', @vars);
-    $oid = $session->error();
-    carp "SNMPMAPTABLE Problem for $ret on $host : $oid\n"
-      unless ($Net_SNMP_util::SuppressWarnings > 1);
+    error_msg("SNMPMAPTABLE Problem for $ret on ${host}: " . $session->error());
     return undef;
   }
 }
@@ -1185,6 +1174,7 @@ sub snmpmapOID(@)
   my(@vars) = @_;
   my($oid, $txt);
 
+  $Net_SNMP_util::ErrorMessage = '';
   while($#vars >= 0) {
     $txt = shift @vars;
     $oid = shift @vars;
@@ -1228,9 +1218,9 @@ sub snmpLoad_OID_Cache ($) {
   my($arg) = @_;
   my($txt, $oid);
 
+  $Net_SNMP_util::ErrorMessage = '';
   if (!open(CACHE, $arg)) {
-    carp "snmpLoad_OID_Cache: Can't open $arg: $!"
-      unless ($Net_SNMP_util::SuppressWarnings > 1);
+    error_msg("snmpLoad_OID_Cache: Can't open ${arg}: $!");
     return -1;
   }
 
@@ -1295,9 +1285,9 @@ sub snmpMIB_to_OID ($) {
     'enterprises' => 'private',
   );
 
+  $Net_SNMP_util::ErrorMessage = '';
   if (!open(MIB, $arg)) {
-    carp "snmpMIB_to_OID: Can't open $arg: $!"
-      unless ($Net_SNMP_util::SuppressWarnings > 1);
+    error_msg("snmpMIB_to_OID: Can't open ${arg}: $!");
     return -1;
   }
   print "snmpMIB_to_OID: loading $arg\n" if $Net_SNMP_util::Debug;
@@ -1474,6 +1464,7 @@ sub snmpQueue_MIB_File (@) {
   my(@files) = @_;
   my($file);
 
+  $Net_SNMP_util::ErrorMessage = '';
   foreach $file (@files) {
     push(@Net_SNMP_util::MIB_Files, $file);
   }
@@ -1590,6 +1581,7 @@ sub snmpopen ($$$) {
   } elsif ($version =~ /3/) {
     $version = 3;
   }
+  $Net_SNMP_util::ErrorMessage = '';
   if ((!defined($Net_SNMP_util::Session))
     || ($Net_SNMP_util::Host ne $nhost)
     || ($Net_SNMP_util::Version ne $version)
@@ -1626,8 +1618,7 @@ sub snmpopen ($$$) {
       $Net_SNMP_util::LHost = $nlhost;
       $Net_SNMP_util::IPv4only = $v4onlystr;
     } else {
-      carp "SNMPopen failed: $tmp"
-	unless ($Net_SNMP_util::SuppressWarnings > 1);
+      error_msg("SNMPopen failed: $tmp\n");
       return(undef);
     }
     return $Net_SNMP_util::Session;
@@ -1687,8 +1678,8 @@ sub toOID(@) {
     if ($oid) {
       $var =~ s/^$tmp/$oid/;
     } else {
-      carp "Unknown SNMP var $var"
-      unless ($Net_SNMP_util::SuppressWarnings > 1);
+      carp("Unknown SNMP var $var\n")
+	unless ($Net_SNMP_util::SuppressWarnings > 1);
       next;
     }
     while ($var =~ /\"([^\"]*)\"/) {
@@ -1737,7 +1728,7 @@ sub snmpwalk_flg ($$@) {
 
   $session = &snmpopen($host, 0, \@vars);
   if (!defined($session)) {
-    carp "SNMPWALK Problem for $host\n"
+    carp "SNMPWALK Problem for $host"
       unless ($Net_SNMP_util::SuppressWarnings > 1);
     return undef;
   }
@@ -1884,9 +1875,7 @@ sub snmpwalk_flg ($$@) {
     }
   } else {
     $ret = join(' ', @vars);
-    $oid = $session->error();
-    carp "SNMPWALK Problem for $ret on $host : $oid\n"
-      unless ($Net_SNMP_util::SuppressWarnings > 1);
+    error_msg("SNMPWALK Problem for $ret on ${host}: " . $session->error());
     return undef;
   }
 }
@@ -1949,6 +1938,16 @@ sub ASNtype($) {
   return $type;
 }
 
+#
+# set the ErrorMessage global and print an error message
+#
+sub error_msg($)
+{
+  my($msg) = @_;
+  $Net_SNMP_util::ErrorMessage = $msg;
+  carp($msg) unless ($Net_SNMP_util::SuppressWarnings > 1);
+}
+
 # [documentation] ------------------------------------------------------------
 
 =head1 EXPORTS
@@ -1963,7 +1962,7 @@ follow the rules and conventions of the F<Exporter> module (see L<Exporter>).
 
 &snmpget, &snmpgetnext, &snmpgetbulk, &snmpwalk, &snmpset, &snmptrap,
 &snmpmaptable, &snmpmaptable4, &snmpwalkhash, &snmpmapOID, &snmpMIB_to_OID,
-&snmpLoad_OID_Cache, &snmpQueue_MIB_File
+&snmpLoad_OID_Cache, &snmpQueue_MIB_File, ErrorMessage
 
 =back
 
@@ -2077,7 +2076,7 @@ by Simon Leinen <simon@switch.ch>
 
 =head1 COPYRIGHT
 
-Copyright (c) 2005 Mike Mitchell.  All rights reserved.  This program 
+Copyright (c) 2007 Mike Mitchell.  All rights reserved.  This program 
 is free software; you may redistribute it and/or modify it under the same
 terms as Perl itself.
 
