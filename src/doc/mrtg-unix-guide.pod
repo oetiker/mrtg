@@ -30,8 +30,10 @@ most operating systems.
 =item Perl
 
 Large parts of the MRTG system are written in the Perl scripting language.
-Make sure there is a recent copy of perl on your machine (try perl -v).
-At least version 5.005 is required for mrtg to work well.
+Make sure there is a recent copy of perl on your machine (try perl -v). At
+least version 5.005 is required for mrtg to work well. If you use SNMPV3 and
+other new features you should use at least 5.8.
+
 You can get the latest perl from
 
  http://www.perl.com/
