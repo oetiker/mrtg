@@ -15,7 +15,7 @@
 # base - basic program flow
 # snpo - SNMP Polling
 # snpd - SNMP Detail
-@main::DEBUG=qw(base snpo coca);
+@main::DEBUG=qw();
 #@main::DEBUG=qw();
 
 require 5.005;
@@ -619,10 +619,15 @@ ECHO
                 }
 
                 my $message;
+		my $nohc =0;
                 if ($message = IsCounterBroken($ifindex, $router_ref,$v3opt)) {
                     # set snmpopt_current to working snmp options
+		    if ($message ==1) {
+			    $nohc = 1;
+		    } else {
                     push @prob, "got '$message' from interface when trying to query";
                     $if_ok = 0;
+	    	    }
                 }
 
                 my $community = $$router_ref{community};
@@ -716,6 +721,7 @@ ECHO
                 $if_ref =~ s/([& :])/\\$1/g;
                 my $default_target_directive = "Target[$target_name]: $if_ref:$router_connect";
 		$default_target_directive .= "\nSnmpOptions[$target_name]: $v3options"  if $$router_ref{snmpopt_current} =~ /(?=:.*?){4}:3/ ;
+		$default_target_directive .= "\nnohc[$target_name]: yes" if $nohc == 1;
 	        my $if_snmp_descr_save = $if_snmp_descr;
 		$if_snmp_descr_save =~ s/"/'/g;
                 my $default_setenv_directive = "SetEnv[$target_name]: MRTG_INT_IP=\"$if_ip\" MRTG_INT_DESCR=\"$if_snmp_descr_save\"";
@@ -869,8 +875,10 @@ sub IsCounterBroken ($$$) {
     my $router_ref = shift;
     my $v3opt = shift;
     my $router = $$router_ref{routerkey};
+    my $fallback = 0;
     $$router_ref{snmpopt_current} = $$router_ref{'snmp-options'};
     local $SNMP_Session::suppress_warnings = 3;
+    local $Net_SNMP_util::suppress_warnings = 3;
 
     my $ipv4only = $$router_ref{ipv4only};
     my $snmphost = v4onlyifnecessary($router, $ipv4only);
@@ -880,30 +888,35 @@ sub IsCounterBroken ($$$) {
         my $speed = (snmpget($snmphost, $v3opt, 'ifHighSpeed.'.$if))[0];
         debug('base',"snmpget $snmphost for ifHighSpeed.$if -> $speed Mb/s");
         $SNMP_Session::errmsg = undef;
+	$Net_SNMP_util::ErrorMessage = undef;
         my $counter = (snmpget($snmphost,$v3opt, 'ifHCInOctets.'.$if))[0];
         debug('base',"snmpget $snmphost for ifHCInOctets.$if -> $counter");
-        if(not $speed or $counter eq "" or $SNMP_Session::errmsg){
+        if(not $speed or $counter eq "" or $counter =~ /\D/ or $SNMP_Session::errmsg or $Net_SNMP_util::ErrorMessage){
             $SNMP_Session::errmsg = undef;
-            $$router_ref{snmpopt_current} =~ s/:+[23]$//;
+            $Net_SNMP_util::ErrorMessage = undef;
+	    $fallback = 1;
             debug('base',"check for HighspeedCounters failed ... Dropping back to V1");
         } else {
            return 0;
         }
     }
-    $router = "$$router_ref{community}\@$$router_ref{routername}$$router_ref{'snmp-options'}";
-    $snmphost = v4onlyifnecessary($router, $ipv4only);
-    if ( $$router_ref{snmpopt_current} !~ /:[23]/) {
+    if ( $fallback == 1 or $$router_ref{snmpopt_current} !~ /:\d*:\d*:\d*:\d*:[23]$/) {
          my $counter = (snmpget($snmphost, 'ifInOctets.'.$if))[0];
          if (defined $SNMP_Session::errmsg) {
              my $error = $SNMP_Session::errmsg;
              $SNMP_Session::errmsg = undef;
              $error =~ s/\n/\n###     /g;
              return $error;
-         } elsif (not defined $counter or $counter eq '') {
+     	} elsif (defined $Net_SNMP_util::ErrorMessage and $Net_SNMP_util::ErrorMessage =~ /\w/) {
+             my $error = $Net_SNMP_util::ErrorMessage;
+             $Net_SNMP_util::ErrorMessage = undef;
+             $error =~ s/\n/\n###     /g;
+             return $error;
+         } elsif (not defined $counter or $counter eq '' or $counter =~ /\D/) {
               return "No counter exists for $if";
          }
     }
-    return 0;
+    return $fallback;
 } # end IsCounterBroken
 
 # DeviceInfo does fallback between IPv6 and IPv4: if an IPv6 snmpwalk returns
