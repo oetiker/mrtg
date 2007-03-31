@@ -1,3 +1,10 @@
+From: Dan.McDonald austinenergy.com
+* config option noHC for boxes that don't have HC counters
+  but run SNMPv2/v3
+
+From: Mike Mitchell Mike.Mitchell sas.com
+* Updated Net_SNMP_util module (error messages)
+
 From: Günter Knauf
 * Updated Makefiles for Win32 and Netware
 * New Netware version of rateup.nlm

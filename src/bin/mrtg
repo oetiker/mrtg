@@ -2133,7 +2133,8 @@ sub getsnmparg ($$$){
     
     # make sure we have no error messages hanging round.
     
-    $SNMP_Session::errmsg = '';
+    $SNMP_Session::errmsg = undef;
+    $Net_SNMP_util::ErrorMessage = undef;
 
     my $targtemp = $$target{Community}.'@'.$$target{Host}.$$target{SnmpOpt};
     $targtemp = v4onlyifnecessary($targtemp, $$target{ipv4only});
@@ -2233,9 +2234,14 @@ sub getsnmparg ($$$){
 	}
 	# no sense continuing here ... if there is no data ...      
  	if (defined $SNMP_Session::errmsg and $SNMP_Session::errmsg =~ /no response received/){
-            $SNMP_Session::errmsg = '';
+            $SNMP_Session::errmsg = undef;
 	    warn "$NOW: WARNING: skipping because at least the query for $OID[0] on  $$target{Host} did not succeed\n";
 	    return 'DEADHOST';
+ 	if (defined $Net_SNMP_util::ErrorMessage and $Net_SNMP_util::ErrorMessage =~ /No response from remote/){
+            $Net_SNMP_util::ErrorMessage = undef;
+	    warn "$NOW: WARNING: skipping because at least the query for $OID[0] on  $$target{Host} did not succeed\n";
+	    return 'DEADHOST';
+	}
 	}
 	if ($$target{OID}[$i] =~ /if(Admin|Oper)Hack/) {
 	    push @final, ((shift @ret) == 1) ? 1:0;

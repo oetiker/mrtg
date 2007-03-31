@@ -538,6 +538,19 @@ Example:
   Target[myrouter]: 2:router1:::::3
   SnmpOptions[myrouter]: username=>'user1'
 
+=item noHC
+
+Not all routers that support SNMPv2 or SNMPv3 provide the ifHC* counters
+on every interface.  The noHC[] per-target keyword signals that the
+low-speed counters ifInOctets and ifOutOctets should be queried instead.
+cfgmaker will automatically insert this tag if SNMPv2 or SNMPv3 is specified
+but the ifHC* counters are unavailable.
+
+Example:
+  Target[myrouter]: #Bri0:router1:::::3
+  SnmpOptions[myrouter]: username=>'user1'
+  noHC[myrouter]: yes
+
 =item Reversing
 
 Sometimes you are sitting on the wrong side of the

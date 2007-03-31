@@ -170,6 +170,9 @@ $VERSION = 2.100016;
        'routername[]' => 
        [sub{1}, sub{"Internal Error"}], #will test this later
 
+       'nohc[]' =>
+       [sub{((lc($_[0])) eq 'yes' or (lc($_[0])) eq 'no')}, sub{"$_[0] must be yes or no"}],
+
        'maxbytes[]' => 
        [sub{(($_[0] =~ /^[0-9]+$/) && ($_[0] > 0)) },
         sub{"$_[0] must be a Number bigger than 0"}],
@@ -919,8 +922,14 @@ sub cfgcheck ($$$$;$) {
                 $ipv4only = 0
                   unless (defined $$rcfg{ipv4only}{$rou}) && (lc($$rcfg{ipv4only}{$rou}) eq 'yes');
             }
+	    # Check if nohc has been set, designating a low-speed interface
+	    # without working HC counters.  Default is that high-speed
+	    # counters exist.
+	    my $nohc = 0;
+	    $nohc = 1 if (defined $$rcfg{nohc}{$rou}) && (lc($$rcfg{nohc}{$rou}) eq 'yes');
+	    
 	    ( $$rcfg{target}{$rou}, $$rcfg{uniqueTarget}{$rou} ) =
-		targparser( $$rcfg{target}{$rou}, $target, $targIndex, $ipv4only, $rcfg->{snmpoptions}{$rou} );
+		targparser( $$rcfg{target}{$rou}, $target, $targIndex, $ipv4only, $rcfg->{snmpoptions}{$rou}, $nohc );
         } else {
             warn ("WARNING: I can't find a \"target[$rou]\" definition\n");
             $error = "yes";
@@ -1230,7 +1239,7 @@ sub newSnmpTarg( $$ ) {
 # efficient. See Friedl, J.E.F. Mastering Regular Expressions. O'Reilly.
 # p. 273
 
-sub targparser( $$$$$ ) {
+sub targparser( $$$$$$ ) {
 	# Target string (int:community@router, etc.)
 	my $string = shift;
 	# Reference to target array
@@ -1241,6 +1250,8 @@ sub targparser( $$$$$ ) {
 	my $ipv4only = shift;
 	# options passed per target.
 	my $snmpoptions = shift;
+	# Highspeed Counter test
+	my $nohc = shift;
 	
 	# Next available index in the @$target array
 	my $idx = @$target;
@@ -1434,7 +1445,7 @@ sub targparser( $$$$$ ) {
 			my $d2 = 1 - $d1;
 			# Set the OIDs depending on whether SNMPv2 has been specified
 			# and on the direction
-			if( $if->{SnmpInfo} =~ m/(?::[^:]*){4}:[32][Cc]?/ ) {
+			if( $if->{SnmpInfo} =~ m/(?::[^:]*){4}:[32][Cc]?/ and $nohc == 0 ) {
 				$if->{OID}[$d1] = 'ifHCInOctets';
 				$if->{OID}[$d2] = 'ifHCOutOctets';
 			} else {
@@ -1606,7 +1617,9 @@ sub populateconfcache ($$$$$) {
     my $hostkey = cleanhostkey $host;    
     return if defined $$confcache{$hostkey} and not $reread;
     my $snmp_errlevel = $SNMP_Session::suppress_warnings;
-    $SNMP_Session::suppress_warnings = 3;    
+    my $net_snmp_errlevel = $Net_SNMP_util::suppress_warnings;
+    $SNMP_Session::suppress_warnings = 3;   
+    $Net_SNMP_util::suppress_warnings = 3;   
     debug('coca',"populate confcache $host");
 
     # clear confcache for host;
@@ -1623,8 +1636,9 @@ sub populateconfcache ($$$$$) {
     foreach my $node (@nodes) {
 	next if $confcache->{___deadhosts}{$hostkey} and time - $confcache->{___deadhosts}{$hostkey} < 300;
 	$SNMP_Session::errmsg = undef;
+	$Net_SNMP_util::ErrorMessage = undef;
 	@ret = snmpwalk(v4onlyifnecessary($host, $ipv4only), $snmpoptions, $node);
-	unless ( $SNMP_Session::errmsg){
+	unless ( $SNMP_Session::errmsg or $Net_SNMP_util::ErrorMessage){
 	    foreach my $ret (@ret)
 	      {
 		  my ($oid, $desc) = split(':', $ret, 2);
@@ -1638,17 +1652,21 @@ sub populateconfcache ($$$$$) {
 	      };
 	} else {
   	    $confcache->{___deadhosts}{$hostkey} = time
-		if $SNMP_Session::errmsg =~ /no response received/;
+		if defined($SNMP_Session::errmsg) and $SNMP_Session::errmsg =~ /no response received/;
+  	    $confcache->{___deadhosts}{$hostkey} = time
+		if defined($Net_SNMP_util::ErrorMessage) and $Net_SNMP_util::ErrorMessage =~ /No response from remote/;
 	    debug('coca',"Skipping $node scanning because $host does not seem to support it");
 	}
     }
     if ($confcache->{___deadhosts}{$hostkey} and time - $confcache->{___deadhosts}{$hostkey} < 300){
 	$SNMP_Session::suppress_warnings = $snmp_errlevel;
+	$Net_SNMP_util::suppress_warnings = $snmp_errlevel;
 	return;
     }
     $SNMP_Session::errmsg = undef;
+    $Net_SNMP_util::ErrorMessage = undef;
     @ret = snmpwalk(v4onlyifnecessary($host, $ipv4only), $snmpoptions, "ifPhysAddress");
-    unless ( $SNMP_Session::errmsg){
+    unless ( $SNMP_Session::errmsg or $Net_SNMP_util::ErrorMessage){
 	foreach my $ret (@ret)
 	  {
 	      my ($oid, $bin) = split(':', $ret, 2);
@@ -1670,6 +1688,7 @@ sub populateconfcache ($$$$$) {
      push @{$$confcache{___updated}}, $hostkey;
 
     $SNMP_Session::suppress_warnings = $snmp_errlevel;    
+    $Net_SNMP_util::supress_warnings = $net_snmp_errlevel;
 }
 
 sub log2rrd ($$$) {
