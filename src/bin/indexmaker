@@ -399,10 +399,10 @@ ECHO
             /^descr(iption)?$/ &&
               do{
                   $section = "No Description for $item";
-		  $$rcfg{setenv}{$item} =~ /MRTG_INT_DESCR="(.*?)"/  #"
+		  $$rcfg{setenv}{$item} =~ /MRTG_INT_DESCR="(.+?)"/  #"
                         and $section = $1;
                   $$rcfg{pagetop}{$item} =~ 
-   		          m,<td>Description:</td>\s*<td>\Q$section\E\s*(.*?)</td>,i
+   		          m,<td>Description:</td>\s*<td>\Q$section\E\s*([^< ][^<]+?)</td>,i
                         and $section = $1;
                   last;
               };
