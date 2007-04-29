@@ -1,3 +1,5 @@
+Changes 2.15.2, 2007-04-29
+--------------------------
 From: Dan.McDonald austinenergy.com
 * config option noHC for boxes that don't have HC counters
   but run SNMPv2/v3
