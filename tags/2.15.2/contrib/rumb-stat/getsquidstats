@@ -1,0 +1,58 @@
+#!/usr/bin/perl
+
+#######################################################
+# Get Web stats from Squid version 1.1.1 or higher
+#######################################################
+# Author: Anthony Rumble <anthony@rumble.waratah.id.au>
+#
+# Revision: $Revision: 1.1.1.1 $
+#######################################################
+
+use strict;
+use Socket;
+
+my ($request) = "cache_object://localhost/stats/utilization HTTP/1.0\n";# Request
+my ($host) = "localhost";	# Host
+my ($p) = 8080;			# Port number
+
+my ($j, $good, $junk, $sin, $port, $iaddr, $paddr, $proto, $line, $uptime, $bytes);
+
+$proto = getprotobyname('tcp');
+if (!$proto)
+{
+	die("getsockbyname");
+}
+socket(S, PF_INET, SOCK_STREAM, $proto) || die "socket: $!";
+
+$port = shift || $p;
+
+$iaddr = gethostbyname($host);
+if (!$iaddr)
+{
+	die("gethostbyname");
+}
+$sin = sockaddr_in($port, $iaddr);
+if (!$sin)
+{
+	die("sockaddr_in");
+}
+connect(S, $sin) || die "connect: $!";
+
+select(S); 
+$| = 1; 
+select(STDOUT);
+
+print S "GET $request\n";
+
+while (<S>) 
+{
+	($junk, $b, $junk, $junk, $junk, $junk, $junk, $junk, $junk, $j)  = split(' ');
+	if ($b eq "TOTAL")
+	{
+		($good) = split('}', $j);
+		printf ("0\n%u\n1\nsquid\n", $good*1000);
+		exit(0);
+	}
+}
+
+close(S);

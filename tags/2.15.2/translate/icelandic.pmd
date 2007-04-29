@@ -1,0 +1,139 @@
+#
+# Sample Translation for mrtg ... 
+#
+######################################################################
+# Adds support for Icelandic to locales_mrtg.pm. Translate this file to
+# your language and send the translation to oetiker@ee.ethz.ch if you
+# want to integrate your translation to the existing locales_mrtg.pm
+# use 
+#
+# locales_pt.pl locales_mrtg.pm yourlanguage.pt > locales_mrtg.new.pm
+#
+#####################################################################
+
+###### PATCHTAG 00 ###################################################
+###      Icelandic/Islenska   
+###      => Halldor Karl Högnason <halldor.hognason@islandssimi.is>
+###### PATCHTAG 10 ###################################################
+  &icelandic 
+###### PATCHTAG 20 ###################################################
+  'icelandic'       => \&icelandic, 
+  'islenska'        => \&icelandic,
+###### PATCHTAG 30 ###################################################
+# Icelandic/islenska
+   'icelandic' =>
+   "&THORN;&yacute;tt yfir &aacute; &iacute;slensku af  
+				<a href=\"http://www.islandssimi.is\">Halld&oacute;r Karl H&ouml;gnason</a>
+				<a href=\"mailto:halldor.hognason\@islandssimi.is\">&lt;halldor.hognason\@islandssimi.is&gt;</a>",
+###### PATCHTAG 40 ###################################################
+$credits::LOCALE{'islenska'}=$credits::LOCALE{'icelandic'};
+###### PATCHTAG 50 ###################################################
+# Icelandic 
+
+sub icelandic
+{
+  my $string = shift;
+return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+  # charset=iso-2022-jp
+
+  %translations =
+  (  
+     #'charset=iso-8859-1'                     => 'charset=iso-8859-1',
+     'Maximal 5 Minute Incoming Traffic'      => 'H&aacute;marks 5 m&iacute;n&uacute;tna umfer&eth; inn',
+     'Maximal 5 Minute Outgoing Traffic'      => 'H&aacute;marks 5 m&iacute;n&uacute;tna umfer&eth; &uacute;t',
+     'the device'                             => 'tæki&eth;',
+     'The statistics were last updated(.*)'   => 'G&ouml;gnin voru s&iacute;&eth;ast uppf&aelig;r&eth;$1',
+     ' Average\)'                             => ' Me&eth;altal)',
+     'Average'                                => 'Me&eth;altal',
+     'Max'                                    => 'H&aacute;mark',
+     'Current'                                => 'N&uacute;',
+     'version'                                => '&uacute;tg&aacute;fa',
+     '`Daily\' Graph \((.*) Minute'           => '`Dagleg\' sta&eth;a ($1 m&iacute;n&uacute;tur',
+     '`Weekly\' Graph \(30 Minute'            => '`Vikuleg\' sta&eth;a (30 m&iacute;n&uacute;tur',
+     '`Monthly\' Graph \(2 Hour'              => '`M&aacute;na&eth;arleg\' sta&eth;a (2 klst.',
+     '`Yearly\' Graph \(1 Day'                => '`&Aarleg\' sta&eth;a (1 dags', 
+     'Incoming Traffic in (\S+) per Second'   => 'Umfer&eth; inn &iacute; $1 &aacute; sek&uacute;ndu',
+     'Outgoing Traffic in (\S+) per Second'   => 'Umfer&eth; &uacute;t &iacute; $1 &aacute; sek&uacute;ndu',
+     'at which time (.*) had been up for(.*)' => '&thorn;egar $1 haf&eth;i veri&eth; uppi &iacute;$2',
+     # '([kMG]?)([bB])/s'                 => '\$1\$2/sek',
+     # '([kMG]?)([bB])/min'              => '\$1\$2/m&iacute;n',
+     '([kMG]?)([bB])/h'                       => '$1$2/klst',
+     # 'Bits'                                => 'Bitar',
+     # 'Bytes'                              => 'B&aelig;ti'
+     'In'                                     => 'Inn',
+     'Out'                                    => '&Uacute;t',
+     'Percentage'                             => 'Pr&oacute;sent',
+     'Ported to OpenVMS Alpha by'             => 'Sta&eth;f&aelig;rt &aacute; OpenVMS af', 
+     'Ported to WindowsNT by'                 => 'Sta&eth;f&aelig;rt &aacute; WindowsNT af',
+     'and'                                    => 'og',
+     '^GREEN'                                  => 'GR&AElig;Nt',
+     'BLUE'                                   => 'BL&Aacute;TT',
+     'DARK GREEN'                             => 'D&Ouml;KK GR&AElig;NN',
+     'MAGENTA'                                => 'BL&Aacute;RAU&ETH;UR',
+     'AMBER'                                  => 'GULBR&Uacute;NN'
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => 'Sunnudagur',            'Sun' => 'Sun',
+      'Monday'    => 'M&aacute;nudagur',      'Mon' => 'M&aacute;n',
+      'Tuesday'   => '&THORN;ri&eth;judagur', 'Tue' => '&THORN;ri',
+      'Wednesday' => 'Mi&eth;vikudagur',      'Wed' => 'Mi&eth;',
+      'Thursday'  => 'Fimmtudagur',           'Thu' => 'Fim',
+      'Friday'    => 'F&ouml;studagur',       'Fri' => 'F&ouml;s',
+      'Saturday'  => 'Laugardagur',           'Sat' => 'Lau' 
+
+    );
+
+%month = 
+    (
+      'January'   => 'Jan&uacute;ar',    'February'  => 'Febr&uacute;ar' ,    'March'     => 'Mars',
+      'Jan'       => 'Jan',       'Feb'       => 'Feb',         'Mar'       => 'Mar',
+      'April'     => 'Apr&iacute;l',     'May'       => 'Ma&iacute;',         'June'      => 'J&uacute;n&iacute;', 
+      'Apr'       => 'Apr',       'May'       => 'Ma&iacute;',         'Jun'       => 'J&uacute;n',
+      'July'      => 'J&uacute;l&iacute;',      'August'    => '&Aacute;g&uacute;st',      'September' => 'September', 
+      'Jul'       => 'J&uacute;l',       'Aug'       => '&Aacute;g&uacute;',         'Sep'       => 'Sep', 
+      'October'   => 'Okt&oacute;ber',   'November'  => 'N&oacute;vember',    'December'  => 'Desember', 
+      'Oct'       => 'Okt',       'Nov'       => 'N&oacute;v',         'Dec'       => 'Des' 
+    );
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+    {
+	if($foo[3]=~(/(.*)at(.*)/))
+      { 
+        @quux=split(/at/,$foo[3]);
+        $foo[3]=$quux[0]." kl.".$quux[1]; 
+      };
+      return "$wday{$foo[0]} den $foo[1]. $month{$foo[2]} $foo[3]"; 
+    };
+
+#
+# handle two different time/date formats:  
+# return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
+#
+
+# handle nontranslated strings which ought to be translated
+# print STDERR "$_\n" or print DEBUG "not translated $_";
+# but then again we might not want/need to translate all strings
+  
+  return $string;
+
+};

@@ -1,0 +1,82 @@
+###### PATCHTAG00 ###################################################
+# -*- mode: Perl -*-
+######################################################################
+### Localization of mrtg output pages
+######################################################################
+#                                                                    #
+#   This is a generated perl module file.                            #
+#   Please see the perl script mergelocale.pl and the language       #
+#   databasefiles skelton.pm0 and locale.*.pmd in translate/.        #
+#   If you want to contribute to mrtg change in the *.pmd files.     #
+#   If you just want to change your own mrtg: Go ahead and edit!     #
+#                                                                    #
+######################################################################
+### Defines programs which handles centralized pattern matching and pattern 
+### replacements in order to translate the given strings
+######################################################################
+### Created by:  Morten Storgaard Nielsen <msn@ipt.dtu.dk>
+###################################################################
+#
+# Distributed under the GNU copyleft
+#
+###################################################################
+### Locale by: 
+###### PATCHTAG10 ###################################################
+###
+### Contributions and fixes by:
+###
+###      0.05 fixed DARK GREEN entry		(msn@ipt.dtu.dk)
+###           fixed credits for native language (msn@ipt.dtu.dk)
+###	 0.06 added the PATCHTAGs               (msn@ipt.dtu.dk)
+###           fixed several small errors        (msn@ipt.dtu.dk)
+###	 0.07 changed PATCHTAG to support 
+###           mergelocale.pl                    (msn@ipt.dtu.dk)
+###
+######################################################################
+###
+package locales_mrtg;
+
+require 5.002;
+# make sure we do not get hit by UTF-8 here
+no locale;
+use strict;
+use vars qw(@ISA @EXPORT $VERSION);
+use Exporter;
+
+$VERSION = '0.07';
+
+@ISA = qw(Exporter);
+
+@EXPORT = qw
+(
+  &english
+###### PATCHTAG20 ###################################################
+);
+
+%lang2tran::LOCALE=  
+(
+  'english'      => \&english,
+  'default'      => \&english, 
+###### PATCHTAG30 ###################################################
+);
+
+%credits::LOCALE=
+  (
+# default
+   'default' =>
+   "Prepared for localization by
+				<a href=\"http://www.ipt.dtu.dk\">Morten S. Nielsen</a>
+				<a href=\"mailto:msn\@ipt.dtu.dk\">&lt;msn\@ipt.dtu.dk&gt;</a>",
+###### PATCHTAG40 ###################################################
+  );
+
+###### PATCHTAG50 ###################################################
+
+# English - default
+sub english
+{
+  return shift;
+};
+
+###### PATCHTAG60 ###################################################
+

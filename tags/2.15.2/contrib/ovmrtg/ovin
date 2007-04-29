@@ -1,0 +1,6 @@
+mv cwdrtr1.cfg cwdrtr1.$1
+mv sydrtr2.cfg sydrtr2.$1
+mv sydrtr3.cfg sydrtr3.$1
+mv cwdrtr1.$2 cwdrtr1.cfg
+mv sydrtr2.$2 sydrtr2.cfg
+mv sydrtr3.$2 sydrtr3.cfg

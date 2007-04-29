@@ -1,0 +1,125 @@
+###### PATCHTAG 00 ###################################################
+###      Malaysian/Malay   
+###      => Assakhof Ab. Satar <assakhof@mimos.my>
+###### PATCHTAG 10 ###################################################
+  &malay
+###### PATCHTAG 20 ###################################################
+  'malay'       => \&malay, 
+  'malaysian'   => \&malay,
+###### PATCHTAG 30 ###################################################
+# Malaysian/Malay
+   'malay' =>
+   "Terjemahan ke bahasa Malaysia/Indonesia oleh:
+				<a href=\"http://www.mimos.my\">Assakhof Ab. Satar</a>
+				<a href=\"mailto:assakhof\@mimos.my\">&lt;assakhof\@mimos.my&gt;</a>",
+###### PATCHTAG 40 ###################################################
+$credits::LOCALE{'malaysian'}=$credits::LOCALE{'malay'};
+###### PATCHTAG 50 ###################################################
+# Malaysian/Malay
+
+sub malay
+{
+  my $string = shift;
+return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+  # charset=iso-2022-jp
+
+  %translations =
+  (  
+     #'charset=iso-8859-1'                     => 'charset=iso-8859-1',
+     'Maximal 5 Minute Incoming Traffic'      => 'Maksimum 5 Minit Trafik Masuk',
+     'Maximal 5 Minute Outgoing Traffic'      => 'Maksimum 5 Minit Trafik Keluar',
+     'the device'                             => 'alatan',
+     'The statistics were last updated(.*)'   => 'Statistik ini kali terakhir dikemaskini pada $1',
+     ' Average\)'                             => ' secara purata)',
+     'Average'                                => 'Purata',
+     'Max'                                    => 'Maksimum',
+     'Current'                                => 'Kini',
+     'version'                                => 'versi',
+     '`Daily\' Graph \((.*) Minute'           => 'Graf `Harian\' ($1 minit :',
+     '`Weekly\' Graph \(30 Minute'            => 'Graf `Mingguan\' (30 minit :' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Graf `Bulanan\' (2 jam :',
+     '`Yearly\' Graph \(1 Day'                => 'Graf `Tahunan\' (1 hari :',
+     'Incoming Traffic in (\S+) per Second'   => 'Trafik Masuk $1 per saat',
+     'Outgoing Traffic in (\S+) per Second'   => 'Traffic Keluar $1 per saat',
+     'at which time (.*) had been up for(.*)' => 'Sehingga waktu $1 ia telah aktif selama $2',
+     # '([kMG]?)([bB])/s'                 => '\$1\$2/s',
+     # '([kMG]?)([bB])/min'              => '\$1\$2/min',
+     '([kMG]?)([bB])/h'                       => '$1$2/j',
+     # 'Bits'                                => 'Bits',
+     # 'Bytes'                              => 'Bytes'
+     'In'                                     => 'Masuk',
+     'Out'                                    => 'Keluar',
+     'Percentage'                             => 'Peratus',
+     'Ported to OpenVMS Alpha by'             => 'Pengubahsuaian ke  OpenVMS Alpha oleh',
+     'Ported to WindowsNT by'                 => 'Pengubahsuaian ke WindowsNT oleh',
+     'and'                                    => 'dan',
+     '^GREEN'                                 => 'HIJAU',
+     'BLUE'                                   => 'BIRU',
+     'DARK GREEN'                             => 'HIJAU GELAP',
+     'MAGENTA'                                => 'MAGENTA',
+     'AMBER'                                  => 'AMBAR'
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday =
+    (
+      'Sunday'    => 'Ahad',    'Sun' => 'Aha',
+      'Monday'    => 'Isnin',   'Mon' => 'Isn',
+      'Tuesday'   => 'Selasa',  'Tue' => 'Sel',
+      'Wednesday' => 'Rabu',    'Wed' => 'Rab',
+      'Thursday'  => 'Khamis',  'Thu' => 'Kha',
+      'Friday'    => 'Jumaat',  'Fri' => 'Jum',
+      'Saturday'  => 'Sabtu',   'Sat' => 'Sab'
+    );
+
+%month = 
+    (
+      'January'   => 'Januari',   'February'  => 'Februari' ,   'March'     => 'Mac',
+      'Jan'       => 'Jan',       'Feb'       => 'Feb',         'Mar'       => 'Mac',
+      'April'     => 'April',     'May'       => 'Mei',         'June'      => 'Jun', 
+      'Apr'       => 'Apr',       'May'       => 'Mei',         'Jun'       => 'Jun',
+      'July'      => 'Julai',     'August'    => 'Ogos',        'September' => 'September', 
+      'Jul'       => 'Jul',       'Aug'       => 'Ogo',         'Sep'       => 'Sep', 
+      'October'   => 'Oktober',   'November'  => 'November',    'December'  => 'Disember', 
+      'Oct'       => 'Okt',       'Nov'       => 'Nov',         'Dec'       => 'Dis' 
+    );
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+    {
+	if($foo[3]=~(/(.*)at(.*)/))
+      { 
+        @quux=split(/at/,$foo[3]);
+        $foo[3]=$quux[0]." pada ".$quux[1]; 
+      };
+	return "$wday{$foo[0]} $foo[1] $month{$foo[2]} $foo[3]";
+    };
+
+#
+# handle two different time/date formats:  
+# return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
+#
+
+# handle nontranslated strings which ought to be translated
+# print STDERR "$_\n" or print DEBUG "not translated $_";
+# but then again we might not want/need to translate all strings
+  
+  return $string;
+
+};
