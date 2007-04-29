@@ -1,7 +1,11 @@
 Changes 2.15.2, 2007-04-29
 --------------------------
+From: Tobi
+* Improve parsing reliability of indexmaker
+* Fixed deadhost detection in mrtg
+
 From: Dan.McDonald austinenergy.com
-* config option noHC for boxes that don't have HC counters
+* added config option noHC for boxes that don't have HC counters
   but run SNMPv2/v3
 
 From: Mike Mitchell Mike.Mitchell sas.com
