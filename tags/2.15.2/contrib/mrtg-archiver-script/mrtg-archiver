@@ -1,0 +1,254 @@
+#!/usr/bin/perl
+#
+# MRTG Archiver by O.Krotoff
+#
+# Version 0.2
+#
+
+use strict;
+use Getopt::Long;
+use File::Copy;
+use POSIX qw(strftime);
+
+my @targets;
+my %titles;
+my $target;
+my $ArchiveDir = 'archive';
+my $WorkDir = 'mrtgdata';
+my $ConfigFile = 'mrtg.cfg';
+my ($subdir, $timedir, $archpath, $archindex, $suffix, $img_suffix);
+my ($archperiod);
+my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $week);
+my ($cur_target, $cur_date, $cur_group);
+
+my $DayPartRE   = '^\<B\>\`Daily\'';
+my $WeekPartRE  = '^\<B\>\`Weekly\'';
+my $MonthPartRE = '^\<B\>\`Monthly\'';
+my $YearPartRE  = '^\<B\>\`Yearly\'';
+my $GroupRE     = '^(\d+\.\d+\.\d+\.\d+)'; # To group targets by router IP
+my $BackShift   = 0;
+
+my ($DayFlag, $WeekFlag, $MonthFlag, $YearFlag);
+
+($DayFlag, $WeekFlag, $MonthFlag, $YearFlag) = (0, 0, 0, 0);
+$img_suffix = 'png';
+
+GetOptions('d!'        => \$DayFlag,
+	   'w!'        => \$WeekFlag,
+	   'm!'        => \$MonthFlag,
+	   'y!'        => \$YearFlag,
+	   'conf=s'    => \$ConfigFile,
+	   'arch=s'    => \$ArchiveDir,
+	   'back=i'    => \$BackShift
+	  );
+
+$timedir = 'days'   if $DayFlag;
+$timedir = 'weeks'  if $WeekFlag;
+$timedir = 'months' if $MonthFlag;
+$timedir = 'years'  if $YearFlag;
+
+$suffix = 'day'   if $DayFlag;
+$suffix = 'week'  if $WeekFlag;
+$suffix = 'month' if $MonthFlag;
+$suffix = 'year'  if $YearFlag;
+
+$archperiod = 'Daily'   if $DayFlag;
+$archperiod = 'Weekly'  if $WeekFlag;
+$archperiod = 'Monthly' if $MonthFlag;
+$archperiod = 'Yearly'  if $YearFlag;
+
+@targets = ();
+
+open(CFGFILE, $ConfigFile) || die "Can't open configuration file $ConfigFile\n";
+while(<CFGFILE>) {
+  if(/^WorkDir:\s*(.*)\s*$/) {
+    $WorkDir = $1;
+  } elsif(/^Target\[(.*)\]:/) {
+    $cur_target = $1;
+    push @targets, $cur_target;
+  } elsif(/^Title\[$cur_target\]:\s*(.*)\s*$/) {
+    $titles{$cur_target} = $1;
+  }
+}
+
+($sec, $min, $hour, $mday, $mon, $year, $wday, $yday) =
+  localtime(time - $BackShift);
+$week = strftime("%W", $sec, $min, $hour, $mday, $mon, $year);
+$year += 1900;
+$mon  += 1;
+# $week = int($yday / 7) + 1;
+
+
+if($DayFlag) {
+  $subdir = sprintf "%4d-%02d-%02d", $year, $mon, $mday;
+  $cur_date = sprintf "%02d/%02d/%4d", $mday, $mon, $year;
+} elsif($WeekFlag) {
+  $subdir = sprintf "%4d-%02d", $year, $week;
+  $cur_date = sprintf "%02d/%4d, week %2d", $mon, $year, $week;
+} elsif($MonthFlag) {
+  $subdir = sprintf "%4d-%02d", $year, $mon;
+  $cur_date = sprintf "%02d/%4d", $mon, $year;
+} elsif($YearFlag) {
+  $subdir = sprintf "%4d", $year;
+  $cur_date = $subdir;
+}
+
+$archpath = "$ArchiveDir/$timedir/$subdir";
+$archindex = "$ArchiveDir/$timedir/index.html";
+
+if(-f $archindex) {
+  open(ARCHINDEX, "< $archindex") || die "Can't open $archindex !\n";
+  open(OUTARCHINDEX, "> $archindex.new") || die "Can't open $archindex.new !\n";
+  while(<ARCHINDEX>) {
+    if(m{^\<\!-- Start --\>}) {
+      print OUTARCHINDEX $_;
+      print OUTARCHINDEX "<li> <a href=\"$subdir/index.html\">$cur_date</a> \n";
+      if($DayFlag && $mday == 1) {
+	print OUTARCHINDEX "<li> <hr> \n";
+      }
+      if($WeekFlag && $week == 1) {
+	print OUTARCHINDEX "<li> <hr> \n";
+      }
+      if($MonthFlag && $mon == 1) {
+	print OUTARCHINDEX "<li> <hr> \n";
+      }
+    } else {
+      print OUTARCHINDEX $_;
+    }
+  }
+  close(ARCHINDEX);
+  close(OUTARCHINDEX);
+  unlink($archindex);
+  rename("$archindex.new", $archindex);
+} else {
+  open(OUTARCHINDEX, "> $archindex") || die "Can't create $archindex !\n";
+  print OUTARCHINDEX <<ARCHINDSTOP;
+<html>
+<head>
+<title>MRTG Statistics $archperiod Archive</title>
+</head>
+<body bgcolor=white textcolor=black>
+<h1>MRTG Statistics $archperiod Archive</h1>
+<a href="../index.html">Back to archive index</a>
+<hr>
+<ul>
+<!-- Start -->
+<li> <a href="$subdir/index.html">$cur_date</a> <!-- First one -->
+</ul>
+<hr>
+MRTG Statistics Archiver by <a href="mailto:krot\@tnsplus.kz">Krot</a>.
+</body>
+</html>
+ARCHINDSTOP
+
+}
+
+# print "Archive dir is: $archpath \n";
+
+unless(-d $archpath) {
+  mkdir($archpath, 0755)
+    || die "Can't create archive dir! \n";
+}
+
+open(INDEXFILE, "> $archpath/index.html") || die "Can't create index.html file!\n";
+print INDEXFILE <<INDEXTOP;
+<html>
+<head>
+<title>MRTG Statistics Archive --- $cur_date</title>
+</head>
+<body bgcolor=white textcolor=black>
+<h2>MRTG Statistics Archive --- $cur_date</h2>
+<a href="/cgi-bin/mrtg/mrtgnav?prev">&lt; Prev</a>&nbsp;
+<a href="/cgi-bin/mrtg/mrtgnav?index">Back to $archperiod archive index</a>&nbsp;
+<a href="/cgi-bin/mrtg/mrtgnav?next">Next &gt;</a>
+<hr>
+<ul>
+INDEXTOP
+
+$cur_group = '';
+
+foreach $target (@targets) {
+
+  if(open(HTMLFILE, "$WorkDir/$target.html")) {
+#    print "Processing $target...\n";
+
+    if($GroupRE) {
+       $target =~ /$GroupRE/;	
+#      $titles{$target} =~ /$GroupRE/;
+      if($cur_group ne $1) {
+	print INDEXFILE "</ul>" if $cur_group;
+	$cur_group = $1;
+	print INDEXFILE " <li>$cur_group\n <ul>\n";
+      }
+    }
+
+    print INDEXFILE "  <li><a href=$target.html> $titles{$target} </a>\n";
+    copy("$WorkDir/$target-$suffix.$img_suffix", "$archpath/$target-$suffix.$img_suffix") 
+      || die "Failed to copy file $archpath/$target-$suffix.$img_suffix !\n";
+
+    open(OUTFILE, "> $archpath/$target.html")
+      || die "Can't create archive file $archpath/$target.html !\n";
+
+    my $inHead = 0;
+    my $inDayPart   = 0;
+    my $inWeekPart  = 0;
+    my $inMonthPart = 0;
+    my $inYearPart  = 0;
+    my $inTail = 0;
+
+    while(<HTMLFILE>) {
+      chomp;
+      if(/^\<!DOCTYPE/)            { $inHead = 2    }
+      elsif(/^\<HR/ && $inHead)    {
+	$inHead--;
+	print OUTFILE <<NAVBLOCK if $inHead;
+<a href="/cgi-bin/mrtg/mrtgnav?prev">&lt; Prev</a>&nbsp;
+<a href="/cgi-bin/mrtg/mrtgnav?index">Index</a>&nbsp;
+<a href="/cgi-bin/mrtg/mrtgnav?next">Next &gt;</a>
+NAVBLOCK
+	print OUTFILE "<HR>" unless $inHead;
+      }
+      elsif(/$DayPartRE/)          { $inDayPart = 1  }
+      elsif(/^\<HR/ && $inDayPart) { $inDayPart = 0  }
+      elsif(/$WeekPartRE/)          { $inWeekPart = 1  }
+      elsif(/^\<HR/ && $inWeekPart) { $inWeekPart = 0  }
+      elsif(/$MonthPartRE/)          { $inMonthPart = 1  }
+      elsif(/^\<HR/ && $inMonthPart) { $inMonthPart = 0  }
+      elsif(/$YearPartRE/)           { $inYearPart = 1  }
+      elsif(/\<HR/ && $inYearPart) { $inYearPart = 0; $inTail = 1;  }
+
+      next if $inHead && (/^\<META/ || /^\<!--/);
+
+      s{\</[Hh](\d)\>}{ --- $cur_date\</H$1\>} if $inHead;
+      s{SRC=\"(mrtg\-[lmr])}{SRC=\"/mrtg-images/$1}g if $inTail;
+
+      print OUTFILE $_."\n" if ($inHead || ($inDayPart && $DayFlag) ||
+				($inWeekPart && $WeekFlag) ||
+				($inMonthPart && $MonthFlag) ||
+				($inYearPart && $YearFlag) ||
+				$inTail);
+
+    }
+
+    close(OUTFILE);
+    close(HTMLFILE);
+
+  }
+}
+
+print INDEXFILE " </ul>" if $GroupRE;
+print INDEXFILE <<INDEXTAIL;
+</ul>
+<hr>
+MRTG Statistics Archiver by <a href="mailto:krot\@tnsplus.kz">Krot</a>.
+</body>
+</html>
+INDEXTAIL
+
+
+
+
+
+
+
+

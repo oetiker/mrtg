@@ -1,0 +1,53 @@
+#!/usr/bin/perl
+
+#######################################################
+# Get Web stats from Apache 1.1.1 and better
+#######################################################
+# Author: Anthony Rumble <anthony@rumble.waratah.id.au>
+#
+# Revision: $Revision: 1.1.1.1 $
+#######################################################
+
+use strict;
+use Socket;
+
+my($request) = "/status/?auto";     # Request to send
+my($host) = "enterprise.ce.com.au"; # Host to send it to
+my($p) = 80;			    # Port no
+
+my ($sin, $port, $iaddr, $paddr, $proto, $line, $uptime, $bytes);
+
+$proto = getprotobyname('tcp');
+if (!$proto)
+{
+	die("getsockbyname");
+}
+socket(S, PF_INET, SOCK_STREAM, $proto) || die "socket: $!";
+
+$port = shift || $p;
+
+$iaddr = gethostbyname($host);
+if (!$iaddr)
+{
+	die("gethostbyname");
+}
+$sin = sockaddr_in($port, $iaddr);
+if (!$sin)
+{
+	die("sockaddr_in");
+}
+connect(S, $sin) || die "connect: $!";
+
+select(S); 
+$| = 1; 
+select(STDOUT);
+
+print S "GET $request\n";
+while (<S>) 
+{
+	$bytes=$1 if (m|^Total\ Bytes:\ (\S+)|);
+	$uptime=$1 if (m|^Uptime:\ (\S+)|);
+}
+close(S);
+
+print "0\n$bytes\n$uptime\nenterprise\n";

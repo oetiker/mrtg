@@ -1,0 +1,220 @@
+#!/usr/bin/perl -w
+
+use strict;
+use Getopt::Long;
+use Pod::Usage;
+
+BEGIN {
+    # Automatic OS detection ... do NOT touch
+    if ( $^O =~ /^(?:(ms)?(dos|win(32|nt)?))/i ) {
+        $main::OS = 'NT';
+        $main::SL = '\\';
+        $main::PS = ';';
+    } elsif ( $^O =~ /^VMS$/i ) {
+        $main::OS = 'VMS';
+        $main::SL = '.';
+        $main::PS = ':';
+    } else {
+        $main::OS = 'UNIX';
+        $main::SL = '/';
+        $main::PS = ':';
+    }
+}
+
+use FindBin;
+use lib "${FindBin::Bin}";
+use lib "${FindBin::Bin}${main::SL}..${main::SL}lib${main::SL}mrtg2";
+use MRTG_lib "2.090017";
+use POSIX qw(mktime);
+
+'$Revision: 1.8 $ ' =~ /Revision: (\S*)/;
+my $Revision = $1;
+
+my $sendmail = "/usr/lib/sendmail";
+$sendmail = "/usr/sbin/sendmail" if -x "/usr/sbin/sendmail";
+
+# main loop
+my %opt = ( 
+    'catch' => '(?:description|port name):</td>\s*<td>\s*([^<\s]+[^<]*?)\s*</td', 
+#    'catch' => 'td>\s*([^<\s]+COLO[^<]*?)\s*</td', 
+    'min' => 500 );
+sub walklog ($$$$);
+sub sumlog($$$);
+sub mailout($$);
+
+sub main()
+{
+    # parse options
+    GetOptions(\%opt, 'min=i','help|h', 'catch=s', 'email=s','version') or exit(1);
+    if($opt{help})     { pod2usage(1) }
+    if($opt{man})      { pod2usage(-exitstatus => 0, -verbose => 2) }
+    if($opt{version})  { print "mrtg-traffic-sum $Revision\n"; exit(0) }
+    my $cfgfile = shift @ARGV;
+    pod2usage(1) unless $cfgfile and -r $cfgfile;
+    my %rcfg;
+    my %cfg;
+    my @routers;
+    my @target;
+    my $report = "Subject: Traffic total for '$cfgfile' ($Revision) ";
+    readcfg($cfgfile,\@routers,\%cfg,\%rcfg);
+    cfgcheck(\@routers, \%cfg, \%rcfg, \@target);
+    walklog \@routers, \%cfg, \%rcfg,\$report;
+    if ($opt{email}) {
+	mailout \$report,$opt{email};
+    } else {
+	print $report;
+    }
+}
+
+main;
+
+sub walklog ($$$$){
+    my $routers = shift;
+    my $cfg = shift;
+    my $rcfg = shift;
+    my $report = shift;
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) =
+	localtime(time);
+    my $start = mktime(0, 0, 0, 1, $mon-1, $year, 0, 0, 1);
+    my $end = mktime(0, 0, 0, 1, $mon, $year, 0, 0, 1)-1;
+    my($m,$y) = (localtime($start))[4,5];
+    $y += 1900;
+    $m ++;
+    $$report .= sprintf "%04d/%02d\n\n", $y,$m;
+
+    $$report .= "Start: ".localtime($start)."\n";
+    $$report .= "End:   ".localtime($end)."\n";
+    $$report .= sprintf "%-40s  %15s\n","Interface","In+Out in GB";
+    $$report .= ("-" x 78)."\n";
+    foreach my $r (@$routers) {
+        my $label;
+	if ($rcfg->{pagetop}{$r} =~ /$opt{catch}/i ) {
+	    $label = $1;
+	    $label .= " $2" if $2;
+            my ($in,$out) = sumlog $cfg->{logdir}.$rcfg->{directory}{$r}."$r.log",$start,$end;
+            my $sum = ($in+$out)/(10**9);
+            next if $sum < $opt{'min'};
+            $$report .= sprintf "%-40s  %15.0f\n",$label,$sum;
+        }
+    }
+}
+
+sub sumlog ($$$) {
+    my $log = shift;
+    my $start = shift;
+    my $end = shift;
+    my $in = 0.0;
+    my $out = 0.0;    
+    if (open L, "<",$log){
+            my @this=($end+1,0,0);
+            my @prev;
+            while (<L>) {
+        	chomp;
+        	@prev = @this;
+        	@this = (split /\s+/)[0,1,2];
+
+        	if ($prev[0] <= $end) {
+        	    my $diff = $prev[0] - $this[0];
+        	    $in += $diff * $prev[1];
+        	    $out += $diff * $prev[2];
+	        }
+        	last if $this[0] <= $start;
+            }
+            close L;
+    } else {
+        warn "WARN Skipping $log\n";
+    }       
+    return $in,$out;
+}
+
+sub mailout ($$) {
+    my $data = shift;
+    my $rec = shift;
+    open S, "|-" or  exec $sendmail,'-f',$rec,$rec;
+    print S <<MESSAGE;
+From: $rec
+To: $rec
+$$data
+MESSAGE
+    close S;
+
+}
+1
+
+__END__
+
+=head1 NAME
+
+mrtg-traffic-sum - Builds montly traffic summary from mrtg log files
+
+=head1 SYNOPSIS
+
+B<mrtg-traffic-sum> [I<options>...] B<config-file>
+
+     --man           show man-page and exit
+ -h, --help          display this help and exit
+     --version       output version information and exit
+     --catch=regexp  filter out things that match this in PageTop
+     --email=address email the result
+     --min=gigabytes minimal number of gigabites required for report
+
+=head1 DESCRIPTION
+
+The mrtg-traffic-sum goes through the mrtg logs for the targets in the
+the config file specified and builds the traffic total for the last
+month in Giga Bytes. (Note in communications Giga is 10^9).
+
+The result of this analysis can be sent via email to an address of
+your choice using the B<--email> option.
+
+With the B<--catch> option you can specify a regular expression which
+will be matched against the contents of the PageTop settings. The
+regular expression should return a value into $1 and possibly into
+$2. This will then be used as description for the appropriate traffic
+sum. By default the catch is set to:
+
+ (?:description|port name):</td>\s*<td>\s*([^< ]*?[^<]*?)\s*</td
+
+By default only traffic which is over 500 gigabytes gets reportet. Use the
+B<--min> switch to change this number.
+
+=head1 COPYRIGHT
+
+Copyright (c) 2002 by Tobias Oetiker. All rights reserved.
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+=head1 AUTHOR
+
+Tobias Oetiker E<lt>tobi@oetiker.chE<gt>
+
+=head1 HISTORY
+
+ 2002-07-13 to Initial Version
+
+=cut
+
+# Emacs Configuration
+#
+# Local Variables:
+# mode: cperl
+# eval: (cperl-set-style "PerlStyle")
+# mode: flyspell
+# mode: flyspell-prog
+# End:
+#
+# vi: sw=4 et
