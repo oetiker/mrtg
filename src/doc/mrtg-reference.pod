@@ -815,7 +815,7 @@ the data gathering.
 
 The external command must return 4 lines of output:
 
-=over 4
+=over
 
 =item Line 1
 
@@ -1631,7 +1631,7 @@ The following keywords allow you to override the text
 displayed for the various legends of the graph and in the
 HTML document:
 
-=over 4
+=over
 
 =item YLegend
 
@@ -1771,7 +1771,7 @@ Adderss of an SMTP server which is going to accept mail about Thresholds being b
 What is the sender address of the threshold mail.
 
 Example:
- 
+
  ThreshMailSender: mrtg@example.com
 
 =head2 ThreshMailAddress (PER TARGET)

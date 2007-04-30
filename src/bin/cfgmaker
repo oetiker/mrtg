@@ -479,7 +479,7 @@ ECHO
                 my $if_is_loopback = $if_type == 24;
                 my $if_is_ciscovlan =
                     ($$router_dev{Vendor} eq 'cisco'
-                    and $$i{Descr} =~ /^(unrouted )?V(LAN|lan)\d+$/);
+                    and $$i{Descr} =~ /^(unrouted )?VLAN\d*$/i);
 
                 my $if_ip = $$i{Ip};
                 my $if_snmp_descr = $$i{Descr};
@@ -1907,11 +1907,15 @@ earlier on the command line.
 B<Cfgmaker> supports SNMP V3 using the B<Net:SNMP> perl module.  There are optional 
 parameters affecting SNMP operation.
 
+=over
+
 =item --enablesnmpv3 {yes|no}
 
 The B<--enablesnmpv3> option is an optional flag to check for the presence of 
 the B<Net::SNMP> libraries.  B<Cfgmaker> will try to determine whether this flag is
 required and will set the values automatically.
+
+=back
 
 =head3 SNMPv3 Arguments
 
