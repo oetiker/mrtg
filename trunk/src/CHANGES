@@ -1,3 +1,6 @@
+From: Tobi
+* Fix if_is_ciscovlan condition in cfgmaker
+
 Changes 2.15.2, 2007-04-29
 --------------------------
 From: Tobi
