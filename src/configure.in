@@ -201,7 +201,7 @@ AC_CONFIG_HEADERS(config.h)
 AC_OUTPUT(Makefile)
 
 
-echo $ECHO_N "ordering CD from http://people.ee.ethz.ch/~oetiker/wish $ECHO_C" 1>&6
+echo $ECHO_N "ordering CD from http://tobi.oetiker.ch/wish $ECHO_C" 1>&6
 sleep 1
 echo $ECHO_N ".$ECHO_C" 1>&6
 sleep 1
@@ -223,5 +223,5 @@ echo "       ... that wishlist mentioned above does really exist. So if"
 echo "you feel like showing your appreciation for MRTG, this is the"
 echo "place to go. I just love CDs and DVDs"
 echo 
-echo "                            -- Tobi Oetiker <oetiker@ee.ethz.ch>"
+echo "                            -- Tobi Oetiker <tobi@oetiker.ch>"
 echo "----------------------------------------------------------------"
