@@ -2,7 +2,7 @@
 ######################################################################
 ### Net_SNMP_util -- SNMP utilities using Net::SNMP
 ######################################################################
-### Copyright (c) 2005, Mike Mitchell.
+### Copyright (c) 2005-2007 Mike Mitchell.
 ###
 ### This program is free software; you can redistribute it under the
 ### "Artistic License" included in this distribution (file "Artistic").
@@ -69,7 +69,7 @@ our @EXPORT = qw(
 
 ## Version of the Net_SNMP_util module
 
-our $VERSION = v1.0.12;
+our $VERSION = v1.0.13;
 
 use Carp;
 
@@ -1701,7 +1701,7 @@ sub Check_OID ($) {
   my($var) = @_;
   my($tmp, $tmpv, $oid);
 
-  if ($var =~ /^[a-zA-Z][\w\-]*(\.[a-zA-Z][\w\-])*/)
+  if ($var =~ /^[a-zA-Z][\w\-]*(\.[a-zA-Z][\w\-]*)*/)
   {
     $tmp = $&;
     $tmpv = $tmp;

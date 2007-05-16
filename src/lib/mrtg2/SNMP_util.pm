@@ -2,7 +2,7 @@
 ######################################################################
 ### SNMP_util -- SNMP utilities using SNMP_Session.pm and BER.pm
 ######################################################################
-### Copyright (c) 1998-2005, Mike Mitchell.
+### Copyright (c) 1998-2007, Mike Mitchell.
 ###
 ### This program is free software; you can redistribute it under the
 ### "Artistic License" included in this distribution (file "Artistic").
@@ -43,7 +43,7 @@ use BER "1.02";
 use SNMP_Session "1.00";
 use Socket;
 
-$VERSION = '1.08';
+$VERSION = '1.09';
 
 @ISA = qw(Exporter);
 
@@ -1106,7 +1106,7 @@ sub Check_OID ($) {
   my($var) = @_;
   my($tmp, $tmpv, $oid);
 
-  if ($var =~ /^[a-zA-Z][\w\-]*(\.[a-zA-Z][\w\-])*/)
+  if ($var =~ /^[a-zA-Z][\w\-]*(\.[a-zA-Z][\w\-]*)*/)
   {
     $tmp = $&;
     $tmpv = $tmp;
