@@ -2,7 +2,7 @@
 ######################################################################
 ### BER (Basic Encoding Rules) encoding and decoding.
 ######################################################################
-### Copyright (c) 1995-2002, Simon Leinen.
+### Copyright (c) 1995-2004, Simon Leinen.
 ###
 ### This program is free software; you can redistribute it under the
 ### "Artistic License" included in this distribution (file "Artistic").

@@ -2,7 +2,7 @@
 ######################################################################
 ### SNMP Request/Response Handling
 ######################################################################
-### Copyright (c) 1995-2002, Simon Leinen.
+### Copyright (c) 1995-2006, Simon Leinen.
 ###
 ### This program is free software; you can redistribute it under the
 ### "Artistic License" included in this distribution (file "Artistic").
@@ -38,6 +38,7 @@
 ### Luc Pauwels <Luc.Pauwels@xalasys.com>: use_16bit_request_ids
 ### Andrew Cornford-Matheson <andrew.matheson@corenetworks.com>: inform
 ### Gerry Dalton <gerry.dalton@consolidated.com>: strict subs bug
+### Mike Fischer <mlf2@tampabay.rr.com>: pass MSG_DONTWAIT to recv()
 ######################################################################
 
 package SNMP_Session;		
@@ -60,7 +61,7 @@ sub map_table_start_end ($$$$$$);
 sub index_compare ($$);
 sub oid_diff ($$);
 
-$VERSION = '1.08';
+$VERSION = '1.10';
 
 @ISA = qw(Exporter);
 
@@ -136,7 +137,7 @@ BEGIN {
     $SNMP_Session::ipv6available = 0;
 
     if (eval {local $SIG{__DIE__};require Socket6;} &&
-	eval {local $SIG{__DIE__};require IO::Socket::INET6; IO::Socket::INET6->VERSION("1.26");}) {
+       eval {local $SIG{__DIE__};require IO::Socket::INET6; IO::Socket::INET6->VERSION("1.26");}) {
 	import Socket6;
 	$ipv6_addr_len = length(pack_sockaddr_in6(161, inet_pton(AF_INET6(), "::1")));
 	$SNMP_Session::ipv6available = 1;
@@ -389,7 +390,7 @@ sub request_response_5 ($$$$$) {
 	    my($response_length);
 
 	    $response_length
-		= $this->receive_response_3 ($response_tag, $oids, $errorp);
+		= $this->receive_response_3 ($response_tag, $oids, $errorp, 1);
 	    if ($response_length) {
 		# IlvJa
 		# Add response pdu to capture_buffer
@@ -827,9 +828,11 @@ sub sa_equal_p ($$$) {
 }
 
 sub receive_response_3 {
-    my ($this, $response_tag, $oids, $errorp) = @_;
+    my ($this, $response_tag, $oids, $errorp, $dont_block_p) = @_;
     my ($remote_addr);
-    $remote_addr = recv ($this->sock,$this->{'pdu_buffer'},$this->max_pdu_len,0);
+    my $flags = 0;
+    eval '$flags = MSG_DONTWAIT;' if defined $dont_block_p and $dont_block_p;
+    $remote_addr = recv ($this->sock,$this->{'pdu_buffer'},$this->max_pdu_len,$flags);
     return $this->error ("receiving response PDU: $!")
 	unless defined $remote_addr;
     return $this->error ("short (".length $this->{'pdu_buffer'}
