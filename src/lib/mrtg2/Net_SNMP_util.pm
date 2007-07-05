@@ -918,10 +918,10 @@ sub snmptrap($$$$$@) {
   }
 
   if ($Net_SNMP_util::Version == 1) {
-    $args{'-enterprise'} = $ent if (defined($ent) && (length($ent) > 0));
-    $args{'-agentaddr'} = $agent if (defined($agent) && (length($agent) > 0));
-    $args{'-generictrap'} = $gen if (defined($gen) && (length($gen) > 0));
-    $args{'-specifictrap'} = $spec if (defined($spec) && (length($spec) > 0));
+    $args{'-enterprise'} = $ent if (defined($ent) and (length($ent) > 0));
+    $args{'-agentaddr'} = $agent if (defined($agent) and (length($agent) > 0));
+    $args{'-generictrap'} = $gen if (defined($gen) and (length($gen) > 0));
+    $args{'-specifictrap'} = $spec if (defined($spec) and (length($spec) > 0));
   } elsif ($Net_SNMP_util::Version > 2) {
     carp "SNMPTRAP Problem for $host : must use SNMP version 1 or 2"
       unless ($Net_SNMP_util::SuppressWarnings > 1);
@@ -1235,7 +1235,7 @@ sub snmpLoad_OID_Cache ($) {
     $txt = $1 if ($txt =~ /^[\'\"](.*)[\'\"]/);
     $oid = $1 if ($oid =~ /^[\'\"](.*)[\'\"]/);
     if (($txt =~ /^\.?\d+(\.\d+)*\.?$/)
-    &&  ($oid !~ /^\.?\d+(\.\d+)*\.?$/)) {
+    and  ($oid !~ /^\.?\d+(\.\d+)*\.?$/)) {
 	my($a) = $oid;
 	$oid = $txt;
 	$txt = $a;
@@ -1301,7 +1301,7 @@ sub snmpMIB_to_OID ($) {
       s/--.*--//g;	# throw away comments (-- anything --)
       s/--.*//;		# throw away comments (-- anything EOL)
       if ($quote) {
-	next unless /"/;
+	next unless /"/;#"
 	$quote = 0;
       }
       chomp;
@@ -1314,7 +1314,7 @@ sub snmpMIB_to_OID ($) {
       $buf =~ s/\s+/ /g;
 
       if ($buf =~ / DEFINITIONS ::= BEGIN/) {
-	if ($pass == 0 && $need2pass) {
+	if ($pass == 0 and $need2pass) {
 	  seek(MIB, $pos, 0);
 	  $buf = "";
 	  $pass = 1;
@@ -1379,7 +1379,7 @@ sub snmpMIB_to_OID ($) {
 		$tmpv = $2;
 	      }
 	      $Link{$tmp} = $strt;
-	      if (!exists($prev{$tmp}) && exists($Net_SNMP_util::OIDS{$tmp})) {
+	      if (!exists($prev{$tmp}) and exists($Net_SNMP_util::OIDS{$tmp})) {
 		if ($tmpv ne $Net_SNMP_util::OIDS{$tmp}) {
 		  $strt = "$strt.$tmp";
 		  $Net_SNMP_util::OIDS{$strt} = $tmpv;
@@ -1406,7 +1406,7 @@ sub snmpMIB_to_OID ($) {
 	  if (exists($Net_SNMP_util::OIDS{$strt})) {
 	    $val = "$Net_SNMP_util::OIDS{$strt}.$val";
 	  }
-	  if (!exists($prev{$var}) && exists($Net_SNMP_util::OIDS{$var})) {
+	  if (!exists($prev{$var}) and exists($Net_SNMP_util::OIDS{$var})) {
 	    if ($val ne $Net_SNMP_util::OIDS{$var}) {
 	      $var = "$strt.$var";
 	    }
@@ -1421,7 +1421,7 @@ sub snmpMIB_to_OID ($) {
 	undef $buf;
       }
     }
-    if ($pass == 0 && $need2pass) {
+    if ($pass == 0 and $need2pass) {
       seek(MIB, $pos, 0);
       $buf = "";
       $pass = 1;
@@ -1498,22 +1498,22 @@ sub snmpopen ($$$) {
     ($host, $opts) = split(':', $host, 2);
   }
   ($port, $timeout, $retries, $backoff, $version, $v4onlystr)
-    = split(':', $opts, 6) if(defined($opts) && (length $opts > 0) );
+    = split(':', $opts, 6) if(defined($opts) and (length $opts > 0) );
 
-  undef($timeout) if (defined($timeout) && length($timeout) <= 0);
-  undef($retries) if (defined($retries) && length($retries) <= 0);
-  undef($backoff) if (defined($backoff) && length($backoff) <= 0);
-  undef($version) if (defined($version) && length($version) <= 0);
+  undef($timeout) if (defined($timeout) and length($timeout) <= 0);
+  undef($retries) if (defined($retries) and length($retries) <= 0);
+  undef($backoff) if (defined($backoff) and length($backoff) <= 0);
+  undef($version) if (defined($version) and length($version) <= 0);
 
   $v4onlystr = "" unless defined $v4onlystr;
 
-  if (defined($port) && ($port =~ /^([^!]*)!(.*)$/)) {
+  if (defined($port) and ($port =~ /^([^!]*)!(.*)$/)) {
     ($port, $lhost) = ($1, $2);
     $nlhost = $lhost;
     ($lhost, $lport) = ($1, $2) if ($lhost =~ /^(.*)!(.*)$/);
-    undef($lport) if (defined($lport) && (length($lport) <= 0));
+    undef($lport) if (defined($lport) and (length($lport) <= 0));
   }
-  undef($port) if (defined($port) && length($port) <= 0);
+  undef($port) if (defined($port) and length($port) <= 0);
 
   if (ref $vars->[0] eq 'HASH') {
     undef($debug);
@@ -1568,10 +1568,10 @@ sub snmpopen ($$$) {
     }
   }
 
-  $port = 162 if ($type == 1 && !defined($port));
+  $port = 162 if ($type == 1 and !defined($port));
   $nhost = "$community\@$host";
   $nhost .= ":" . $port if (defined($port));
-  undef($lhost) if (defined($lhost) && (length($lhost) <= 0));
+  undef($lhost) if (defined($lhost) and (length($lhost) <= 0));
 
   $version = '1' unless defined $version;
   if ($version =~ /1/) {
@@ -1624,13 +1624,13 @@ sub snmpopen ($$$) {
     return $Net_SNMP_util::Session;
   } else {
     $Net_SNMP_util::Session->timeout($timeout)
-      if (defined($timeout) && (length($timeout) > 0));
+      if (defined($timeout) and (length($timeout) > 0));
     $Net_SNMP_util::Session->retries($retries)
-      if (defined($retries) && (length($retries) > 0));
+      if (defined($retries) and (length($retries) > 0));
     $Net_SNMP_util::Session->maxmsgsize($maxmsgsize)
-      if (defined($maxmsgsize) && (length($maxmsgsize) > 0));
+      if (defined($maxmsgsize) and (length($maxmsgsize) > 0));
     $Net_SNMP_util::Session->debug($debug)
-      if (defined($debug) && (length($debug) > 0));
+      if (defined($debug) and (length($debug) > 0));
     $Net_SNMP_util::Session->{_context_engine_id} = undef
       if (!defined($Net_SNMP_util::ContextEngineID));
     $Net_SNMP_util::Session->{_context_name} = undef
@@ -1649,7 +1649,7 @@ sub toOID(@) {
   undef @retvar;
   foreach $var (@vars) {
     ($oid, $tmp) = &Check_OID($var);
-    if (!$oid && $Net_SNMP_util::CacheLoaded == 0) {
+    if (!$oid and $Net_SNMP_util::CacheLoaded == 0) {
       $tmp = $Net_SNMP_util::SuppressWarnings;
       $Net_SNMP_util::SuppressWarnings = 1000;
 
@@ -1660,7 +1660,7 @@ sub toOID(@) {
 
       ($oid, $tmp) = &Check_OID($var);
     }
-    while (!$oid && $#Net_SNMP_util::MIB_Files >= 0) {
+    while (!$oid and $#Net_SNMP_util::MIB_Files >= 0) {
       $tmp = $Net_SNMP_util::SuppressWarnings;
       $Net_SNMP_util::SuppressWarnings = 1000;
 
@@ -1741,7 +1741,7 @@ sub snmpwalk_flg ($$@) {
   #
   # Create/Refresh a reversed hash with oid -> name
   #
-  if (defined($hash_sub) && ($RevNeeded)) {
+  if (defined($hash_sub) and ($RevNeeded)) {
       %revOIDS = reverse %Net_SNMP_util::OIDS;
       $RevNeeded = 0;
   }
@@ -1771,7 +1771,7 @@ sub snmpwalk_flg ($$@) {
   while($#poid >= 0) {
     $args{'-varbindlist'} = \@poid;
     if (($Net_SNMP_util::Version > 1)
-    && ($Net_SNMP_util::MaxRepetitions > 1)) {
+    and ($Net_SNMP_util::MaxRepetitions > 1)) {
       $ret = $session->get_bulk_request(%args);
     } else {
       $ret = $session->get_next_request(%args);
@@ -1787,7 +1787,7 @@ sub snmpwalk_flg ($$@) {
       foreach $toid (@enoid) {
 	$tmp++;
 	if (&Net::SNMP::oid_base_match($toid, $oid)
-	&& (!exists($soid{$toid}) || ($oid ne $soid{$toid}))) {
+	and (!exists($soid{$toid}) || ($oid ne $soid{$toid}))) {
 	  $nsoid{$toid} = $oid;
 	  if (defined($hash_sub)) {
 	    #
@@ -1796,16 +1796,16 @@ sub snmpwalk_flg ($$@) {
 	    #
 	    my $inst = "";
 	    my $upo = $toid;
-	    while (!exists($revOIDS{$upo}) && length($upo)) {
+	    while (!exists($revOIDS{$upo}) and length($upo)) {
 	      $upo =~ s/(\.\d+?)$//;
-	      if (defined($1) && length($1)) {
+	      if (defined($1) and length($1)) {
 		$inst = $1 . $inst;
 	      } else {
 		$upo = "";
 		last;
 	      }
 	    }	
-	    if (length($upo) && exists($revOIDS{$upo})) {
+	    if (length($upo) and exists($revOIDS{$upo})) {
 	      $upo = $revOIDS{$upo} . $inst;
 	    } else {
 	      $upo = $toid;
@@ -1814,16 +1814,16 @@ sub snmpwalk_flg ($$@) {
 	    my $qoid = $oid;
 	    my $tmpo;
 	    $inst = "";
-	    while (!exists($revOIDS{$qoid}) && length($qoid)) {
+	    while (!exists($revOIDS{$qoid}) and length($qoid)) {
 	      $qoid =~ s/(\.\d+?)$//;
-	      if (defined($1) && length($1)) {
+	      if (defined($1) and length($1)) {
 		$inst = $1 . $inst;
 	      } else {
 		$qoid = "";
 		last;
 	      }
 	    }	
-	    if (length($qoid) && exists($revOIDS{$qoid})) {
+	    if (length($qoid) and exists($revOIDS{$qoid})) {
 	      $tmpo = $qoid;
 	      $qoid = $revOIDS{$qoid};
 	    } else {
