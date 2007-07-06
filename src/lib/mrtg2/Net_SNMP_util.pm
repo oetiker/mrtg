@@ -69,7 +69,7 @@ our @EXPORT = qw(
 
 ## Version of the Net_SNMP_util module
 
-our $VERSION = v1.0.13;
+our $VERSION = v1.0.14;
 
 use Carp;
 
@@ -1301,7 +1301,7 @@ sub snmpMIB_to_OID ($) {
       s/--.*--//g;	# throw away comments (-- anything --)
       s/--.*//;		# throw away comments (-- anything EOL)
       if ($quote) {
-	next unless /"/;#"
+	next unless /"/;
 	$quote = 0;
       }
       chomp;
@@ -1363,7 +1363,7 @@ sub snmpMIB_to_OID ($) {
 	$buf =~ s/ +$//;
 	($code, $val) = split(' ', $buf, 2);
 
-	if (!defined($val) || (length($val) <= 0)) {
+	if (!defined($val) or (length($val) <= 0)) {
 	  $Net_SNMP_util::OIDS{$var} = $code;
 	  $cnt++;
 	  print "'$var' => '$code'\n" if $Net_SNMP_util::Debug;
@@ -1490,7 +1490,7 @@ sub snmpopen ($$$) {
 
   # We can't split on the : character because a numeric IPv6
   # address contains a variable number of :'s
-  if( ($host =~ /^(\[.*\]):(.*)$/) || ($host =~ /^(\[.*\])$/) ) {
+  if( ($host =~ /^(\[.*\]):(.*)$/) or ($host =~ /^(\[.*\])$/) ) {
     # Numeric IPv6 address between []
     ($host, $opts) = ($1, $2);
   } else {
@@ -1583,10 +1583,10 @@ sub snmpopen ($$$) {
   }
   $Net_SNMP_util::ErrorMessage = '';
   if ((!defined($Net_SNMP_util::Session))
-    || ($Net_SNMP_util::Host ne $nhost)
-    || ($Net_SNMP_util::Version ne $version)
-    || ($Net_SNMP_util::LHost ne $nlhost)
-    || ($Net_SNMP_util::IPv4only ne $v4onlystr)) {
+    or ($Net_SNMP_util::Host ne $nhost)
+    or ($Net_SNMP_util::Version ne $version)
+    or ($Net_SNMP_util::LHost ne $nlhost)
+    or ($Net_SNMP_util::IPv4only ne $v4onlystr)) {
     if (defined($Net_SNMP_util::Session)) {
       $Net_SNMP_util::Session->close();    
       undef $Net_SNMP_util::Session;
@@ -1787,7 +1787,7 @@ sub snmpwalk_flg ($$@) {
       foreach $toid (@enoid) {
 	$tmp++;
 	if (&Net::SNMP::oid_base_match($toid, $oid)
-	and (!exists($soid{$toid}) || ($oid ne $soid{$toid}))) {
+	and (!exists($soid{$toid}) or ($oid ne $soid{$toid}))) {
 	  $nsoid{$toid} = $oid;
 	  if (defined($hash_sub)) {
 	    #
@@ -1932,7 +1932,7 @@ sub ASNtype($) {
     $type = 0x42;
   } elsif ($type eq "gauge32") {
     $type = 0x42;
-  } elsif (($type <= 0) || ($type > 255)) {
+  } elsif (($type <= 0) or ($type > 255)) {
     return undef;
   }
   return $type;

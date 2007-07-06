@@ -43,7 +43,7 @@ use BER "1.02";
 use SNMP_Session "1.00";
 use Socket;
 
-$VERSION = '1.09';
+$VERSION = '1.10';
 
 @ISA = qw(Exporter);
 
@@ -385,7 +385,7 @@ sub snmpopen ($$$) {
   # We can't split on the : character because a numeric IPv6
   # address contains a variable number of :'s
   my $opts;
- if( ($host =~ /^(\[.*\]):(.*)$/) || ($host =~ /^(\[.*\])$/) ) {
+ if( ($host =~ /^(\[.*\]):(.*)$/) or ($host =~ /^(\[.*\])$/) ) {
     # Numeric IPv6 address between []
     ($host, $opts) = ($1, $2);
   } else {
@@ -393,28 +393,28 @@ sub snmpopen ($$$) {
     ($host, $opts) = split(':', $host, 2);
   }
   ($port, $timeout, $retries, $backoff, $version, $v4onlystr) = split(':', $opts, 6)
-    if(defined($opts) && (length $opts > 0) );
+    if(defined($opts) and (length $opts > 0) );
 
-  undef($version) if (defined($version) && length($version) <= 0);
+  undef($version) if (defined($version) and length($version) <= 0);
   $v4onlystr = "" unless defined $v4onlystr;
   $version = '1' unless defined $version;
-  if (defined($port) && ($port =~ /^([^!]*)!(.*)$/)) {
+  if (defined($port) and ($port =~ /^([^!]*)!(.*)$/)) {
     ($port, $lhost) = ($1, $2);
     $nlhost = $lhost;
     ($lhost, $lport) = ($1, $2) if ($lhost =~ /^(.*)!(.*)$/);
-    undef($lhost) if (defined($lhost) && (length($lhost) <= 0));
-    undef($lport) if (defined($lport) && (length($lport) <= 0));
+    undef($lhost) if (defined($lhost) and (length($lhost) <= 0));
+    undef($lport) if (defined($lport) and (length($lport) <= 0));
   }
-  undef($port) if (defined($port) && length($port) <= 0);
-  $port = 162 if ($type == 1 && !defined($port));
+  undef($port) if (defined($port) and length($port) <= 0);
+  $port = 162 if ($type == 1 and !defined($port));
   $nhost = "$community\@$host";
   $nhost .= ":" . $port if (defined($port));
 
   if ((!defined($SNMP_util::Session))
-    || ($SNMP_util::Host ne $nhost)
-    || ($SNMP_util::Version ne $version)
-    || ($SNMP_util::LHost ne $nlhost)
-    || ($SNMP_util::IPv4only ne $v4onlystr)) {
+    or ($SNMP_util::Host ne $nhost)
+    or ($SNMP_util::Version ne $version)
+    or ($SNMP_util::LHost ne $nlhost)
+    or ($SNMP_util::IPv4only ne $v4onlystr)) {
     if (defined($SNMP_util::Session)) {
       $SNMP_util::Session->close();    
       undef $SNMP_util::Session;
@@ -459,11 +459,11 @@ sub snmpopen ($$$) {
       }
     }
     $SNMP_util::Session->set_timeout($timeout)
-      if (defined($timeout) && (length($timeout) > 0));
+      if (defined($timeout) and (length($timeout) > 0));
     $SNMP_util::Session->set_retries($retries)
-      if (defined($retries) && (length($retries) > 0));
+      if (defined($retries) and (length($retries) > 0));
     $SNMP_util::Session->set_backoff($backoff)
-      if (defined($backoff) && (length($backoff) > 0));
+      if (defined($backoff) and (length($backoff) > 0));
   }
   return $SNMP_util::Session;
 }
@@ -590,7 +590,7 @@ sub snmpwalk_flg ($$@) {
   #
   # Create/Refresh a reversed hash with oid -> name
   #
-  if (defined($hash_sub) && ($RevNeeded)) {
+  if (defined($hash_sub) and ($RevNeeded)) {
       %revOIDS = reverse %SNMP_util::OIDS;
       $RevNeeded = 0;
   }
@@ -624,7 +624,7 @@ sub snmpwalk_flg ($$@) {
   }
 
 
-  while(($SNMP_util::Version ne '1' && $session->{'use_getbulk'})
+  while(($SNMP_util::Version ne '1' and $session->{'use_getbulk'})
     ? $session->getbulk_request_response(0,
 					  $session->default_max_repetitions(),
 					  @nnoid)
@@ -644,7 +644,7 @@ sub snmpwalk_flg ($$@) {
       $ok = 0;
       my $tempo = pretty_print($oid);
       $noid = $avars[$ix];  # IlvJa
-      if ($tempo =~ /^$noid\./ || $tempo eq $noid ) {
+      if ($tempo =~ /^$noid\./ or $tempo eq $noid ) {
 	$ok = 1;
 	$upoid = $noid;
       } else {
@@ -670,32 +670,32 @@ sub snmpwalk_flg ($$@) {
 	  #
 	  my $inst = "";
 	  my $upo = $upoid;
-	  while (!exists($revOIDS{$upo}) && length($upo)) {
+	  while (!exists($revOIDS{$upo}) and length($upo)) {
 	    $upo =~ s/(\.\d+?)$//;
-	    if (defined($1) && length($1)) {
+	    if (defined($1) and length($1)) {
 	      $inst = $1 . $inst;
 	    } else {
 	      $upo = "";
 	      last;
 	    }
 	  }	
-	  if (length($upo) && exists($revOIDS{$upo})) {
+	  if (length($upo) and exists($revOIDS{$upo})) {
 	    $upo = $revOIDS{$upo} . $inst;
 	  } else {
 	    $upo = $upoid;
 	  }
 
 	  $inst = "";
-	  while (!exists($revOIDS{$tempo}) && length($tempo)) {
+	  while (!exists($revOIDS{$tempo}) and length($tempo)) {
 	    $tempo =~ s/(\.\d+?)$//;
-	    if (defined($1) && length($1)) {
+	    if (defined($1) and length($1)) {
 	      $inst = $1 . $inst;
 	    } else {
 	      $tempo = "";
 	      last;
 	    }
 	  }	
-	  if (length($tempo) && exists($revOIDS{$tempo})) {
+	  if (length($tempo) and exists($revOIDS{$tempo})) {
 	    $var = $revOIDS{$tempo};
 	  } else {
 	    $var = pretty_print($oid);
@@ -987,7 +987,7 @@ sub toOID(@) {
   undef @retvar;
   foreach $var (@vars) {
     ($oid, $tmp) = &Check_OID($var);
-    if (!$oid && $SNMP_util::CacheLoaded == 0) {
+    if (!$oid and $SNMP_util::CacheLoaded == 0) {
       $tmp = $SNMP_Session::suppress_warnings;
       $SNMP_Session::suppress_warnings = 1000;
 
@@ -998,7 +998,7 @@ sub toOID(@) {
 
       ($oid, $tmp) = &Check_OID($var);
     }
-    while (!$oid && $#SNMP_util::MIB_Files >= 0) {
+    while (!$oid and $#SNMP_util::MIB_Files >= 0) {
       $tmp = $SNMP_Session::suppress_warnings;
       $SNMP_Session::suppress_warnings = 1000;
 
@@ -1084,7 +1084,7 @@ sub snmpLoad_OID_Cache ($) {
     $txt = $1 if ($txt =~ /^[\'\"](.*)[\'\"]/);
     $oid = $1 if ($oid =~ /^[\'\"](.*)[\'\"]/);
     if (($txt =~ /^\.?\d+(\.\d+)*\.?$/)
-    &&  ($oid !~ /^\.?\d+(\.\d+)*\.?$/)) {
+    and  ($oid !~ /^\.?\d+(\.\d+)*\.?$/)) {
 	my($a) = $oid;
 	$oid = $txt;
 	$txt = $a;
@@ -1187,7 +1187,7 @@ sub snmpMIB_to_OID ($) {
       $buf =~ s/\s+/ /g;
 
       if ($buf =~ / DEFINITIONS ::= BEGIN/) {
-	if ($pass == 0 && $need2pass) {
+	if ($pass == 0 and $need2pass) {
 	  seek(MIB, $pos, 0);
 	  $buf = "";
 	  $pass = 1;
@@ -1236,7 +1236,7 @@ sub snmpMIB_to_OID ($) {
 	$buf =~ s/ +$//;
 	($code, $val) = split(' ', $buf, 2);
 
-	if (!defined($val) || (length($val) <= 0)) {
+	if (!defined($val) or (length($val) <= 0)) {
 	  $SNMP_util::OIDS{$var} = $code;
 	  $cnt++;
 	  print "'$var' => '$code'\n" if $SNMP_util::Debug;
@@ -1252,7 +1252,7 @@ sub snmpMIB_to_OID ($) {
 		$tmpv = $2;
 	      }
 	      $Link{$tmp} = $strt;
-	      if (!exists($prev{$tmp}) && exists($SNMP_util::OIDS{$tmp})) {
+	      if (!exists($prev{$tmp}) and exists($SNMP_util::OIDS{$tmp})) {
 		if ($tmpv ne $SNMP_util::OIDS{$tmp}) {
 		  $strt = "$strt.$tmp";
 		  $SNMP_util::OIDS{$strt} = $tmpv;
@@ -1279,7 +1279,7 @@ sub snmpMIB_to_OID ($) {
 	  if (exists($SNMP_util::OIDS{$strt})) {
 	    $val = "$SNMP_util::OIDS{$strt}.$val";
 	  }
-	  if (!exists($prev{$var}) && exists($SNMP_util::OIDS{$var})) {
+	  if (!exists($prev{$var}) and exists($SNMP_util::OIDS{$var})) {
 	    if ($val ne $SNMP_util::OIDS{$var}) {
 	      $var = "$strt.$var";
 	    }
@@ -1294,7 +1294,7 @@ sub snmpMIB_to_OID ($) {
 	undef $buf;
       }
     }
-    if ($pass == 0 && $need2pass) {
+    if ($pass == 0 and $need2pass) {
       seek(MIB, $pos, 0);
       $buf = "";
       $pass = 1;
