@@ -112,9 +112,9 @@ Example:
 =head2 EnableIPv6
 
 When set to yes, IPv6 support is enabled if the required libraries are
-present (see the L<mrtg-ipv6> manpage). When IPv6 is enabled, mrtg can talk to routers
-using SNMP over IPv6 and targets may be specified by their numeric IPv6
-addresses as well as by hostname or IPv4 address.
+present (see the L<mrtg-ipv6> manpage). When IPv6 is enabled, mrtg can talk
+to routers using SNMP over IPv6 and targets may be specified by their
+numeric IPv6 addresses as well as by hostname or IPv4 address.
 
 If IPv6 is enabled and the target is a hostname, mrtg will try to resolve
 the hostname to an IPv6 address and, if this fails, to an IPv4 address.
@@ -207,7 +207,8 @@ Example:
 
  MaxAge: 7200
 
-The example above will make mrtg refuse to update log files older than 2 hours (7200 seconds).
+The example above will make mrtg refuse to update log files older than 2
+hours (7200 seconds).
 
 
 =head2 WriteExpires
@@ -400,9 +401,9 @@ Note that when using daemon mode MRTG should no longer be started from cron
 as each new process runs forever. Instead MRTG should be
 started from the command prompt or by a system startup script.
 
-If you want mrtg to run under a particular user and group (it is not recomended to run
-MRTG as root) then you can use the B<--user=>I<user_name> and B<--group=>I<group_name>
-options on the mrtg commandline.
+If you want mrtg to run under a particular user and group (it is not
+recomended to run MRTG as root) then you can use the B<--user=>I<user_name>
+and B<--group=>I<group_name> options on the mrtg commandline.
 
  mrtg --user=mrtg_user --group=mrtg_group mrtg.cfg
 
@@ -600,6 +601,31 @@ Example:
 
   Target[myrouter]: WaLK3strangeOid.1&WaLK4strangeOid.2:public@myrouter
 
+
+=item SnmpGetNext
+
+A special case of an snmp object that is only reachable by 'walking' occurs 
+when a single snmpgetnext will return the correct value, but snmpwalk fails.  
+This may occur with snmp V2 or V3, as the snmpgetbulk method is used in these 
+versions. You can get mrtg to use getnext instead of getbulk by prepending the 
+OID with the string B<GeTNEXT>.
+
+Example:
+
+  Target[myrouter]: GeTNEXTstrangeOid&GeTNEXTstrangeOid:public@myrouter
+
+=item Counted SNMP Walk
+
+In other situations, an snmpwalk is needed to count rows, but the actual data
+is uninteresting.  For example, counting the number of mac-addresses in a CAM 
+table, or the number of simultaneous dialup sessions.  You can get MRTG to count 
+the number of instances by prepending the OID with the string B<CnTWaLK>.  The 
+following will retrieve the number of simultaneous VOIP calls on some routers:
+
+Example:
+
+   Target[myrouter]: CnTWaLK1.3.6.1.4.1.9.10.55.1.1.1.1.3&CnTWaLK1.3.6.1.4.1.9.10.55.1.1.1.1.3:public@myrouter
+
 =item Interface by IP
 
 Sometimes SNMP interface index can change, like when new interfaces are
@@ -621,7 +647,6 @@ Example:
 
  Target[myrouter]: /1.2.3.4:public@wellfleet-fddi.domain
  Target[ezci]: -/1.2.3.4:public@ezci-ether.domain
- Target[myrouter]: 1.3.6.1.2.1.2.2.1.14/1.2.3.4&1.3.6.1.2.1.2.2.1.14/1.2.3.4:public@myrouter
  Target[myrouter]: ifInErrors/1.2.3.4&ifOutErrors/1.2.3.4:public@myrouter
 
 =item Interface by Description
@@ -637,8 +662,7 @@ Example:
 
  Target[myrouter]: \My-Interface2:public@wellfleet-fddi.domain
  Target[ezci]: -\My-Interface2:public@ezci-ether.domain
- Target[myrouter]: 1.3.6.1.2.1.2.2.1.14\My-Interface2&1.3.6.1.2.1.2.2.1.14\My-Interface3:public@myrouter
- Target[myrouter]: ifInErrors\My-Interface2&ifOutErrors\My-Interface3:public@myrouter
+ Target[myrouter]: ifInErrors\My-If2&ifOutErrors\My-If3:public@myrouter
 
 If your description contains a "&", a ":", a "@" or a " " you can include
 them but you must escape with a backlash:
@@ -656,11 +680,10 @@ Example:
 
  Target[myrouter]: #2/11:public@wellfleet-fddi.domain
  Target[ezci]: -#2/11:public@ezci-ether.domain
- Target[myrouter]: 1.3.6.1.2.1.2.2.1.14#3/7&1.3.6.1.2.1.2.2.1.14#3/7:public@myrouter
  Target[myrouter]: ifInErrors#3/7&ifOutErrors#3/7:public@myrouter
 
-If your description contains a "&", a ":", a "@" or a " " you can include them but you must escape with
-a backlash:
+If your description contains a "&", a ":", a "@" or a " " you can include
+them but you must escape with a backlash:
 
  Target[myrouter]: #\:\ fun:public@hello.router
 
@@ -689,9 +712,13 @@ Example:
 
  Target[myrouter]: !0a-0b-0c-0d:public@wellfleet-fddi.domain
  Target[ezci]: -!0-f-bb-05-71-22:public@ezci-ether.domain
- Target[myrouter]: 1.3.6.1.2.1.2.2.1.14!0a-00-10-23-44-51&!0a-00-10-23-44-51:public@myrouter
- Target[myrouter]: ifInErrors!0a-00-10-23-44-51&ifOutErrors!0a-00-10-23-44-51:public@myrouter
+ Target[myrouter]: 1.3.6.1.2.1.2.2.1.14!0a-00-10-23-44-51& *BREAK*
+            1.3.6.1.2.1.2.2.1.14!0a-00-10-23-44-51:public@myrouter
+ Target[myrouter]: ifInErrors!0a-00-10-23-44-51& *BREAK*
+            ifOutErrors!0a-00-10-23-44-51:public@myrouter
 
+
+Join the lines at *BREAK* ...
 
 =item Interface by Type
 
@@ -707,7 +734,6 @@ Example:
 
  Target[myrouter]: %13:public@wellfleet-fddi.domain
  Target[ezci]: -%13:public@ezci-ether.domain
- Target[myrouter]: 1.3.6.1.2.1.2.2.1.14%13&1.3.6.1.2.1.2.2.1.14%14:public@myrouter
  Target[myrouter]: ifInErrors%13&ifOutErrors%14:public@myrouter
 
 =item Extended positioning of ifIndex
@@ -721,7 +747,9 @@ end of the OID.
 
 Example:
 
- Target[myrouter]: .1.3.6.1.4.1.9.10.117.1.1.4.1.10.IndexPOS.1/1.2.3.4&.1.3.6.1.4.1.9.10.117.1.1.4.1.11.IndexPOS.1/1.2.3.4:public@myrouter
+ Target[myrouter]: OID.IndexPOS.1/1.2.3.4&OID.IndexPOS.1/1.2.3.4:public@myrouter
+
+Replace OID by your numeric OID.
 
 =item Extended Host Name Syntax
 
@@ -740,6 +768,27 @@ where the meaning of each parameter is as follows:
 =item port
 
 the UDP port under which to contact the SNMP agent (default: 161)
+
+The complete syntax of the port parameter is 
+
+ remote_port[!local_address[!local_port]]
+
+Some machines have additional security features that only allow SNMP queries
+to come from certain IP addresses. If the host doing the query has multiple
+interface, it may be necessary to specify the interface the query should
+come from.
+
+The port parameter allows the specification of the port of the machine being
+queried. In addition, the IP address (or hostname) and port of the machine
+doing the query may be specified.
+
+Examples:
+
+ somehost
+ somehost:161
+ somehost:161!192.168.2.4!4000 use 192.168.2.4 and port 4000 as source
+ somehost:!192.168.2.4 use 192.168.2.4 as source
+ somehost:!!4000 use port 4000 as source
 
 =item timeout
 
@@ -866,8 +915,8 @@ Examples:
 
  Target[myrouter]: 2:public@wellfleetA + 1:public@wellfleetA
 
- Target[myrouter]: 1.3.6.1.4.1.999.1&1.3.6.1.4.1.999.2:public@mydevice /
-     1.3.6.1.4.1.999.3&1.3.6.1.4.1.999.4:public@mydevice * 100
+ Target[myrouter]: .1.3.6.1.4.1.999.1&.1.3.6.1.4.1.999.2:public@mydevice /
+     .1.3.6.1.4.1.999.3&.1.3.6.1.4.1.999.4:public@mydevice * 100
 
 Note that whitespace must surround each target definition in the expression.
 Target definitions themselves must not contain whitespace, except in
@@ -967,11 +1016,17 @@ If these interfaces are on the same router and the uptime and
 name should be displayed you have to specify
 its community and address again with the I<RouterUptime> keyword.
 
+If you want to use a special OID for queriing the router uptime,
+use prepend the oid.
 
 Example:
 
  Target[kacisco.comp.edu]: 1:public@194.64.66.250 + 2:public@194.64.66.250
  RouterUptime[kacisco.comp.edu]: public@194.64.66.250
+
+ RouterUptime[kacisco.comp.edu]: hrSystemUptime.0:public@194.64.66.250
+ 
+ 
 
 
 =head2 RouterName
@@ -1159,13 +1214,12 @@ Example:
 
 =head2 AbsMax
 
-If you are monitoring a link which can handle more traffic
-than the I<MaxBytes> value. Eg, a line which uses compression
-or some frame relay link, you can use the I<AbsMax> keyword
-to give the absolute maximum value ever to be reached.
-We need to know this in order to sort out unrealistic values
-returned by the routers. If you do not set I<AbsMax>, rateup
-will ignore values higher than I<MaxBytes>.
+If you are monitoring a link which can handle more traffic than the
+I<MaxBytes> value. Eg, a line which uses compression or some frame relay
+link, you can use the I<AbsMax> keyword to give the absolute maximum value
+ever to be reached. We need to know this in order to sort out unrealistic
+values returned by the routers. If you do not set I<AbsMax>, rateup will
+ignore values higher than I<MaxBytes>.
 
 Example:
 
@@ -1173,16 +1227,13 @@ Example:
 
 =head2 Unscaled
 
-By default each graph is scaled vertically to make the
-actual data visible even when it is much lower than
-I<MaxBytes>.  With the I<Unscaled> variable you can suppress
-this.  It's argument is a string, containing one letter
-for each graph you don't want to be scaled: d=day w=week
-m=month y=year.  There is also a special case to unset the
-variable completely: n=none. This could be useful in the
-event you need to override a global configuration. In the
-example scaling for the yearly and the monthly graph are
-suppressed.
+By default each graph is scaled vertically to make the actual data visible
+even when it is much lower than I<MaxBytes>.  With the I<Unscaled> variable
+you can suppress this.  It's argument is a string, containing one letter for
+each graph you don't want to be scaled: d=day w=week m=month y=year.  There
+is also a special case to unset the variable completely: n=none. This could
+be useful in the event you need to override a global configuration. In the
+example scaling for the yearly and the monthly graph are suppressed.
 
 Example:
 
@@ -1251,7 +1302,8 @@ NOTE: the Directory option must always be 'relative' or bad things will happen.
 If the I<Directory> option is specified, the I<Clonedirectory> option will copy
 all the contents of I<Directory> to the I<Clonedirectory>. 
 
-As well as the I<Directory> option requires, the clone directory must already exist; mrtg will not create it.
+As well as the I<Directory> option requires, the clone directory must
+already exist; mrtg will not create it.
 
 Example:
 
@@ -1259,7 +1311,8 @@ Example:
  Directory[myrouter]: myrouter
  Clonedirectory[myrouter]: myclonedirectory
 
-NOTE: the Clonedirectory option must always be 'relative' or bad things will happen.
+NOTE: the Clonedirectory option must always be 'relative' or bad things will
+happen.
 
 =head2 XSize and YSize
 
@@ -1755,7 +1808,8 @@ Example:
 
 If a threshold is broken, and you have a threshdir defined, then mrtg will
 send mail once the threshold becomes 'unborken' to avoid situations where
-broken and un-broken messages get sent in close succession, we only send an unbroken message once the curent value is 0.1 (10%) away from the threshold.
+broken and un-broken messages get sent in close succession, we only send an
+unbroken message once the curent value is 0.1 (10%) away from the threshold.
 using the ThreshHyst config variable you can customize this value.
 
 Example for 5%:
@@ -1936,13 +1990,15 @@ appended with C<_l>).
 
 =item B<--confcache-file> I<filename>
 
-Use an alternate confcache-file (the default is to use the configuration-file appended with C<.ok>)
+Use an alternate confcache-file (the default is to use the
+configuration-file appended with C<.ok>)
 
 =item B<--logging> I<filename>|B<eventlog>
 
-If this is set to writable filename, all output from mrtg (warnings, debug messages, errors)
-will go to I<filename>. If you are running on Win32 you can specify B<eventlog> instead of a filename
-which will send all error to the windows event log.
+If this is set to writable filename, all output from mrtg (warnings, debug
+messages, errors) will go to I<filename>. If you are running on Win32 you
+can specify B<eventlog> instead of a filename which will send all error to
+the windows event log.
 
 B<NOTE:> Note, there is no Message DLL for mrtg included with mrtg. This has
 the side effect that the windows event logger will display a nice message
@@ -1971,7 +2027,8 @@ Define the name and path of the pid file for mrtg running as a daemon
 
 =item B<--debug=s>
 
-Enable debug options. The argument of the debug option is a comma separated list of debug values:
+Enable debug options. The argument of the debug option is a comma separated
+list of debug values:
 
  cfg  - watch the config file reading
  dir  - directory mangeling
@@ -1993,9 +2050,10 @@ Example:
 
 =head1 EXIT CODES
 
-An exit code of 0 indicates that all targets were successful.  Generally speaking, most codes greater
-than 0 indicate that there was an unrecoverable problem.  One exception to this is code 91, which
-indicates that at least one of the targets was succesful.  A partial listing of the codes follows:
+An exit code of 0 indicates that all targets were successful.  Generally
+speaking, most codes greater than 0 indicate that there was an unrecoverable
+problem.  One exception to this is code 91, which indicates that at least
+one of the targets was succesful.  A partial listing of the codes follows:
 
   0: All targets sucessful
 

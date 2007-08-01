@@ -1,5 +1,22 @@
+From: Norman Rasmussen <norman@rasmussen.co.za>
+* allow RouterUptime to contain an explicit OID for queriing the uptime.
+
+From Ajit Mallick ajitmallick gmail com
+* support for nortel passport 8600 in cfgmaker
+
+From Dan.McDonald
+* Added Documentation for GeTNEXT prefix
+* Added New Prefix for Counterd SNMP Walk -> CnTWaLK (see docs)
+
+From: Simon Leinen
+* Upgrade to SNMP Session 1.10
+
+From: Mike Mitchel
+* Updates for  Net_SNMP_util.pm   and  SNMP_util.pm   
+
 From: Tobi
 * Fix if_is_ciscovlan condition in cfgmaker
+* Updated port syntax in documentation (based on trac entry)
 
 Changes 2.15.2, 2007-04-29
 --------------------------

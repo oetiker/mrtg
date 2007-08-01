@@ -115,27 +115,27 @@ Create the following directories:
 
 Copy from the MRTG package the following files:
 
-         \bin\*        to  SYS:/Mrtg/bin              All files. See Note 1.
+ \bin\*        to  SYS:/Mrtg/bin              All files. See Note 1.
 
-    Note 1: Add a .pl extension to the mrtg, cfgmaker and indexmaker files.
-            The rateup.exe will NOT be needed on the NetWare server.
+ Note 1: Add a .pl extension to the mrtg, cfgmaker and indexmaker files.
+ The rateup.exe will NOT be needed on the NetWare server.
 
-         \contrib\*    to  SYS:/Mrtg/contrib/         Include sub-directories
-         \doc\*        to  SYS:/Mrtg/doc/             All files
-         \images\*     to  SYS:/Mrtg/html/images/     All files
-         \translate\*  to  SYS:/Mrtg/translate/       All files. See Note 2.
+ \contrib\*    to  SYS:/Mrtg/contrib/         Include sub-directories
+ \doc\*        to  SYS:/Mrtg/doc/             All files
+ \images\*     to  SYS:/Mrtg/html/images/     All files
+ \translate\*  to  SYS:/Mrtg/translate/       All files. See Note 2.
 
-    Note 2: For English-only language support, all \translate files EXCEPT Locales_mrtg may be deleted.
+ Note 2: For English-only language support, all \translate files EXCEPT Locales_mrtg may be deleted.
 
-         \lib\*        to  SYS:/Mrtg/lib              Include sub-directories. See Note 3.
+ \lib\*        to  SYS:/Mrtg/lib              Include sub-directories. See Note 3.
 
-    Note 3: This will create the SYS:/Mrtg/lib/mrtg2 and ./pod directories.
+ Note 3: This will create the SYS:/Mrtg/lib/mrtg2 and ./pod directories.
 
 =item 4.
 
 Create copies of the three .ncf files and install them:
 
-         *.ncf         to  SYS:/Mrtg/bin
+ *.ncf         to  SYS:/Mrtg/bin
 
 See NetWare Support in this document for details on how to create copies of these files.
 
@@ -159,15 +159,14 @@ be monitored.
 
 Edit sys:/mrtg/bin/MakeMrtgCfg.ncf:
 
-          - replace ccccc with the GET community name for the SNMP device (typically 'public'),
-          - replace ddddd with the DNS name or IP address of the device to be monitored.
+ - replace ccccc with the GET community name for the SNMP device (typically 'public'),
+ - replace ddddd with the DNS name or IP address of the device to be monitored.
+   e.g    public@www.myserver.com, public@10.202.65.180
 
-          e.g    public@www.myserver.com, public@10.202.65.180
+ Note 1: These are NOT mail addresses, they just look like one!
+ Note 2: If multiple devices are to be monitored, add their entries to the same line:
 
-          Note 1: These are NOT mail addresses, they just look like one!
-          Note 2: If multiple devices are to be monitored, add their entries to the same line:
-
-          e.g  perl cfgmaker.pl public@www.myserver.com public@10.202.65.180 > sys:/mrtg/bin/mrtg.cfg
+ e.g  perl cfgmaker.pl public@www.myserver.com public@10.202.65.180 > sys:/mrtg/bin/mrtg.cfg
 
 In this "Getting Started", it is 'suggested' to only monitor a single device.
 
@@ -175,7 +174,7 @@ In this "Getting Started", it is 'suggested' to only monitor a single device.
 
 At the server console, run:
 
-         sys:/mrtg/bin/MakeMrtgCfg.ncf
+ sys:/mrtg/bin/MakeMrtgCfg.ncf
 
 This will create Mrtg.cfg in sys:/mrtg/bin.
 

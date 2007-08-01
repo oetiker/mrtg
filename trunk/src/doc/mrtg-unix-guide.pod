@@ -144,14 +144,14 @@ following material should actually be written on a single line.
       CFLAGS="-O -DHAVE_LIBPNG"
  cd ..
 
-For version starting around 2.0.11, try:
+For versions starting around 2.0.11, try:
 
  wget http://www.boutell.com/gd/http/gd-2.0.11.tar.gz
  gunzip -c gd-2.0.11.tar.gz |tar xf -
  mv gd-2.0.11 gd
  cd gd
- env CPPFLAGS="-I../zlib -I../libpng" LDFLAGS="-L../zlib -L../libpng" ./configure --disable-shared \
-     --without-freetype --without-jpeg
+ env CPPFLAGS="-I../zlib -I../libpng" LDFLAGS="-L../zlib -L../libpng" \
+     ./configure --disable-shared --without-freetype --without-jpeg
  make
  cp .libs/* .
 
