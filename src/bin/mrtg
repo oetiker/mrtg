@@ -609,7 +609,7 @@ sub getcurrent {
 	# Get the uptime, device name, and data collection time from the @$target
 	# array if the monitored data calculation refers only to one target.
 	# Otherwise it doesn't make sense to do this.
-	if( $rcfg->{ uniqueTarget }{ $rou } >= 0 ) {
+	if( $u >= 0 ) {
 		$uptime = $target->[ $u ]{ _UPTIME_ };
 		$name = $target->[ $u ]{ _NAME_ };
 		$time = $target->[ $u ]{ _TIME_ };
@@ -617,17 +617,44 @@ sub getcurrent {
 
 	# Set the time to the current time if it was not set above
 	$time = time unless $time;
-        
-	# Get the uptime and device name from the alternate location
-	# (community@host) that may have been specified with the RouterUptime
+
+	# Cache uptime location for reading name
+	my( $uploc );
+
+	# Get the uptime and device name from the alternate location (community@host or
+	# (OID:community@host or OID) that may have been specified with the RouterUptime
 	# target keyword
 	if( defined $rcfg->{ routeruptime }{ $rou } ) {
-   	     ( $uptime, $name ) = snmpget(
-		v4onlyifnecessary( $rcfg->{ routeruptime }{ $rou },
-			$rcfg->{ ipv4only }{ $rou } ),
-		$rcfg->{ snmpoptions }{ $rou }, 'sysUptime', 'sysName');
+		my( $noid, $nloc ) = split( /:/, $rcfg->{ routeruptime }{ $rou }, 2 );
+		# If only location (community@host) was specified then
+		# move the location details into the right place
+		if( $noid =~ /@/ ) {
+			$nloc = $noid;
+			$noid = undef;
+		}
+		# If no OID (community@host) was specified use the hardcoded default
+		if( not $noid ) {
+			$noid = 'sysUptime';
+		}
+		# If no location (community@host) was specified use values from the
+		# unique target referred to in the monitored data calculation
+		if( $u >= 0 and not $nloc ) {
+			my $comm = $target->[ $u ]{ Community };
+			my $host = $target->[ $u ]{ Host };
+			my $opt = $target->[ $u ]{ SnmpOpt };
+			$nloc = "$comm\@$host$opt";
+		} else {
+            die "$NOW: ERROR: You must specify the location part of the RouterUptime oid for non unique targets! ($rou)\n";
+        }
+            
+        
+		$uploc = $nloc;
+		# Get the device uptime if $noid(OID) and $nloc (community@host) have been specified
+		# one way or the other
+		debug('base', "Fetching sysUptime and sysName from: $noid:$nloc");
+		( $uptime, $name ) = snmpget( $uploc, $rcfg->{ snmpoptions }{ $rou }, $noid, 'sysName');
 	}
-  
+
 	# Get the device name from the alternate location (OID or
 	# OID:community@host) that may have been specified with the RouterName
 	# target keyword
@@ -643,10 +670,10 @@ sub getcurrent {
 		}
 		# Get the location from the RouterUptime keyword if that is defined
 		# and $nloc has not otherwise been specified
-		$nloc = $rcfg->{ routeruptime }{ $rou }
-			if defined $rcfg->{ routeruptime }{ $rou } and not $nloc;
+		$nloc = $uploc if $uploc and not $nloc;
 		# Get the device name if $nloc (community@host) has been specified
 		# one way or the other
+		debug('base', "Fetching sysName from: $noid:$nloc");
 		( $name ) = snmpget( $nloc, $$rcfg{snmpoptions}{ $rou }, $noid ) if $nloc;
 	}
   
@@ -2139,7 +2166,7 @@ sub getsnmparg ($$$){
     my $targtemp = $$target{Community}.'@'.$$target{Host}.$$target{SnmpOpt};
     $targtemp = v4onlyifnecessary($targtemp, $$target{ipv4only});
     
-    my @snmpoids = grep !/^(Pseudo|WaLK|GeTNEXT)|IndexPOS/, @OID;
+    my @snmpoids = grep !/^(Pseudo|WaLK|GeTNEXT|CnTWaLK)|IndexPOS/, @OID;
         
     if (defined $$cfg{singlerequest}){
 #LH        local $BER::pretty_print_timeticks = 0;
@@ -2157,6 +2184,9 @@ sub getsnmparg ($$$){
                           debug('snpo',"snmpwalk '$oid' -> ".($newret[-1]||'UNDEF'));next};
         s/^GeTNEXT// && do { my $oid=$_;push @newret, (split /:/, snmpgetnext($targtemp,$$target{snmpoptions},$oid),2)[1]; 
                           debug('snpo',"snmpgetnext '$oid' -> ".($newret[-1]||'UNDEF'));next};
+	s/^CnTWaLK// && do { my $oid=$_;my @insts= (snmpwalk($targtemp,$$target{snmpoptions},$_)); 
+	    		undef @insts if $insts[1] =~/no/i; push @newret, $#insts;
+			debug('snpo',"snmpCountwalk '$oid' -> ".($newret[-1]||'UNDEF'));next};
         /IndexPOS.*\.(\d*)/ && do { my $idx=$1; s/IndexPOS/$idx/; s/\.\d*$//; push @newret, snmpget($targtemp,$$target{snmpoptions},$_); 
                           debug('snpo', "snmpget of oid '$_' after replacement of IndexPOS"); next};
         push @newret, shift @ret;

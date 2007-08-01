@@ -184,6 +184,9 @@ sub InterfaceInfo($$$$$) {
         $descr =~ m/Catalyst/ ) {
         push @Variables,  "vlanTrunkPortDynamicStatus";
     }
+    if ($descr =~ m/Passport-8610/ ) {
+        push @Variables,  "ppPortName";
+    }
 
     foreach my $var (@Variables) {
         debug('base',"Walking $var");
@@ -676,6 +679,7 @@ ECHO
                 my $port_dot = $$i{Name};
                 $port_dot =~ s/\//./g;
                 my $if_port_name = $$router_ref{$port_dot}{CiscoCatalystPortName};
+                my $if_pp_port_name = $$router_ref{$ifindex}{ppPortName};
 
                 if (defined $$router_opt{ifdesc}) {
                     $desc_prefix = '';
@@ -688,6 +692,7 @@ ECHO
                                     last};
                         /^name$/ && do {$if_title_desc = "#".$$i{Name} if $$i{Name}; last};
                         /^catname$/ && do {$if_title_desc = "$if_port_name"; last};
+                        /^ppname$/ && do {$if_title_desc = "$if_pp_port_name"; last};
                         /^type$/ && do {$if_title_desc = "%".$$i{Type} if $$i{Type}; last};
                         /^nr$/ && do {$if_title_desc = "Interface $ifindex"; last};
                         /^$/ && do {$if_title_desc = $if_type_desc;
@@ -763,6 +768,11 @@ ECHO
 					<td>Port Name:</td>
 					<td>$if_port_name</td>
 				</tr>" if defined $if_port_name;
+                $default_pagetop_directive .= "
+				<tr>
+					<td>Port Name:</td>
+					<td>$if_pp_port_name</td>
+				</tr>" if defined $if_pp_port_name;
                 $default_pagetop_directive .= "
 				<tr>
 					<td>Max Speed:</td>
@@ -1522,6 +1532,7 @@ sub init () {
   snmpmapOID('sysObjectID' => '1.3.6.1.2.1.1.2.0',
              'CiscolocIfDescr' => '1.3.6.1.4.1.9.2.2.1.1.28',
              'CiscoCatalystPortName' => '1.3.6.1.4.1.9.5.1.4.1.1.4',
+             'ppPortName' => '1.3.6.1.4.1.2272.1.4.10.1.1.35',
             'vlanTrunkPortDynamicStatus'=> '1.3.6.1.4.1.9.9.46.1.6.1.1.14',
              'vmVlan' => '1.3.6.1.4.1.9.9.68.1.2.2.1.2',
              'ifAlias' => '1.3.6.1.2.1.31.1.1.1.18');
@@ -1554,6 +1565,7 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
  --ifdesc=descr                     ... uses Interface Description
  --ifdesc=name                      ... uses Interface Name
  --ifdesc=catname                   ... uses CatOS Interface Name
+ --ifdesc=ppname                    ... uses Passport Port Name
  --ifdesc=alias                     ... uses Interface Alias
  --ifdesc=type                      ... uses Interface Type
 
@@ -2535,6 +2547,11 @@ control B<$if_title> by using the command line option B<--if-descr>.
 If the host is a Cisco Catalyst LAN switch, this variable is the name of
 that port.  (No HTML escaped variant available)
 
+=item B<$if_pp_port_name>
+
+If the host is a Nortel Passport LAN switch, this variable is the name of
+that port.  (No HTML escaped variant available)
+
 =item B<$desc_prefix>
 
 This variable is a prefix of the description of what the target is to use in
@@ -2630,6 +2647,13 @@ interface happens to be rejected.
 				<tr>
 					<td>Port Name:</td>
 					<td>$if_port_name</td>
+				</tr>
+ ECHO
+
+   $target_lines .= <<ECHO if defined $if_pp_port_name;
+				<tr>
+					<td>Port Name:</td>
+					<td>$if_pp_port_name</td>
 				</tr>
  ECHO
 
