@@ -9,7 +9,7 @@ mrtg knows about their names ... depending on the ASN.1 Syntax
 you may have to put B<gauge> into the B<Options[]:> parameter.
 
 For information about how to create a B<Target[]:> parameter which
-references these MIB entries, please consult L<mrtg-reference>.
+references these MIB entries, please consult mrtg-reference.
 
 =head1 MIB LIST
 
