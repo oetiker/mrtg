@@ -1,6 +1,6 @@
 =head1 NAME
 
-mrtg-nt-guide - The Windows Guide to MRTG 2.15.2
+mrtg-nt-guide - The MRTG 2.15.2 Windows Installation Guide
 
 =head1 SYNOPSIS
 
@@ -17,16 +17,15 @@ To get MRTG to work on Windows you need the following:
 =item *
 
 A current copy of Perl.
-For Example ActivePerl from 
-http://www.activestate.com/Products/Download/Download.plex?id=ActivePerl
+For Example ActivePerl 5.8.8 from ActiveState
+http://www.activestate.com/store/activeperl/download/
 
 
 =item *
 
-The latest version of MRTG from
-http://oss.oetiker.ch/mrtg/pub Look for mrtg-2.15.2.zip
-or better. The archive also contains a precompiled copy of rateup.exe for
-Win32.
+The latest version of MRTG from http://oss.oetiker.ch/mrtg/pub. Look for
+mrtg-2.15.2.zip or better. The archive also contains a precompiled copy of
+rateup.exe for Win32.
 
 
 =back

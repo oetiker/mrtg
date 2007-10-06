@@ -1,6 +1,6 @@
 =head1 NAME
 
-mrtg-unix-guide - Instructions for running MRTG 2.15.2 on a Unix Box
+mrtg-unix-guide - The MRTG 2.15.2 Linux/Unix Installation Guide
 
 =head1 DESCRIPTION
 
