@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/sepp/bin/perl-5.8.8 -w
 
 use strict;
 use HTML::Parser;

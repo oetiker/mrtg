@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/sepp/bin/perl-5.8.8
 undef $/; #slurp alll 
 $_ = <>;
 while (s/<page[\s\n\r]+(\S+)\s*=\s*(?:"([^"]+)"|([^"\s>]+))/<page/si){
