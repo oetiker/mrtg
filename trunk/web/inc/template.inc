@@ -34,26 +34,29 @@
 <body>
 <div id="page_header">
 <small>
-<A HREF="http://oss.oetiker.ch/mrtg/<where/>">Swiss Original</A>.
+<A HREF="http://oss.oetiker.ch/mrtg/<where/>"><img src="$(ROOT)/images/flags/ch.gif" border=0 alt="CH"/></A>
 &nbsp;Mirrors: 
 #<A HREF="http://mrtg.planetmirror.com/<where/>">AU</a><!--jason andrade <jason@dstc.edu.au> -->
 #<A HREF="http://mirrors.bchosting.com/mrtg/<where/>">CA</a><!--Chris Phillips BChosting.com-->
 #<A HREF="http://mrtg.paracoda.com/<where/>">CA</a><!--Hossam Hossny <admin@paracoda.com> -->
-<A HREF="http://www.mrtg.cz/<where/>">CZ</a><!--Martin Och <martin@och.cz>-->
-#<A HREF="http://mrtg-fr.agarik.com/<where/>">FR</a><!--Laurent SEROR seror@agarik.com-->
+<A HREF="http://mrtg.paracoda.com/<where/>"><img src="$(ROOT)/images/flags/ca.gif" border=0 alt="CA"/></A><!--Hossam Hossny <admin@paracoda.com>-->
+<A HREF="http://www.mrtg.cz/<where/>"><img src="$(ROOT)/images/flags/cz.gif" border=0 alt="CZ"/></a><!--Martin Och <martin@och.cz>-->
+<A HREF="http://mrtg.basemirror.de/<where/>"><img src="$(ROOT)/images/flags/de.gif" border=0 alt="DE"/></a><!--Baseportal Mirrors <mirrors@baseportal.de>-->
+<A HREF="http://ftp.heanet.ie/mirrors/oss.oetiker.ch/mrtg/"><img src="$(ROOT)/images/flags/ie.gif" border=0 alt="IE"/></A><!-- mirrors@heanet.ie> -->
+#<A HREF="http://mrtg-fr.agarik.com/<where/>"><img src="$(ROOT)/images/flags/fr.gif" border=0 alt="FR"/></a><!--Laurent SEROR seror@agarik.com-->
 #<A HREF="http://www.mrtg.it/<where/>">IT</a><!--Vicki Vinci root@power.it -->
-<A HREF="http://mrtg.magaltavor.com/<where/>">LB</a><!-- Jocelyn habib <jhabib@terra.net.lb> -->
+<A HREF="http://lebos.org/mrtg/mrtg/<where/>"><img src="$(ROOT)/images/flags/lb.gif" border=0 alt="LB"/></a><!-- Jocelyn habib <jhabib@gmail.com> -->
 #<A HREF="http://mrtg.grunn.org/<where/>">NL</a><!--Webmaster <webmaster@grunn.org>-->
-<A HREF="http://mrtg.meulie.net/<where/>">US</a><!--Evert Meulie <evert@meulie.net> -->
-<A HREF="http://mrtg.playsystems.ro/<where/>">RO</a><!--Dan Draghici <dan.draghici@ulbsibiu.ro>-->
-<A HREF="http://mrtg.cs.pu.edu.tw/<where/>">TW</a><!--Hsun-Chang Chang <hsunchang@gmail.com>-->
-<A HREF="http://mrtg.mirror.graemef.net/<where/>">UK</a><!--Graeme Fowler <graeme@graemef.net>-->
+<A HREF="http://mrtg.meulie.net/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></a><!--Evert Meulie <evert@meulie.net> -->
+<A HREF="http://mrtg.hdl.com/mrtg/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></a><!--HDL Tech Support <wildcard@hdl.com> (Steve)  -->
+<A HREF="http://mrtg.mirroraty.org/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></A><!--Hossam Hossny <hossam@trexle.com>-->
+<A HREF="http://mrtg.playsystems.ro/<where/>"><img src="$(ROOT)/images/flags/ro.gif" border=0 alt="RO"/></a><!--Dan Draghici <dan.draghici@ulbsibiu.ro>-->
+<A HREF="http://mrtg.cs.pu.edu.tw/<where/>"><img src="$(ROOT)/images/flags/tw.gif" border=0 alt="TW"/></a><!--Hsun-Chang Chang <hsunchang@gmail.com>-->
+<A HREF="http://mrtg.mirror.graemef.net/<where/>"><img src="$(ROOT)/images/flags/gb.gif" border=0 alt="GB"/></a><!--Graeme Fowler <graeme@graemef.net>-->
 #<A HREF="http://www.bigwebmaster.com/mrtg/<where/>">US</a><!--Brian Annas <questions@bigwebmaster.com>-->
 #<A HREF="/<where/>"></a><!---->
 #<A HREF="/<where/>"></a><!---->
 #<A HREF="/<where/>"></a><!---->
-<A HREF="http://mrtg.trexle.net/<where/>">US</A><!--Hossam Hossny <hossam@trexle.com>-->
-<A HREF="http://mrtg.paracoda.com/<where/>">CA</A><!--Hossam Hossny <admin@paracoda.com>-->
 </small>
 </div>
 
@@ -67,7 +70,9 @@
 <br/>
 <br/>
 <p><b>Gold Sponsors</b></p>
-<p><a href="http://it.oetiker.ch/monitoring/sponsoring.var"><img border="0" alt="MRTG Gold Sponsor" src="$(ROOT)/inc/mrtg-gold.png"/></a></p>
+# From: Mark Hinkle <mrhinkle@zenoss.com>
+# Date: Mon, 14 May 2007 14:43:09 -0400
+<p><a href="http://www.zenoss.com/mrtg?utm_source=mrtg&amp;utm_medium=logolink&amp;utm_campaign=inbound"><img border="0" title="Zenoss Open Source IT Monitoring" alt="Zenoss Open Source IT Monitoring" src="$(ROOT)/logos/zenoss.png"/></a></p>
 <p><a href="http://it.oetiker.ch/monitoring/sponsoring.var"><img border="0" alt="MRTG Gold Sponsor" src="$(ROOT)/inc/mrtg-gold.png"/></a></p>
 <p><a href="$(ROOT)/sponsor.<lang:star: */>.html">Silver Sponsors ...</a></p>
 <br/>
@@ -126,21 +131,23 @@
 
 <!-- Content code start -->
 <td id="content_container">
+{#H1#}
 <div id="googlead_right">
 <script type="text/javascript"><!--
 google_ad_client = "pub-8135238818549668";
-google_ad_width = 160;
-google_ad_height = 600;
-google_ad_format = "160x600_as";
-google_ad_type = "text";
-google_ad_channel ="3435820243";
-google_color_border = "FE754D";
-google_color_bg = "F0F0F0";
-google_color_link = "000000";
-google_color_url = "345D98";
+google_ad_width = 300;
+google_ad_height = 250;
+google_ad_format = "300x250_as";
+google_ad_type = "text_image";
+google_ad_channel = "3435820243";
+google_color_border = "ffffff";
+google_color_bg = "ffffff";
+google_color_link = "345d98";
+google_color_url = "000000";
 google_color_text = "000000";
 //--></script>
-<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </script>
 </div>
 {#Body#}
@@ -170,15 +177,15 @@ print <<'GOOGLEAD';
 <p>
 <script type="text/javascript"><!--
 google_ad_client = "pub-8135238818549668";
-google_ad_width = 728;
-google_ad_height = 90;
-google_ad_format = "728x90_as";
-google_ad_type = "text";
-google_ad_channel ="3710326600";
-google_color_border = "FE754D";
-google_color_bg = "F0F0F0";
-google_color_link = "000000";
-google_color_url = "345D98";
+google_ad_width = 300;
+google_ad_height = 250;
+google_ad_format = "300x250_as";
+google_ad_type = "text_image";
+google_ad_channel = "3710326600";
+google_color_border = "ffffff";
+google_color_bg = "ffffff";
+google_color_link = "345d98";
+google_color_url = "000000";
 google_color_text = "000000";
 //--></script>
 <script type="text/javascript"
@@ -187,8 +194,7 @@ google_color_text = "000000";
 </p>
 GOOGLEAD
 }
-</perl>
-</td>
+</perl></td>
 </tr>
 </table>
 
