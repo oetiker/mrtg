@@ -1,3 +1,6 @@
+From: Mike Mitchell <Mike.Mitchell@sas.com>
+* MIB parser rewritten for better compatibility
+
 From: Norman Rasmussen <norman@rasmussen.co.za>
 * allow RouterUptime to contain an explicit OID for queriing the uptime.
 
