@@ -1987,8 +1987,8 @@ MESSAGE
 		  if ( defined $threshfile ) {
 		    if ( -e $threshfile.".".$bound.uc($dir) ){
 			unlink "$threshfile.".$bound.uc($dir);
-		        if (defined $$rcfg{'threshprog'.$dir}{$router}){
-                             debug('base',"run threshprog$dir: ".(join ",",@exec));
+		        if (defined $$rcfg{'threshprogok'.$dir}{$router}){
+                             debug('base',"run threshprogok$dir: ".(join ",",@exec));
                      	     system @exec;
     		        }
 			threshmail $cfg->{threshmailserver},$cfg->{threshmailsender},$rcfg->{threshmailaddress}{$router},$message
