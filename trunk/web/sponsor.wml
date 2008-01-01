@@ -12,14 +12,14 @@ If you profit from MRTG and want to support the project as a whole, you
 could <a href="http://it.oetiker.ch/monitoring/sponsoring.var">become a
 sponsor</a>!</p>
 
-<h2>2007 Gold Sponsors</h2>
+<h2>2008 Gold Sponsors</h2>
 
 <p>
 #Erik A. Dahl <edahl@zenoss.org>
 <a href="http://www.zenoss.com/?mrtg"><img border="0" title="Zenoss Open Source IT Monitoring" alt="Zenoss Open Source IT Monitoring" src="$(ROOT)/logos/zenoss.png"/></a>
 </p>
  
-<h2>2007 Silver Sponsors</h2>
+<h2>2008 Silver Sponsors</h2>
 
 <p>
 # Rolf Hefti <rolf.hefti@terreactive.ch> Mon, 9 Jul 2007 10:58:10 +0200
@@ -27,12 +27,8 @@ sponsor</a>!</p>
 # Michael Patterson <mike@plixer.com>  Mon, 29 Oct 2007 15:13:31 -0400
 <a href="http://www.plixer.com"><img border="0" alt="Silver Sponsor" src="$(ROOT)/logos/logo_plixer_blue101x51.gif"/></a>&nbsp;
 <a href="http://it.oetiker.ch/monitoring/sponsoring.var"><img border="0" alt="Silver Sponsor" src="$(ROOT)/inc/silver-logo.png"/></a>&nbsp;
-<a href="http://it.oetiker.ch/monitoring/sponsoring.var"><img border="0" alt="Silver Sponsor" src="$(ROOT)/inc/silver-logo.png"/></a>      
+#<a href="http://it.oetiker.ch/monitoring/sponsoring.var"><img border="0" alt="Silver Sponsor" src="$(ROOT)/inc/silver-logo.png"/></a>      
 </p>
-
-<h2>2006 Sponsors</h2>
-
-<p><a href="http://www.plixer.com">Plixer Technologies, Inc., 1293 Main St.,Sanford, ME 04073</a></p>
 
 <h2>Other means for making Tobi happy</h2>
 
