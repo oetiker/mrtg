@@ -9,7 +9,7 @@
 
 <p>You have a router, you want to know what it does all day long? Then MRTG
 is for you. It will monitor SNMP network devices and draw <a
-href="http://www.stat.ee.ethz.ch/mrtg">pretty pictures</a>
+href="http://www.switch.ch/network/operation/statistics/level3.html">pretty pictures</a>
 showing how much traffic has passed through each interface.</p>
 
 <p>Routers are only the beginning. MRTG is being used to graph all sorts of

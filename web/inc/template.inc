@@ -135,19 +135,14 @@
 <div id="googlead_right">
 <script type="text/javascript"><!--
 google_ad_client = "pub-8135238818549668";
+/* MRTG top left */
+google_ad_slot = "6519870161";
 google_ad_width = 300;
 google_ad_height = 250;
-google_ad_format = "300x250_as";
-google_ad_type = "text_image";
-google_ad_channel = "3435820243";
-google_color_border = "ffffff";
-google_color_bg = "ffffff";
-google_color_link = "345d98";
-google_color_url = "000000";
-google_color_text = "000000";
-//--></script>
+//-->
+</script>
 <script type="text/javascript"
-  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </script>
 </div>
 {#Body#}
