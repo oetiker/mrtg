@@ -215,6 +215,10 @@ $VERSION = 2.100016;
        'rrdrowcount[]' => 
        [sub{1}, sub{"Internal Error"}], #what ever the user chooses.
 
+       'rrdhwrras[]' =>
+       [sub{$_[0] =~ /^RRA:(HWPREDICT|SEASONAL|DEVPREDICT|DEVSEASONAL|FAILURES):\S+(\s+RRA:(HWPREDICT|SEASONAL|DEVPREDICT|DEVSEASONAL|FAILURES):\S+)*$/},
+        sub{"This does not look like rrdtool HW RRAs. Check the rrdcreate manual page for inspiration. ($_[0])"}],
+
        'extension[]' =>
        [sub{1}, sub{"Internal Error"}], #what ever the user chooses.
 
@@ -301,6 +305,7 @@ $VERSION = 2.100016;
        [sub{$_[0] =~ /^(?:[-\w]+=\"[^"]*"(?:\s+|$))+$/},
         sub{"$_[0] must be XY=\"dddd\" AASD=\"kjlkj\" ... "}],
 
+
        'xzoom[]' =>
        [sub{($_[0] =~ /^[0-9]+(?:\.[0-9]+)?$/)},
         sub{"$_[0] must be a Number xxx.xxx"}],
@@ -321,6 +326,10 @@ $VERSION = 2.100016;
        [sub{$_[0] && (-d $_[0])}, sub{"Threshold directory $_[0] does not exist"}],
  
        'threshhyst' =>
+       [sub{($_[0] =~ /^[0-9]+(?:\.[0-9]+)?$/)},
+        sub{"$_[0] must be a Number xxx.xxx"}],
+
+       'hwthreshhyst' =>
        [sub{($_[0] =~ /^[0-9]+(?:\.[0-9]+)?$/)},
         sub{"$_[0] must be a Number xxx.xxx"}],
 
@@ -358,6 +367,36 @@ $VERSION = 2.100016;
        [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'threshmailaddress[]' =>
+       [sub{$_[0] && ($_[0] =~ /\S+\@\S+/)}, sub{"ThreshMailAddress $_[0] does not look like an email address at all"}],
+
+       'hwthreshmini[]' =>
+       [sub{1}, sub{"Internal Threshold Config Error"}],
+
+       'hwthreshmino[]' =>
+       [sub{1}, sub{"Internal Threshold Config Error"}],
+
+       'hwthreshmaxi[]' =>
+       [sub{1}, sub{"Internal Threshold Config Error"}],
+
+       'hwthreshmaxo[]' =>
+       [sub{1}, sub{"Internal Threshold Config Error"}],
+
+       'hwthreshdesc[]' =>
+       [sub{1}, sub{"Internal Threshold Config Error"}],
+
+       'hwthreshprogi[]' =>
+       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
+
+       'hwthreshprogo[]' =>
+       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
+
+       'hwthreshprogoki[]' =>
+       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
+
+       'hwthreshprogoko[]' =>
+       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
+
+       'hwthreshmailaddress[]' =>
        [sub{$_[0] && ($_[0] =~ /\S+\@\S+/)}, sub{"ThreshMailAddress $_[0] does not look like an email address at all"}],
 
        'timestrpos[]' => 

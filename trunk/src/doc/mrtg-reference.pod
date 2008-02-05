@@ -434,6 +434,7 @@ additionally specify
 
 this will make mrtg run but without detaching it from the terminal.
 
+
 =head2 ConversionCode
 
 Some devices may produce non-numeric values that would nevertheless
@@ -1764,6 +1765,20 @@ Example:
 
  RRDRowCount[myrouter]: 1600
 
+=head2 RRDHWRRAs
+
+Normally the RRDs created by MRTG will just contain the information gathered
+directly from the respective target. With this option you can tap into
+rrdtools advanced aberrant behaviour detection module based on Holt-Winters
+forecasting. The RRDHWRRAs property specifies the Holt-Winters RRAs as
+described in the rrdcreate manual page. 
+
+Note, this setting will only affect newly created RRDs (targets).
+
+Example:
+
+ RRDHWRRAs[myrouter]: RRA:HWPREDICT:1440:0.1:0.0035:288
+
 =head2 TimeStrPos
 
 This defines placement of the timestamp string on the image. Possible
@@ -1888,6 +1903,23 @@ Example:
 
  SetEnv[myrouter]:  EMAIL="contact_email@someplace.net"
                     HOST="www.some_server.net"
+
+=head2 HW Failure Bassed Threshol Checking
+
+When using rrd based logging with HW RRAs defined. You can use the
+confidence bounds violations stored in the FAILURES RRA for threshold based
+alerts.
+
+There the all target specific threshold variables have a Hold-Winters counterpart:
+
+ ThreshMailAddress -> HWThreshMailAddress
+ ThreshMinI        -> HWThreshMinI
+ ...
+
+The global variables for threshold checking are shared except for the 
+
+ ThreshHyst        -> HWThreshHyst
+
 
 =head1 PER TARGET DEFAULT VALUES
 
