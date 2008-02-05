@@ -1,3 +1,9 @@
+From: Tobi
+* Added support for RRDtool based Holt-Winters aberrant behaviour detection.
+  Threshold based alerts have been enhanced to be able to fire based on the
+  FAILURES RRA. Note that Holt-Winters aberrant behaviour detection can only
+  be enabled on newly created RRAs.
+
 From: Sergio Chiesa sergio.chiesa eutelia.it
 * when thresholds were UNboraken, the threshprogok did not run necessarily
 

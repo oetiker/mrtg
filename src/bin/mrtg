@@ -820,10 +820,15 @@ sub writegraphics {
                          ( $interval < 30  ? ("RRA:MAX:0.5:".int(30/$interval).":800"):()),
                          "RRA:MAX:0.5:".int(120/$interval).":800",
                          "RRA:MAX:0.5:".int(1440/$interval).":800");
-            debug('log', "RRDs::create(@args)");
+            # do we have holt winters rras defined here ?
+            if (defined $$rcfg{'rrdhwrras'} and defined $$rcfg{'rrdhwrras'}{$router}){
+                push @args, split(/\s+/, $$rcfg{'rrdhwrras'}{$router});
+            }
+
+            debug('log', "RRDs::create(".join(',',@args).")");
             RRDs::create(@args);
             my $e = RRDs::error();
-            die "$NOW: ERROR: Cannot create $dotrrd - $e\n" if $e;
+            die "$NOW: ERROR: Cannot create RRD ".join(',',@args)."- $e\n" if $e;
         } elsif ( -M $dotrrd > 0 ) {
             # update the minimum/maximum according to maxbytes/absmax
             # and (re)set the data-source-type to reflect cfg changes
@@ -875,6 +880,8 @@ sub writegraphics {
              my $utime = $time - ($time % int($cfg->{interval}*60));
 	     $cuin{d}{$router} = $rrddata->{"[$utime]RRA[AVERAGE][1]DS[ds0]"};
 	     $cuout{d}{$router} = $rrddata->{"[$utime]RRA[AVERAGE][1]DS[ds1]"};
+	     $cuin{d_hwfail}{$router} = $rrddata->{"[$utime]RRA[FAILURES][1]DS[ds0]"};
+	     $cuout{d_hwfail}{$router} = $rrddata->{"[$utime]RRA[FAILURES][1]DS[ds1]"};
         }
         my $in = defined $cuin{d}{$router} ?  $cuin{d}{$router} : "???" ;
         my $out = defined  $cuout{d}{$router} ? $cuout{d}{$router} : "???" ;
@@ -1877,45 +1884,56 @@ sub threshcheck {
     }
 
     # setup environment for external scripts
-    if (defined $$rcfg{'threshdesc'}{$router}) {
-        $ENV{THRESH_DESC}=$$rcfg{'threshdesc'}{$router};
+    if (defined $rcfg->{'threshdesc'}{$router}) {
+        $ENV{THRESH_DESC}=$rcfg->{'threshdesc'}{$router};
     } else {
         delete $ENV{THRESH_DESC};
     }
+    if (defined $rcfg->{'hwthreshdesc'}{$router}) {
+        $ENV{HWTHRESH_DESC}=$rcfg->{'hwthreshdesc'}{$router};
+    } else {
+        delete $ENV{HWTHRESH_DESC};
+    }
 
-    foreach my $dir (qw(i o)){ # in and out
-        next unless defined $cu{$dir}{d}{$router};
-        my $threshval = sprintf "%.1f", $cu{$dir}{d}{$router};
-        foreach my $bound (qw(min max)){
-	    # skip unless a threshold is defined for this "$router"
-            next unless defined $$rcfg{'thresh'.$bound.$dir}{$router};
-            # we can not deal with unknown data here
-            $threshval = 0 if not defined $threshval and $$rcfg{'options'}{'unknaszero'}{$router};            
-            warn "$NOW: WARNING: can't do threshold checking for target $router($dir) -- No valid current data\n"
-                unless defined $threshval;
-            my $boundval = $$rcfg{'thresh'.$bound.$dir}{$router};
-            next unless defined $boundval;
-            my $realval = "";
-	    my $realthresh = "";
-            if ($boundval =~ s/%$//) { # defined in % of maxbytes
-                # 2 decimals in %   
-		 $realval = "% ($threshval)";
-	         $realthresh = "% (".sprintf("%.1f",($rcfg->{"maxbytes".($dir eq 'i' ? 1 : 2)}{$router} * $boundval / 100)).")";
-                 $threshval = sprintf "%.1f", ($threshval / $$rcfg{"maxbytes".($dir eq 'i' ? 1 : 2)}{$router} * 100); # the new code
-            }
-	    my $msghead = "";
-	    $msghead = "From: $cfg->{threshmailsender}\nTo: $rcfg->{threshmailaddress}{$router}"
-		if $rcfg->{threshmailaddress}{$router};
-	    my $pagetop = $rcfg->{pagetop}{$router};
-	    $pagetop =~ s|<h1>.*?</h1>||;
-	    $pagetop =~ s|\s*<tr>\s*<td>(.*?)</td>\s*<td>(.*?)</td>\s*</tr>\s*|$1 $2\n|g;
-	    $pagetop =~ s|\s*<.+?>\s*\n?||g;
+    for my $dir (qw(i o)){ # in and out
+        my %thresh = (
+                thresh => $cu{$dir}{d}{$router},
+                
+        # if we are looking at an rrd with holtwinters RRAs
+        # we get a failures count.
+                hwthresh => $cu{$dir}{d_hwfail}{$router}
+        );
+        for my $type (keys %thresh){
+            my $threshval = $thresh{$type};
+            next if not defined $threshval;
+            for my $bound (qw(min max)){
+	            # skip unless a threshold is defined for this "$router"
+                my $boundval = $rcfg->{$type.$bound.$dir}{$router};
+                next unless defined $boundval;
+    
+                my $realval = "";
+    	        my $realthresh = "";
+    
+                if ($boundval =~ s/%$//) { # defined in % of maxbytes
+                    # 2 decimals in %   
+        		    $realval = "% ($threshval)";
+	                $realthresh = "% (".sprintf("%.1f",($rcfg->{"maxbytes".($dir eq 'i' ? 1 : 2)}{$router} * $boundval / 100)).")";
+                    $threshval = sprintf "%.1f", ($threshval / $rcfg->{"maxbytes".($dir eq 'i' ? 1 : 2)}{$router} * 100); # the new code
+                }
+    	        my $msghead = "";
+	            $msghead = "From: $cfg->{threshmailsender}\nTo: $rcfg->{${type}.'mailaddress'}{$router}"
+	    	        if $rcfg->{${type}.'mailaddress'}{$router};
+    	        my $pagetop = $rcfg->{pagetop}{$router};
+    	        $pagetop =~ s|<h1>.*?</h1>||;
+	            $pagetop =~ s|\s*<tr>\s*<td>(.*?)</td>\s*<td>(.*?)</td>\s*</tr>\s*|$1 $2\n|g;
+	            $pagetop =~ s|\s*<.+?>\s*\n?||g;
 
-	    my $msgbody = <<MESSAGE;
-
+        	    my $msgbody = <<MESSAGE;
+    
 $rcfg->{title}{$router}
 
    Target: $router
+     Type: $type
 Direction: $dir
     Bound: $bound
 Threshold: $boundval$realthresh
@@ -1924,82 +1942,81 @@ Threshold: $boundval$realthresh
 $pagetop
 
 MESSAGE
-	    $msgbody .= "\n$$rcfg{'threshdesc'}{$router}\n" if $$rcfg{'threshdesc'}{$router};
+	            $msgbody .= "\n$rcfg->{$type.'desc'}{$router}\n" if $rcfg->{$type.'desc'}{$router};
 	
-
-            if (($bound eq 'min' and $boundval > $threshval) or
-                ($bound eq 'max' and $boundval < $threshval)) {
-		# threshold was broken...
-		  my $message = <<MESSAGE;
+                
+                if (($bound eq 'min' and $boundval > $threshval) or
+                    ($bound eq 'max' and $boundval < $threshval)) {
+    		        # threshold was broken...
+	    	        my $message = <<MESSAGE;
 $msghead
-Subject: [MRTG-TH] BROKEN $router $bound $dir ( $boundval$realthresh vs $threshval$realval )
+Subject: [MRTG-TH] BROKEN $router $type $bound $dir ( $boundval$realthresh vs $threshval$realval )
 
 Threshold BROKEN
 ----------------
 $msgbody
 MESSAGE
-                  my @exec = ( $$rcfg{'threshprog'.$dir}{$router}, $router,
-			  $$rcfg{'thresh'.$bound.$dir}{$router}, $threshval,($$rcfg{'threshdesc'}{$router} ||"No Description"));
+                    my @exec = ( $rcfg->{$type.'prog'.$dir}{$router}, $router,
+			            $rcfg->{$type.$bound.$dir}{$router}, $threshval,($rcfg->{$type.'desc'}{$router} ||"No Description"));
  
- 		  # Check if we use the status file or not...
- 		  if ( defined $threshfile ) {
-		    if ( not -e $threshfile.".".$bound.uc($dir) ) {
-			# Create a file to indicate a threshold problem for the time after the problem
-			open THRESHTOUCH, ">".$threshfile.".".$bound.uc($dir)
-			    or warn "$NOW: WARNING: Creating $threshfile.".$bound.uc($dir).": $!\n";
-			close THRESHTOUCH;
-			if (defined $$rcfg{'threshprog'.$dir}{$router}){
-                             debug('base',"run threshprog$dir: ".(join ",",@exec));
-                     	     system @exec;
-			}
-			threshmail $cfg->{threshmailserver},$cfg->{threshmailsender},$rcfg->{threshmailaddress}{$router},$message
-			   if $rcfg->{threshmailaddress}{$router}
-
-		    } else {
-			debug('base',"NOT acting on BROKEN threshold since $threshfile.$bound$dir exists");
-		    }
-		  } elsif ( not defined $cfg->{threshhyst} or 
-	                    ($bound eq 'min' and $boundval - $cfg->{threshhyst}* $boundval < $threshval) or
-                            ($bound eq 'max' and $boundval + $cfg->{threshhyst}* $boundval > $threshval)
-  			  ) {
-		     # no threshold dir so run on every 'break'
-		     if (defined $$rcfg{'threshprog'.$dir}{$router}){
-                             debug('base',"run threshprog$dir: ".(join ",",@exec));
-                     	     system @exec;
-  		     }
-        	     threshmail $cfg->{threshmailserver},$cfg->{threshmailsender},$rcfg->{threshmailaddress}{$router},$message
-                           if $rcfg->{threshmailaddress}{$router};
-		  }
-            } else {
-  		  # no threshold broken ...
-		  my @exec = ( $$rcfg{'threshprogok'.$dir}{$router}, $router,
-			  $$rcfg{'thresh'.$bound.$dir}{$router}, $threshval);
-		  my $message = <<MESSAGE;
+                    # Check if we use the status file or not...
+                    if ( defined $threshfile ) {
+		                if ( not -e $threshfile.".".$type.$bound.uc($dir) ) {
+			            # Create a file to indicate a threshold problem for the time after the problem
+			                open THRESHTOUCH, ">".$threshfile.".".$type.$bound.uc($dir)
+			                    or warn "$NOW: WARNING: Creating $threshfile.".$bound.uc($dir).": $!\n";
+			                close THRESHTOUCH;
+			                if (defined $rcfg->{$type.'prog'.$dir}{$router}){
+                                debug('base',"run threshprog$dir: ".(join ",",@exec));
+                     	        system @exec;
+			                }
+			                threshmail $cfg->{threshmailserver},$cfg->{threshmailsender},$rcfg->{$type.'mailaddress'}{$router},$message
+    			                if $rcfg->{$type.'mailaddress'}{$router}
+            	        } 
+                        else {
+			                debug('base',"NOT acting on BROKEN threshold since $threshfile.$type$bound$dir exists");
+		                }
+		            } elsif ( not defined $cfg->{$type.'hyst'} or 
+	                     ($bound eq 'min' and $boundval - $cfg->{$type.'hyst'}* $boundval < $threshval) or
+                            ($bound eq 'max' and $boundval + $cfg->{$type.'hyst'}* $boundval > $threshval)
+  			            ) {
+        		     # no threshold dir so run on every 'break'
+		                if (defined $rcfg->{$type.'prog'.$dir}{$router}){
+                            debug('base',"run ${type}prog$dir: ".(join ",",@exec));
+                            system @exec;
+          		        }
+            	        threshmail $cfg->{threshmailserver},$cfg->{threshmailsender},$rcfg->{$type.'mailaddress'}{$router},$message
+                            if $rcfg->{$type.'mailaddress'}{$router};
+		            }
+                } else {
+  		            # no threshold broken ...
+		            my @exec = ( $rcfg->{$type.'progok'.$dir}{$router}, $router,
+			                 $rcfg->{$type.$bound.$dir}{$router}, $threshval);
+		            my $message = <<MESSAGE;
 $msghead
-Subject: [MRTG-TH] UN-BROKEN $router $bound $dir ( $$rcfg{'thresh'.$bound.$dir}{$router} vs $threshval)
+Subject: [MRTG-TH] UN-BROKEN $router $type $bound $dir ( $rcfg->{$type.$bound.$dir}{$router} vs $threshval)
 
 Threshold UN-BROKEN
 -------------------
 $msgbody
 MESSAGE
 
-		  # Check if we use the status file or not...
-		  if ( defined $threshfile ) {
-		    if ( -e $threshfile.".".$bound.uc($dir) ){
-			unlink "$threshfile.".$bound.uc($dir);
-		        if (defined $$rcfg{'threshprogok'.$dir}{$router}){
-                             debug('base',"run threshprogok$dir: ".(join ",",@exec));
-                     	     system @exec;
-    		        }
-			threshmail $cfg->{threshmailserver},$cfg->{threshmailsender},$rcfg->{threshmailaddress}{$router},$message
-                            if $rcfg->{threshmailaddress}{$router};
-		    }
-		  }
-                
-	    }
-
-        } # foreach my $bound ...
-    } # foreach my $dir
+		            # Check if we use the status file or not...
+		            if ( defined $threshfile ) {
+		                if ( -e $threshfile.".".$type.$bound.uc($dir) ){
+			                unlink "$threshfile.".$type.$bound.uc($dir);
+		                    if (defined $rcfg->{$type.'progok'.$dir}{$router}){
+                                debug('base',"run ${type}progok$dir: ".(join ",",@exec));
+                     	        system @exec;
+    		                }
+			                threshmail $cfg->{threshmailserver},$cfg->{threshmailsender},$rcfg->{$type.'mailaddress'}{$router},$message
+                                if $rcfg->{$type.'mailaddress'}{$router};
+		                }
+		            }   
+                }
+            } # for my $bound ...
+        } # for my $type
+    } # for my $dir
 }
 
 sub getexternal ($) {
