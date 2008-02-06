@@ -1,0 +1,18 @@
+#!/usr/bin/expect
+# $Id: dns.named,v 1.1.1.1 2002/02/26 10:16:37 oetiker Exp $
+spawn ftp HOST.YOURE.DOMAIN
+expect "Name"
+send "USER\r"
+expect "^Password:"
+send "PASSWORD\r"
+expect "ftp>"
+send "cd /var/tmp\r"
+expect "ftp>"
+send "ascii\r"
+expect "ftp>"
+send "lcd DIRECTORY/WICH/STAT.pl/WILL/USE/TO/GET/NAMED.STATS\r"
+expect "ftp>"
+send "get named.stats\r"
+expect "ftp>"
+send "quit\r"
+sleep 4

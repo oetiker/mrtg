@@ -1,0 +1,29 @@
+/*****************************
+ ** woho's MRTG Logfile cgi **
+ *****************************/
+
+This is a very simple MRTG logfile summarizer.
+I don't give any warranties at all. I wrote and use it under Linux (SuSE
+Distribution).
+
+How to use:
+At first you should read and correct the enclosed mrtglog.h,
+e.g. for english language, if necessary. Then compile the code, using
+
+ gcc -o <your cgi directory>/mrtglog.cgi ./mrtglog.c
+
+The usage is simple, e.g.:
+
+ ./mrtglog 01/05/03 31/05/03 mrtg.log
+
+counts all traffic in May 2003. B-)
+I use a simple PHP3 script for calling it from my stats.php3 page:
+
+ <?
+  printf("<A HREF=\"http://www.yourserver.at/cgi-bin/mrtglog.cgi?START=1.1.%s&STOP=%s&LOG=/stats/mrtg/mymrtglog.log\">LOG</A>",
+          date("y",time()),date("d.m.y",time()));
+ ?>
+
+If you have questions, please send me an e-mail: woho@netpark.at
+Wolfgang Hoffmann, Austria, http://www.woho.at
+#

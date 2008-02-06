@@ -1,0 +1,51 @@
+INSTALL file for Access-list Monitoring via MRTG
+
+
+First there are a few pre-requisites required in order to get the scripts going :
+
+A. MRTG :), which can be downloaded from :-
+http://ee-staff.ethz.ch/~oetiker/webtools/mrtg/mrtg.html
+
+B. A Cisco Router.
+
+C. Rsh enabled on the Cisco Router, this is done as follows :
+
+ip rcmd rsh-enable <--- Enabled the 'rsh' command/feature.
+ip rcmd remote-host root x.x.x.x root enable <---- Allows the username of root from the
+host x.x.x.x to execute commands via rsh.
+
+Once these commands have been enabled on the router you will be able to start executing
+commands using 'rsh' from the shell of the machine you have allowed access from, I suggest as
+an example try the following :
+
+rsh x.x.x.x sh ru
+
+If successful it should return a copy of you current 'running config' to the screen
+If you get an error message like this 'Permission denied.' Please check the rsh enable feature
+on the router to make sure you allow access for that host/username.
+
+Copy the scripts (which I have included in this package) into an appropriate directory to run
+from, example I use the following :
+/usr/local/mrtg/configs/accesslist
+Its up to you what you use.
+
+Also make sure the scripts are executable 'chmod 755' should do the trick.
+
+I have also included a copy of the mrtg.cfg file required to run the scripts and feed them
+onto the graph, this has the filename mrtg.cfg included in this package.
+
+There is one slight problem which I havent worked out as yet (if someone could help, hint,
+hint) is that when MRTG doesnt receive an integer for 'out' in other words if the access-list
+has returned 0 matches it will display an error message, the graph will still plot.  This can
+be very annoying if you are running it from cron, as you mailbox can get filled up with cron
+error message, in my case I filter them to /dev/null using procmail.
+
+Thats it!
+
+I can be contacted by the following means :
+
+Email : roddy@satlink.com.au
+ICQ : 1987890
+
+
+Enjoy!

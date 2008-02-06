@@ -1,0 +1,20 @@
+From: Markley P. Dykeman <mdykeman@micron.net>
+Date: Sun, 21 Nov 1999 15:14:00 -0700
+
+I have enjoyed using your MRTG program to accomplish my tasks. Thank you
+for a wonderful toolbox.
+
+Attached to this document is a perl program called switchmaker which
+will simply make an mrtg config file for a Cisco Catylst 5XXX switch.
+Unfortunatly, I had to use the SNMP-Util-1.6 and SNMP-1.8 libraries
+because I had trouble getting the libraries distrubuted with 2.7.2 to
+work correctly with my code--more of an inadequacy on my part. But,
+providing you have those libraries or are willing to port it, it does
+work very well. At any rate it does document the MIBS you need to know
+to get the correct port information out of the switch...
+
+Enjoy.
+
+--
+
+        Markley Dykeman

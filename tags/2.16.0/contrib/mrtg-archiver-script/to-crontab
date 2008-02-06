@@ -1,0 +1,4 @@
+19 0 * * *    /usr/local/lib/mrtg/mrtg-archiver -d --conf=/usr/local/lib/mrtg/mrtg.cfg --arch=/usr/lib/apache/htdocs/mrtg/archive --back=1200
+19 0 * * mon  /usr/local/lib/mrtg/mrtg-archiver -w --conf=/usr/local/lib/mrtg/mrtg.cfg --arch=/usr/lib/apache/htdocs/mrtg/archive --back=1200
+19 0 1 * *    /usr/local/lib/mrtg/mrtg-archiver -m --conf=/usr/local/lib/mrtg/mrtg.cfg --arch=/usr/lib/apache/htdocs/mrtg/archive --back=1200
+19 0 1 Jan *  /usr/local/lib/mrtg/mrtg-archiver -y --conf=/usr/local/lib/mrtg/mrtg.cfg --arch=/usr/lib/apache/htdocs/mrtg/archive --back=1200
