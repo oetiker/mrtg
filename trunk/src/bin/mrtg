@@ -2074,10 +2074,11 @@ sub getexternal ($) {
     return ($in,$out,time,$uptime,$name);
 }
 
-sub getsnmparg ($$$){
+sub getsnmparg ($$$$){
     my $confcache = shift;
     my $target = shift;
     my $cfg = shift;
+    my $populated = shift;
     my $retry = 0;
 
     my $hostname = $$target{Host};
@@ -2122,10 +2123,16 @@ sub getsnmparg ($$$){
         } else {
             $$target{Key}[$i] =~ s/\s+$//; # no trainling whitespace in keys ...
 
-	    if (not defined readfromcache($confcache,$hostkey,$$target{IfSel}[$i],$$target{Key}[$i])) {
+	    if (not $$populated{$hostname} and 
+		not defined readfromcache($confcache,$hostkey,$$target{IfSel}[$i],$$target{Key}[$i])) {
 		debug('snpo',"($i) Populate ConfCache for $$target{Host}$$target{SnmpOpt}");
 		populateconfcache($confcache,"$$target{Community}\@$$target{Host}$$target{SnmpOpt}",$$target{ipv4only},1,$$target{snmpoptions});
+		$$populated{$hostname} = 1; # set cache population to true for this cycle and host
 	    }
+#	    if ($$populated{$hostname} and 
+#		not defined readfromcache($confcache,$hostkey,$$target{IfSel}[$i],$$target{Key}[$i])){
+#		debug('repo', "ConfCache for host $hostname already updated into this cycle");
+#	    }
 	    if (not defined readfromcache($confcache,$hostkey,$$target{IfSel}[$i],$$target{Key}[$i])) {
 		warn "$NOW: WARNING: Could not match host:'$$target{Community}\@$$target{Host}$$target{SnmpOpt}' ref:'$$target{IfSel}[$i]' key:'$$target{Key}[$i]'\n";
 		return 'NOMATCH';
@@ -2361,6 +2368,7 @@ sub readtargets ($$$) {
 		debug ('fork',"Child $i ($$) after fork");
 		my $res = "";
                 my %deadhost;
+                my %populated;
 		for (my $ii = $i * $split; 
 		     $ii < ($i+1) * $split and $ii < $trgnum;
 		     $ii++){
@@ -2370,7 +2378,7 @@ sub readtargets ($$$) {
 			@res = getexternal($$targ{Command});
 		    } else { # parent
                         if (not $deadhost{$$targ{Community}.$$targ{Host}}) {      
-        	  	    @res = getsnmparg($confcache,$targ,$cfg);
+        	  	    @res = getsnmparg($confcache,$targ,$cfg,\%populated);
                             if ( $res[0] and $res[0] eq 'DEADHOST') {
                                 # guess we got a blank here
                                 @res = ( undef,undef,time,undef,undef);
@@ -2471,6 +2479,7 @@ sub readtargets ($$$) {
 	            
     } else {
         my %deadhost;
+        my %populated;
 	foreach my $targ (@$target) {
 	    if ($$targ{Methode} eq 'EXEC') {
 		debug('snpo', "run external $$targ{Command}");
@@ -2485,7 +2494,7 @@ sub readtargets ($$$) {
 		 $$targ{_OUT_},
 		 $$targ{_TIME_},
 		 $$targ{_UPTIME_},
-		 $$targ{_NAME_}) = getsnmparg($confcache,$targ,$cfg);
+		 $$targ{_NAME_}) = getsnmparg($confcache,$targ,$cfg,\%populated);
                if ( $$targ{_IN_} and $$targ{_IN_} eq 'DEADHOST') {
                    $$targ{_IN_} = undef;
                    $$targ{_TIME_} =time;
