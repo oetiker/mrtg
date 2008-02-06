@@ -1858,13 +1858,12 @@ This would bring threshold releaed mail to all but the target called 'router'.
 
 This is the minimum acceptable value for the Input (first) parameter.  If
 the parameter falls below this value, the program specified in ThreshProgI
-will be run. If the value ends in '%' then the threshold is defined relative to MaxBytes.
+will be run and a mail will be sent to the ThreshMailAddress if specified.
+If the value ends in '%' then the threshold is defined relative to MaxBytes.
 
 =head2 ThreshMaxI (PER TARGET)
 
-This is the maximum acceptable value for the Input (first) parameter.  If
-the parameter falls above this value, the program specified in ThreshProgI
-will be run. If the value ends in '%' then the threshold is defined relative to MaxBytes.
+Works the same as TheshMinI but it acts when the value is higher than ThreshMaxI.
 
 =head2 ThreshDesc (PER TARGET)
 
@@ -1920,6 +1919,7 @@ The global variables for threshold checking are shared except for the
 
  ThreshHyst        -> HWThreshHyst
 
+And HWThreshDesc sets the HWTHRESH_DESC variable.
 
 =head1 PER TARGET DEFAULT VALUES
 
