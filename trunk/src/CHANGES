@@ -1,3 +1,6 @@
+From: Fernando Nieto  fnieto satec.es
+* Makesure mrtg repopulates its cache only once even in fork mode
+
 From: Tobi
 * Added support for RRDtool based Holt-Winters aberrant behaviour detection.
   Threshold based alerts have been enhanced to be able to fire based on the
