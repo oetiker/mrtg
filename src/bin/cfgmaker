@@ -15,8 +15,8 @@
 # base - basic program flow
 # snpo - SNMP Polling
 # snpd - SNMP Detail
+#@main::DEBUG=qw(base);
 @main::DEBUG=qw();
-#@main::DEBUG=qw();
 
 require 5.005;
 use strict;
@@ -631,7 +631,7 @@ ECHO
 		    if ($message ==1) {
 			    $nohc = 1;
 		    } else {
-                    push @prob, "got '$message' from interface when trying to query";
+                            push @prob, "got '$message' from interface when trying to query";
                     $if_ok = 0;
 	    	    }
                 }
@@ -729,7 +729,7 @@ ECHO
                 $if_ref =~ s/([& :])/\\$1/g;
                 my $default_target_directive = "Target[$target_name]: $if_ref:$router_connect";
 		$default_target_directive .= "\nSnmpOptions[$target_name]: $v3options"  if $$router_ref{snmpopt_current} =~ /(?=:.*?){4}:3/ ;
-		$default_target_directive .= "\nnohc[$target_name]: yes" if $nohc == 1;
+		$default_target_directive .= "\nnoHC[$target_name]: yes" if $nohc == 1;
 	        my $if_snmp_descr_save = $if_snmp_descr;
 		$if_snmp_descr_save =~ s/"/'/g;
                 my $default_setenv_directive = "SetEnv[$target_name]: MRTG_INT_IP=\"$if_ip\" MRTG_INT_DESCR=\"$if_snmp_descr_save\"";
