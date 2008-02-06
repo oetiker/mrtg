@@ -1083,7 +1083,7 @@ sub cfgcheck ($$$$;$) {
 sub ensureSL($) {
 #  return;
   my $ref = shift;
-  return if $$ref eq "";
+  return if not $$ref;
   debug('dir',"ensure path IN:  '$$ref'");
   if (${MRTG_lib::SL} eq '\\'){
      # two slashes at the start of the string are OK
