@@ -1,0 +1,67 @@
+#################################################################
+ Multi Dynamic IP Traffic Grapher contibution to mrtg
+#################################################################
+
+Created by John Heenan <john@heenan.ironbark.id.au>
+
+Available from the mrtg-dynip web page at
+http://www.heenan.ironbark.id.au/mrtg-dynip
+
+#################################################################
+
+Distributed under the GPL copyleft of GNU
+
+mrtg-dynip, v 0.41b 1997/10/25
+ 
+Copyright John Heenan, with exception of datestr subroutine
+(copied from mrtg executable) and much of internal_walk
+subroutine (manner of using snmp modules copied from an example
+by Simon Lenine)
+
+##################################################################
+
+Mrtg-dynip is a contribution to MRTG, enabling MRTG to generate multi
+interface traffic graphs for IP interfaces on hosts that do not provide
+consistent SNMP target numbers for their interfaces.  Such IP interfaces
+include IP active serial interfaces attached to modems in a PPP dial in
+environment. The hosts must run snmp agents.  For completeness, information
+about interface devices with unvarying SNMP target numbers, such as
+ethernet cards, can be configured to be included.
+
+Mrtg-dynip can be considred to have sophisticated modem bank monitoring
+capacity, when the modems carry PPP or SLIP traffic.
+
+Regenerates a named 'mrtg.cfg' file to ensure snmp data remains with a
+consistent IP number, or overridable IP number of a real physical device
+in a dial in IP environment, rather than with an interface name which
+can get assinged to different real physical devices, and runs mrtg on
+the generated file.
+
+Generates a web index file of stats web pages.
+
+Mrtg-dynip's configuration is simplest where static (or fixed) IP is not
+used for dial into a rotary modem pool.
+
+Please see the FAQ for more information.
+
+The names of the files packaged into mrtg-dynip-0.41b.tar.gz are
+
+README		This file
+Install		Install details
+FAQ		'Frequently Asked Questions' 
+mrtg-dynip	A full configuartion commented executable
+mrtg-dynip-sydnet  The complete mrtg-dynip file in use at www.stats.syd.net.au
+Changes		Change history
+TODO		What the future might hold
+
+The package is oriented towards UNIX systems, there is no reason mrtg-dynip
+should nor run under Windows NT, some comments are made relevant to this. 
+Please note the first task under Windows NT is to ensure the UNIX new lines
+are converted to DOS new lines or are readable.
+
+If you use this please let me know.  If you would also like your site to be
+linked from the mrtg-dynip web page, please let me know.
+
+John Heenan
+john@heenan.ironbark.id.au
+www.heenan.ironbark.id.au/mrtg-dynip

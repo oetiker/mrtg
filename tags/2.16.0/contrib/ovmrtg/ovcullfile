@@ -1,0 +1,104 @@
+#!/usr/local/bin/perl5
+# -*- mode: Perl -*-
+##################################################################
+# Remove old data from OV_DB files
+##################################################################
+# Created by Laurie Gellatly <gellatly@one.net.au>
+# This reads an OV_DB file for the cut off and interface
+# and calculates how many lines can be removed
+#################################################################
+#
+# Distributed under the GNU copyleft
+#
+# $Id: ovcullfile,v 1.1.1.1 2002/02/26 10:16:36 oetiker Exp $
+#
+use strict;
+use vars '$DEBUG';
+my $ov_db = "/var/opt/OV/share/databases";
+my $ovdb= $ov_db."/snmpCollect/";
+my $DEBUG = 0;
+   my($days2keep, $interface, $io , $cutoff) ;
+   my($cnt, $data, $recno, $junk);
+   my @names = ( "IfInErrors", "IfOutErrors", 
+     "IfInOctets", "IfOutOctets", "avgBusy5");
+   my @namext = (".err", "", ".cpu");
+   my ($val);
+   my $recsz = 24;
+   my $fsize = -1;
+   my $p = "',\$p'";
+   my $parms = '-F\\t \'{printf("%d\\t%d\\t%s\\t%lg\\n", $4, $5, $6, $3)}\'';
+   my @resu;
+
+sub main {
+
+   my($extn) = "";
+   $days2keep = $ARGV[0];
+   $interface = $ARGV[1];
+   $io = $ARGV[2];
+   die <<USAGE  unless (defined($days2keep) && defined($interface) && defined($io));
+
+USAGE: ovcullfile '#days Interface# io&errs=1|cpu=0'
+
+EXAMPLE:  ovcullfile 30 4 1
+
+Delete all data older than 30 days for 
+all interface 4 Input and Output Octets & Errors
+
+
+USAGE
+   $cutoff = time - ( 3600 * 24 * $days2keep) ;
+   $extn =  $namext[$io];
+   if ($io) {
+      get(2);
+      get(3);
+      get(0);
+      get(1);
+   } else {
+      get(4);
+   }
+}
+  
+main;
+exit(0);
+
+sub get {
+   my ($ind) = @_;
+   my ($starttime, $entime, $IPAdd1, $IPAdd2, $IPAdd3, $IPAdd4, $cnt, $val) ;
+   my ($file) = $ovdb.$names[$ind].".".$interface;
+   open (RAWIN , $file) or die "Could not open $file";
+   my ($junk, $junk, $junk, $junk, $junk, $junk, $junk, $cfsize) = stat $file;
+   binmode(RAWIN);
+   my ($notfound) = (($cfsize / $recsz) - 1)> -1;
+   if (($fsize == $cfsize) && ($recno > 1)){
+      seek(RAWIN,($recno - 2) * $recsz, 0);
+      $notfound = ($recsz == read(RAWIN, $data, $recsz));
+      ($starttime, $entime, $IPAdd1, $IPAdd2, $IPAdd3, $IPAdd4, $cnt, $val) =
+      unpack("LLCCCCLd",$data);
+      if ($cutoff < $entime) {
+         seek(RAWIN, 0, 0);
+	 $recno = 1;
+      }
+   } else {
+      $fsize = $cfsize;
+      $recno = 1;
+   } 
+   while ($notfound){
+# Read from the beginning of file
+      $notfound = ($recsz == read(RAWIN, $data, $recsz));
+      ($starttime, $entime, $IPAdd1, $IPAdd2, $IPAdd3, $IPAdd4, $cnt, $val) =
+      unpack("LLCCCCLd",$data);
+      if ($cutoff < $entime) {
+	 $notfound = 0;
+      } else {
+	 $recno++;
+      }
+   }
+   close (RAWIN);
+   if ($recno > 1){
+   @resu = `snmpColDump -tTI $file | sed -n $recno$p |
+       awk $parms |
+       snmpColDump -r - $file`
+#       wc -l`
+   }
+   return ($recno);
+}

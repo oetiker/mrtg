@@ -1,0 +1,80 @@
+#!/usr/bin/perl
+
+use strict;
+use URI;
+
+my $dirc = 'none';
+my $HtmlBase = "/usr/lib/apache/htdocs";
+my ($rq, $rf, $prevDir, $nextDir, $newLocation);
+my ($basedir, $subdir, $file, $TheDir, $host);
+my (@dirs, @pathsegs);
+
+$rq = URI->new($ENV{"REQUEST_URI"});
+$dirc = $rq->query;
+
+$rf = URI->new($ENV{"HTTP_REFERER"});
+
+$host = $rf->host;
+$subdir = $rf->path;
+@pathsegs = $rf->path_segments;
+
+$file = $pathsegs[-1];
+$subdir = $pathsegs[-2];
+$basedir = join('/', @pathsegs[0..$#pathsegs-2]);
+
+opendir(DIRHNDL, "$HtmlBase/$basedir");
+
+while($TheDir = readdir(DIRHNDL)) {
+  if($TheDir =~ /^\w/ && -d "$HtmlBase/$basedir/$TheDir") {
+    push @dirs, $TheDir;
+  }
+}
+
+@dirs = sort @dirs;
+
+for(my $i = 0; $i <= $#dirs; $i++) {
+  if ($dirs[$i] eq $subdir) {
+    if($i > 0) { $prevDir = $dirs[$i - 1] }
+    else       { $prevDir = $subdir }
+
+    if($i < $#dirs) { $nextDir = $dirs[$i + 1] }
+    else            { $nextDir = $subdir }
+
+    last;
+  }
+}
+
+if($dirc eq 'prev') {
+  if(-f "$HtmlBase/$basedir/$prevDir/$file") {
+    $newLocation = "http://$host$basedir/$prevDir/$file";
+  } else {
+    $newLocation = "http://$host$basedir/$subdir/$file";
+  }
+} elsif ($dirc eq 'next') {
+  if(-f "$HtmlBase/$basedir/$nextDir/$file") {
+    $newLocation = "http://$host$basedir/$nextDir/$file";
+  } else {
+    $newLocation = "http://$host$basedir/$subdir/$file";
+  }
+} elsif ($dirc eq 'index') {
+  if($file eq 'index.html') { 
+    $newLocation = "http://$host$basedir/index.html";
+  } else {
+    $newLocation = "http://$host$basedir/$subdir/index.html";
+  }
+} else {
+  $newLocation = $ENV{"HTTP_REFERER"};
+}
+
+print "Location:$newLocation\n\n";
+
+
+
+
+
+
+
+
+
+
+
