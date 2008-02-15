@@ -1,3 +1,6 @@
+From: Tobi
+* fix RouterUptime config with non unique targets
+
 Changes 2.16.0, 2008-02-06
 --------------------------
 From: Fernando Nieto  fnieto satec.es
