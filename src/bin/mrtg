@@ -638,15 +638,16 @@ sub getcurrent {
 		}
 		# If no location (community@host) was specified use values from the
 		# unique target referred to in the monitored data calculation
-		if( $u >= 0 and not $nloc ) {
-			my $comm = $target->[ $u ]{ Community };
-			my $host = $target->[ $u ]{ Host };
-			my $opt = $target->[ $u ]{ SnmpOpt };
-			$nloc = "$comm\@$host$opt";
-		} else {
-            die "$NOW: ERROR: You must specify the location part of the RouterUptime oid for non unique targets! ($rou)\n";
-        }
-            
+		if( not $nloc ){
+                        if ($u >= 0) {
+          		    my $comm = $target->[ $u ]{ Community };
+			    my $host = $target->[ $u ]{ Host };
+			    my $opt = $target->[ $u ]{ SnmpOpt };
+			    $nloc = "$comm\@$host$opt";
+		        } else {
+                            die "$NOW: ERROR: You must specify the location part of the RouterUptime oid for non unique targets! ($rou)\n";
+                        }
+                }
         
 		$uploc = $nloc;
 		# Get the device uptime if $noid(OID) and $nloc (community@host) have been specified
