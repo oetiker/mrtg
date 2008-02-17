@@ -1,3 +1,5 @@
+Changes 2.16.1, 2008-02-17
+--------------------------
 From: Tobi
 * fix RouterUptime config with non unique targets
 
