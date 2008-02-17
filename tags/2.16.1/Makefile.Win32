@@ -1,0 +1,287 @@
+# GNU Makefile for Win32 rateup.exe target * 17-Feb-2007
+# for use with MingW32 gcc or Metrowerks CodeWarrior compiler
+# use with: make -f Makefile.Win32 [all|clean|dist|distclean|help]
+
+TARGET	= rateup
+DESCR	= MRTG Rateup Command Utility $(RATEUP_VERSION_STR)
+COPYR	= Distributed under the GNU General Public License
+WWWURL	= http://www.mrtg.org/
+
+# If you want to link with an icon you can specify here...
+LNKICON	= images/favicon.ico
+
+# Edit the path below to point to your install destination (for 'install' option.)
+ifndef INSTDIR
+	INSTDIR	= c:/mrtg/run
+endif
+
+# All library code is statically linked to avoid problems with other lib NLMs. 
+# Base for the lib sources
+ifndef LIBBASE
+	LIBBASE	= ..
+endif
+# All library code is statically linked to avoid problems with other lib DLLs. 
+# Edit the path below to point to your libgd sources or set environment var.
+ifndef LIBGD
+	LIBGD	= $(LIBBASE)/gd-2.0.34
+endif
+# Edit the path below to point to your libpng sources or set environment var.
+ifndef LIBPNG
+	LIBPNG	= $(LIBBASE)/libpng-1.2.16
+endif
+# Edit the path below to point to your zlib sources or set environment var.
+ifndef ZLIBSDK
+	ZLIBSDK	= $(LIBBASE)/zlib-1.2.3
+endif
+
+# The following line defines your compiler.
+ifdef METROWERKS
+	CC = mwcc
+else
+	CC = gcc
+endif
+
+AWK	= awk
+# RM	= rm -f
+CP	= cp -fav
+# MV	= mv -f
+
+ZIP	= zip -qzR9
+ARCHIVE	= rateup-$(RATEUP_VERSION_STR)-w32.zip
+
+# must be equal to DEBUG or NDEBUG
+DB	= NDEBUG
+# DB	= DEBUG
+# Optimization: -O<n> or debugging: -g
+ifeq ($(DB),NDEBUG)
+	OPT	= -O2
+	OBJDIR	= release
+else
+	OPT	= -g
+	OBJDIR	= debug
+endif
+
+# Include the version info retrieved from source.
+-include $(OBJDIR)/version.inc
+
+# Global flags for all compilers
+CFLAGS	= $(OPT) -D$(DB) -DHAVE_LIBPNG -DNONDLL
+
+ifeq ($(CC),mwcc)
+	LD	= mwld
+	CFLAGS	+= -nostdinc -gccinc -msgstyle gcc -inline off -opt nointrinsics -proc 586
+	CFLAGS	+= -relax_pointers
+	#CFLAGS	+= -w on,nounused,nounusedexpr
+	#CFLAGS	+= -ansi strict
+	CFLAGS	+= -ir "$(METROWERKS)/MSL" -ir "$(METROWERKS)/Win32-x86 Support"
+	LD	= mwld
+	RC	= mwwinrc
+	LDFLAGS	= -nostdlib
+	LIBPATH	+= -lr "$(METROWERKS)/MSL" -lr "$(METROWERKS)/Win32-x86 Support"
+	LDLIBS	+= -lkernel32.lib -luser32.lib
+	LDLIBS	+= -lMSL_Runtime_x86.lib -lMSL_C_x86.lib -lMSL_Extras_x86.lib
+	RCFLAGS	=
+else
+	LD	= gcc
+	RC	= windres
+	LDFLAGS	= -s
+	RCFLAGS	= -O coff -i
+	CFLAGS	+= -fno-strict-aliasing
+	CFLAGS	+= -Wall -Wno-format # -Wno-unused # -pedantic
+endif
+
+ifeq ($(findstring msys,$(OSTYPE)),msys)
+DL	= '
+DS	= /
+else
+DS	= \\
+endif
+
+ifndef COPYR
+	COPYR = Copyright (c) 2007 The Open Source Community.
+endif
+ifndef DESCR
+	DESCR = $(TARGET) Command Extension
+endif
+DESCR += - $(CC) build
+
+INCLUDES += -I$(LIBGD) -I$(LIBPNG) -I$(ZLIBSDK)
+
+CFLAGS += $(INCLUDES)
+
+vpath %.c src $(LIBGD) $(LIBPNG) $(ZLIBSDK)
+
+GDOBJS	= \
+	$(OBJDIR)/gd.o \
+	$(OBJDIR)/gd_io.o \
+	$(OBJDIR)/gd_io_dp.o \
+	$(OBJDIR)/gd_io_file.o \
+	$(OBJDIR)/gd_io_ss.o \
+	$(OBJDIR)/gd_png.o \
+	$(OBJDIR)/gd_ss.o \
+	$(OBJDIR)/gdcache.o \
+	$(OBJDIR)/gdfonts.o \
+	$(OBJDIR)/gdhelpers.o \
+	$(OBJDIR)/gdtables.o \
+	$(EOLIST)
+ifeq "$(wildcard $(LIBGD)/gd_security.c)" "$(LIBGD)/gd_security.c"
+GDOBJS	+= \
+	$(OBJDIR)/gd_security.o \
+	$(EOLIST)
+endif
+
+PNGOBJS	= \
+	$(OBJDIR)/png.o \
+	$(OBJDIR)/pngerror.o \
+	$(OBJDIR)/pnggccrd.o \
+	$(OBJDIR)/pngget.o \
+	$(OBJDIR)/pngmem.o \
+	$(OBJDIR)/pngpread.o \
+	$(OBJDIR)/pngread.o \
+	$(OBJDIR)/pngrio.o \
+	$(OBJDIR)/pngrtran.o \
+	$(OBJDIR)/pngrutil.o \
+	$(OBJDIR)/pngset.o \
+	$(OBJDIR)/pngtrans.o \
+	$(OBJDIR)/pngvcrd.o \
+	$(OBJDIR)/pngwio.o \
+	$(OBJDIR)/pngwrite.o \
+	$(OBJDIR)/pngwtran.o \
+	$(OBJDIR)/pngwutil.o \
+	$(EOLIST)
+
+ZLIBOBJS	= \
+	$(OBJDIR)/adler32.o \
+	$(OBJDIR)/compress.o \
+	$(OBJDIR)/crc32.o \
+	$(OBJDIR)/deflate.o \
+	$(OBJDIR)/inflate.o \
+	$(OBJDIR)/inffast.o \
+	$(OBJDIR)/inftrees.o \
+	$(OBJDIR)/trees.o \
+	$(OBJDIR)/zutil.o \
+	$(EOLIST)
+ifeq "$(wildcard $(ZLIBSDK)/infblock.c)" "$(ZLIBSDK)/infblock.c"
+ZLIBOBJS	+= \
+	$(OBJDIR)/infblock.o \
+	$(OBJDIR)/infcodes.o \
+	$(OBJDIR)/infutil.o \
+	$(EOLIST)
+endif
+
+OBJS	= $(GDOBJS) $(PNGOBJS) $(ZLIBOBJS) $(OBJDIR)/$(TARGET).o
+ifndef NO_OWN_STRFTIME
+	OBJS	+= $(OBJDIR)/strftime.o
+	DEFS	= -Dstrftime=strftime_
+endif
+
+
+all: $(OBJDIR) $(OBJDIR)/$(TARGET).exe
+
+dist: all $(OBJDIR)/readme.txt
+	-$(RM) $(OBJDIR)/*.o $(OBJDIR)/$(TARGET).map $(OBJDIR)/$(TARGET).ncv
+	-$(RM) $(OBJDIR)/$(TARGET).def $(OBJDIR)/$(TARGET).res $(OBJDIR)/$(TARGET).rc
+	-$(RM) $(OBJDIR)/version.inc
+	@-$(CP) -a COPYRIGHT $(OBJDIR)
+	@echo Creating $(ARCHIVE)
+	@$(ZIP) $(ARCHIVE) $(OBJDIR)/* < $(OBJDIR)/readme.txt
+
+install: all
+	@[ -d $(INSTDIR) ] || mkdir $(INSTDIR)
+	@$(CP) $(TARGET).exe $(INSTDIR)
+
+clean:
+	-$(RM) -r $(OBJDIR)
+
+distclean: clean
+	-$(RM) $(ARCHIVE)
+
+$(OBJDIR):
+	@mkdir $@
+
+$(OBJDIR)/version.inc: $(TARGET).c $(OBJDIR)
+	@echo Creating $@
+	@$(AWK) -f get_ver.awk $< > $@
+
+$(OBJDIR)/$(TARGET).o: $(TARGET).c
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) $(DEFS) -c $< -o $@
+
+$(OBJDIR)/%.o: %.c
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/$(TARGET).exe: $(OBJS) $(OBJDIR)/$(TARGET).res
+	@echo Linking $@
+	@-$(RM) $@
+	@$(LD) $(LDFLAGS) $^ -o $@ $(LIBPATH) $(LDLIBS)
+
+$(OBJDIR)/%.res: $(OBJDIR)/%.rc
+	@echo Creating $@
+	@$(RC) $(RCFLAGS) $< -o $@
+
+$(OBJDIR)/%.rc: Makefile.Win32 $(OBJDIR)/version.inc 
+	@echo $(DL)1 VERSIONINFO$(DL) > $@
+	@echo $(DL) FILEVERSION $(RATEUP_VERSION),0$(DL) >> $@
+	@echo $(DL) PRODUCTVERSION $(RATEUP_VERSION),0$(DL) >> $@
+	@echo $(DL) FILEFLAGSMASK 0x3fL$(DL) >> $@
+	@echo $(DL) FILEOS 0x40004L$(DL) >> $@
+	@echo $(DL) FILEFLAGS 0x0L$(DL) >> $@
+	@echo $(DL) FILETYPE 0x1L$(DL) >> $@
+	@echo $(DL) FILESUBTYPE 0x0L$(DL) >> $@
+	@echo $(DL)BEGIN$(DL) >> $@
+	@echo $(DL)  BLOCK "StringFileInfo"$(DL) >> $@
+	@echo $(DL)  BEGIN$(DL) >> $@
+	@echo $(DL)    BLOCK "040904E4"$(DL) >> $@
+	@echo $(DL)    BEGIN$(DL) >> $@
+	@echo $(DL)      VALUE "LegalCopyright","$(COPYR)\0"$(DL) >> $@
+ifdef COMPANY
+	@echo $(DL)      VALUE "CompanyName","$(COMPANY)\0"$(DL) >> $@
+endif
+	@echo $(DL)      VALUE "ProductName","$(notdir $(@:.rc=.exe))\0"$(DL) >> $@
+	@echo $(DL)      VALUE "ProductVersion","$(RATEUP_VERSION_STR)\0"$(DL) >> $@
+	@echo $(DL)      VALUE "License","Released under GPL.\0"$(DL) >> $@
+	@echo $(DL)      VALUE "FileDescription","$(DESCR)\0"$(DL) >> $@
+	@echo $(DL)      VALUE "FileVersion","$(RATEUP_VERSION_STR)\0"$(DL) >> $@
+	@echo $(DL)      VALUE "InternalName","$(notdir $(@:.rc=))\0"$(DL) >> $@
+	@echo $(DL)      VALUE "OriginalFilename","$(notdir $(@:.rc=.exe))\0"$(DL) >> $@
+ifdef WWWURL
+	@echo $(DL)      VALUE "WWW","$(WWWURL)\0"$(DL) >> $@
+endif
+	@echo $(DL)    END$(DL) >> $@
+	@echo $(DL)  END$(DL) >> $@
+	@echo $(DL)  BLOCK "VarFileInfo"$(DL) >> $@
+	@echo $(DL)  BEGIN$(DL) >> $@
+	@echo $(DL)    VALUE "Translation", 0x409, 1252$(DL) >> $@
+	@echo $(DL)  END$(DL) >> $@
+	@echo $(DL)END$(DL) >> $@
+ifdef LNKICON
+	@echo $(DL)10 ICON DISCARDABLE "$(LNKICON)"$(DL) >> $@
+endif
+
+$(OBJDIR)/readme.txt: Makefile.Win32 $(OBJDIR)/version.inc
+	@echo Creating $@
+	@echo $(DL)This is a binary distribution for Win32 platform.$(DL) > $@
+	@echo $(DL)MRTG rateup version $(RATEUP_VERSION_STR)$(DL) >> $@
+	@echo $(DL)This binary was built with these libs:$(DL) >> $@
+	@echo $(DL)libpng Version : $(notdir $(LIBPNG))$(DL) >> $@
+	@echo $(DL)libGD  Version : $(notdir $(LIBGD))$(DL) >> $@
+	@echo $(DL)Zlib   Version : $(notdir $(ZLIBSDK))$(DL) >> $@
+	@echo $(DL)Please download the complete MRTG package for$(DL) >> $@
+	@echo $(DL)any further documentation:$(DL) >> $@
+	@echo $(DL)http://www.mrtg.org/$(DL) >> $@
+
+help: $(OBJDIR)/version.inc
+	@echo $(DL)===========================================================$(DL)
+	@echo $(DL)libpng Source = $(LIBPNG)$(DL)
+	@echo $(DL)libGD Source  = $(LIBGD)$(DL)
+	@echo $(DL)Zlib SDK      = $(ZLIBSDK)$(DL)
+	@echo $(DL)===========================================================$(DL)
+	@echo $(DL)RRDTool $(RATEUP_VERSION_STR) - available targets are:$(DL)
+	@echo $(DL)$(MAKE) all$(DL)
+	@echo $(DL)$(MAKE) clean$(DL)
+	@echo $(DL)$(MAKE) dist$(DL)
+	@echo $(DL)$(MAKE) distclean$(DL)
+	@echo $(DL)===========================================================$(DL)
+
+
