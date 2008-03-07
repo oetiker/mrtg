@@ -116,20 +116,20 @@ Create the following directories:
 Copy from the MRTG package the following files:
 
  \bin\*        to  SYS:/Mrtg/bin              All files. See Note 1.
-
- Note 1: Add a .pl extension to the mrtg, cfgmaker and indexmaker files.
- The rateup.exe will NOT be needed on the NetWare server.
+ 
+Note 1: Add a .pl extension to the mrtg, cfgmaker and indexmaker files.
+The rateup.exe will NOT be needed on the NetWare server.
 
  \contrib\*    to  SYS:/Mrtg/contrib/         Include sub-directories
  \doc\*        to  SYS:/Mrtg/doc/             All files
  \images\*     to  SYS:/Mrtg/html/images/     All files
  \translate\*  to  SYS:/Mrtg/translate/       All files. See Note 2.
 
- Note 2: For English-only language support, all \translate files EXCEPT Locales_mrtg may be deleted.
-
+Note 2: For English-only language support, all \translate files EXCEPT Locales_mrtg may be deleted.
+ 
  \lib\*        to  SYS:/Mrtg/lib              Include sub-directories. See Note 3.
 
- Note 3: This will create the SYS:/Mrtg/lib/mrtg2 and ./pod directories.
+Note 3: This will create the SYS:/Mrtg/lib/mrtg2 and ./pod directories.
 
 =item 4.
 
@@ -159,14 +159,15 @@ be monitored.
 
 Edit sys:/mrtg/bin/MakeMrtgCfg.ncf:
 
- - replace ccccc with the GET community name for the SNMP device (typically 'public'),
- - replace ddddd with the DNS name or IP address of the device to be monitored.
-   e.g    public@www.myserver.com, public@10.202.65.180
+replace ccccc with the GET community name for the SNMP device (typically 'public'),
 
- Note 1: These are NOT mail addresses, they just look like one!
- Note 2: If multiple devices are to be monitored, add their entries to the same line:
+replace ddddd with the DNS name or IP address of the device to be monitored.  e.g    public@www.myserver.com, public@10.202.65.180
 
- e.g  perl cfgmaker.pl public@www.myserver.com public@10.202.65.180 > sys:/mrtg/bin/mrtg.cfg
+Note 1: These are NOT mail addresses, they just look like one!
+
+Note 2: If multiple devices are to be monitored, add their entries to the same line:
+
+e.g  perl cfgmaker.pl public@www.myserver.com public@10.202.65.180 > sys:/mrtg/bin/mrtg.cfg
 
 In this "Getting Started", it is 'suggested' to only monitor a single device.
 
@@ -205,23 +206,13 @@ Below line 16 (*** Global Defaults), add:
  LogDir:   <a path>  e.g  LogDir:   sys:/mrtg/logs
  IconDir:  <a path>  e.g  IconDir:  ./images
 
-=over
+Note 1. The HtmlDir entry specifies where MRTG will create its HTML pages.
 
-=item Note 1
+Note 2. The ImageDir entry specifies where the created graphic icons are placed.
 
-The HtmlDir entry specifies where MRTG will create its HTML pages.
-
-=item Note 2
-
-The ImageDir entry specifies where the created graphic icons are placed.
-
-=item Note 3
-
-The IconDir entry specifies where the supplied MRTG icons are located.
+Note 3. The IconDir entry specifies where the supplied MRTG icons are located.
 It MUST be a relative path from HtmlDir or absolute URL. The value shown
 is recommended.
-
-=back
 
 =item *
 
@@ -230,27 +221,16 @@ At the server console run:
  sys:/mrtg/bin/RunMrtg.ncf
 
 several times. By the third time it should run without showing error messages on the console screen.
-This should create:
 
-=over
+This should create.
 
-=item *
+- A HTML page in the (HtmlDir) directory for each monitored device,
 
-A HTML page in the (HtmlDir) directory for each monitored device,
+- A .dat file in the (ImageDir) directory for each monitored device,
 
-=item *
+- Several .png icons in the (ImageDir) directory,
 
-A .dat file in the (ImageDir) directory for each monitored device,
-
-=item *
-
-Several .png icons in the (ImageDir) directory,
-
-=item *
-
-Some log file entries in the (LogDir) directory.
-
-=back
+- Some log file entries in the (LogDir) directory.
 
 Note: If you experience a "Use of uninitialised value in split" error, it will be necessary to
 create a 'Path' environment variable at the server console; use the following example
