@@ -1,3 +1,9 @@
+Changes 2.16.2, 2008-03-07
+--------------------------
+From: Tobi
+* make SNMP_Session.pm work on windows even when a __DIE__ handler ist
+  installed.
+
 Changes 2.16.1, 2008-02-17
 --------------------------
 From: Tobi
