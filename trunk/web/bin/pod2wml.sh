@@ -2,7 +2,7 @@ pod2wml (){
  base=$1
  [ -z "$descr" ] && descr=$base
  [ -z "$menu" ] && menu=$descr
- perl-5.8.8 -I/home/oetiker/checkouts/mrtg/trunk/web/bin/lib -MPod::Simple::HTML -e Pod::Simple::HTML::go $base.pod $base.html
+ perl-5.8.8 -I/home/oetiker/checkouts/mrtg/trunk/web/bin/lib /home/oetiker/checkouts/mrtg/trunk/web/bin/pod2xhtml <$base.pod >$base.html
 #Thing.pod Thing.html
 # pod2html-5.8.8 --infile=$base.pod --outfile=$base.pre --noindex --htmlroot='$(ROOT)' --podroot=$SITEROOT --podpath=$PODPATH
 # $SITEROOT/bin/fix-pod2html.pl $base.pre | $SITEROOT/bin/fix-hrefs.pl >$base.html
@@ -12,7 +12,6 @@ pod2wml (){
  echo "</dd>" >>index.inc
  echo "<page page=\"${sect}_$base\"" > $base.wml
  perl-5.8.8 -0777 -n -e 's|E<lt>|<|g;s|E<gt>|>|g;m|=head1 AUTHO\S+\s*(.+)| && do {$a=$1;$a =~ s/>.*/>/; $e="no\@address.nowhere";$a=~ s/\s*<(.+?)>\s*,?// and $e=$1; $e=~ s/\s\S+\s/\@/;print "author=\"$a <$e>\"/>\n"}' $base.pod >>$base.wml
- # perl -0777 -n -e 's|.*?(<h1.+)</body>.*|$1|s;for($i=5;$i>0;$i--){$j=$i-1;s|(</?h)$j>|$1$i>|g}; s|<h2><a name="name">NAME</a></h2>.*?<p>(.+?) - .*?</p>|<h1>$1</h1>|s;s|<p>\s*</p>||g;s|<hr.*?>||g;s|</pre>\s*<pre>|\n|g;s|<br\s*/>\s*</dt>|</dt>|g;s|</dd>\s*<dd>||g;print ' $base.html >>$base.wml
 true <<'XXXX'
  perl-5.8.8 -0777 -n -e '
   s|.*?(<h1.+)</body>.*|$1|s;
@@ -41,16 +40,17 @@ true <<'XXXX'
  perl-5.8.8 -i~ -0777 -p -e 's|</dd>\s*<pre(.*?)</pre>\s*<dd>|</dd><dd><pre$1</pre></dd><dd>|sg' $base.wml
 XXXX
  perl-5.8.8 -0777 -n -e '
-  s|</p>\s*<dt>|</p></dd>\n<dt>|sg;
-  s|</pre>\s*<dt>|</pre></dd>\n<dt>|sg;
+  s|<h2 id="NAME">.+?TENT">\s*<p>.*?\s-\s(.+?)</p>\s*</div>|<h1 id="NAME">$1</h1>|s;
+#  s|</p>\s*<dt>|</p></dd>\n<dt>|sg;
+#  s|</pre>\s*<dt>|</pre></dd>\n<dt>|sg;
   s|<pre>(.+?)</pre>|<protect><pre>$1</pre></protect>|gs;
-  s|.*?(<h1.+)</body>.*|$1|s;
-  for($i=5;$i>0;$i--){
-         $j=$i-1;
-         s|(</?h)$j>|$1$i>|g
-  };
-  s{http://search.cpan.org/perldoc\?(cfgmaker|indexmaker|mrtg-.+?)"}{\$(ROOT)/doc/$1.en.html"}g;
-  s|<h2.*?>.*?NAME.*?</h2>.*?<p.*?>\s*(.+?)\s*- .*?</p>|<h1>$1</h1>|s;
+#  s|.*?(<h1.+)</body>.*|$1|s;
+#  for($i=5;$i>0;$i--){
+#         $j=$i-1;
+#         s|(</?h)$j>|$1$i>|g
+#  };
+#  s{http://search.cpan.org/perldoc\?(cfgmaker|indexmaker|mrtg-.+?)"}{\$(ROOT)/doc/$1.en.html"}g;
+#  s|<h2.*?>.*?NAME.*?</h2>.*?<p.*?>\s*(.+?)\s*- .*?</p>|<h1>$1</h1>|s;
 
   print 
  ' $base.html >>$base.wml
