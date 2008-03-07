@@ -1903,7 +1903,7 @@ Example:
  SetEnv[myrouter]:  EMAIL="contact_email@someplace.net"
                     HOST="www.some_server.net"
 
-=head2 HW Failure Bassed Threshol Checking
+=head2 HW Failure Bassed Threshold Checking
 
 When using rrd based logging with HW RRAs defined. You can use the
 confidence bounds violations stored in the FAILURES RRA for threshold based
