@@ -831,7 +831,7 @@ sub receive_response_3 {
     my ($this, $response_tag, $oids, $errorp, $dont_block_p) = @_;
     my ($remote_addr);
     my $flags = 0;
-    eval 'local $SIG{__DIE__};$flags = MSG_DONTWAIT;' if defined $dont_block_p and $dont_block_p;
+    eval 'local $SIG{__DIE__};local $SIG{__WARN__};$flags = MSG_DONTWAIT();' if defined $dont_block_p and $dont_block_p;
     $remote_addr = recv ($this->sock,$this->{'pdu_buffer'},$this->max_pdu_len,$flags);
     return $this->error ("receiving response PDU: $!")
 	unless defined $remote_addr;
