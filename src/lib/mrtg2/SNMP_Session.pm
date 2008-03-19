@@ -2,10 +2,11 @@
 ######################################################################
 ### SNMP Request/Response Handling
 ######################################################################
-### Copyright (c) 1995-2006, Simon Leinen.
+### Copyright (c) 1995-2008, Simon Leinen.
 ###
 ### This program is free software; you can redistribute it under the
-### "Artistic License" included in this distribution (file "Artistic").
+### "Artistic License 2.0" included in this distribution
+### (file "Artistic").
 ######################################################################
 ### The abstract class SNMP_Session defines objects that can be used
 ### to communicate with SNMP entities.  It has methods to send
@@ -61,7 +62,7 @@ sub map_table_start_end ($$$$$$);
 sub index_compare ($$);
 sub oid_diff ($$);
 
-$VERSION = '1.10';
+$VERSION = '1.12';
 
 @ISA = qw(Exporter);
 
@@ -132,9 +133,16 @@ $SNMP_Session::recycle_socket = 0;
 ### but this function is only available in recent versions of Socket.pm.
 my $ipv6_addr_len;
 
+### Flags to be passed to recv() when non-blocking behavior is
+### desired.  On most POSIX-like systems this will be set to
+### MSG_DONTWAIT, on other systems we leave it at zero.
+###
+my $dont_wait_flags;
+
 BEGIN {
     $ipv6_addr_len = undef;
     $SNMP_Session::ipv6available = 0;
+    $dont_wait_flags = 0;
 
     if (eval {local $SIG{__DIE__};require Socket6;} &&
        eval {local $SIG{__DIE__};require IO::Socket::INET6; IO::Socket::INET6->VERSION("1.26");}) {
@@ -142,6 +150,7 @@ BEGIN {
 	$ipv6_addr_len = length(pack_sockaddr_in6(161, inet_pton(AF_INET6(), "::1")));
 	$SNMP_Session::ipv6available = 1;
     }
+    eval 'local $SIG{__DIE__};local $SIG{__WARN__};$dont_wait_flags = MSG_DONTWAIT();';
 }
 
 my $the_socket;
@@ -831,7 +840,7 @@ sub receive_response_3 {
     my ($this, $response_tag, $oids, $errorp, $dont_block_p) = @_;
     my ($remote_addr);
     my $flags = 0;
-    eval 'local $SIG{__DIE__};local $SIG{__WARN__};$flags = MSG_DONTWAIT();' if defined $dont_block_p and $dont_block_p;
+    $flags = $dont_wait_flags if defined $dont_block_p and $dont_block_p;
     $remote_addr = recv ($this->sock,$this->{'pdu_buffer'},$this->max_pdu_len,$flags);
     return $this->error ("receiving response PDU: $!")
 	unless defined $remote_addr;

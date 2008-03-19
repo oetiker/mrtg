@@ -2,10 +2,11 @@
 ######################################################################
 ### BER (Basic Encoding Rules) encoding and decoding.
 ######################################################################
-### Copyright (c) 1995-2004, Simon Leinen.
+### Copyright (c) 1995-2008, Simon Leinen.
 ###
 ### This program is free software; you can redistribute it under the
-### "Artistic License" included in this distribution (file "Artistic").
+### "Artistic License 2.0" included in this distribution
+### (file "Artistic").
 ######################################################################
 ### This module implements encoding and decoding of ASN.1-based data
 ### structures using the Basic Encoding Rules (BER).  Only the subset
@@ -346,7 +347,7 @@ sub pretty_print ($) {
     if($result == (&constructor_flag | &sequence_tag) # sequence
 		|| $result == (0 | $ctx_cons_flags) #get_request
 		|| $result == (1 | $ctx_cons_flags) #getnext_request
-		|| $result == (2 | $ctx_cons_flags) #get_response
+		|| $result == (2 | $ctx_cons_flags) #response
 		|| $result == (3 | $ctx_cons_flags) #set_request
 		|| $result == (4 | $ctx_cons_flags) #trap_request
 		|| $result == (5 | $ctx_cons_flags) #getbulk_request
@@ -362,12 +363,13 @@ sub pretty_print ($) {
 	    (constructor_flag | sequence_tag) => "Sequence",
 	    (0 | $ctx_cons_flags)             => "GetRequest",
 	    (1 | $ctx_cons_flags)             => "GetNextRequest",
-	    (2 | $ctx_cons_flags)             => "GetResponse",
+	    (2 | $ctx_cons_flags)             => "Response",
 	    (3 | $ctx_cons_flags)             => "SetRequest",
-	    (4 | $ctx_cons_flags)             => "TrapRequest",
-	    (5 | $ctx_cons_flags)             => "GetbulkRequest",
+	    (4 | $ctx_cons_flags)             => "Trap",
+	    (5 | $ctx_cons_flags)             => "GetBulkRequest",
 	    (6 | $ctx_cons_flags)             => "InformRequest",
-	    (7 | $ctx_cons_flags)             => "Trap2Request",
+	    (7 | $ctx_cons_flags)             => "SNMPv2-Trap",
+	    (8 | $ctx_cons_flags)             => "Report",
 	}->{($result)};
 
 	return $seq_type_desc . "{\n" . $pretty_result . "\n}";
@@ -493,7 +495,7 @@ sub pretty_generic_sequence ($) {
 	unless ($type == (&constructor_flag | &sequence_tag) # sequence
 		|| $type == (0 | $flags) #get_request
 		|| $type == (1 | $flags) #getnext_request
-		|| $type == (2 | $flags) #get_response
+		|| $type == (2 | $flags) #response
 		|| $type == (3 | $flags) #set_request
 		|| $type == (4 | $flags) #trap_request
 		|| $type == (5 | $flags) #getbulk_request

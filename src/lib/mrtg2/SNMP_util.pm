@@ -5,7 +5,8 @@
 ### Copyright (c) 1998-2007, Mike Mitchell.
 ###
 ### This program is free software; you can redistribute it under the
-### "Artistic License" included in this distribution (file "Artistic").
+### "Artistic License 2.0" included in this distribution
+### (file "Artistic").
 ######################################################################
 ### Created by:  Mike Mitchell   <Mike.Mitchell@sas.com>
 ###
