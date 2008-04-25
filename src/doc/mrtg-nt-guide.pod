@@ -108,7 +108,7 @@ In Perl, a C<#> is a comment, synonymous with C<REM> in DOS.
 
 Add the following to the top of the mrtg.cfg file:
 
- WorkDir: D:\InetPub\wwwroot\MRTG
+ WorkDir: c:\www\mrtg
 
 This is where the web pages are created, usually a web root.
 
@@ -306,7 +306,7 @@ Now lets look at a config file to monitor what we wanted to on our mythical
 Cisco Cat 5000 -- utilization on ports 3, 5, 10, and 24, and the CPU Load,
 which will show us nonstandard mrtg configurations as well as more options..
 
- WorkDir: D:\InetPub\wwwroot\MRTG
+ WorkDir: c:\www\mrtg
  RunAsDaemon: yes
 
  ######################################################################
