@@ -1,0 +1,411 @@
+=head1 NAME
+
+mrtg-nt-guide - The MRTG 2.16.2 Windows Installation Guide
+
+=head1 SYNOPSIS
+
+Installing MRTG on a Windows box is not quite as "click and point" as some
+might want it to be. But then again, it is not all that difficult if you
+follow the instructions below.
+
+=head1 PREREQUISITES
+
+To get MRTG to work on Windows you need the following:
+
+=over
+
+=item *
+
+A current copy of Perl.
+For Example ActivePerl 5.8.8 from ActiveState
+http://www.activestate.com/store/activeperl/download/
+
+
+=item *
+
+The latest version of MRTG from http://oss.oetiker.ch/mrtg/pub. Look for
+mrtg-2.16.2.zip or better. The archive also contains a precompiled copy of
+rateup.exe for Win32.
+
+
+=back
+
+=head1 INSTALLING
+
+I suggest you do the following from the machine that will be running MRTG,
+which, in this case, is also a web server. All examples are for doing things
+to a LOCAL machine.
+
+=over
+
+=item First
+
+Unzip MRTG to C:\mrtg-2.16.2 on the Windows machine of your choice.
+
+=item Next
+
+Install Perl on the same Windows machine. You might want to make sure
+that the Perl binary directory is listed in your system path.
+
+ C:\Perl\bin;%SystemRoot%\system32;%SystemRoot%;...
+
+You can manually check this by going to [Control Panel]->[System]->[Environment]
+
+=back
+
+To see if everything is installed properly you can open a Command Shell
+and go into F<c:\mrtg-2.16.2\bin>. Type:
+
+ perl mrtg
+
+This should give you a friendly error message complaining about the missing MRTG
+configuration file. Now, you have successfully installed MRTG and Perl.
+
+=head1 CONFIGURING MRTG
+
+Now it is time to create a configuration for MRTG. But before we begin you need to know a few things. Take an
+opportunity to gather the following information:
+
+=over
+
+=item *
+
+The IP address or hostname and the SNMP port number, (if non standard), of the device you want to monitor.
+
+=item *
+
+If you want to monitor something other than bytes in and out, you must also know the SNMPOID of what you
+want to monitor.
+
+=item *
+
+Finally you need to know the read-only SNMP community string
+for your device. If you don't know it, try B<public>, that is the default.
+
+=back
+
+For the rest of this document we will be using device B<10.10.10.1> ( a CISCO
+Catalyst 5000) with Community string B<public>. We are interested in monitoring
+traffic, and the CPU load. Let's begin.
+
+The first thing we do in setting up MRTG is making a default config file.
+Get to a cmd prompt and change to the F<c:\mrtg-2.16.2\bin> directory. Type the
+following command:
+
+ perl cfgmaker public@10.10.10.1 --global "WorkDir: c:\www\mrtg" --output mrtg.cfg
+
+This creates an initial MRTG config file for you. Note that in this file all interfaces
+of your router will be stored by number. Unfortunately, these numbers are likely to change whenever you
+reconfigure your router. In order to work around this you can get F<cfgmaker> to produce a configuration
+which is based on Ip numbers, or even Interface Descriptions. Check L<cfgmaker>
+
+If you get an error message complaining about B<no such name> or B<no
+response>, your community name is probably wrong.
+
+Now, let's take a look at the mrtg.cfg file that was created.
+
+In Perl, a C<#> is a comment, synonymous with C<REM> in DOS.
+
+Add the following to the top of the mrtg.cfg file:
+
+ WorkDir: c:\www\mrtg
+
+This is where the web pages are created, usually a web root.
+
+ ######################################################################
+ # Description: LCP SUWGB
+ # Contact: Administrator
+ # System Name: LC-Bridge
+ # Location: Here
+ #.....................................................................
+
+TargetDevice's IP Address:Interface Number:Community:IP Address
+
+ Target[10.10.10.1.1]: 1:public@10.10.10.1
+
+This is the interface speed (Default is 10 megabits; for 100Mbit devices use 12500000 and so on...)
+
+ MaxBytes[10.10.10.1.1]: 1250000
+
+ Title[10.10.10.1.1]: LC-Bridge (sample.device): ether0
+
+This section determines how the web page headers will look
+
+ PageTop[10.10.10.1.1]: <H1>Traffic Analysis for ether0</H1>
+  <TABLE>
+  <TR><TD>System:</TD><TD>LC-Bridge inAndover</TD></TR>
+  <TR><TD>Maintainer:</TD><TD>Administrator</TD></TR>
+  <TR><TD>Interface:</TD><TD>ether0(1)</TD></TR>
+  <TR><TD>IP:</TD><TD>sample.device(10.10.10.1)</TD></TR>
+  <TR><TD>Max Speed:</TD>
+  <TD>1250.0 kBytes/s (ethernetCsmacd)</TD></TR>
+  </TABLE>
+
+  Target[10.10.10.1.2]: 2:public@10.10.10.1
+  MaxBytes[10.10.10.1.2]: 1250000
+  Title[10.10.10.1.2]: LC-Bridge (): ulink0
+  PageTop[10.10.10.1.2]: <H1>Traffic Analysis for ulink0</H1>
+   <TABLE>
+   <TR><TD>System:</TD><TD>LC-Bridge inAndover</TD></TR>
+   <TR><TD>Maintainer:</TD><TD>Administrator</TD></TR>
+   <TR><TD>Interface:</TD><TD>ulink0(2)</TD></TR>
+   <TR><TD>IP:</TD><TD>()</TD></TR>
+   <TR><TD>Max Speed:</TD>
+   <TD>1250.0 kBytes/s (ethernetCsmacd)</TD></TR>
+   </TABLE>
+
+  #---------------------------------------------------------------
+
+And that's a very basic MRTG config file. You can run this and see your
+results by going into the F<c:\mrtg-2.16.2\bin> directory and typing:
+
+ perl mrtg mrtg.cfg
+
+It is normal to get errors for the first two times you run this command. The
+errors will alert you about the fact that there have not been any log files
+in existence before.
+
+
+If you take a look at those web pages they are not very exciting (yet). You need
+to have the MRTG files run every five minutes to produce the desired results.
+Just run it again after a few minutes. You should now be able to see the first
+lines in your graphs.
+
+=head1 MAKE MRTG RUN ALL THE TIME
+
+Starting MRTG by hand every time you want to run it is not going to make you
+happy I guess.
+
+There is a special option you can set in the MRTG configuration file so
+so that MRTG will not terminate after it was started. Instead it
+will wait for 5 minutes and then run again.
+
+Add the option
+
+ RunAsDaemon: yes
+
+to your mrtg.cfg file and start it with:
+
+ start /Dc:\mrtg-2.16.2\bin wperl mrtg --logging=eventlog mrtg.cfg
+
+If you use B<wperl> instead of B<perl>, no console window will show. MRTG is now
+running in the background. If it runs into problems it will tell you so
+over the EventLog. To stop MRTG, open the Task Manager and terminate the
+B<wperl.exe> process. If mrtg has anything to tell you these messages
+can be found in the event log.
+
+If you put a shortcut with
+
+ Target:    wperl mrtg --logging=eventlog mrtg.cfg
+ Start in:  c:\mrtg-2.16.2\bin
+
+into your start-up folder, MRTG will now start whenever you login to your NT
+box.
+
+If you do not want to log into your box just to start MRTG. Have a look
+at http://www.firedaemon.com/mrtg-howto.html which describes a free tool to
+start any program as a Service. The pages gives specific instructions for
+MRTG users.
+
+=head1 HOW TO SETUP MRTG AS A WINDOWS SERVICE
+
+=head2 Additional Prerequisites
+
+=over
+
+=item *
+
+MRTG must be installed and fully configured on the target system.  In the
+following exercise the assumption is that MRTG is installed under c:\mrtg\
+and all the sample files use this location.
+
+=item *
+
+Microsoft Tools B<SRVANY.exe> (Applications as Services Utility) and
+B<INSTSRV.exe> (Service Installer) - Those files can be downloaded from
+Microsoft as a part of Windows 2000 Resource Kit at
+L<http://www.microsoft.com/windows2000/techinfo/reskit/tools/default.asp>. 
+They are also available from other locations such as
+L<http://www.electrasoft.com/srvany/srvany.htm>,
+L<http://www.iopus.com/guides/srvany.htm>, etc.  Detailed instructions on how
+to use this package are available at
+L<http://support.microsoft.com/kb/q137890/>.  In order to follow the steps in
+this HOW-TO you B<MUST> obtain both executables.
+
+=item *
+
+You must have administrative rights on the target system.
+
+=back
+
+=head2 Preparation
+
+Please complete the following steps before starting the installation:
+
+=over
+
+=item *
+
+Copy B<srvany.exe> and B<instsrv.exe> to c:\mrtg\bin\ (your MRTG bin directory).
+
+=item *
+
+Create a file called B<mrtg.reg> anywhere on your system and paste the
+following content into it:
+
+ Windows Registry Editor Version 5.00
+
+ [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MRTG\Parameters]
+ "Application"="c:\\perl\\bin\\wperl.exe"
+ "AppParameters"="c:\\mrtg\\bin\\mrtg --logging=eventlog c:\\mrtg\\bin\\mrtg.cfg"
+ "AppDirectory"="c:\\mrtg\\bin\\"
+
+=back
+
+=head2 Service Installation
+
+Once again, assuming that MRTG is already fully installed and configured on
+the target system under c:\mrtg\ the following steps are necessary to setup
+MRTG as a service.
+
+Using the command prompt go into the temporary directory where you unzipped
+the package.  When there type the following command to create a service
+named "MRTG" in the Windows Services management console:
+ 
+ instsrv MRTG c:\mrtg\bin\srvany.exe
+
+Now you need to create the B<App*> entries required for the new service.  You
+can do this by either right-clicking on the mrtg.reg file and selecting
+'merge' or by running the following command:
+
+ regedit /s mrtg.reg
+
+After setting up the registry entry it is time to point it to your MRTG
+installation.  If you have installed MRTG under F<c:\mrtg\>, you can skip this
+step.  Open your registry editor (Start -E<gt> Run -E<gt> regedt32), and locate the
+B<[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MRTG]> key.  Make
+sure that the B<ImagePath> variable is correctly pointing to B<srvany.exe>
+located in your MRTG bin directory (for example c:\mrtg\bin\srvany.exe). 
+Next you have to expand the MRTG tree, and go to the
+B<[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MRTG\Parameters]>
+key.  Under Parameters make sure that all the  B<Application> variables are
+setup properly.
+
+At this point you are ready to run the service.  The only thing left to do
+is to start the MRTG service in the Services management console.  After you
+do this, you should see two new processes running on your system: srvany.exe
+and wperl.exe.  Make sure to stop any previously running MRTG processes to
+avoid conflict.
+
+Note that it is imperative to set the B<RunAsDaemon: yes> option or the
+service will stop after just one single run!
+
+=head1 EXAMPLE
+
+Now lets look at a config file to monitor what we wanted to on our mythical
+Cisco Cat 5000 -- utilization on ports 3, 5, 10, and 24, and the CPU Load,
+which will show us nonstandard mrtg configurations as well as more options..
+
+ WorkDir: c:\www\mrtg
+ RunAsDaemon: yes
+
+ ######################################################################
+ # Description: LCP SUWGB
+ # Contact: Administrator
+ # System Name: LC-Bridge
+ # Location: Here
+ #.....................................................................
+
+ Target[10.10.10.1.1]: 3:public@10.10.10.1
+ MaxBytes[10.10.10.1.1]: 1250000
+ Title[10.10.10.1.1]: LC-Bridge (sample-device): ether0
+ PageTop[10.10.10.1.1]: <H1>Traffic Analysis for ether0</H1>
+  <TABLE>
+ <TR><TD>System:</TD><TD>LC-Bridge inAndover</TD></TR>
+ <TR><TD>Maintainer:</TD><TD>Administrator</TD></TR>
+ <TR><TD>Interface:</TD><TD>ether0(3)</TD></TR>
+ <TR><TD>IP:</TD><TD>sample-device(10.10.10.1)</TD></TR>
+ <TR><TD>Max Speed:</TD>
+ <TD>1250.0 kBytes/s (ethernetCsmacd)</TD></TR>
+ </TABLE>
+
+ #---------------------------------------------------------------
+
+ Target[10.10.10.1.2]: 5:public@10.10.10.1
+ MaxBytes[10.10.10.1.2]: 1250000
+ Title[10.10.10.1.2]: LC-Bridge (): ulink0
+ PageTop[10.10.10.1.2]: <H1>Traffic Analysis for ulink0</H1>
+  <TABLE>
+  <TR><TD>System:</TD><TD>LC-Bridge inAndover</TD></TR>
+  <TR><TD>Maintainer:</TD><TD>Administrator</TD></TR>
+  <TR><TD>Interface:</TD><TD>ulink0(5)</TD></TR>
+  <TR><TD>IP:</TD><TD>()</TD></TR>
+  <TR><TD>Max Speed:</TD>
+  <TD>1250.0 kBytes/s (ethernetCsmacd)</TD></TR>
+  </TABLE>
+
+ #---------------------------------------------------------------
+
+ Target[10.10.10.1.1]: 10:public@10.10.10.1
+ MaxBytes[10.10.10.1.1]: 1250000
+ Title[10.10.10.1.1]: LC-Bridge (sample-device): ether0
+ PageTop[10.10.10.1.1]: <H1>Traffic Analysis for ether0</H1>
+  <TABLE>
+  <TR><TD>System:</TD><TD>LC-Bridge inAndover</TD></TR>
+  <TR><TD>Maintainer:</TD><TD>Administrator</TD></TR>
+  <TR><TD>Interface:</TD><TD>ether0(10)</TD></TR>
+  <TR><TD>IP:</TD><TD>sample-device(10.10.10.1)</TD></TR>
+  <TR><TD>Max Speed:</TD>
+  <TD>1250.0 kBytes/s (ethernetCsmacd)</TD></TR>
+  </TABLE>
+
+ #---------------------------------------------------------------
+
+ Target[10.10.10.1.2]: 24:public@10.10.10.1
+ MaxBytes[10.10.10.1.2]: 1250000
+ Title[10.10.10.1.2]: LC-Bridge (): ulink0
+ PageTop[10.10.10.1.2]: <H1>Traffic Analysis for ulink0</H1>
+  <TABLE>
+  <TR><TD>System:</TD><TD>LC-Bridge inAndover</TD></TR>
+  <TR><TD>Maintainer:</TD><TD>Administrator</TD></TR>
+  <TR><TD>Interface:</TD><TD>ulink0(24)</TD></TR>
+  <TR><TD>IP:</TD><TD>()</TD></TR>
+  <TR><TD>Max Speed:</TD>
+  <TD>1250.0 kBytes/s (ethernetCsmacd)</TD></TR>
+  </TABLE>
+
+ #---------------------------------------------------------------
+
+ # Router CPU load %
+ Target[cpu.1]:1.3.6.1.4.1.9.2.1.58.0&1.3.6.1.4.1.9.2.1.58.0:public@10.10.10.1
+ RouterUptime[cpu.1]: public@10.10.10.1
+ MaxBytes[cpu.1]: 100
+ Title[cpu.1]: CPU LOAD
+ PageTop[cpu.1]: <H1>CPU Load %</H1>
+ Unscaled[cpu.1]: ymwd
+ ShortLegend[cpu.1]: %
+ XSize[cpu.1]: 380
+ YSize[cpu.1]: 100
+ YLegend[cpu.1]: CPU Utilization
+ Legend1[cpu.1]: CPU Utilization in % (Load)
+ Legend2[cpu.1]: CPU Utilization in % (Load)
+ Legend3[cpu.1]:
+ Legend4[cpu.1]:
+ LegendI[cpu.1]:
+ LegendO[cpu.1]: &nbsp;Usage
+ Options[cpu.1]: gauge
+
+This is a nice example of how to monitor any SNMP device if you know what OID
+you want to use. Once again, for an explanation of the more advance features of
+mrtg, please see the rest of the documentation.
+
+=head1 AUTHORS
+
+Tobi Oetiker E<lt>tobi@oetiker.chE<gt>,
+David S. Divins E<lt>ddivins@moon.jic.comE<gt>,
+Steve Pierce E<lt>MRTG@HDL.comE<gt>,
+Artyom Adjemov E<lt>one.bofh@gmail.comE<gt>,
+Ilja Ivanov E<lt>ivanov@bseu.byE<gt>
+Karel Fajkus E<lt>http://fajkus.cz/E<gt>
+
+

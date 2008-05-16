@@ -1,0 +1,129 @@
+###### PATCHTAG00 ####################################################
+###      Brazil/Brazilian Portuguese
+###      => Luiz Felipe R E <luizfelipe@encarnacao.com>
+###      => Gleydson Mazoli da Silva <gleydson@debian.org> (Atualização)
+###### PATCHTAG10 ####################################################
+  &brazilian 
+###### PATCHTAG20 ####################################################
+  'brazil'       => \&brazilian,
+  'brazilian'    => \&brazilian,
+###### PATCHTAG30 ####################################################
+# Brazil/brazilian
+   'brazilian' =>
+   "Localiza&ccedil;&atilde;o efetuada por
+				<a href=\"http://www.encarnacao.com\">Luiz Felipe R E</a>
+				<a href=\"mailto:luizfelipe\@encarnacao.com\">&lt;luizfelipe\@encarnacao.com&gt;</a><br />
+				atualização por Gleydson Mazioli da Silva
+				<a href=\"mailto:gleydson\@debian.org\">&lt;gleydson\@debian.org&gt;</a>",
+###### PATCHTAG40 ####################################################
+$credits::LOCALE{'brazil'}=$credits::LOCALE{'brazilian'};
+###### PATCHTAG50 ####################################################
+# Brazilian (Portugues)
+
+sub brazilian
+{
+  my $string = shift;
+return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+  # charset=iso-2022-jp
+
+  %translations =
+  (  
+     #'charset=iso-8859-1'                     => 'charset=iso-8859-1',
+     'Maximal 5 Minute Incoming Traffic'      => 'Tr&aacute;fego M&aacute;ximo de Entrada em 5 minutos',
+     'Maximal 5 Minute Outgoing Traffic'      => 'Tr&aacute;fego M&aacute;ximo de Sa&iacute;da em 5 minutos',
+     'the device'                             => 'dispositivo',
+     'The statistics were last updated (.*)'  => '&Uacute;ltima atualiza&ccedil;&atilde;o das estat&iacute;sticas: $1',
+     ' Average\)'                             => ' - m&eacute;dia)',
+     'Average'                                => 'M&eacute;dia',
+     'Max'                                    => 'M&aacute;x',
+     'Current'                                => 'Atual',
+     'version'                                => 'vers&atilde;o',
+     '`Daily\' Graph \((.*) Minute'           => 'Gr&aacute;fico `Di&aacute;rio\' ($1 minutos',
+     '`Weekly\' Graph \(30 Minute'            => 'Gr&aacute;fico `Semanal\' (30 minutos' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Gr&aacute;fico `Mensal\' (2 horas',
+     '`Yearly\' Graph \(1 Day'                => 'Gr&aacute;fico `Anual\' (1 dia', 
+     'Incoming Traffic in (\S+) per Second'   => 'Tr&aacute;fego de Entrada em $1 por segundo',
+     'Outgoing Traffic in (\S+) per Second'   => 'Tr&aacute;fego de Sa&iacute;da em $1 por segundo',
+     'at which time (.*) had been up for(.*)' => 'nesta hora $1 estava ativo por $2',
+     # '([kMG]?)([bB])/s'                     => '\$1\$2/s',
+     # '([kMG]?)([bB])/min'                   => '\$1\$2/min',
+     # '([kMG]?)([bB])/h'                     => '$1$2/t',
+     # 'Bits'                                 => 'Bits',
+     # 'Bytes'                                => 'Bytes'
+     'In'                                     => 'Entr.',
+     'Out'                                    => 'Sa&iacute;',
+     'Percentage'                             => 'Porc.',
+     'Ported to OpenVMS Alpha by'             => 'Adaptado para o Alpha OpenVMS por', 
+     'Ported to WindowsNT by'                 => 'Adaptado para o WindowsNT por',
+     'and'                                    => 'e',
+     '^GREEN'                                  => 'VERDE',
+     'BLUE'                                   => 'AZUL',
+     'DARK GREEN'                             => 'VERDE ESCURO',
+     'MAGENTA'                                => 'LIL&Aacute;S',
+     'AMBER'                                  => 'AMBAR'
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => 'Domingo',       'Sun' => 'Dom',
+      'Monday'    => 'Segunda',       'Mon' => 'Seg',
+      'Tuesday'   => 'Ter&ccedil;a',  'Tue' => 'Ter',
+      'Wednesday' => 'Quarta',        'Wed' => 'Qua',
+      'Thursday'  => 'Quinta',        'Thu' => 'Qui',
+      'Friday'    => 'Sexta',         'Fri' => 'Sex',
+      'Saturday'  => 'S&aacute;bado', 'Sat' => 'S&aacute;b' 
+
+    );
+
+%month = 
+    (
+      'January'   => 'Janeiro',   'February'  => 'Fevereiro' ,  'March'     => 'Mar&ccedil;o',
+      'Jan'       => 'Jan',       'Feb'       => 'Fev',         'Mar'       => 'Mar',
+      'April'     => 'Abril',     'May'       => 'Maio',        'June'      => 'Junho', 
+      'Apr'       => 'Abr',       'May'       => 'Mai',         'Jun'       => 'Jun',
+      'July'      => 'Julho',     'August'    => 'Agosto',      'September' => 'Setembro', 
+      'Jul'       => 'Jul',       'Aug'       => 'Ago',         'Sep'       => 'Set', 
+      'October'   => 'Outubro',   'November'  => 'Novembro',    'December'  => 'Dezembro', 
+      'Oct'       => 'Out',       'Nov'       => 'Nov',         'Dec'       => 'Dez' 
+    );
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+    {
+	if($foo[3]=~(/(.*)at(.*)/))
+      { 
+        @quux=split(/at/,$foo[3]);
+        $foo[3]=$quux[0]." &agrave;s ".$quux[1]; 
+      };
+      return "$wday{$foo[0]}, $foo[1] de $month{$foo[2]} de $foo[3]"; 
+    };
+
+#
+# handle two different time/date formats:  
+# return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
+#
+
+# handle nontranslated strings which ought to be translated
+# print STDERR "$_\n" or print DEBUG "not translated $_";
+# but then again we might not want/need to translate all strings
+  
+  return $string;
+
+};

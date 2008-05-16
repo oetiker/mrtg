@@ -1,0 +1,9 @@
+From: Colin Tinker <g1gsw@linux.g1gsw.ampr.org>
+Date: Sat, 15 Jan 2000 20:23:32 -0000
+
+You may like to include the perl script below in the next
+release someone may find it useful.  It checks /proc/meminfo for the used
+and free memory parsing it out for MRTG.  it is my first attempt at a perl
+program so if any one can suggest any improvements feel free.
+
+Colin Tinker

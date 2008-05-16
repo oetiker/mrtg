@@ -1,0 +1,26 @@
+#!/bin/sh
+##
+## OUTPUT_FILE has to have the same path with WorkDir value setted in the make-mrtg.cfg.awk file
+## MRTG_NETHOSTS_CFG has to be the same file declared in the make-mrtg.cfg.awk file
+## MRTG_EXECUTABLE is the MRTG executable file with full path
+## NETHOSTST_INTERNET_PATH is the path for internet IPs file (without / in the end) and has to be the same path declared in the make-mrtg.cfg.awk file
+## NETHOSTST_AWK_FILE is the make-mrtg.cfg.awk file with full path
+##
+MRTG_EXECUTABLE="/usr/local/mrtg/mrtg"
+NETHOSTST_INTERNET_PATH="/usr/local/mrtg/contrib/net-hosts"
+NETHOSTST_AWK_FILE="/usr/local/mrtg/contrib/net-hosts/make-mrtg.cfg.awk"
+##
+##
+/bin/cat $NETHOSTST_INTERNET_PATH/internet | /bin/awk -F: '{print $1}' | /usr/sbin/fping | /bin/awk -f $NETHOSTST_AWK_FILE
+##
+##
+#####################################################################################################
+## Index Maker in MRTG Style
+############################
+#
+# OUTPUT_FILE="/usr/local/mrtg/contrib/net-hosts/1/index.html"
+# MRTG_NETHOSTS_CFG="/usr/local/mrtg/contrib/net-hosts/mrtg-awk.cfg"
+#
+# /usr/local/mrtg/indexmaker -b "#ffffff" -1 -t 'Internet Nodes' -o $OUTPUT_FILE $MRTG_NETHOSTS_CFG
+#
+######################################################################################################

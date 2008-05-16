@@ -1,0 +1,101 @@
+=head1 NAME
+
+mrtg-faq - How to get help if you have problems with MRTG
+
+=head1 SYNOPSIS
+
+MRTG seems to raise a lot of questions. There are a number of resources
+apart from the documentation where you can find help for mrtg.
+
+=head1 FAQ
+
+In the following sections you'll find some additonal Frequently Asked Questions, with Answers.
+
+=head2 Why is there no "@#$%" (my native language) version of MRTG?
+
+Nobody has contributed a F<@#$%.pmd> file yet. Go into the
+F<mrtg-2.16.2/translate> directory and create your own translation file.
+When you are happy with it send it to me for inclusion with the next mrtg
+release.
+
+
+=head2 I need a script to make mrtg work with my xyz device.
+
+Probably this has already been done. Check the stuff in the
+F<mrtg-2.16.2/contrib> directory. There is a file called F<00INDEX> in
+that directory which tells what you can find in there.
+
+=head2 How does this SNMP thing work
+
+There are many resources on the net that explain SNMP.
+Take a look at this article from the Linux Journal by David Guerrero
+
+ http://www.david-guerrero.com/papers/snmp/
+
+And at this rather long document from CISCO.
+
+ http://www.cisco.com/univercd/cc/td/doc/cisintwk/ito_doc/snmp.htm
+
+
+=head2 The images created by MRTG look very strange.
+
+Remove the *-{week,day,month,year}.png files and start MRTG
+again.  Using MRTG for the first time, you might have to do this
+twice. This will also help when you introduce new routers into the cfg
+file.
+
+=head2 What is my Community Name?
+
+Ask the person in charge of your Router or try 'public', as this is the
+default Community Name.
+
+
+=head2 My graphs show a flat line during an outage. Why ?
+
+Well, the short answer is that when an SNMP query goes out
+and a response doesn't come back, MRTG has to assume something to put
+in the graph, and by default it assumes that the last answer we got
+back is probably closer to the truth than zero.  This assumption is
+not perfect (as you have noticed).  It's a trade-off that happens to
+fail during a total outage.
+
+If this is an unacceptable trade-off, use the B<unknaszero> option.
+
+You may want to know what you're trading off, so in the spirit of
+trade-offs, here's the long answer:
+
+
+The problem is that MRTG doesn't know *why* the data didn't come back, all
+it knows is that it didn't come back.  It has to do something, and it
+assumes it's a stray lost packet rather than an outage.
+
+Why don't we always assume the circuit is down and use zero, which will
+(we think) be more nearly right?  Well, it turns out that you may be
+taking advantage of MRTG's "assume last" behaviour without being aware of
+it.
+
+MRTG uses SNMP (Simple Network Management Protocol) to collect data, and
+SNMP uses UDP (User Datagram Protocol) to ship packets around.  UDP is
+connectionless (not guaranteed) unlike TCP where packets are tracked and
+acknowledged and, if needed, retransmitted.  UDP just throws
+packets at the network and hopes they arrive.  Sometimes they don't.
+
+One likely cause of lost SNMP data is congestion; another is busy routers.
+Other possibilities include transient telecommunications problems, router
+buffer overflows (which may or may not be congestion-related), "dirty
+lines" (links with high error rates), and acts of God.  These things
+happen all the time; we just don't notice because many interactive
+services are TCP-based and the lost packets get retransmitted
+automatically.
+
+In the above cases where some SNMP packets are lost but traffic is
+flowing, assuming zero is the wrong thing to do - you end up with a graph
+that looks like it's missing teeth whenever the link fills up.  MRTG
+interpolates the lost data to produce a smoother graph which is more
+accurate in cases of intermittent packet loss.  But with V2.8.4 and above,
+you can use the "unknaszero" option to produce whichever graph is best
+under the conditions typical for your network.
+
+=head1 AUTHOR
+
+Tobias Oetiker E<lt>tobi@oetiker.chE<gt>

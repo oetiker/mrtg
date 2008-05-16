@@ -1,0 +1,10 @@
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\MMM\mrtg5]
+"MrtgKick-PathName"="C:\\MRTG\\Run\\MrtgKick.Cmd"
+"Debug"=dword:0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\mrtg5]
+"EventMessageFile"="%SystemRoot%\\System32\\5mrtg.Exe"
+"TypesSupported"=dword:7
+
