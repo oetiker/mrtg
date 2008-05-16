@@ -1,7 +1,7 @@
 # -*- mode: Perl -*-
 package MRTG_lib;
 ###################################################################
-# MRTG 2.16.1  Support library MRTG_lib.pm
+# MRTG 2.16.2  Support library MRTG_lib.pm
 ###################################################################
 # Created by Tobias Oetiker <tobi@oetiker.ch>
 #            and Dave Rand <dlr@bungi.com>
@@ -1998,6 +1998,7 @@ sub setup_loghandlers ($){
 		$EventLog->Close;
 	    };
 	    $SIG{__DIE__} = sub {
+                return if $^S ; # no handler in eval
 		my $EventLog = Win32::EventLog->new('MRTG');
 		my $Msg = $_[0];
 		$Msg =~ s/\n/\r\n/g;
@@ -2014,7 +2015,6 @@ sub setup_loghandlers ($){
 	    last;
 	};
 	$SIG{__WARN__} = sub {
-	    
 	    if (open DEB, ">>$::global_logfile") {
 		print DEB timestamp." -- $_[0]";
 		close DEB;
@@ -2025,7 +2025,7 @@ sub setup_loghandlers ($){
 	
 	
 	$SIG{__DIE__} = sub {
-	    
+            return if $^S ; # no handler in eval	    	    
 	    if ( open DEB, ">>$::global_logfile") {
 		print DEB timestamp." -- $_[0]";
 		close DEB;

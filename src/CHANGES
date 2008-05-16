@@ -1,7 +1,10 @@
+Changes 2.16.2, 2008-05-16
+--------------------------
+From: Steven Bakker steven.bakker ams-ix.net
+* globally disable __DIE__ handler in eval using $^S check
+
 * updated to SNMP_Session 1.12
 
-Changes 2.16.2, 2008-03-07
---------------------------
 From: Tobi
 * make SNMP_Session.pm work on windows even when a __DIE__ handler ist
   installed.
