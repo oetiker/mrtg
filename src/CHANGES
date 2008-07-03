@@ -1,3 +1,6 @@
+From: Oliver Lehmann oliver FreeBSD.org
+* allow group and user option to be set to root
+
 Changes 2.16.2, 2008-05-16
 --------------------------
 From: Steven Bakker steven.bakker ams-ix.net
