@@ -1514,7 +1514,7 @@ update (in, out, abs_max, absupdate)
 
 
 
-  if (inrate < 0 || (unsigned) inrate > abs_max)
+  if (inrate < 0 ||  inrate > abs_max)
     {
       if (options & OPTION_UNKNASZERO)
 	{
@@ -1525,7 +1525,7 @@ update (in, out, abs_max, absupdate)
 	  inrate = history[0].in;	/* Sync by using last value */
 	}
     }
-  if (outrate < 0 || (unsigned) outrate > abs_max)
+  if (outrate < 0 || outrate > abs_max)
     {
       if (options & OPTION_UNKNASZERO)
 	{
