@@ -5,7 +5,7 @@
 ##################################################################
 # Created by Tobi Oetiker <tobi@oetiker.ch>
 ##################################################################
-# $Id:$
+# $Id$
 
 require 5.005;
 use strict;
@@ -48,7 +48,7 @@ sub main {
                 || die "Opening SNMP_Session\n";
 
     
-    warn "* Qery sysDescr to identify Switch\n";
+    warn "* Query sysDescr to identify Switch\n";
     my $sysdesc = (snmpget($opt{swco}.'@'.$opt{sw},'sysDescr'))[0];
     my $mode = 'vlan';
 
