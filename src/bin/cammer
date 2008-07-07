@@ -1,14 +1,11 @@
-#! /usr/sepp/bin/perl
+#! /usr/bin/perl
 # -*- mode: Perl -*-
 ##################################################################
 # Cammer 2.0
 ##################################################################
 # Created by Tobi Oetiker <tobi@oetiker.ch>
 ##################################################################
-# Changes:
-# 1.1 Cisco 3500 works the same as the 2900
-##################################################################
-
+# $Id:$
 
 require 5.005;
 use strict;
@@ -42,6 +39,7 @@ my %OID = ('vlanIndex' =>             [1,3,6,1,4,1,9,5,1,9,2,1,1],
 sub main {
     my %opt;
     options(\%opt);
+    $DEBUG=1 if $opt{verbose};
     # which vlans do exist on the device
     my @vlans;
     my $vlani;
@@ -189,11 +187,12 @@ sub options {
    my $opt = shift;
    GetOptions( $opt,
         'arp=s',
+        'verbose',
    	'help|?',
 	'man') or pod2usage(2);
-   pod2usage(-verbose => 1) if $opt->{help} or scalar @ARGV != 1;
    pod2usage(-exitstatus => 0, -verbose => 2) if $opt->{man};
-
+   pod2usage(-verbose => 1) if $opt->{help} or scalar @ARGV != 1;
+   
    $opt->{sw} = shift @ARGV;
  
    $opt->{sw} =~ /^(.+)@(.+?)$/;
