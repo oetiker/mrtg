@@ -93,6 +93,54 @@ sub main {
     $sws->close();
 
     my %ip;
+    my %dhcp_host;
+
+    if (open my $arp, "arp -a|"){
+        warn "* Calling arp command to gather local arp table\n";
+        while (<$arp>){
+            chomp;
+            #gumpu.oetiker.ch (192.168.0.157) at 00:0C:29:11:3F:92 [ether] on lan
+            /\((\S+?)\)\sat\s(00:\S+)/ or next;
+            my $ip = $1;
+            my $mac = lc($2);
+            push @{$ip{$mac}}, $ip;
+            print "ip: $ip, mac: $mac\n" if $DEBUG;
+        }
+        close $arp;
+    }
+    if (open my $dhcp, "</var/lib/dhcp3/dhcpd.leases"){
+        my $ip;
+        my $mac;
+        my $name;
+        while (<$dhcp>){
+            /lease\s(\S+)\s\{/ and do {
+                $ip = $1;           
+                $mac = undef;
+                $name = undef;
+                next;
+            };
+            /client-hostname\s"(\S+?)";/ and $name = $1;
+            /hardware\sethernet\s(\S+?);/ and $mac = lc($1);
+            /^\}/ and do {
+                push @{$ip{$mac}}, $ip if $ip;
+                $dhcp_host{$mac} = $name if $name;
+            }
+        }
+    }
+    
+    warn "* Calling arp command to gather local arp table\n";
+    open my $arp, "arp -a|" or die $!;
+    while (<$arp>){
+        chomp;
+        #gumpu.oetiker.ch (192.168.0.157) at 00:0C:29:11:3F:92 [ether] on lan
+        /\((\S+?)\)\sat\s(00:\S+)/ or next;
+        my $ip = $1;
+        my $mac = lc($2);
+        push @{$ip{$mac}}, $ip;
+        print "ip: $ip, mac: $mac\n" if $DEBUG;
+    }
+
+
     if ($opt{ro}){
         # get mac to ip from router
         warn "* Gather Arp Table from $opt{roco}\@$opt{ro} with ipNetToMediaPhysAddress\n";
@@ -112,20 +160,6 @@ sub main {
              ,100);
         $ros->close();
     } 
-    elsif ($opt{arp} eq 'local'){
-        warn "* Calling arp command to gather local arp table\n";
-        open my $arp, "arp -a|" or die $!;
-        while (<$arp>){
-            chomp;
-            #gumpu.oetiker.ch (192.168.0.157) at 00:0C:29:11:3F:92 [ether] on lan
-            /\((\S+?)\)\sat\s(00:\S+)/ or next;
-            my $ip = $1;
-            my $mac = lc($2);
-            push @{$ip{$mac}}, $ip;
-            print "ip: $ip, mac: $mac\n" if $DEBUG;
-        }
-    }
-
     # walk CAM table for each VLAN
     my %if;
     my %port;
@@ -167,7 +201,7 @@ sub main {
            my $name = $name{$if{$vlan}{$port{$vlan}{$mac}}};
            my $truevlan = $vlan eq 'none' ? $vlan{$if{$vlan}{$port{$vlan}{$mac}}} : $vlan;
            my $quest = scalar @ip > 1 ? "(Multi If Host)":"";
-	   push @{$output{$name}}, sprintf "%4s  %-17s  %-15s  %s %s",$truevlan,$mac,$ip[0],$host[0],$quest;
+	   push @{$output{$name}}, sprintf "%4s  %-17s  %-15s  %s %s",$truevlan,$mac,$ip[0],$host[0],$dhcp_host{$mac}?"($dhcp_host{$mac})":'';
         }
     }
     foreach my $name (sort { ($a =~ /(\d+)/)[0] <=> ($b =~ /(\d+)/)[0]}  keys %output){
@@ -222,7 +256,7 @@ cammer - list switch ports with associated IP-addresses
 
 =head1 SYNOPSIS
 
-cammer --arp={local|comunity@router} [--verbose] community@switch
+cammer [--arp=comunity@router] [--verbose] community@switch
 
 =head1 DESCRIPTION
 
@@ -230,22 +264,19 @@ B<Cammer> is a script which polls a switch is able to query a switch for its
 ethernet to port asignements. If a source of ip2mac mappings is provided as
 well, it will resolve the ethernet addresses too.
 
-Use the B<--arp> option to resolve ethernet addresses. If you have a router,
-the router should know the mappings of most hosts. Use
+Cammer will use the machines local arp cache as well as the the F</var/lib/dhcp3/dhcpd.leases>
+file to resolve etherent addresses
+If you have a router, the router might know a lot about mac2ip mapping. Use
 
  --arp=comunity@router
 
-to query the router for its arp table. If you are running this from a host
-in the same network as the switch, you can also use
+to query the router for its arp table.
 
- --arp=local
-
-to query the local arp table of the host. We found that running something
-like
+We found that running something like
 
  nmap --host-timeout 2s -sP 192.168.0.0/24
 
-helps to populate the local arp cache.
+(as user!) helps to populate the local arp cache.
 
 =head1 COPYRIGHT
 
