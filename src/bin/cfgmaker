@@ -184,7 +184,7 @@ sub InterfaceInfo($$$$$) {
         $descr =~ m/Catalyst/ ) {
         push @Variables,  "vlanTrunkPortDynamicStatus";
     }
-    if ($descr =~ m/Passport-8610/ ) {
+    if ($descr =~ m/Passport-8610/ || $descr =~ m/MERS-8610/ ) {
         push @Variables,  "ppPortName";
     }
 
@@ -220,10 +220,16 @@ sub InterfaceInfo($$$$$) {
 #            maximum value (4,294,967,295) and ifHighSpeed must be used
 #            to report the interace's speed.  For a sub-layer which has
 #            no concept of bandwidth, this object should be zero."
-            if ( (not defined $value) || ($value == 2**32-1)) {
+            if ( (not defined $value) || ($value == 2**32-1) ) {
                 ($if, $value) = split /:/, $ifHighSpeed[$i], 2;
 	        $value = $value * 1000000;  # highSpeed = contador * 10^6
-                #debug('base',"Speed: $if - $value");
+                debug('base',"Speed: $if - $value");
+            }
+	    if ( ($descr =~ m/MERS-8610/ ) && (defined $ifHighSpeed[$i]) ) {
+		($if, $value) = split /:/, $ifHighSpeed[$i], 2;
+                $value = $value * 1000000;  # highSpeed = contador * 10^6
+                debug('base',"Speed: $if - $value");
+
             }
             $routers->{$router}{$if}{'ifSpeed'} = $value;
         }
@@ -985,7 +991,8 @@ sub DeviceInfo ($$$) {
             '1.3.6.1.4.1.6027.' =>      'force10',
             '1.3.6.1.4.1.2636.' =>      'juniper',
             '1.3.6.1.4.1.94.' =>        'nokiaipsofw',
-            '1.3.6.1.4.1.307.' =>       'portmaster'
+            '1.3.6.1.4.1.307.' =>       'portmaster',
+	    '1.3.6.1.4.1.2272.30' =>    'nortel'
             );
         foreach (keys %vendorIDs) {
             $DevInfo{Vendor} = $vendorIDs{$_} if ($DevInfo{sysObjectID} =~ /\Q$_\E/);
