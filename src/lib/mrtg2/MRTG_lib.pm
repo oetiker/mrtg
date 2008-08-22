@@ -1803,7 +1803,7 @@ sub log2rrd ($$$) {
                            if (defined $$rcfg{'options'}{'perhour'}{$router});    
                        $rate{$t}{$s}/=60
                            if (defined $$rcfg{'options'}{'perminute'}{$router});
- 	  	       push @{$store{$t}{$s}}, int($rate{$t}{$s});
+ 	  	       push @{$store{$t}{$s}}, $rate{$t}{$s};
 		    }
 		    $mark{$s} -= $s;
 		    $rate{maxin}{$s} = 0;
