@@ -8,6 +8,8 @@
   <h2>MRTG Comunities and Portals</h2>
 
   <ul>
+    <li><a href="http://www.steveshipway.org/cfgmaker">Steve Shipway's MRTG Template Library</a></li>
+
     <li><a href="http://www.plixer.com/support/mrtg_repository.php">Plixer MRTG Configuration Template Archive</a></li>
 
     <li><a href="http://howto.aphroland.org/HOWTO/MRTG">MRTG Howto Collection</a> by <a href="mailto:mrtg{at}aphroland.org">nate</a></li>
