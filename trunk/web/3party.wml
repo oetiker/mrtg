@@ -74,6 +74,8 @@
 
   <h2>MRTG Add-Ons</h2>
   <ul>
+    <li><a href="http://mkmrtg.blogspot.com/">mkmrtg.sh</a> An easy way to see your stats; Designed for new and old users of MRTG by Joe McShinsky.</li>
+
     <li><a href="http://www.tenox.tc/out/#ttg">Little cli for queering a routers bandwith info live via snmp </a> by Antoni Sawicki</li>
 
     <li><a href="http://chuck.steel.googlepages.com/googlemodules">iGoogle module for mrtg</a> by <a href="http://chuck.steel.googlepages.com">Chuck Steel</a></li>
