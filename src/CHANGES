@@ -1,5 +1,8 @@
+Steve Shipway  s.shipway auckland.ac.nz
+* support multiple options in ifdesc and ifref setting for cfgmaker
+
 Carlos Fuentes Bermejo carlos.fuentes rediris.es
-* learn about nortel switches
+* teach cfgmaker about nortel switches
 
 Pavel Gulchouck  gul gul.kiev.ua
 * make sure rates over 4G work too

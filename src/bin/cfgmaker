@@ -651,13 +651,13 @@ ECHO
                 # determine interface reference
                 my $if_ref;
                 if (defined $$router_opt{ifref}) {
-                    for ($$router_opt{ifref}) {
-                        /^ip$/ && do { $if_ref = "/".$$i{Ip} if $$i{Ip}  ; last};
-                        /^eth$/ && do { $if_ref = "!".$$i{Eth} if $$i{Eth}; last};
-                        /^descr$/ && do {$if_ref = "\\".$$i{Descr} if $$i{Descr}; last};
-                        /^name$/ && do {$if_ref = "#".$$i{Name} if $$i{Name}; last};
-                        /^type$/ && do {$if_ref = "%".$$i{Type} if $$i{Type}; last};
-                        /^nr$/ && do {$if_ref = $ifindex; last};
+                    foreach  (split /,/,$$router_opt{ifref}) {
+                        /^ip$/   && do { if($$i{Ip}   ){ $if_ref = "/".$$i{Ip};    last;} next};
+                        /^eth$/  && do { if($$i{Eth}  ){ $if_ref = "!".$$i{Eth};   last;} next};
+                        /^descr$/&& do { if($$i{Descr}){ $if_ref = "\\".$$i{Descr};last;} next};
+                        /^name$/ && do { if($$i{Name} ){ $if_ref = "#".$$i{Name};  last;} next};
+                        /^type$/ && do { if($$i{Type} ){ $if_ref = "%".$$i{Type};  last;} next};
+                        /^nr$/   && do { $if_ref = $ifindex; last };
                         die "ERROR: Invalid value for --ifref: '$$router_opt{ifref}'\n";
                     }
                     if (not defined $if_ref) {
@@ -689,21 +689,21 @@ ECHO
 
                 if (defined $$router_opt{ifdesc}) {
                     $desc_prefix = '';
-                    for ($$router_opt{ifdesc}) {
-                        /^ip$/ && do { $if_title_desc = $$i{Ip} if $$i{Ip}  ; last};
-                        /^eth$/ && do { $if_title_desc = $$i{Eth} if $$i{Eth}; last};
-                        /^descr$/ && do {$if_title_desc = $$i{Descr} if $$i{Descr}; last};
+                    foreach (split /,/,$$router_opt{ifdesc}) {
+                        /^ip$/    && do { if($$i{Ip})   { $if_title_desc = $$i{Ip};    last } next };
+                        /^eth$/   && do { if($$i{Eth})  { $if_title_desc = $$i{Eth};   last } next };
+                        /^descr$/ && do { if($$i{Descr}){ $if_title_desc = $$i{Descr}; last } next };
                         /^alias$/ && do {$if_title_desc =
                                      "$$i{Descr} $$i{ifAlias} $$i{CiscolocIfDescr}";
-                                    last};
-                        /^name$/ && do {$if_title_desc = "#".$$i{Name} if $$i{Name}; last};
-                        /^catname$/ && do {$if_title_desc = "$if_port_name"; last};
+                                    last };
+                        /^name$/ && do { if($$i{Name}) {$if_title_desc = "#".$$i{Name}; last } next };
+                        /^catname$/ && do {$if_title_desc = "$if_port_name"; last };
                         /^ppname$/ && do {$if_title_desc = "$if_pp_port_name"; last};
-                        /^type$/ && do {$if_title_desc = "%".$$i{Type} if $$i{Type}; last};
+                        /^type$/ && do { if($$i{Type}) { $if_title_desc = "%".$$i{Type}; last } next };
                         /^nr$/ && do {$if_title_desc = "Interface $ifindex"; last};
                         /^$/ && do {$if_title_desc = $if_type_desc;
                                 $if_title_desc =~ s/^$/$$i{Descr}/;
-                                last};
+                                last };
                         die "ERROR: Invalid value for --ifdesc: '$$router_opt{ifdesc}'\n";
                     }
                 }
@@ -1565,6 +1565,9 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
  --ifref=descr                      ... by Interface Description
  --ifref=name                       ... by Interface Name
  --ifref=type                       ... by Interface Type
+                You may also use multiple options separated by commas,
+               in which case the first available one is used:
+               e.g.  --ifref=ip,name,nr
 
  --ifdesc=nr       interface description uses Interface Number (default)
  --ifdesc=ip                        ... uses Ip Address
@@ -1575,6 +1578,9 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
  --ifdesc=ppname                    ... uses Passport Port Name
  --ifdesc=alias                     ... uses Interface Alias
  --ifdesc=type                      ... uses Interface Type
+                You may also use multiple options separated by commas,
+               in which case the first available one is used:
+               e.g.  --ifdesc=catname,ppname,descr,alias,ip,name,nr
 
  --if-filter=f     Test every interface against filter f to decide wether
                    or not to include that interface into the collection.
@@ -1733,6 +1739,12 @@ Select B<ip> to identify the interface by its IP number. Use B<eth> to
 use the ethernet address for identification. Use B<descr> to use
 the Interface description. Or use B<name> to use the Interface name.
 
+You can specify multiple properties if you wish, separated by commas.
+In this case, cfgmaker will use the first item in the list which
+can provide unique identification.  This allows you to specify, for
+example, to use IP address and to use ifName if this is not defined:
+  --ifref ip,name
+
 If your chosen method does not allow unique interface identification on
 the device you are querying, B<cfgmaker> will tell you about it.
 
@@ -1756,6 +1768,11 @@ what is used as the interface's C<description> in the router's configuration).
 
 Finally, if you want to describe the interface by it's Btype
 (i.e C<"ethernetCSMA">, C<"propPointtoPoint"> etc) you can use B<type>.
+
+You can specify multiple properties if you wish, separated by commas.
+In this case, cfgmaker will use the first item in the list which
+is available for this interface.  This allows you to specify, for
+example, to use any of the different aliases in order of preference.
 
 =item B<--if-filter> 'B<filter-expression>'
 
