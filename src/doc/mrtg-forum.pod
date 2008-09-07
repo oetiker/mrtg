@@ -132,11 +132,6 @@ translations of the traffic from MRTG-ANNOUNCE as well as updates on the
 Japanese Translation of the MRTG documentation. Go to
 http://www.mrtg.jp/ for further Information.
 
-=head1 MRTG Turkiye
-
-There is a special Mailinglist for MRTG Users in Turkey. Go to
-http://groups.yahoo.com/group/mrtg-turkiye/ for more information.
-
 =head1 AUTHOR
 
 Tobias Oetiker E<lt>tobi@oetiker.chE<gt> and many contributors
