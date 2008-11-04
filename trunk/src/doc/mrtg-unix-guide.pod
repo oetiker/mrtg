@@ -115,12 +115,12 @@ If you do not have zlib installed:
 
 If you don't have libpng installed
 
- wget http://public.planetmirror.com/pub/sourceforge/l/li/libpng/libpng-1.0.15.tar.gz
- gunzip -c libpng-*.tar.gz |tar xf -
- rm libpng-*.tar.gz
+ wget ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.2.33.tar.gz
+ gunzip -c libpng-1.2.33.tar.gz | tar xf -
  mv libpng-* libpng
  cd libpng
- make -f scripts/makefile.std CC=gcc ZLIBLIB=../zlib ZLIBINC=../zlib
+ env CFLAGS="-O3 -fPIC" ./configure --prefix=$INSTALL_DIR 
+ make
  rm *.so.* *.so
  cd ..
 
