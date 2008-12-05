@@ -59,7 +59,7 @@
   <ul>
     <li><a href="http://home.no.net/viggoeri/TorpXTG/">TorpX-TG</a> MRTG Configuration Frontend for Windows users by <a href="http://www.vman-software.tk/">Viggo Eriksen</a>.</li>
 
-    <li><a href="http://www.ejaz.net/mct_info.php">MCT: MRTG Configuration Tool</a>. A PHP based frontend to configuring mrtg.</li>
+    <li><a href="http://projects.virtualflat.ch/mct/">MCT: MRTG Configuration Tool</a>. A PHP based frontend to configuring mrtg.</li>
 
     <li><a href="http://www.claridion.com/downloads/MRTGgui.htm">MRTG GUI - Rapid CFG Builder</a> a Windows GUI for the quick creation and maintainance of MRTG configuration files. <a href="mailto:salvatore.cimmino{at}claridion.com">Salvatore Cimmino</a></li>
 
