@@ -1,3 +1,7 @@
+From: Leonardo Reginin leonardo procergs.rs.gov.br
+* allow to rename target in the clonedirectory option
+* add import to the require File::Copy
+
 Steve Shipway  s.shipway auckland.ac.nz
 * support multiple options in ifdesc and ifref setting for cfgmaker
 

@@ -198,7 +198,7 @@ $VERSION = 2.100016;
        [sub{1}, sub{"Internal Error"}], #what ever the user chooses.
 
        'clonedirectory[]' =>
-       [sub{1}, sub{"Internal Error"}], #what ever the user chooses.
+       [sub{($_[0] =~ /[^,]\s*$/)}, sub{"$_[0] with comma must have the second parameter"}], 
 
        'pagetop[]' => 
        [sub{1}, sub{"Internal Error"}], #what ever the user chooses.
