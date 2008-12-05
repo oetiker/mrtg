@@ -135,10 +135,10 @@
 <div id="googlead_right">
 <script type="text/javascript"><!--
 google_ad_client = "pub-8135238818549668";
-/* MRTG top left */
-google_ad_slot = "6519870161";
-google_ad_width = 300;
-google_ad_height = 250;
+/* mrtg_top_high */
+google_ad_slot = "4631342671";
+google_ad_width = 160;
+google_ad_height = 600;
 //-->
 </script>
 <script type="text/javascript"
