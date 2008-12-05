@@ -702,42 +702,77 @@ sub rateupcheck ($) {
 sub clonedirectory {
     my($router,$cfg, $rcfg) = @_;
     require File::Copy;
+    import File::Copy;
 
-    if ( $$rcfg{'clonedirectory'}{$router} and ( $$rcfg{'directory'}{$router} ne $$rcfg{'clonedirectory'}{$router} )) {
-        $$rcfg{'clonedirectory'}{$router} .= "/" unless ($$rcfg{'clonedirectory'}{$router} =~ /\/$/);
-        my $srcdir = "$$cfg{'logdir'}$$rcfg{'directory'}{$router}";
-        my $dstdir = "$$cfg{'logdir'}$$rcfg{'clonedirectory'}{$router}";
+    return unless ( $$rcfg{'clonedirectory'}{$router} );
 
-        die "$NOW: ERROR: Destination dir: $dstdir not found for cloning process\n" unless ( -e $dstdir );
-        die "$NOW: ERROR: Destination dir: $dstdir is not a directory destination for cloning process\n" unless ( -d $dstdir );
-        die "$NOW: ERROR: Destination dir: $dstdir is not writeable for cloning process\n" unless ( -w $dstdir );
+    my ($clonedstdir, $clonedsttarget ,$srcname, $dstname);
 
-        debug('base', "Clone directory $srcdir to $dstdir");
-        foreach my $srcfile (<$srcdir$router\[.-\]*>) {
-                debug('base', "copying $srcfile $dstdir");
-                copy("$srcfile","$dstdir") or warn "$NOW: WARNING: Cloning $srcfile to $dstdir unsucessfull; $!\n";
+    ($clonedstdir, $clonedsttarget ) = split (/,|\s+/, $$rcfg{'clonedirectory'}{$router}) if ( $$rcfg{'clonedirectory'}{$router} =~ /,|\S\s+\S/ );
+
+    if ( defined $clonedsttarget ) {
+		$clonedsttarget =~ s/\s+//;
+		$clonedsttarget = lc($clonedsttarget);
+    } else {
+        	$clonedstdir = $$rcfg{'clonedirectory'}{$router};
+    }
+    if ( $$rcfg{'directory'}{$router} ne $clonedstdir) {
+	$clonedstdir =~ s/\s+$//;
+        $clonedstdir .= "/" unless ($clonedstdir =~ /\/$/);
+        my $fullpathsrcdir = "$$cfg{'logdir'}$$rcfg{'directory'}{$router}";
+        my $fullpathdstdir = "$$cfg{'logdir'}$clonedstdir";
+
+        die "$NOW: ERROR: Destination dir: $fullpathdstdir not found for cloning process\n" unless ( -e $fullpathdstdir );
+        die "$NOW: ERROR: Destination dir: $fullpathdstdir is not a directory destination for cloning process\n" unless ( -d $fullpathdstdir );
+        die "$NOW: ERROR: Destination dir: $fullpathdstdir is not writeable for cloning process\n" unless ( -w $fullpathdstdir );
+
+        if ( defined $clonedsttarget ) {
+        	debug('base', "Clone directory $fullpathsrcdir to $fullpathdstdir " . 
+			       "renaming target $router to $clonedsttarget"); 
+	} else {
+        	debug('base', "Clone directory $fullpathsrcdir to $fullpathdstdir");
+	}
+
+        foreach my $srcfile (<$fullpathsrcdir$router\[.-\]*>) {
+                debug('base', "copying $srcfile $fullpathdstdir");
+                copy("$srcfile","$fullpathdstdir") or warn "$NOW: WARNING: Cloning $srcfile to $fullpathdstdir unsuccessful; $!\n";
                 if ($srcfile =~ /\.html/i) {
-                        debug('base', "altering $dstdir/$router.$$rcfg{'extension'}{$router}");
+                        debug('base', "altering $fullpathdstdir/$router.$$rcfg{'extension'}{$router}");
                         #
                         my $dirrel = "../" x ($$rcfg{'clonedirectory'}{$router} =~ tr|/|/|);
                         #
-                        debug('base', "dirrel $dirrel $$rcfg{'clonedirectory'}{$router} ");
-                        open(HTML,"$dstdir/$router.$$rcfg{'extension'}{$router}");
+                        debug('base', "dirrel $dirrel $clonedstdir");
+                        open(HTML,"$fullpathdstdir/$router.$$rcfg{'extension'}{$router}");
                         my @CLONEHTML = <HTML>;
                         close(HTML);
                         foreach ( @CLONEHTML ) {
-                                if ( /SRC=/ and /$$rcfg{'directory'}{$router}/ ) {
+	    			if ( defined $clonedsttarget and /$router/ ) {
+                                       	debug('base', "altering $router to $clonedsttarget in html file");
+					s/$router/$clonedsttarget/i;
+				}
+                                if ( /SRC=/i and /$$rcfg{'directory'}{$router}/ ) {
                                         debug('base', "altering from $_");
                                         s|(\.\./)+|$dirrel|;
-                                        s|$$rcfg{'directory'}{$router}|$$rcfg{'clonedirectory'}{$router}|;
+                                        s|$$rcfg{'directory'}{$router}|$clonedstdir|;
                                         debug('base', "altering to $_");
                                 }
                         }
-                        open(HTML,">$dstdir/$router.$$rcfg{'extension'}{$router}");
+                        open(HTML,">$fullpathdstdir/$router.$$rcfg{'extension'}{$router}");
                         print HTML $_ for ( @CLONEHTML );
                         close(HTML);
                 }
+	    	if ( defined $clonedsttarget ) {
+			$srcfile =~ /.+\/(.+)?$/;
+			$srcname = $1;
+			$dstname = $srcname;
+			$dstname =~ s/$router/$clonedsttarget/;
+                        debug('base', "Clone renaming $srcname to $dstname at $fullpathdstdir");
+                	rename("$fullpathdstdir/$srcname","$fullpathdstdir/$dstname") or 
+				warn "$NOW: WARNING: Renaming $fullpathdstdir/$srcname to $fullpathdstdir/$dstname unsuccessful; $!\n";
+		}
         }
+    } else {
+      warn "$NOW: WARNING: Cloning to the same place suspended. ; $!\n";
     }
 }
 
