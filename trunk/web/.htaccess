@@ -20,6 +20,6 @@ RewriteRule http:/([^/].*)  http://$1 [R=301,L]
   Order Allow,Deny
   Allow From All
 </FilesMatch>
-
-
-
+<FilesMatch "mirror.html">
+  SetHandler cgi-script
+</FilesMatch>
