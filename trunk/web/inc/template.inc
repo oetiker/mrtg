@@ -39,7 +39,7 @@
 #<A HREF="http://mrtg.planetmirror.com/<where/>">AU</a><!--jason andrade <jason@dstc.edu.au> -->
 #<A HREF="http://mirrors.bchosting.com/mrtg/<where/>">CA</a><!--Chris Phillips BChosting.com-->
 #<A HREF="http://mrtg.paracoda.com/<where/>">CA</a><!--Hossam Hossny <admin@paracoda.com> -->
-<A HREF="http://mrtg.paracoda.com/<where/>"><img src="$(ROOT)/images/flags/ca.gif" border=0 alt="CA"/></A><!--Hossam Hossny <admin@paracoda.com>-->
+#<A HREF="http://mrtg.paracoda.com/<where/>"><img src="$(ROOT)/images/flags/ca.gif" border=0 alt="CA"/></A><!--Hossam Hossny <admin@paracoda.com>-->
 <A HREF="http://www.mrtg.cz/<where/>"><img src="$(ROOT)/images/flags/cz.gif" border=0 alt="CZ"/></a><!--Martin Och <martin@och.cz>-->
 <A HREF="http://mrtg.basemirror.de/<where/>"><img src="$(ROOT)/images/flags/de.gif" border=0 alt="DE"/></a><!--Baseportal Mirrors <mirrors@baseportal.de>-->
 <A HREF="http://ftp.heanet.ie/mirrors/oss.oetiker.ch/mrtg/"><img src="$(ROOT)/images/flags/ie.gif" border=0 alt="IE"/></A><!-- mirrors@heanet.ie> -->
@@ -50,7 +50,8 @@
 <A HREF="http://mrtg.meulie.net/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></a><!--Evert Meulie <evert@meulie.net> -->
 <A HREF="http://mrtg.hdl.com/mrtg/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></a><!--HDL Tech Support <wildcard@hdl.com> (Steve)  -->
 <A HREF="http://mrtg.mirroraty.org/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></A><!--Hossam Hossny <hossam@trexle.com>-->
-<A HREF="http://mrtg.playsystems.ro/<where/>"><img src="$(ROOT)/images/flags/ro.gif" border=0 alt="RO"/></a><!--Dan Draghici <dan.draghici@ulbsibiu.ro>-->
+<A HREF="http://mrtg.mirror.nexcast.net/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></A><!--James DeVincentis <admin@nexcast.net>-->
+#<A HREF="http://mrtg.playsystems.ro/<where/>"><img src="$(ROOT)/images/flags/ro.gif" border=0 alt="RO"/></a><!--Dan Draghici <dan.draghici@ulbsibiu.ro>-->
 <A HREF="http://mrtg.cs.pu.edu.tw/<where/>"><img src="$(ROOT)/images/flags/tw.gif" border=0 alt="TW"/></a><!--Hsun-Chang Chang <hsunchang@gmail.com>-->
 <A HREF="http://mrtg.mirror.graemef.net/<where/>"><img src="$(ROOT)/images/flags/gb.gif" border=0 alt="GB"/></a><!--Graeme Fowler <graeme@graemef.net>-->
 #<A HREF="http://www.bigwebmaster.com/mrtg/<where/>">US</a><!--Brian Annas <questions@bigwebmaster.com>-->

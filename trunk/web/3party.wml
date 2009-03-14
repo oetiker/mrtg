@@ -123,6 +123,8 @@
   <h2>Monitoring Special Devices and Applications</h2>
 
   <ul>
+    <li>Snippets on monitoring  <a href="./pub/contrib/UPSAPC.txt">APC UPS</a>, <a href="./pub/contrib/EMUAPC.txt">APC EMU</a> and a <a href="./pub/contrib/ContivityNortel.txt"> Nortel Contivity VPN Router</a>  with MRTG.</a> by Arkadiusz Nowicki</li>
+
     <li><a href="http://www.cluebyfour.org/~streiner/mrtg/fwsm.html">Cisco Firewall Service Modules (FWSMs) monitoring with MRTG.</a> by Justin M. Streiner</li>
 
     <li><a href="http://www.david-taylor.myby.co.uk/mrtg/daily_ntp.html">NTP Monitoring</a> by David J. Taylor</li>

@@ -46,8 +46,8 @@ mirror by &lt;a target="_top" href="http://YOUR.SITE"&gt;Company&lt;/a&gt;
 
 HEAD
 
-( for xt in html png jpg gif ico css js gz txt zip; do
-     find . \( -name "*.$xt" -not -name "stat*" -not -name "hoster*" \) -exec printf '<a href="{}">.</a>\n' \; | grep -v /.svn |egrep -v 'pub/.*html'
+( for xt in html png jpg gif ico css js gz txt zip patch pgp md5 pdf CHANGES; do
+     find . \( -name "*$xt" -not -name "stat*" -not -name "hoster*" \) -exec printf '<a href="{}">.</a>\n' \; | grep -v /.svn |egrep -v 'pub/.*html'
   done ) | sort -u
 
 echo "</body></html>"
