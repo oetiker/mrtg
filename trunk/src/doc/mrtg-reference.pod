@@ -1773,6 +1773,36 @@ Example:
 
  RRDRowCount[myrouter]: 1600
 
+=head2 RRDRowCount30m
+
+As per RRDRowCount, but for the RRA's -typically- used for 30 minute data.
+Even so, you must still take the base interval into account.  Leaving out
+this keyword will force the old default of 800 rows.
+
+Example:
+
+ RRDRowCount30m[myrouter]: 800
+
+=head2 RRDRowCount2h
+
+As per RRDRowCount, but for the RRA's -typically- used for 2 hour data.
+Even so, you must still take the base interval into account.  Leaving out
+this keyword will force the old default of 800 rows.
+
+Example:
+
+ RRDRowCount2h[myrouter]: 400
+
+=head2 RRDRowCount1d
+
+As per RRDRowCount, but for the RRA's -typically- used for 1 day data.
+Even so, you must still take the base interval into account.  Leaving out
+this keyword will force the old default of 800 rows.
+
+Example:
+
+ RRDRowCount1d[myrouter]: 200
+
 =head2 RRDHWRRAs
 
 Normally the RRDs created by MRTG will just contain the information gathered

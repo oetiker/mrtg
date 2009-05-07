@@ -215,6 +215,15 @@ $VERSION = 2.100016;
        'rrdrowcount[]' => 
        [sub{1}, sub{"Internal Error"}], #what ever the user chooses.
 
+       'rrdrowcount30m[]' =>
+       [sub{1}, sub{"Internal Error"}], #what ever the user chooses.
+
+       'rrdrowcount2h[]' =>
+       [sub{1}, sub{"Internal Error"}], #what ever the user chooses.
+
+       'rrdrowcount1d[]' =>
+       [sub{1}, sub{"Internal Error"}], #what ever the user chooses.
+
        'rrdhwrras[]' =>
        [sub{$_[0] =~ /^RRA:(HWPREDICT|SEASONAL|DEVPREDICT|DEVSEASONAL|FAILURES):\S+(\s+RRA:(HWPREDICT|SEASONAL|DEVPREDICT|DEVSEASONAL|FAILURES):\S+)*$/},
         sub{"This does not look like rrdtool HW RRAs. Check the rrdcreate manual page for inspiration. ($_[0])"}],
