@@ -847,17 +847,20 @@ sub writegraphics {
             my $minhb = int($$cfg{interval} * 60)*2;
             $minhb = 600 if ($minhb <600); 
             my $rows = $$rcfg{'rrdrowcount'}{$router} || int( 4000 / $interval);
+            my $rows30m = $$rcfg{'rrdrowcount30m'}{$router} || 800;
+            my $rows2h = $$rcfg{'rrdrowcount2h'}{$router} || 800;
+            my $rows1d = $$rcfg{'rrdrowcount1d'}{$router} || 800;
             my @args = ($dotrrd, '-b', $time-10, '-s', int($interval * 60),
                          "DS:ds0:$up_abs:$minhb:0:$absi",
                          "DS:ds1:$up_abs:$minhb:0:$abso",
                          "RRA:AVERAGE:0.5:1:$rows",
-                         ( $interval < 30  ? ("RRA:AVERAGE:0.5:".int(30/$interval).":800"):()),
-                         "RRA:AVERAGE:0.5:".int(120/$interval).":800",
-                         "RRA:AVERAGE:0.5:".int(1440/$interval).":800",
+                         ( $interval < 30  ? ("RRA:AVERAGE:0.5:".int(30/$interval).":".$rows30m):()),
+                         "RRA:AVERAGE:0.5:".int(120/$interval).":".$rows2h,
+                         "RRA:AVERAGE:0.5:".int(1440/$interval).":".$rows1d,
                          "RRA:MAX:0.5:1:$rows",
-                         ( $interval < 30  ? ("RRA:MAX:0.5:".int(30/$interval).":800"):()),
-                         "RRA:MAX:0.5:".int(120/$interval).":800",
-                         "RRA:MAX:0.5:".int(1440/$interval).":800");
+                         ( $interval < 30  ? ("RRA:MAX:0.5:".int(30/$interval).":".$rows30m):()),
+                         "RRA:MAX:0.5:".int(120/$interval).":".$rows2h,
+                         "RRA:MAX:0.5:".int(1440/$interval).":".$rows1d);
             # do we have holt winters rras defined here ?
             if (defined $$rcfg{'rrdhwrras'} and defined $$rcfg{'rrdhwrras'}{$router}){
                 push @args, split(/\s+/, $$rcfg{'rrdhwrras'}{$router});
