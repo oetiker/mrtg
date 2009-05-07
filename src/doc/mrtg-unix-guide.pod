@@ -115,8 +115,8 @@ If you do not have zlib installed:
 
 If you don't have libpng installed
 
- wget ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.2.33.tar.gz
- gunzip -c libpng-1.2.33.tar.gz | tar xf -
+ wget ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.2.34.tar.gz
+ gunzip -c libpng-1.2.34.tar.gz | tar xf -
  mv libpng-* libpng
  cd libpng
  env CFLAGS="-O3 -fPIC" ./configure --prefix=$INSTALL_DIR 
