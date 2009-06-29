@@ -50,7 +50,7 @@
 <A HREF="http://mrtg.meulie.net/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></a><!--Evert Meulie <evert@meulie.net> -->
 <A HREF="http://mrtg.hdl.com/mrtg/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></a><!--HDL Tech Support <wildcard@hdl.com> (Steve)  -->
 <A HREF="http://mrtg.mirroraty.org/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></A><!--Hossam Hossny <hossam@trexle.com>-->
-<A HREF="http://mrtg.mirror.nexcast.net/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></A><!--James DeVincentis <admin@nexcast.net>-->
+#<A HREF="http://mrtg.mirror.nexcast.net/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></A><!--James DeVincentis <admin@nexcast.net>-->
 #<A HREF="http://mrtg.playsystems.ro/<where/>"><img src="$(ROOT)/images/flags/ro.gif" border=0 alt="RO"/></a><!--Dan Draghici <dan.draghici@ulbsibiu.ro>-->
 <A HREF="http://mrtg.cs.pu.edu.tw/<where/>"><img src="$(ROOT)/images/flags/tw.gif" border=0 alt="TW"/></a><!--Hsun-Chang Chang <hsunchang@gmail.com>-->
 <A HREF="http://mrtg.mirror.graemef.net/<where/>"><img src="$(ROOT)/images/flags/gb.gif" border=0 alt="GB"/></a><!--Graeme Fowler <graeme@graemef.net>-->
@@ -74,7 +74,10 @@
 # From: Mark Hinkle <mrhinkle@zenoss.com>
 # Date: Mon, 14 May 2007 14:43:09 -0400
 <p><a href="http://www.zenoss.com/mrtg?utm_source=mrtg&amp;utm_medium=logolink&amp;utm_campaign=inbound"><img border="0" title="Zenoss Open Source IT Monitoring" alt="Zenoss Open Source IT Monitoring" src="$(ROOT)/logos/zenoss.png"/></a></p>
-<p><a href="http://it.oetiker.ch/monitoring/sponsoring.var"><img border="0" alt="MRTG Gold Sponsor" src="$(ROOT)/inc/mrtg-gold.png"/></a></p>
+# maarten.vanlaere@serverscheck.com
+# Date: Mon, 29 Jun 2009 00:40:35 +0200
+<p><a href="http://www.serverscheck.com/monitoring-appliance"><img border="0" title="Servercheck" alt="Servercheck" src="$(ROOT)/logos/servercheck.gif"/></a></p>
+# <p><a href="http://it.oetiker.ch/monitoring/sponsoring.var"><img border="0" alt="MRTG Gold Sponsor" src="$(ROOT)/inc/mrtg-gold.png"/></a></p>
 <p><a href="$(ROOT)/sponsor.<lang:star: */>.html">Silver Sponsors ...</a></p>
 <br/>
 <br/>
