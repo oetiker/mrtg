@@ -246,7 +246,7 @@ Please complete the following steps before starting the installation:
 
 =item *
 
-Copy B<srvany.exe> and B<instsrv.exe> to c:\mrtg\bin\ (your MRTG bin directory).
+Copy B<srvany.exe> and B<instsrv.exe> to c:\mrtg-2.16.2\bin\ (your MRTG bin directory).
 
 =item *
 
@@ -257,8 +257,8 @@ following content into it:
 
  [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MRTG\Parameters]
  "Application"="c:\\perl\\bin\\wperl.exe"
- "AppParameters"="c:\\mrtg\\bin\\mrtg --logging=eventlog c:\\mrtg\\bin\\mrtg.cfg"
- "AppDirectory"="c:\\mrtg\\bin\\"
+ "AppParameters"="c:\\mrtg-2.16.2\\bin\\mrtg --logging=eventlog c:\\mrtg-2.16.2\\bin\\mrtg.cfg"
+ "AppDirectory"="c:\\mrtg-2.16.2\\bin\\"
 
 =back
 
