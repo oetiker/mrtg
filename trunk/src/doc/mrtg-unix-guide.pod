@@ -104,7 +104,7 @@ already exist on your system. No problem, just use it.
 
 If you do not have zlib installed:
 
- wget http://www.gzip.org/zlib/zlib-1.1.4.tar.gz
+ wget http://www.zlib.net/zlib-1.2.3.tar.gz
  gunzip -c zlib-*.tar.gz | tar xf -
  rm zlib-*.tar.gz
  mv zlib-* zlib
@@ -115,7 +115,7 @@ If you do not have zlib installed:
 
 If you don't have libpng installed
 
- wget ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.2.34.tar.gz
+ wget ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.2.40.tar.gz
  gunzip -c libpng-1.2.34.tar.gz | tar xf -
  mv libpng-* libpng
  cd libpng
@@ -146,9 +146,9 @@ following material should actually be written on a single line.
 
 For versions starting around 2.0.11, try:
 
- wget http://www.boutell.com/gd/http/gd-2.0.11.tar.gz
- gunzip -c gd-2.0.11.tar.gz |tar xf -
- mv gd-2.0.11 gd
+ wget http://www.boutell.com/gd/http/gd-2.0.33.tar.gz
+ gunzip -c gd-2.0.33.tar.gz |tar xf -
+ mv gd-2.0.33 gd
  cd gd
  env CPPFLAGS="-I../zlib -I../libpng" LDFLAGS="-L../zlib -L../libpng" \
      ./configure --disable-shared --without-freetype --without-jpeg
