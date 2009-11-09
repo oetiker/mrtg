@@ -76,7 +76,7 @@
 <p><a href="http://www.zenoss.com/mrtg?utm_source=mrtg&amp;utm_medium=logolink&amp;utm_campaign=inbound"><img border="0" title="Zenoss Open Source IT Monitoring" alt="Zenoss Open Source IT Monitoring" src="$(ROOT)/logos/zenoss.png"/></a></p>
 # maarten.vanlaere@serverscheck.com
 # Date: Mon, 29 Jun 2009 00:40:35 +0200
-<p><a href="http://www.serverscheck.com/monitoring-appliance"><img border="0" title="Servercheck" alt="Servercheck" src="$(ROOT)/logos/servercheck.gif"/></a></p>
+<p><a href="http://www.serverscheck.com/?serv_source=mrtg"><img border="0" title="Serverscheck" alt="Serverscheck" src="$(ROOT)/logos/serverscheck.png"/></a></p>
 # <p><a href="http://it.oetiker.ch/monitoring/sponsoring.var"><img border="0" alt="MRTG Gold Sponsor" src="$(ROOT)/inc/mrtg-gold.png"/></a></p>
 <p><a href="$(ROOT)/sponsor.<lang:star: */>.html">Silver Sponsors ...</a></p>
 <br/>
