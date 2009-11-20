@@ -12,6 +12,21 @@ If you profit from MRTG and want to support the project as a whole, you
 could <a href="http://it.oetiker.ch/monitoring/sponsoring.var">become a
 sponsor</a>!</p>
 
+<h2>2010 Gold Sponsors</h2>
+
+<p>
+#maarten.vanlaere@serverscheck.com
+<a href="http://www.serverscheck.com/?serv_source=mrtg"><img border="0" title="ServersCheck" alt="ServersCheck" src="$(ROOT)/logos/serverscheck.png"/></a>
+</p>
+
+<h2>2010 Silver Sponsors</h2>
+
+<p>
+# Michael Patterson <mike@plixer.com>  Mon, 29 Oct 2007 15:13:31 -0400
+<a href="http://www.plixer.com"><img border="0" alt="Silver Sponsor" src="$(ROOT)/logos/logo_plixer_blue101x51.gif"/></a>&nbsp;
+<a href="http://it.oetiker.ch/monitoring/sponsoring.var"><img border="0" alt="Silver Sponsor" src="$(ROOT)/inc/silver-logo.png"/></a>&nbsp;
+</p>
+
 <h2>2009 Gold Sponsors</h2>
 
 <p>
@@ -21,20 +36,14 @@ sponsor</a>!</p>
 <a href="http://www.serverscheck.com/?serv_source=mrtg"><img border="0" title="ServersCheck" alt="ServersCheck" src="$(ROOT)/logos/serverscheck.png"/></a>
 </p>
 
-<h2>2010 Gold Sponsors</h2>
-
-<p>
-#maarten.vanlaere@serverscheck.com
-<a href="http://www.serverscheck.com/?serv_source=mrtg"><img border="0" title="ServersCheck" alt="ServersCheck" src="$(ROOT)/logos/serverscheck.png"/></a>
-</p>
 
 <h2>2009 Silver Sponsors</h2>
 
 <p>
 # Michael Patterson <mike@plixer.com>  Mon, 29 Oct 2007 15:13:31 -0400
 <a href="http://www.plixer.com"><img border="0" alt="Silver Sponsor" src="$(ROOT)/logos/logo_plixer_blue101x51.gif"/></a>&nbsp;
-<a href="http://it.oetiker.ch/monitoring/sponsoring.var"><img border="0" alt="Silver Sponsor" src="$(ROOT)/inc/silver-logo.png"/></a>&nbsp;
 </p>
+
 
 <h2>Other means for making Tobi happy</h2>
 
