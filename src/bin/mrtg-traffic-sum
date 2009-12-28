@@ -1,5 +1,15 @@
 #!/usr/bin/perl -w
 
+# Changes in revision 1.9
+
+# Added an option for --range, which may be "current" for month-to-date or "previous" for last month
+# Changed default date range to 00:00:00 on 1st of month to 23:59:59 at end of month
+# Changed the default units to MB, more relevant to non-datacentre users :-)
+# Added the option for units=GB, to allow for previous behaviour of this script
+# Changed default minimum to 0, to report any info that is available by default 
+# Updated help section with the above changes, fixed a couple of typos
+
+
 use strict;
 use Getopt::Long;
 use Pod::Usage;
@@ -27,7 +37,7 @@ use lib "${FindBin::Bin}${main::SL}..${main::SL}lib${main::SL}mrtg2";
 use MRTG_lib "2.090017";
 use POSIX qw(mktime);
 
-'$Revision: 1.8 $ ' =~ /Revision: (\S*)/;
+'$Revision: 1.9 $ ' =~ /Revision: (\S*)/;
 my $Revision = $1;
 
 my $sendmail = "/usr/lib/sendmail";
@@ -37,15 +47,18 @@ $sendmail = "/usr/sbin/sendmail" if -x "/usr/sbin/sendmail";
 my %opt = ( 
     'catch' => '(?:description|port name):</td>\s*<td>\s*([^<\s]+[^<]*?)\s*</td', 
 #    'catch' => 'td>\s*([^<\s]+COLO[^<]*?)\s*</td', 
-    'min' => 500 );
-sub walklog ($$$$);
+    'min' => 0,
+    'range' => "previous",
+    'units' => "MB"
+ );
+sub walklog ($$$$$);
 sub sumlog($$$);
 sub mailout($$);
 
 sub main()
 {
     # parse options
-    GetOptions(\%opt, 'min=i','help|h', 'catch=s', 'email=s','version') or exit(1);
+    GetOptions(\%opt, 'min=i','help|h', 'catch=s', 'email=s','version','range=s','units=s') or exit(1);
     if($opt{help})     { pod2usage(1) }
     if($opt{man})      { pod2usage(-exitstatus => 0, -verbose => 2) }
     if($opt{version})  { print "mrtg-traffic-sum $Revision\n"; exit(0) }
@@ -58,7 +71,7 @@ sub main()
     my $report = "Subject: Traffic total for '$cfgfile' ($Revision) ";
     readcfg($cfgfile,\@routers,\%cfg,\%rcfg);
     cfgcheck(\@routers, \%cfg, \%rcfg, \@target);
-    walklog \@routers, \%cfg, \%rcfg,\$report;
+    walklog \@routers, \%cfg, \%rcfg,\$report,\%opt;
     if ($opt{email}) {
 	mailout \$report,$opt{email};
     } else {
@@ -68,15 +81,24 @@ sub main()
 
 main;
 
-sub walklog ($$$$){
+sub walklog ($$$$$){
     my $routers = shift;
     my $cfg = shift;
     my $rcfg = shift;
     my $report = shift;
-    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) =
-	localtime(time);
-    my $start = mktime(0, 0, 0, 1, $mon-1, $year, 0, 0, 1);
-    my $end = mktime(0, 0, 0, 1, $mon, $year, 0, 0, 1)-1;
+    my $opt = shift;
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = localtime(time);
+      my $start = mktime(0, 0, 0, 1, $mon-1, $year, 0, 0, 0);
+      my $end = mktime(0, 0, 0, 1, $mon, $year, 0, 0, 0)-1;
+    if ($opt{range} eq "previous") {
+      $start = mktime(0, 0, 0, 1, $mon-1, $year, 0, 0, 0);
+      $end = mktime(0, 0, 0, 1, $mon, $year, 0, 0, 0)-1;
+    }
+    if ($opt{range} eq "current") {
+      $start = mktime(0, 0, 0, 1, $mon, $year, 0, 0, 0);
+      $end = mktime(0, 0, 0, 1, $mon+1, $year, 0, 0, 0)-1;
+    } 
+
     my($m,$y) = (localtime($start))[4,5];
     $y += 1900;
     $m ++;
@@ -84,7 +106,11 @@ sub walklog ($$$$){
 
     $$report .= "Start: ".localtime($start)."\n";
     $$report .= "End:   ".localtime($end)."\n";
+if ($opt{'units'} eq "GB") {
     $$report .= sprintf "%-40s  %15s\n","Interface","In+Out in GB";
+} else {
+    $$report .= sprintf "%-40s  %15s\n","Interface","In+Out in MB";
+}
     $$report .= ("-" x 78)."\n";
     foreach my $r (@$routers) {
         my $label;
@@ -92,7 +118,12 @@ sub walklog ($$$$){
 	    $label = $1;
 	    $label .= " $2" if $2;
             my ($in,$out) = sumlog $cfg->{logdir}.$rcfg->{directory}{$r}."$r.log",$start,$end;
-            my $sum = ($in+$out)/(10**9);
+            my $sum = ($in+$out)/(10**6);
+if ($opt{'units'} eq "GB") {
+            $sum = ($in+$out)/(10**9);
+} else {
+            $sum = ($in+$out)/(10**6);
+}
             next if $sum < $opt{'min'};
             $$report .= sprintf "%-40s  %15.0f\n",$label,$sum;
         }
@@ -145,7 +176,7 @@ __END__
 
 =head1 NAME
 
-mrtg-traffic-sum - Builds montly traffic summary from mrtg log files
+mrtg-traffic-sum - Builds monthly traffic summary from mrtg log files
 
 =head1 SYNOPSIS
 
@@ -157,6 +188,8 @@ B<mrtg-traffic-sum> [I<options>...] B<config-file>
      --catch=regexp  filter out things that match this in PageTop
      --email=address email the result
      --min=gigabytes minimal number of gigabites required for report
+     --range=<when>  Specify "current" for month-to-date, "previous" for last complete month	
+     --units=[GB|MB] Display results in gigabytes (default is MB)
 
 =head1 DESCRIPTION
 
@@ -175,7 +208,7 @@ sum. By default the catch is set to:
 
  (?:description|port name):</td>\s*<td>\s*([^< ]*?[^<]*?)\s*</td
 
-By default only traffic which is over 500 gigabytes gets reportet. Use the
+By default, all traffic which is over one megabyte gets reported. Use the
 B<--min> switch to change this number.
 
 =head1 COPYRIGHT
@@ -200,11 +233,13 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 =head1 AUTHOR
 
-Tobias Oetiker E<lt>tobi@oetiker.chE<gt>
+Tobias Oetiker E<lt>tobi@oetiker.chE<gt>,
+Keith Dunnett E<lt>keith@dunnett.nameE<gt>
 
 =head1 HISTORY
 
  2002-07-13 to Initial Version
+ 2009-12-38 kd New features
 
 =cut
 
