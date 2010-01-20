@@ -1,0 +1,39 @@
+#!/usr/local/bin/perl5
+# -*- mode: Perl -*-
+##################################################################
+# This file controls the creation of all the MRTG config files from OV
+##################################################################
+# Created by Laurie Gellatly <gellatly@one.net.au>
+# See newrtrov.txt for a description of what is performed
+#################################################################
+#
+# Distributed under the GNU copyleft
+#
+# $Id: ovsho,v 1.1.1.1 2002/02/26 10:16:36 oetiker Exp $
+#
+use Socket;
+use strict;
+use vars '$DEBUG';
+my $DEBUG = 0;
+my $rundir = "/opt/mrtg/run";
+my $dnsfile = "ovmrtgc.csv";
+
+my($line,@sysnms); 
+
+sub main {
+
+   chdir $rundir;
+
+   open (DNSFILE,"<".$dnsfile);
+   while(<DNSFILE>){
+      chomp;
+      $line = $_;
+      $sysnms[@sysnms]= (split /\,/,$line)[2];
+   }
+   close (DNSFILE);
+   `ovtgts $ENV{OVwSessionID} @sysnms`;
+
+}  
+main;
+exit(0);
+

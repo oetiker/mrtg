@@ -1,0 +1,142 @@
+PREREQUISITES:
+	- Linux operating system ( I am using RedHat 6.2 );
+        - MRTG version ( I used 2.8.8 version );
+	- SHELL scripting language;
+	- PERL with Net::Telnet module (the last version of this module
+	you could find at http://search.cpan.org/search?module=Net::Telnet );
+	- AWK scripting language;
+	- TELNET client;
+	- CRON daemon installed;
+	- TCP/IP Network connection {:-)
+
+INSTALLATION
+
+	This script was inspired from diskmon utility in contib section
+	of MRTG application. Basically it is working in the same way
+	with diskmon, but the diference (it has to be) is the following:
+	 - it is not launched normally from your old MRTG, it is launched
+	 separatelly by cron daemon
+	 
+	You need MRTG host machine and you could have any clients you want.
+	On the client machine (let say for example MailServer) you need to
+	configure in inetd.conf one more service, like this:
+	
+############################
+# /etc/inetd.conf -rw-r--r--
+#
+
+mrtgrq	stream tcp	nowait	root	/usr/sbin/tcpd /usr/sbin/mrtgrq
+
+#
+# EOF
+############################
+
+	The 'mrtgrq' is a script file which use the repquota utility
+	for partitioned disks using quotation mark.
+	I am using the following 'mrtgrq' script for reading each 
+	qmail-user used space:
+
+#!/bin/sh
+
+/usr/sbin/repquota -vua | /bin/egrep -v '(\*|Block|User|root|bin|daemon|news|uucp|games|ftp|squid|named|postgres|gdm|nobody|xfs|alias|qmail|admin)' | sort -k1
+
+exit 0
+
+	As you can see, I cut off from reports informations for other normal user
+	not involved in qmail transactions (see egrep).
+	
+	Of course you need to declare in your services file the new tcp service
+	called mrtgrq, like this:
+
+##########################
+# /etc/services -rw-r--r--
+#
+
+mrtgrq	9000/tcp	# MRTG Repquota service
+
+#
+# EOF
+############################
+
+	You may use a different free port number you want, but you have
+	to keep in mind this, because you'll need it on MRTG machine.
+	
+	For client everything is almost done, just kill -HUP the inetd
+	daemon. You may wish to test if everything it's fine on
+	the client side, for this just isue the following
+	command:
+	
+	telnet <your.client.name_or_ip> 9000
+	
+	You should see the result from the repquota utility.
+	
+	The MRTG side is following:
+
+mrtgrq
+
+        I use this script to monitor the disk-space used by e-mail users
+	on MailServer ( I am using Qmail ). Usage is very simple:
+
+        - Put in your crontab file a line which have to be run
+	every ten (10) minute or any other time interval you want
+	(but you have to edit, according with this new value,
+	'make-mrtg.cfg.awk' file). I am using Linux RedHat 6.2
+	and in my /etc/cron.d I put a file named 'net-hosts' with
+	the following structure:
+
+##################################
+# /etc/cron.d/net-hosts -rw-r--r--
+#
+
+*/10 * * * * root /usr/local/mrtg/contrib/mrtgrq/mrtgrq
+
+#
+# EOF
+##################################
+	
+	- Restart your cron daemon... and wait
+
+        To install, first edit the variables from both 'make-mrtg.cfg.awk'
+	and 'mrtgrq' files as needed. I found it easier to have these defined
+	rather than hardcoded due to differences between code interpretations.
+	
+	You don't have to insert any other target in your own mrtg.cfg
+	file that you already have, because this script is launched by
+	the cron daemon.
+
+
+
+
+make-mrtg.cfg.awk
+
+	This is the core of the entire task. Here I make 'mrtg-awk.cfg'
+	file using the output of 'getreport.pl' from a temporary
+	file 'mrtgrq-temp.tmp' which finally will be erased.
+	After doing this, internaly is lauched 'mrtg' executable
+	for mrtgrq's mrtg.cfg file (named 'mrtg-awk.cfg').
+	You could use 'indexmaker' script provided with MRTG
+	for doing an index.html file (see an example in 'mrtgrq').
+	
+	Be aware ! You have to place icons (MRTG) and image files
+	(grnball.gif, redball.gif, cubprev.gif) in the same
+	location. You also have to place 'mrtgrq.css' into declared
+	location inside that AWK script file.
+	
+getreport.pl
+	
+	This script in Perl requires Net::Telnet module instaled.
+	Its only task is to read the client on port 9000 (or other
+	you want) and print this output.
+	This output is redirected into a temporary file which
+	will be the input for the AWK script.
+
+----------
+
+        Direct questions or suggestions to me.
+
+        Have fun!
+
+        -Adrian Turcu <adrianturcu@yahoo.com>
+
+
+

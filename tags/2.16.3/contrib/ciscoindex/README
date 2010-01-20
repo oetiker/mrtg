@@ -1,0 +1,18 @@
+#
+# ciscoindex.pl
+#
+# Written 1/20/99 by Tim Cimarusti
+#
+# This PERL script will read in the a Cisco router config file
+# created by the "write network" command and create a HTML index
+# for it's interfaces that corresponds with MRTG.
+# It sorts the output by interface type and adds descriptions,
+# IP addresses, DLCI numbers, and bandwidth to the HTML.
+#
+# usage : ciscoindex.pl <config-file-name>
+#
+# Note: The HTML document will be named <hostname>.html
+#       where <hostname> is whatever is in the router config.
+#
+# Feedback : cimarust@mercernet.com
+#

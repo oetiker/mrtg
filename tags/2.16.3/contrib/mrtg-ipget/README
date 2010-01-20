@@ -1,0 +1,18 @@
+Date: Fri, 17 Jan 1997 21:39:06 -0500
+From: Jim Willette <mailroom@ctec.net>
+
+Again I must state that this does no error checking what so ever. Just a
+quick hack to get me the results I needed.
+
+I have modified mrtgV2 to record stats based on interface ip address instead
+of Interface number. It does not do all the great errorchecking and no OS
+testing but it is functional for my needs.
+
+applie the patch by typing 
+
+patch <contrib/mrtg-ipget/mrtg-ipget.patch
+
+example for the mrtg.cfg
+
+Target[ts.3]: 199.1.11.33:public@ts.ctec.net
+
