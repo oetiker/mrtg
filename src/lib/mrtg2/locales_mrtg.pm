@@ -474,7 +474,7 @@ $VERSION = '0.07';
 # Slovenian/Slovensko
    'slovenian' =>
    "Slovenski prevod pripravil
-				Aljosa Us
+				Ragnar Belial Us
 				<a href=\"mailto:us\@sweet-sorrow.com\">&lt;us\@sweet-sorrow.com&gt;</a>",
 # Spanish/español
     'spanish' =>
