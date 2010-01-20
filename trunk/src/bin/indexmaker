@@ -1,7 +1,7 @@
 #! /usr/bin/perl -w
 # -*- mode: Perl -*-
 ##################################################################
-# MRTG 2.16.2  --- Index Generator
+# MRTG 2.16.3  --- Index Generator
 ##################################################################
 #
 # This reads a mrtg.cfg file form std input or cmdline argument
@@ -507,7 +507,7 @@ ECHO
     # -----------------------------------------------------------
 
 
-    my $VERSION = "2.16.2";
+    my $VERSION = "2.16.3";
     $index .= <<ECHO;
 <td></td>
 </tr>
@@ -616,7 +616,7 @@ sub options ($) {
 	$$opt{prefix} .= '/';
 	$$opt{prefix} =~ s|/+$|/|;
     }
-    die ("Indexmaker for mrtg-2.16.2\n") if $$opt{version};
+    die ("Indexmaker for mrtg-2.16.3\n") if $$opt{version};
     pod2usage(-exitval => 1, -verbose => 2) if $$opt{man};
     pod2usage(-verbose => 1) if not @ARGV;
     
@@ -646,7 +646,7 @@ __END__
 
 =head1 NAME
 
-indexmaker - Creates index files for mrtg web sites (mrtg-2.16.2)
+indexmaker - Creates index files for mrtg web sites (mrtg-2.16.3)
 
 =head1 SYNOPSIS
 

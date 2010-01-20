@@ -1,3 +1,5 @@
+Changes 2.16.3, 2010-01-20
+--------------------------
 From: chris.merrett melbourne.co.uk
 * three new config options to compliment the existing
   RRDRowCount option to explicitly set the size of all RRAs
