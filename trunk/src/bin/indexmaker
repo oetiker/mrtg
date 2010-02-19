@@ -54,6 +54,17 @@ use MRTG_lib "2.100016";
 use Getopt::Long;
 use Pod::Usage;
 
+#----------------------------------------------------------------------
+sub decimal_sort($$) {
+ my $a = $_[0];
+ my $b = $_[1];
+
+ $a =~ s/([0-9]+)/sprintf("%09u",${1})/ge;
+ $b =~ s/([0-9]+)/sprintf("%09u",${1})/ge;
+ return $a cmp $b;
+ }
+#----------------------------------------------------------------------
+
 my @argv = @ARGV;
 my $argz = "$0";
 foreach my $ar (@argv) {
@@ -238,9 +249,9 @@ sub genindex ($$$$) {
     my @order;
     for ($$opt{sort}) {
 	/^original$/ && do {@order = @filtered; last};
-	/^name$/ &&  do { @order = sort @filtered; last};
+       /^name$/ &&  do { @order = sort { decimal_sort($a,$b); } @filtered; last};
 	/^title$/ && do { @order =
-			    sort { $$rcfg{title}{$a} cmp $$rcfg{title}{$b} || $a cmp $b }
+                           sort { decimal_sort($$rcfg{title}{$a}, $$rcfg{title}{$b}) || $a cmp $b }
 			      @filtered;
 			  last;
 		      };
