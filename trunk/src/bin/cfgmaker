@@ -902,8 +902,7 @@ sub IsCounterBroken ($$$) {
     my $ipv4only = $$router_ref{ipv4only};
     my $snmphost = v4onlyifnecessary($router, $ipv4only);
 
-    if ($router =~ /:\d*:\d*:\d*:\d*:[23]$/) {
-        # anybody knows why /:(\d*:){4}2$/ does not work ?
+    if ($router =~ /:[\d.]*:[\d.]*:[\d.]*:[23]/) {
         my $speed = (snmpget($snmphost, $v3opt, 'ifHighSpeed.'.$if))[0];
         debug('base',"snmpget $snmphost for ifHighSpeed.$if -> $speed Mb/s");
         $SNMP_Session::errmsg = undef;
@@ -919,7 +918,7 @@ sub IsCounterBroken ($$$) {
            return 0;
         }
     }
-    if ( $fallback == 1 or $$router_ref{snmpopt_current} !~ /:\d*:\d*:\d*:\d*:[23]$/) {
+    if ( $fallback == 1 or $$router_ref{snmpopt_current} !~ /:[\d.]*:[\d.]*:[\d.]*:[23]/) {
          my $counter = (snmpget($snmphost, 'ifInOctets.'.$if))[0];
          if (defined $SNMP_Session::errmsg) {
              my $error = $SNMP_Session::errmsg;

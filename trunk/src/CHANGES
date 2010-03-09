@@ -1,3 +1,7 @@
+From:  James Golovich <james@gnuinter.net>
+* relax cfgmaker option parsing when figuring whether to test for highspeed
+  counters or not.
+
 From: Stephen Satchell <satch@gradedlabs.com>
 * fix sorting of numbered interface names index maker
 
