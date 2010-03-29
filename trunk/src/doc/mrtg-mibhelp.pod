@@ -176,7 +176,7 @@ and out octets for just that pvc.
 
 =head2 ifAdminHack and ifOperHack
 
-The return values of ifAdminStatus and ifOperStatus are not very usefull
+The return values of ifAdminStatus and ifOperStatus are not very useful
 for graphing. Use ifOperHack and ifAdminHack instead. They return 1 for
 UP and 0 otherwise.
 
