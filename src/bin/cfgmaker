@@ -2235,7 +2235,7 @@ Returns the Maximum Transfer Unit associated with a specific port.
 Besides that, you can also use the variables defined for templates below.
 Further, all the variables available in cfgmaker is at the scripts disposal
 even if the use of such features is discouraged.  More "shortcuts" in the
-form of variables and functions will be made avaiable in the future instead.
+form of variables and functions will be made available in the future instead.
 
 =head3 Examples on Filters
 

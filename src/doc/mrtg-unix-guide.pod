@@ -91,7 +91,7 @@ yet downloaded it, you can find a copy on my website:
 
 In this section I will give you step by step instructions on how to compile
 the various libraries required for the compilation of mrtg. Note that these
-libaries may already be installed if you have a I<*BSD> or I<Linux> system
+libraries may already be installed if you have a I<*BSD> or I<Linux> system
 so you can skip recompiling them. The B<wget> program used below is a
 simple web downloader. You can also enter the address into your B<netscape>
 if you don't have B<wget> available.

@@ -724,7 +724,7 @@ Join the lines at *BREAK* ...
 =item Interface by Type
 
 It seems that there are devices that try to defy all monitoring efforts: the interesting interfaces have
-neither ifName nor a constant ifDescr not to mention a persistant ifIndex. The only way to get a constant
+neither ifName nor a constant ifDescr not to mention a persistent ifIndex. The only way to get a constant
 mapping is by looking at the interface type, because the interface you are interested in is unique in the
 device you are looking at ...
 
@@ -1622,7 +1622,7 @@ Example:
 
 Change the default multiplier prefixes (,k,M,G,T,P). In the tag
 I<ShortLegend> define only the basic units.
-Format: Comma seperated list of prefixed. Two consecutive commas
+Format: Comma separated list of prefixed. Two consecutive commas
 or a comma at start or end of the line gives no prefix on this item.
 If you do not want prefixes, just put two consecutive commas.
 If you want to skip a magnitude select '-' as value.
@@ -1906,7 +1906,7 @@ Works the same as TheshMinI but it acts when the value is higher than ThreshMaxI
 =head2 ThreshDesc (PER TARGET)
 
 Its value will be assigned to the environment variable THRESH_DESC before
-any of the programs mentioned below are called. The programms can use the value
+any of the programs mentioned below are called. The programs can use the value
 of this variable to produce more user-friendly output.
 
 =head2 ThreshProgI  (PER TARGET)
@@ -2123,7 +2123,7 @@ Example:
 An exit code of 0 indicates that all targets were successful.  Generally
 speaking, most codes greater than 0 indicate that there was an unrecoverable
 problem.  One exception to this is code 91, which indicates that at least
-one of the targets was succesful.  A partial listing of the codes follows:
+one of the targets was successful.  A partial listing of the codes follows:
 
   0: All targets sucessful
 
