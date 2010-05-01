@@ -1186,7 +1186,8 @@ sub demonize_me ($) {
            if (defined $pidfile && open(READPID, "<$pidfile")){
                if (not eof READPID) {
                    chomp(my $input = <READPID>);    # read process id in pidfile
-                   if ($input && kill 0 => $input) {# oops - the pid actually exists
+                   my ($pid) = $input =~ /^(\d+)$/; # to improve taint-safe code
+                   if ($pid && kill 0 => $pid) {# oops - the pid actually exists
                         die "ERROR: I Quit! Another copy of mrtg seems to be running. Check $pidfile\n";
                    }
                }
