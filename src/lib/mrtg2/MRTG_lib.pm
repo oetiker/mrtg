@@ -1178,7 +1178,7 @@ sub demonize_me ($) {
      if (my_type() eq 'VIO'){
         $main::Cleanfile3 = $pidfile;
 
-        print "MRTG detached. PID=".system(P_DETACH,$^X." ".$0." ".$cfgfile);
+        print "MRTG detached. PID=".system(P_DETACH(),$^X." ".$0." ".$cfgfile);
         exit;
      }
     } else {
