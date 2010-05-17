@@ -1,3 +1,8 @@
+Changes 2.16.4, 2010-05-17
+--------------------------
+From: Tobi
+* fix "P_DETACH" and Pod::Usage issues with perl 5.12
+
 From:  James Golovich <james@gnuinter.net>
 * relax cfgmaker option parsing when figuring whether to test for highspeed
   counters or not.
