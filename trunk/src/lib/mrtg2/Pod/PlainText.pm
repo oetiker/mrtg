@@ -1,5 +1,5 @@
 # Pod::PlainText -- Convert POD data to formatted ASCII text.
-# $Id: PlainText.pm,v 1.1.1.1 2002/02/26 10:16:53 oetiker Exp $
+# $Id: Text.pm,v 2.1 1999/09/20 11:53:33 eagle Exp $
 #
 # Copyright 1999-2000 by Russ Allbery <rra@stanford.edu>
 #
@@ -16,21 +16,27 @@
 ############################################################################
 
 package Pod::PlainText;
+use strict;
 
 require 5.005;
 
 use Carp qw(carp croak);
 use Pod::Select ();
 
-use strict;
 use vars qw(@ISA %ESCAPES $VERSION);
 
 # We inherit from Pod::Select instead of Pod::Parser so that we can be used
 # by Pod::Usage.
 @ISA = qw(Pod::Select);
 
-($VERSION = (split (' ', q$Revision: 1.1.1.1 $ ))[1]) =~ s/\.(\d)$/.0$1/;
+$VERSION = '2.04';
 
+BEGIN {
+   if ($] < 5.006) {
+      require Symbol;
+      import Symbol;
+   }
+}
 
 ############################################################################
 # Table of supported E<> escapes
@@ -130,7 +136,7 @@ sub initialize {
     $$self{INDENTS}  = [];              # Stack of indentations.
     $$self{MARGIN}   = $$self{indent};  # Current left margin in spaces.
 
-    $self->SUPER::initialize;
+    return $self->SUPER::initialize;
 }
 
 
@@ -147,9 +153,13 @@ sub command {
     my $command = shift;
     return if $command eq 'pod';
     return if ($$self{EXCLUDE} && $command ne 'end');
-    $self->item ("\n") if defined $$self{ITEM};
+    if (defined $$self{ITEM}) {
+      $self->item ("\n");
+      local $_ = "\n";
+      $self->output($_) if($command eq 'back');
+    }
     $command = 'cmd_' . $command;
-    $self->$command (@_);
+    return $self->$command (@_);
 }
 
 # Called for a verbatim paragraph.  Gets the paragraph, the line number, and
@@ -162,7 +172,7 @@ sub verbatim {
     local $_ = shift;
     return if /^\s*$/;
     s/^(\s*\S+)/(' ' x $$self{MARGIN}) . $1/gme;
-    $self->output ($_);
+    return $self->output($_);
 }
 
 # Called for a regular text block.  Gets the paragraph, the line number, and
@@ -170,7 +180,10 @@ sub verbatim {
 sub textblock {
     my $self = shift;
     return if $$self{EXCLUDE};
-    $self->output ($_[0]), return if $$self{VERBATIM};
+    if($$self{VERBATIM}) {
+      $self->output($_[0]);
+      return;
+    }
     local $_ = shift;
     my $line = shift;
 
@@ -215,7 +228,7 @@ sub textblock {
 
     # Now actually interpolate and output the paragraph.
     $_ = $self->interpolate ($_, $line);
-    s/\s+$/\n/;
+    s/\s*$/\n/s;
     if (defined $$self{ITEM}) {
         $self->item ($_ . "\n");
     } else {
@@ -266,7 +279,7 @@ sub preprocess_paragraph {
     my $self = shift;
     local $_ = shift;
     1 while s/^(.*?)(\t+)/$1 . ' ' x (length ($2) * 8 - length ($1) % 8)/me;
-    $_;
+    return $_;
 }
 
 
@@ -280,7 +293,7 @@ sub preprocess_paragraph {
 sub cmd_head1 {
     my $self = shift;
     local $_ = shift;
-    s/\s+$//;
+    s/\s+$//s;
     $_ = $self->interpolate ($_, shift);
     if ($$self{alt}) {
         $self->output ("\n==== $_ ====\n\n");
@@ -294,14 +307,33 @@ sub cmd_head1 {
 sub cmd_head2 {
     my $self = shift;
     local $_ = shift;
-    s/\s+$//;
+    s/\s+$//s;
     $_ = $self->interpolate ($_, shift);
     if ($$self{alt}) {
         $self->output ("\n==   $_   ==\n\n");
     } else {
-        $self->output (' ' x ($$self{indent} / 2) . $_ . "\n\n");
+        $_ .= "\n" if $$self{loose};
+        $self->output (' ' x ($$self{indent} / 2) . $_ . "\n");
     }
 }
+
+# third level heading - not strictly perlpodspec compliant
+sub cmd_head3 {
+    my $self = shift;
+    local $_ = shift;
+    s/\s+$//s;
+    $_ = $self->interpolate ($_, shift);
+    if ($$self{alt}) {
+        $self->output ("\n= $_ =\n");
+    } else {
+        $_ .= "\n" if $$self{loose};
+        $self->output (' ' x ($$self{indent}) . $_ . "\n");
+    }
+}
+
+# fourth level heading - not strictly perlpodspec compliant
+# just like head3
+*cmd_head4 = \&cmd_head3;
 
 # Start a list.
 sub cmd_over {
@@ -317,7 +349,7 @@ sub cmd_back {
     my $self = shift;
     $$self{MARGIN} = pop @{ $$self{INDENTS} };
     unless (defined $$self{MARGIN}) {
-        carp "Unmatched =back";
+        carp 'Unmatched =back';
         $$self{MARGIN} = $$self{indent};
     }
 }
@@ -327,7 +359,7 @@ sub cmd_item {
     my $self = shift;
     if (defined $$self{ITEM}) { $self->item }
     local $_ = shift;
-    s/\s+$//;
+    s/\s+$//s;
     $$self{ITEM} = $self->interpolate ($_);
 }
 
@@ -350,7 +382,7 @@ sub cmd_end {
     my $self = shift;
     $$self{EXCLUDE} = 0;
     $$self{VERBATIM} = 0;
-}    
+}
 
 # One paragraph for a particular translator.  Ignore it unless it's intended
 # for text, in which case we treat it as a verbatim text block.
@@ -396,29 +428,32 @@ sub seq_l {
     # something looking like L<manpage(section)>.  The latter is an
     # enhancement over the original Pod::Text.
     my ($manpage, $section) = ('', $_);
-    if (/^"\s*(.*?)\s*"$/) {
+    if (/^(?:https?|ftp|news):/) {
+        # a URL
+        return $_;
+    } elsif (/^"\s*(.*?)\s*"$/) {
         $section = '"' . $1 . '"';
     } elsif (m/^[-:.\w]+(?:\(\S+\))?$/) {
         ($manpage, $section) = ($_, '');
-    } elsif (m%/%) {
+    } elsif (m{/}) {
         ($manpage, $section) = split (/\s*\/\s*/, $_, 2);
     }
 
-    # Now build the actual output text.
     my $text = '';
+    # Now build the actual output text.
     if (!length $section) {
         $text = "the $manpage manpage" if length $manpage;
     } elsif ($section =~ /^[:\w]+(?:\(\))?/) {
         $text .= 'the ' . $section . ' entry';
         $text .= (length $manpage) ? " in the $manpage manpage"
-                                   : " elsewhere in this document";
+                                   : ' elsewhere in this document';
     } else {
         $section =~ s/^\"\s*//;
         $section =~ s/\s*\"$//;
         $text .= 'the section on "' . $section . '"';
         $text .= " in the $manpage manpage" if length $manpage;
     }
-    $text;
+    return $text;
 }
 
 
@@ -438,7 +473,7 @@ sub item {
     local $_ = shift;
     my $tag = $$self{ITEM};
     unless (defined $tag) {
-        carp "item called without tag";
+        carp 'item called without tag';
         return;
     }
     undef $$self{ITEM};
@@ -458,7 +493,7 @@ sub item {
         $_ = $self->reformat ($_);
         s/^ /:/ if ($$self{alt} && $indent > 0);
         my $tagspace = ' ' x length $tag;
-        s/^($space)$tagspace/$1$tag/ or warn "Bizarre space in item";
+        s/^($space)$tagspace/$1$tag/ or carp 'Bizarre space in item';
         $self->output ($_);
     }
 }
@@ -487,7 +522,7 @@ sub wrap {
     }
     $output .= $spaces . $_;
     $output =~ s/\s+$/\n\n/;
-    $output;
+    return $output;
 }
 
 # Reformat a paragraph of text for the current margin.  Takes the text to
@@ -506,7 +541,7 @@ sub reformat {
     } else {
         s/\s+/ /g;
     }
-    $self->wrap ($_);
+    return $self->wrap($_);
 }
 
 # Output text to the output device.
@@ -543,12 +578,14 @@ sub pod2text {
     # means we need to turn the first argument into a file handle.  Magic
     # open will handle the <&STDIN case automagically.
     if (defined $_[1]) {
-        local *IN;
-        unless (open (IN, $_[0])) {
-            croak ("Can't open $_[0] for reading: $!\n");
-            return;
+        my $infh;
+        if ($] < 5.006) {
+          $infh = gensym();
         }
-        $_[0] = \*IN;
+        unless (open ($infh, $_[0])) {
+            croak ("Can't open $_[0] for reading: $!\n");
+        }
+        $_[0] = $infh;
         return $parser->parse_from_filehandle (@_);
     } else {
         return $parser->parse_from_file (@_);
@@ -608,12 +645,11 @@ C<=over> blocks.  Defaults to 4.
 
 =item loose
 
-If set to a true value, a blank line is printed after a C<=head1> heading.
-If set to false (the default), no blank line is printed after C<=head1>,
-although one is still printed after C<=head2>.  This is the default because
-it's the expected formatting for manual pages; if you're formatting
-arbitrary text documents, setting this to true may result in more pleasing
-output.
+If set to a true value, a blank line is printed after a C<=headN> headings.
+If set to false (the default), no blank line is printed after C<=headN>.
+This is the default because it's the expected formatting for manual pages;
+if you're formatting arbitrary text documents, setting this to true may
+result in more pleasing output.
 
 =item sentence
 
@@ -691,6 +727,8 @@ L<Pod::Parser|Pod::Parser>, L<Pod::Text::Termcap|Pod::Text::Termcap>,
 pod2text(1)
 
 =head1 AUTHOR
+
+Please report bugs using L<http://rt.cpan.org>.
 
 Russ Allbery E<lt>rra@stanford.eduE<gt>, based I<very> heavily on the
 original Pod::Text by Tom Christiansen E<lt>tchrist@mox.perl.comE<gt> and

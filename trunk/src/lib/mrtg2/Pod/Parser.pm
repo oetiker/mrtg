@@ -8,9 +8,11 @@
 #############################################################################
 
 package Pod::Parser;
+use strict;
 
-use vars qw($VERSION);
-$VERSION = 1.12;  ## Current version of this package
+## These "variables" are used as local "glob aliases" for performance
+use vars qw($VERSION @ISA %myData %myOpts @input_stack);
+$VERSION = '1.37';  ## Current version of this package
 require  5.005;    ## requires this Perl version or later
 
 #############################################################################
@@ -118,7 +120,7 @@ You may also want to override the B<begin_input()> and B<end_input()>
 methods for your subclass (to perform any needed per-file and/or
 per-document initialization or cleanup).
 
-If you need to perform any preprocesssing of input before it is parsed
+If you need to perform any preprocessing of input before it is parsed
 you may want to override one or more of B<preprocess_line()> and/or
 B<preprocess_paragraph()>.
 
@@ -140,7 +142,7 @@ to avoid name collisions.
 
 For the most part, the B<Pod::Parser> base class should be able to
 do most of the input parsing for you and leave you free to worry about
-how to intepret the commands and translate the result.
+how to interpret the commands and translate the result.
 
 Note that all we have described here in this quick overview is the
 simplest most straightforward use of B<Pod::Parser> to do stream-based
@@ -151,7 +153,7 @@ to do more sophisticated tree-based parsing. See L<"TREE-BASED PARSING">.
 
 A I<parse-option> is simply a named option of B<Pod::Parser> with a
 value that corresponds to a certain specified behavior. These various
-behaviors of B<Pod::Parser> may be enabled/disabled by setting or
+behaviors of B<Pod::Parser> may be enabled/disabled by setting
 or unsetting one or more I<parse-options> using the B<parseopts()> method.
 The set of currently accepted parse-options is as follows:
 
@@ -199,22 +201,17 @@ for the setting and unsetting of parse-options.
 
 #############################################################################
 
-use vars qw(@ISA);
-use strict;
 #use diagnostics;
 use Pod::InputObjects;
 use Carp;
 use Exporter;
 BEGIN {
-   if ($] < 5.6) {
+   if ($] < 5.006) {
       require Symbol;
       import Symbol;
    }
 }
 @ISA = qw(Exporter);
-
-## These "variables" are used as local "glob aliases" for performance
-use vars qw(%myData %myOpts @input_stack);
 
 #############################################################################
 
@@ -445,11 +442,10 @@ subclasses returns a blessed reference to the initialized object (hash-table).
 
 sub new {
     ## Determine if we were called via an object-ref or a classname
-    my $this = shift;
+    my ($this,%params) = @_;
     my $class = ref($this) || $this;
     ## Any remaining arguments are treated as initial values for the
     ## hash that is used to represent this object.
-    my %params = @_;
     my $self = { %params };
     ## Bless ourselves into the desired class and perform any initialization
     bless $self, $class;
@@ -647,11 +643,11 @@ their functionality.
 
 This method is useful if you need to perform your own interpolation 
 of interior sequences and can't rely upon B<interpolate> to expand
-them in simple bottom-up order order.
+them in simple bottom-up order.
 
 The parameter C<$text> is a string or block of text to be parsed
 for interior sequences; and the parameter C<$line_num> is the
-line number curresponding to the beginning of C<$text>.
+line number corresponding to the beginning of C<$text>.
 
 B<parse_text()> will parse the given text into a parse-tree of "nodes."
 and interior-sequences.  Each "node" in the parse tree is either a
@@ -757,9 +753,9 @@ sub parse_text {
         ## more than just the sequence object, we also need to pass the
         ## sequence name and text.
         $xseq_sub = sub {
-            my ($self, $iseq) = @_;
-            my $args = join("", $iseq->parse_tree->children);
-            return  $self->interior_sequence($iseq->name, $args, $iseq);
+            my ($sself, $iseq) = @_;
+            my $args = join('', $iseq->parse_tree->children);
+            return  $sself->interior_sequence($iseq->name, $args, $iseq);
         };
     }
     ref $xseq_sub    or  $xseq_sub   = sub { shift()->$expand_seq(@_) };
@@ -782,26 +778,28 @@ sub parse_text {
     ## Iterate over all sequence starts text (NOTE: split with
     ## capturing parens keeps the delimiters)
     $_ = $text;
-    my @tokens = split /([A-Z]<(?:<+\s+)?)/;
+    my @tokens = split /([A-Z]<(?:<+\s)?)/;
     while ( @tokens ) {
         $_ = shift @tokens;
         ## Look for the beginning of a sequence
-        if ( /^([A-Z])(<(?:<+\s+)?)$/ ) {
+        if ( /^([A-Z])(<(?:<+\s)?)$/ ) {
             ## Push a new sequence onto the stack of those "in-progress"
-            ($cmd, $ldelim) = ($1, $2);
+            my $ldelim_orig;
+            ($cmd, $ldelim_orig) = ($1, $2);
+            ($ldelim = $ldelim_orig) =~ s/\s+$//;
+            ($rdelim = $ldelim) =~ tr/</>/;
             $seq = Pod::InteriorSequence->new(
                        -name   => $cmd,
-                       -ldelim => $ldelim,  -rdelim => '',
+                       -ldelim => $ldelim_orig,  -rdelim => $rdelim,
                        -file   => $file,    -line   => $line
                    );
-            $ldelim =~ s/\s+$//, ($rdelim = $ldelim) =~ tr/</>/;
             (@seq_stack > 1)  and  $seq->nested($seq_stack[-1]);
             push @seq_stack, $seq;
         }
         ## Look for sequence ending
         elsif ( @seq_stack > 1 ) {
             ## Make sure we match the right kind of closing delimiter
-            my ($seq_end, $post_seq) = ("", "");
+            my ($seq_end, $post_seq) = ('', '');
             if ( ($ldelim eq '<'   and  /\A(.*?)(>)/s)
                  or  /\A(.*?)(\s+$rdelim)/s )
             {
@@ -827,9 +825,13 @@ sub parse_text {
                 $seq_stack[-1]->append($expand_seq ? &$xseq_sub($self,$seq)
                                                    : $seq);
                 ## Remember the current cmd-name and left-delimiter
-                $cmd = (@seq_stack > 1) ? $seq_stack[-1]->name : '';
-                $ldelim = (@seq_stack > 1) ? $seq_stack[-1]->ldelim : '';
-                $ldelim =~ s/\s+$//, ($rdelim = $ldelim) =~ tr/</>/;
+                if(@seq_stack > 1) {
+                    $cmd = $seq_stack[-1]->name;
+                    $ldelim = $seq_stack[-1]->ldelim;
+                    $rdelim = $seq_stack[-1]->rdelim;
+                } else {
+                    $cmd = $ldelim = $rdelim = '';
+                }
             }
         }
         elsif (length) {
@@ -838,7 +840,7 @@ sub parse_text {
             $seq->append($expand_text ? &$xtext_sub($self,$_,$seq) : $_);
         }
         ## Keep track of line count
-        $line += tr/\n//;
+        $line += s/\r*\n//;
         ## Remember the "current" sequence
         $seq = $seq_stack[-1];
     }
@@ -855,7 +857,7 @@ sub parse_text {
                     " at line $line in file $file\n";
        (ref $errorsub) and &{$errorsub}($errmsg)
            or (defined $errorsub) and $self->$errorsub($errmsg)
-               or  warn($errmsg);
+               or  carp($errmsg);
        $seq_stack[-1]->append($expand_seq ? &$xseq_sub($self,$seq) : $seq);
        $seq = $seq_stack[-1];
     }
@@ -887,7 +889,7 @@ sub interpolate {
     my($self, $text, $line_num) = @_;
     my %parse_opts = ( -expand_seq => 'interior_sequence' );
     my $ptree = $self->parse_text( \%parse_opts, $text, $line_num );
-    return  join "", $ptree->children();
+    return  join '', $ptree->children();
 }
 
 ##---------------------------------------------------------------------------
@@ -960,7 +962,7 @@ sub parse_paragraph {
         ## and whatever sequence of characters was used to separate them
         $pfx = $1;
         $_ = substr($text, length $pfx);
-        ($cmd, $sep, $text) = split /(\s+)/, $_, 2; 
+        ($cmd, $sep, $text) = split /(\s+)/, $_, 2;
         ## If this is a "cut" directive then we dont need to do anything
         ## except return to "cutting" mode.
         if ($cmd eq 'cut') {
@@ -984,18 +986,38 @@ sub parse_paragraph {
     #    ## (invoke_callbacks will return true if we do).
     #    return  1  unless $self->invoke_callbacks($cmd, $text, $line_num, $pod_para);
     # }
+
+    # If the last paragraph ended in whitespace, and we're not between verbatim blocks, carp
+    if ($myData{_WHITESPACE} and $myOpts{'-warnings'}
+            and not ($text =~ /^\s+/ and ($myData{_PREVIOUS}||"") eq "verbatim")) {
+        my $errorsub = $self->errorsub();
+        my $line = $line_num - 1;
+        my $errmsg = "*** WARNING: line containing nothing but whitespace".
+                     " in paragraph at line $line in file $myData{_INFILE}\n";
+        (ref $errorsub) and &{$errorsub}($errmsg)
+            or (defined $errorsub) and $self->$errorsub($errmsg)
+                or  carp($errmsg);
+    }
+
     if (length $cmd) {
         ## A command paragraph
         $self->command($cmd, $text, $line_num, $pod_para);
+        $myData{_PREVIOUS} = $cmd;
     }
     elsif ($text =~ /^\s+/) {
         ## Indented text - must be a verbatim paragraph
         $self->verbatim($text, $line_num, $pod_para);
+        $myData{_PREVIOUS} = "verbatim";
     }
     else {
         ## Looks like an ordinary block of text
         $self->textblock($text, $line_num, $pod_para);
+        $myData{_PREVIOUS} = "textblock";
     }
+
+    # Update the whitespace for the next time around
+    $myData{_WHITESPACE} = $text =~ /^[^\S\r\n]+\Z/m ? 1 : 0;
+
     return  1;
 }
 
@@ -1060,7 +1082,6 @@ sub parse_from_filehandle {
     while (defined ($textline = $tied_fh ? <$in_fh> : $in_fh->getline)) {
         $textline = $self->preprocess_line($textline, ++$nlines);
         next  unless ((defined $textline)  &&  (length $textline));
-        $_ = $paragraph;  ## save previous contents
 
         if ((! length $paragraph) && ($textline =~ /^==/)) {
             ## '==' denotes a one-line command paragraph
@@ -1077,17 +1098,6 @@ sub parse_from_filehandle {
         ## If it isnt, then keep iterating until it is.
         next unless (($textline =~ /^([^\S\r\n]*)[\r\n]*$/)
                                      && (length $paragraph));
-
-        ## Issue a warning about any non-empty blank lines
-        if (length($1) > 0 and $myOpts{'-warnings'} and ! $myData{_CUTTING}) {
-            my $errorsub = $self->errorsub();
-            my $file = $self->input_file();
-            my $errmsg = "*** WARNING: line containing nothing but whitespace".
-                         " in paragraph at line $nlines in file $file\n";
-            (ref $errorsub) and &{$errorsub}($errmsg)
-                or (defined $errorsub) and $self->$errorsub($errmsg)
-                    or  warn($errmsg);
-        }
 
         ## Now process the paragraph
         parse_paragraph($self, $paragraph, ($nlines - $plines) + 1);
@@ -1131,7 +1141,10 @@ closes the input and output files.
 
 If the special input filename "-" or "<&STDIN" is given then the STDIN
 filehandle is used for input (and no open or close is performed). If no
-input filename is specified then "-" is implied.
+input filename is specified then "-" is implied. Filehandle references,
+or objects that support the regular IO operations (like C<E<lt>$fhE<gt>>
+or C<$fh-<Egt>getline>) are also accepted; the handles must already be 
+opened.
 
 If a second argument is given then it should be the name of the desired
 output file. If the special output filename "-" or ">&STDOUT" is given
@@ -1140,6 +1153,9 @@ performed). If the special output filename ">&STDERR" is given then the
 STDERR filehandle is used for output (and no open or close is
 performed). If no output filehandle is currently in use and no output
 filename is specified, then "-" is implied.
+Alternatively, filehandle references or objects that support the regular
+IO operations (like C<print>, e.g. L<IO::String>) are also accepted;
+the object must already be opened.
 
 This method does I<not> usually need to be overridden by subclasses.
 
@@ -1149,23 +1165,31 @@ sub parse_from_file {
     my $self = shift;
     my %opts = (ref $_[0] eq 'HASH') ? %{ shift() } : ();
     my ($infile, $outfile) = @_;
-    my ($in_fh,  $out_fh) = (gensym, gensym)  if ($] < 5.6);
+    my ($in_fh,  $out_fh);
+    if ($] < 5.006) {
+      ($in_fh,  $out_fh) = (gensym(), gensym());
+    }
     my ($close_input, $close_output) = (0, 0);
     local *myData = $self;
-    local $_;
+    local *_;
 
     ## Is $infile a filename or a (possibly implied) filehandle
-    $infile  = '-'  unless ((defined $infile)  && (length $infile));
-    if (($infile  eq '-') || ($infile =~ /^<&(STDIN|0)$/i)) {
-        ## Not a filename, just a string implying STDIN
-        $myData{_INFILE} = "<standard input>";
-        $in_fh = \*STDIN;
-    }
-    elsif (ref $infile) {
+    if (defined $infile && ref $infile) {
+        if (ref($infile) =~ /^(SCALAR|ARRAY|HASH|CODE|REF)$/) {
+            croak "Input from $1 reference not supported!\n";
+        }
         ## Must be a filehandle-ref (or else assume its a ref to an object
         ## that supports the common IO read operations).
         $myData{_INFILE} = ${$infile};
         $in_fh = $infile;
+    }
+    elsif (!defined($infile) || !length($infile) || ($infile eq '-')
+        || ($infile =~ /^<&(?:STDIN|0)$/i))
+    {
+        ## Not a filename, just a string implying STDIN
+        $infile ||= '-';
+        $myData{_INFILE} = '<standard input>';
+        $in_fh = \*STDIN;
     }
     else {
         ## We have a filename, open it for reading
@@ -1180,37 +1204,53 @@ sub parse_from_file {
     ## the entire document (but *not* if this is an included file). We
     ## determine this by seeing if the input stream stack has been set-up
     ## already
-    ## 
-    unless ((defined $outfile) && (length $outfile)) {
-        (defined $myData{_TOP_STREAM}) && ($out_fh  = $myData{_OUTPUT})
-                                       || ($outfile = '-');
-    }
-    ## Is $outfile a filename or a (possibly implied) filehandle
-    if ((defined $outfile) && (length $outfile)) {
-        if (($outfile  eq '-') || ($outfile =~ /^>&?(?:STDOUT|1)$/i)) {
-            ## Not a filename, just a string implying STDOUT
-            $myData{_OUTFILE} = "<standard output>";
-            $out_fh  = \*STDOUT;
+
+    ## Is $outfile a filename, a (possibly implied) filehandle, maybe a ref?
+    if (ref $outfile) {
+        ## we need to check for ref() first, as other checks involve reading
+        if (ref($outfile) =~ /^(ARRAY|HASH|CODE)$/) {
+            croak "Output to $1 reference not supported!\n";
         }
-        elsif ($outfile =~ /^>&(STDERR|2)$/i) {
-            ## Not a filename, just a string implying STDERR
-            $myData{_OUTFILE} = "<standard error>";
-            $out_fh  = \*STDERR;
+        elsif (ref($outfile) eq 'SCALAR') {
+#           # NOTE: IO::String isn't a part of the perl distribution,
+#           #       so probably we shouldn't support this case...
+#           require IO::String;
+#           $myData{_OUTFILE} = "$outfile";
+#           $out_fh = IO::String->new($outfile);
+            croak "Output to SCALAR reference not supported!\n";
         }
-        elsif (ref $outfile) {
+        else {
             ## Must be a filehandle-ref (or else assume its a ref to an
             ## object that supports the common IO write operations).
             $myData{_OUTFILE} = ${$outfile};
             $out_fh = $outfile;
         }
-        else {
-            ## We have a filename, open it for writing
-            $myData{_OUTFILE} = $outfile;
-            (-d $outfile) and croak "$outfile is a directory, not POD input!\n";
-            open($out_fh, "> $outfile")  or
-                 croak "Can't open $outfile for writing: $!\n";
-            $close_output = 1;
+    }
+    elsif (!defined($outfile) || !length($outfile) || ($outfile eq '-')
+        || ($outfile =~ /^>&?(?:STDOUT|1)$/i))
+    {
+        if (defined $myData{_TOP_STREAM}) {
+            $out_fh = $myData{_OUTPUT};
         }
+        else {
+            ## Not a filename, just a string implying STDOUT
+            $outfile ||= '-';
+            $myData{_OUTFILE} = '<standard output>';
+            $out_fh  = \*STDOUT;
+        }
+    }
+    elsif ($outfile =~ /^>&(STDERR|2)$/i) {
+        ## Not a filename, just a string implying STDERR
+        $myData{_OUTFILE} = '<standard error>';
+        $out_fh  = \*STDERR;
+    }
+    else {
+        ## We have a filename, open it for writing
+        $myData{_OUTFILE} = $outfile;
+        (-d $outfile) and croak "$outfile is a directory, not POD input!\n";
+        open($out_fh, "> $outfile")  or
+             croak "Can't open $outfile for writing: $!\n";
+        $close_output = 1;
     }
 
     ## Whew! That was a lot of work to set up reasonably/robust behavior
@@ -1218,7 +1258,7 @@ sub parse_from_file {
     ## have to parse the input and close the handles when we're finished.
     $self->parse_from_filehandle(\%opts, $in_fh, $out_fh);
 
-    $close_input  and 
+    $close_input  and
         close($in_fh) || croak "Can't close $infile after reading: $!\n";
     $close_output  and
         close($out_fh) || croak "Can't close $outfile after writing: $!\n";
@@ -1243,17 +1283,17 @@ instance data fields:
 
 Specifies the method or subroutine to use when printing error messages
 about POD syntax. The supplied method/subroutine I<must> return TRUE upon
-successful printing of the message. If C<undef> is given, then the B<warn>
+successful printing of the message. If C<undef> is given, then the B<carp>
 builtin is used to issue error messages (this is the default behavior).
 
             my $errorsub = $parser->errorsub()
             my $errmsg = "This is an error message!\n"
             (ref $errorsub) and &{$errorsub}($errmsg)
                 or (defined $errorsub) and $parser->$errorsub($errmsg)
-                    or  warn($errmsg);
+                    or  carp($errmsg);
 
 Returns a method name, or else a reference to the user-supplied subroutine
-used to print error messages. Returns C<undef> if the B<warn> builtin
+used to print error messages. Returns C<undef> if the B<carp> builtin
 is used to issue error messages (this is the default behavior).
 
 =cut
@@ -1588,7 +1628,7 @@ markup languages like HTML and XML) then you may need to take the
 tree-based approach. Rather than doing everything in one pass and
 calling the B<interpolate()> method to expand sequences into text, it
 may be desirable to instead create a parse-tree using the B<parse_text()>
-method to return a tree-like structure which may contain an ordered list
+method to return a tree-like structure which may contain an ordered
 list of children (each of which may be a text-string, or a similar
 tree-like structure).
 
@@ -1733,6 +1773,14 @@ the children (most likely from left to right) by formatting them if
 they are text-strings, or by calling their B<emit()> method if they
 are objects/references.
 
+=head1 CAVEATS
+
+Please note that POD has the notion of "paragraphs": this is something
+starting I<after> a blank (read: empty) line, with the single exception
+of the file start, which is also starting a paragraph. That means that
+especially a command (e.g. C<=head1>) I<must> be preceded with a blank
+line; C<__END__> is I<not> a blank line.
+
 =head1 SEE ALSO
 
 L<Pod::InputObjects>, L<Pod::Select>
@@ -1758,11 +1806,24 @@ causing any namespace clashes due to multiple inheritance.
 
 =head1 AUTHOR
 
+Please report bugs using L<http://rt.cpan.org>.
+
 Brad Appleton E<lt>bradapp@enteract.comE<gt>
 
 Based on code for B<Pod::Text> written by
 Tom Christiansen E<lt>tchrist@mox.perl.comE<gt>
 
+=head1 LICENSE
+
+Pod-Parser is free software; you can redistribute it and/or modify it
+under the terms of the Artistic License distributed with Perl version
+5.000 or (at your option) any later version. Please refer to the
+Artistic License that came with your Perl distribution for more
+details. If your version of Perl was not distributed under the
+terms of the Artistic License, than you may distribute PodParser
+under the same terms as Perl itself.
+
 =cut
 
 1;
+# vim: ts=4 sw=4 et
