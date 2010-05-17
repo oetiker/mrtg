@@ -1,3 +1,25 @@
+# -*- mode: Perl -*-
+######################################################################
+### Localization of mrtg output pages
+######################################################################
+#                                                                    #
+#   This is a generated perl module file.                            #
+#   Please see the perl script mergelocale.pl and the language       #
+#   databasefiles skelton.pm0 and locale.*.pmd in translate/.        #
+#   If you want to contribute to mrtg change in the *.pmd files.     #
+#   If you just want to change your own mrtg: Go ahead and edit!     #
+#                                                                    #
+######################################################################
+### Defines programs which handles centralized pattern matching and pattern 
+### replacements in order to translate the given strings
+######################################################################
+### Created by:  Morten Storgaard Nielsen <msn@ipt.dtu.dk>
+###################################################################
+#
+# Distributed under the GNU copyleft
+#
+###################################################################
+### Locale by: 
 ###      Belarusian/Ğ‘ĞµĞ»Ğ°Ñ€ÑƒÑĞºĞ°Ñ
 ###      => Ğ“Ğ»ĞµĞ± Ğ’Ğ°Ğ»Ğ¾ÑˆĞºĞ° <375gnu@gmail.com>
 ###      Chinese/¤¤¤åÁcÅé
@@ -94,6 +116,34 @@
 ###      => óÅÒÇ¦Ê çÕÍ¦Î¦ÌÏ×ÉŞ <gray@arte-fact.net>
 ###      Ukrainian/Óêğà¿íñüêà
 ###      => Olexander Kunytsa <xakep@snark.ukma.kiev.ua>
+###
+### Contributions and fixes by:
+###
+###      0.05 fixed DARK GREEN entry		(msn@ipt.dtu.dk)
+###           fixed credits for native language (msn@ipt.dtu.dk)
+###	 0.06 added the PATCHTAGs               (msn@ipt.dtu.dk)
+###           fixed several small errors        (msn@ipt.dtu.dk)
+###	 0.07 changed PATCHTAG to support 
+###           mergelocale.pl                    (msn@ipt.dtu.dk)
+###
+######################################################################
+###
+package locales_mrtg;
+
+require 5.002;
+# make sure we do not get hit by UTF-8 here
+no locale;
+use strict;
+use vars qw(@ISA @EXPORT $VERSION);
+use Exporter;
+
+$VERSION = '0.07';
+
+@ISA = qw(Exporter);
+
+@EXPORT = qw
+(
+  &english
   &belarusian
   &big5
   &brazilian 
@@ -137,6 +187,12 @@
   &turkish
   &ukrainian
   &ukrainian1251
+);
+
+%lang2tran::LOCALE=  
+(
+  'english'      => \&english,
+  'default'      => \&english, 
   'belarusian'       => \&belarusian, 
   'Ğ±ĞµĞ»Ğ°Ñ€ÑƒÑĞºĞ°Ñ'       => \&belarusian,
   'big5'         => \&big5, 
@@ -217,6 +273,15 @@
   'õËÒÁ§ÎÓØËÁ'      => \&ukrainian,
   'ukrainian1251'	=> \&ukrainian1251,
   'Óêğà¿íñüêà1251'	=> \&ukrainian1251,
+);
+
+%credits::LOCALE=
+  (
+# default
+   'default' =>
+   "Prepared for localization by
+				<a href=\"http://www.ipt.dtu.dk\">Morten S. Nielsen</a>
+				<a href=\"mailto:msn\@ipt.dtu.dk\">&lt;msn\@ipt.dtu.dk&gt;</a>",
 # Belarusian/Ğ±ĞµĞ»Ğ°Ñ€ÑƒÑĞºĞ°Ñ
    'belarusian' =>
    "Ğ‘ĞµĞ»Ğ°Ñ€ÑƒÑĞºÑ– Ğ¿ĞµÑ€Ğ°ĞºĞ»Ğ°Ğ´:
@@ -445,6 +510,8 @@
    "Ïåğåêëàä óêğà¿íñüêîş (cp1251):
 				Îëåêñàíäğ Êóíèöÿ
 				<a href=\"mailto:xakep\@snark.ukma.kiev.ua\">&lt;xakep\@snark.ukma.kiev.ua&gt;</a>",
+  );
+
 $credits::LOCALE{'Ğ±ĞµĞ»Ğ°Ñ€ÑƒÑĞºĞ°Ñ'}=$credits::LOCALE{'belarusian'};
 $credits::LOCALE{'¤¤¤åÁcÅé'}=$credits::LOCALE{'big5'};
 $credits::LOCALE{'brazil'}=$credits::LOCALE{'brazilian'};
@@ -488,6 +555,13 @@ $credits::LOCALE{'svenska'}=$credits::LOCALE{'swedish'};
 $credits::LOCALE{'turkce'}=$credits::LOCALE{'turkish'};
 $credits::LOCALE{'õËÒÁ§ÎÓØËÁ'}=$credits::LOCALE{'ukrainian'};
 $credits::LOCALE{'Óêğà¿íñüêà1251'}=$credits::LOCALE{'ukrainian1251'};
+
+# English - default
+sub english
+{
+  return shift;
+};
+
 # Belarusian
 
 sub belarusian
@@ -5235,3 +5309,4 @@ foreach $i (keys %translations)
   return $string;
 
 };
+

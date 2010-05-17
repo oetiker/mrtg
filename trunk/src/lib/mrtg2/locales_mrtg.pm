@@ -20,6 +20,8 @@
 #
 ###################################################################
 ### Locale by: 
+###      Belarusian/Беларуская
+###      => Глеб Валошка <375gnu@gmail.com>
 ###      Chinese/�����c��
 ###      => Tate Chen ���@�� <tate@joy-tech.com.tw>
 ###      => Ryan Huang ���F�� <ryan@asplord.com>
@@ -142,6 +144,7 @@ $VERSION = '0.07';
 @EXPORT = qw
 (
   &english
+  &belarusian
   &big5
   &brazilian 
   &bulgarian
@@ -190,6 +193,8 @@ $VERSION = '0.07';
 (
   'english'      => \&english,
   'default'      => \&english, 
+  'belarusian'       => \&belarusian, 
+  'беларуская'       => \&belarusian,
   'big5'         => \&big5, 
   '�����c��'     => \&big5,
   'brazil'       => \&brazilian,
@@ -277,6 +282,11 @@ $VERSION = '0.07';
    "Prepared for localization by
 				<a href=\"http://www.ipt.dtu.dk\">Morten S. Nielsen</a>
 				<a href=\"mailto:msn\@ipt.dtu.dk\">&lt;msn\@ipt.dtu.dk&gt;</a>",
+# Belarusian/беларуская
+   'belarusian' =>
+   "Беларускі пераклад:
+				<a href=\"http://375gnu.wordpress.com\">Глеб Валошка</a>
+				<a href=\"mailto:375gnu\@gmail.com\">&lt;375gnu\@gmail.com&gt;</a>",
 # Chinese/�����c��
    'big5' =>
    "����Ƨ@��
@@ -502,6 +512,7 @@ $VERSION = '0.07';
 				<a href=\"mailto:xakep\@snark.ukma.kiev.ua\">&lt;xakep\@snark.ukma.kiev.ua&gt;</a>",
   );
 
+$credits::LOCALE{'беларуская'}=$credits::LOCALE{'belarusian'};
 $credits::LOCALE{'�����c��'}=$credits::LOCALE{'big5'};
 $credits::LOCALE{'brazil'}=$credits::LOCALE{'brazilian'};
 $credits::LOCALE{'���������'}=$credits::LOCALE{'bulgarian'};
@@ -550,6 +561,126 @@ sub english
 {
   return shift;
 };
+
+# Belarusian
+
+sub belarusian
+{
+  my $string = shift;
+  return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+  # charset=utf-8
+
+  %translations =
+  (  
+     'iso-8859-1'                             => 'utf-8',
+     'Maximal 5 Minute Incoming Traffic'      => 'Найбольшы ўваходны трафік за 5 хвілін',
+     'Maximal 5 Minute Outgoing Traffic'      => 'Найбольшы выходны трафік за 5 хвілін',
+     'the device'                             => 'прылада',
+     'The statistics were last updated(.*)'   => 'Апошні раз статыстыка абнаўлялася: $1',
+     ' Average\)'                             => ')',
+     'Average'                                => 'спасярэднены',
+     'Max'                                    => 'найбольшы',
+     'Current'                                => 'бягучы',
+     'version'                                => 'вэрсія',
+     '`Daily\' Graph \((.*) Minute'           => 'Графік трафіку за суткі (за $1 хвілін ',
+     '`Weekly\' Graph \(30 Minute'            => 'Графік трафіку за тыдзень (за 30 хвілін ',
+     '`Monthly\' Graph \(2 Hour'              => 'Графік трафіку за месяц (за 2 гадзіны ',
+     '`Yearly\' Graph \(1 Day'                => 'Графік трафіку за год (за 1 дзень ', 
+     'Incoming Traffic in (\S+) per Second'   => 'Уваходны трафік $1 за сэкунду',
+     'Outgoing Traffic in (\S+) per Second'   => 'Выходны трафік $1 за сэкунду',
+     'Incoming Traffic in (\S+) per Minute'   => 'Уваходны трафік $1 за хвіліну',
+     'Outgoing Traffic in (\S+) per Minute'   => 'Выходны трафік $1 за хвіліну',
+     'Incoming Traffic in (\S+) per Hour'     => 'Уваходны трафік $1 за гадзіну',
+     'Outgoing Traffic in (\S+) per Hour'     => 'Выходны трафік $1 за гадзіну',
+     'at which time (.*) had been up for(.*)' => 'калі $1 працаваў $2',
+     '(\S+) per minute'			      => '$1 за хвіліну',
+     '(\S+) per hour'			      => '$1 за гадзіну',    
+     '(.+)/s$'                                => '$1/с',
+     '(.+)/min'                               => '$1/хв',
+     '(.+)/h$'                                => '$1/г',
+     '([kMG]?)([bB])/s'                       => '$1$2/с',
+     '([kMG]?)([bB])/min'                     => '$1$2/хв',
+     '([kMG]?)([bB])/h'                       => '$1$2/г',
+     'Bits'                                   => 'бітах',
+     'Bytes'                                  => 'байтах',
+     'In'                                     => 'Уваходны',
+     'Out'                                    => 'Выходны',
+     'Percentage'                             => 'Адсоткі',
+     'Ported to OpenVMS Alpha by'             => 'Перанос на OpenVMS:', 
+     'Ported to WindowsNT by'                 => 'Перанос на WindowsNT:',
+     'and'                                    => 'і',
+     '^GREEN'                                 => 'ЗЯЛЁНЫ',
+     'BLUE'                                   => 'СІНІ',
+     'DARK GREEN'                             => 'ЦЁМНАЗЯЛЁНЫ',
+     'MAGENTA'                                => 'РУЖОВЫ',
+     'AMBER'                                  => 'БУРШТЫНАВЫ'
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => 'Нядзеля',     'Sun' => 'Нд',
+      'Monday'    => 'Панядзелак',  'Mon' => 'Пн',
+      'Tuesday'   => 'Аўторак',     'Tue' => 'Аў',
+      'Wednesday' => 'Серада',      'Wed' => 'Ср',
+      'Thursday'  => 'Чацьвер',     'Thu' => 'Чц',
+      'Friday'    => 'Пятніца',     'Fri' => 'Пт',
+      'Saturday'  => 'Субота',      'Sat' => 'Сб' 
+    );
+
+%month = 
+    (
+      'January'   => 'Студзень',  'February'  => 'Люты' ,       'March'     => 'Сакавік',
+      'Jan'       => 'Сту',       'Feb'       => 'Лют',         'Mar'       => 'Сак',
+      'April'     => 'Красавік',  'May'       => 'Травень',     'June'      => 'Чэрвень', 
+      'Apr'       => 'Кра',       'May'       => 'Тра',         'Jun'       => 'Чэр',
+      'July'      => 'Ліпень',    'August'    => 'Жнівень',     'September' => 'Верасень', 
+      'Jul'       => 'Ліп',       'Aug'       => 'Жні',         'Sep'       => 'Вер', 
+      'October'   => 'Кастрычнік','November'  => 'Лістапад',    'December'  => 'Сьнежань', 
+      'Oct'       => 'Кас',       'Nov'       => 'Ліс',         'Dec'       => 'Сьн' 
+    );
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+    {
+	if($foo[3]=~(/(.*)at(.*)/))
+      { 
+        @quux=split(/at/,$foo[3]);
+        $foo[3]=$quux[0]." у ".$quux[1]; 
+      };
+      return "$wday{$foo[0]}, $foo[1] $month{$foo[2]} $foo[3]"; 
+    };
+
+#
+# handle two different time/date formats:  
+# return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
+#
+
+# handle nontranslated strings which ought to be translated
+# print STDERR "$_\n" or print DEBUG "not translated $_";
+# but then again we might not want/need to translate all strings
+  
+  return $string;
+
+};
+
+
 
 # Chinese Big5 Code
 
