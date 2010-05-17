@@ -1,0 +1,34 @@
+#
+#	Usage example on .cfg file:
+#
+Target[dial]: `/usr/local/mrtg/PM3Lines.pl public@dial`
+WithPeak[dial]: wym
+Directory[dial]: data
+Options[dial]: growright, absolute, gauge
+MaxBytes[dial]: 30
+AbsMax[dial]: 30
+Title[dial]: dial.EUnet.pt : MODEMS/ISDN
+Unscaled[dial]: dwyn
+YLegend[dial]: Interfaces
+Colours[dial]: GOLDENROD#D2A13B,BLUE1#0000ff,DARK GREEN#006600,VIOLET#ff00ff
+XSize[dial]: 340
+YSize[dial]: 100
+ShortLegend[dial]: if's
+Legend1[dial]: Modems
+Legend2[dial]: ISDN
+Legend3[dial]: Maximal 5 Minute Modems
+Legend4[dial]: Maximal 5 Minute ISDN
+LegendI[dial]: &nbsp; modems:
+LegendO[dial]: &nbsp; ISDN:
+PageTop[dial]: <H1>Interface Number for dial.EUnet.pt
+ <BR>dial.EUnet.pt Interfaces</H1>
+ <TABLE>
+   <TR><TD>System:</TD><TD>dial.EUnet.pt</TD></TR>
+   <TR><TD>Maintainer:</TD><TD></TD></TR>
+   <TR><TD>Interface:</TD><TD>MODEMS/ISDN</TD></TR>
+   <TR><TD>IP:</TD><TD>dial.EUnet.pt (127.0.0.1)</TD></TR>
+   <TR><TD>Max Interfaces:</TD>
+       <TD>10 Asyncs / 30 ISDN</TD></TR>
+  </TABLE>
+
+

@@ -1,0 +1,11 @@
+/*
+Iulian Radu [v2.0@07.1999]
+*/
+
+typedef void (*fnct)(char* buf);
+
+struct fncttbl{
+    char* cmd;
+    fnct func;
+    };
+    

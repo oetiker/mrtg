@@ -1,0 +1,137 @@
+This is GIFgraph 1.10, a package to generate GIF charts, using Lincoln
+Stein's GD.pm.
+
+INSTALLATION
+
+needed to install (also see TESTED PLATFORMS):
+
+	perl 5.004
+	GD > 1.14
+
+to install:
+
+	perl Makefile.PL
+	make
+	make test
+	make install
+
+NB: make test may report errors. If you are not using GD 1.18 this is
+normal. Because of differences in the way GD implements fonts and
+polygons in the various versions, the produced GIFs will differ very
+slightly. If you see this behaviour, please 'make' the samples in the
+samples directory, and check the produced GIFs visually. If they look
+ok, then GIFgraph is ok.
+
+to see some samples:
+
+	cd samples
+	make
+
+That should generate a set of gifs, which you can view using the HTML
+pages in the same directory (or whichever other way pleases you).
+
+The documentation available is contained in GIFgraph.pm, as pod.
+
+The latest release should normally be available from CPAN and from 
+http://www.tcp.chem.tue.nl/~tgtcmv/perl/
+
+TESTED PLATFORMS (also see NOTES FOR WIN32)
+
+Latest version:
+- perl 5.004_04 on Solaris 2.6, GD 1.18
+- perl 5.005_02 on Solaris 2.6, GD 1.18
+
+Version 1.01:
+- perl 5.004_04 on Solaris 2.5.1, GD 1.15
+- perl 5.004_02 for win32 by Gurusamy Sarathy, GD (1.14 I think)
+- perl 5.004_04 HP-UX 10.20, GD 1.18 (Ronald Post)
+
+AUTHOR
+
+Martien Verbruggen
+mgjv@comdyn.com.au
+tgtcmv@chem.tue.nl
+
+MOST IMPORTANT CHANGES SINCE VERSION 1.04
+
+- added bar_spacing option
+- added limited support for numerical X axis for equidistant X values
+  (NOT for a real numerical graph!), thanks to Scott Prahl.
+- routines to automatically 'guess' nice upper and lower values for
+  graphs have been replaced by one written by Scott Prahl
+
+MOST IMPORTANT CHANGES SINCE VERSION 1.03
+
+- Added mixed type graph.
+  GIFgraph::mixed
+  options types and default_type
+- Added callback functionality to format y values
+  option y_number_format
+- Added control over axis label placement
+  option [xy]_label_position
+
+MOST IMPORTANT CHANGES SINCE VERSION 1.01
+
+- Vertical printing of X axis labels
+- CHANGED DEFAULTS for zero_axis and zero_axis_only
+- Fixed problems with negative values, data ranges without 0, and
+  printing of the x axis labels (I hope)
+- No more support for perl 5.003. Since perl 5.005 is out, and I don't
+  have a 5.003 here to test all the time, I won't support it anymore.
+
+MOST IMPORTANT CHANGES SINCE VERSION 0.91
+
+- Legends
+- Support for negative numbers
+- Ticks for X axis
+- line types and widths
+- Allow entries in data set to be undef (to skip them)
+- Changed 'zero' angle for pie charts (was right, now is front/bottom)
+- Definition of colours now possible. See GIFgraph::colour::read_rgb
+  for details
+- See file CHANGES for more
+
+TODO
+
+- 3d look for graphs
+- logarithmic scaling
+- numerical X axes (halfway there)
+- Autoloading/splitting, etc
+
+BUG FIXES IN THIS VERSION
+
+See file BUGS
+
+NOTES FOR WIN32
+
+GIFgraph installs and runs well under Gurusamy Sarathy's port of perl
+for win32, and its usage is exactly the same as documented.
+
+The ActiveState port 5.003 for win32 can be used with Dave Roth's port
+of GD for win32. This port, however has a peculiarity. It is
+impossible to manipulate the gif data in memory (the GD::Image::gif()
+method always writes to a file descriptor, instead of returning the
+data). This makes the use of GIFgraph with that port impossible
+without a lot of work.
+This means that until someone ports GD for the ActiveState perl with
+full support for all its functionality, GIFgraph will not work on
+ActiveState's port 5.003. 
+
+It may very well, and _should_ work on the 5.005 ports, although I
+have personally not tested that yet.
+
+THANKS
+
+	Scott Prahl
+	brian d foy
+	Honza Pazdziora
+	Dave Belcher
+	Vegard Vesterheim
+
+COPYRIGHT
+
+Copyright (c) 1995-1997 Martien Verbruggen. All rights reserved.
+
+This package is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
+

@@ -1,0 +1,22 @@
+From: Peter W. Osel <pwo@mc.hl.siemens.de>
+To: Tobias Oetiker <oetiker@ee.ethz.ch>
+Date: Wed, 9 Dec 1998 16:19:18 -0800
+Subject: mrtg distribution and mrtg-ping-probe
+
+Tobi,
+
+to prevent people from using older versions of mrtg-ping-probe,
+could you use the latest version for your next release
+( ftp://ftp.pwo.de/pub/pwo/mrtg/)
+or maybe even removeit from the current distribution of mrtg
+and just add a README file in the contrib directory or so.
+
+Cheers
+        --pwo
+
+--
+Peter W. Osel                   Sr. Network Systems Administrator
+Siemens Microelectronics, Inc.  Email:  pwo@SMI.Siemens.COM
+10950 North Tantau Avenue       Phone:  +1 (408) 895 5050
+Cupertino, CA 95014             Fax:    +1 (408) 895 5020
+USA                             WWW:    http://www.AgiX.NET/~pwo/

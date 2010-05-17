@@ -1,0 +1,14 @@
+# NMC's for Temperature monitoring.
+#
+# format
+#
+# ip_name:description
+#
+# example
+#
+# tc1b.i40:Coshocton 1 (tc1b.i40)
+#   tc1.i40			Ping host
+#   Coshocton 1 (tc1b.i40)	Title for device
+#
+tc1b.i40:Coshocton TC (tc1.i40)
+tc1b.nwk:Newark TC (tc1.nwk)

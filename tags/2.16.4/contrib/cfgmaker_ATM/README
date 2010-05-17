@@ -1,0 +1,13 @@
+From: Henry Steinhauer <H1STEINH@hewitt.com>
+Date: Tue, 15 Jun 1999 17:00:07 -0500
+
+This is gutted code from the other CFGmaker_ATM.pl code.
+
+This will pull the information from the Bay MIB for the SVC ATM setup and
+then create a target for each channel in the ATM that is defined.
+
+The Targets created can be sorted in the Indexmaker such that the Named ATM
+channel will have all the Subchannels grouped together.
+
+Enjoy.
+Henry Steinhauer

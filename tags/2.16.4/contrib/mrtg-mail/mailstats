@@ -1,0 +1,92 @@
+#!/usr/local/bin/perl
+#
+# Author:  Petter Reinholdtsen <pere@td.org.uit.no>
+# Date:    1997-07-09
+# The original was written by Rachel Polanskis <rachel@juno.virago.org.au>
+# 
+# Fetches output from mailstats(1) either via TCP or via exec and
+# feeds changes on smtp to mrtg.
+#
+# Irix 6.x seems to lack mailstats
+#
+# Usage mailstats [host]
+#  if host is missing, localhost is used
+
+use strict;
+use Socket;
+
+my($datafile, $source, $sourceport, @mailstatspaths,
+   $oldfrm, $oldto,
+   $newfrm, $newto, $uptime);
+
+# Adjust this to your own mailserver.  Uses local `mailstats` if set
+# to 'localhost'
+$source         = $ARGV[0] || "localhost";
+$sourceport     = "7256";
+
+$datafile       = "/tmp/mailstat-$source.old";
+@mailstatspaths = ( "/usr/sbin/mailstats", "/usr/bin/mailstats" );
+
+($oldfrm, $oldto) = getOldStats($datafile);
+
+($newfrm, $newto, $uptime) = getStats($source, $sourceport);
+
+putOldStats($datafile, $newfrm, $newto) || warn "$0: Unable to save stats to $datafile";
+
+print $newfrm-$oldfrm,"\n",$newto-$oldto,"\n","$uptime\n$source\n" if ($oldfrm);
+
+##
+# Returns first line of file given as param splittet on space
+sub getOldStats {
+    my($filename) = @_;
+    open(OLD, $filename) || warn "$0: Unable to open $filename for reading";
+    my($line) = <OLD>;
+    close(OLD);
+    return split(/ /, $line);
+}
+
+sub findFirstExecutable {
+    my($filename);
+    foreach $filename (@_) {
+	return $filename if ( -x $filename && ! -d $filename );
+    }
+}
+
+sub getStats {
+    my($source, $sourceport) = @_;
+    my(@output, $port, $proto, $iaddr, $paddr);
+    if ( $source eq "localhost" ) {
+	my($progpath) = findFirstExecutable(@mailstatspaths);
+	@output = `$progpath`;
+	chomp(@output);
+    } else {
+	$port = getservbyname ($sourceport, 'tcp') if ($sourceport =~ /\D/);
+	die "$0: Bad port \"$sourceport\"" unless ($port);
+	$proto = getprotobyname ('tcp') || die "$0: Bad prototype tcp";
+
+	$iaddr = inet_aton($source) or die "$0: no host \"$source\"";
+	$paddr = sockaddr_in($port, $iaddr);
+
+	socket (SOCK, PF_INET, SOCK_STREAM, $proto) or die "$0: socket error $!";
+	connect (SOCK, $paddr) or die "$0: connect error $!";
+
+	while (<SOCK>) {
+	    push(@output);
+	}
+	close(SOCK) || warn "$0: socket close error $!";
+    }
+    my($curfrm, $curto, $uptime);
+    foreach (@output) {
+	($curfrm, $curto) = (split(/ +/))[2,4] if (/e?smtp/);
+	($uptime) = m/Statistics from (.*)/ if (/Stati/);
+    }
+    return ($curfrm, $curto, $uptime);
+}
+
+sub putOldStats {
+    my($filename, $frm, $to) = @_;
+    open(STAT, ">$filename") || return "";
+    print STAT "$frm $to\n";
+    close(STAT);
+    return "1";
+}

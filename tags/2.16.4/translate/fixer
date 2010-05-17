@@ -1,0 +1,11 @@
+$x='
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday';
+
+s/foreach.+?wday/$x/s;
