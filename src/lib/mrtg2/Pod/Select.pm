@@ -8,9 +8,10 @@
 #############################################################################
 
 package Pod::Select;
+use strict;
 
-use vars qw($VERSION);
-$VERSION = 1.13;  ## Current version of this package
+use vars qw($VERSION @ISA @EXPORT $MAX_HEADING_LEVEL %myData @section_headings @selected_sections);
+$VERSION = '1.36'; ## Current version of this package
 require  5.005;    ## requires this Perl version or later
 
 #############################################################################
@@ -109,33 +110,39 @@ Some example section specifications follow.
 
 =over 4
 
-=item
+=item *
+
 Match the C<NAME> and C<SYNOPSIS> sections and all of their subsections:
 
 C<NAME|SYNOPSIS>
 
-=item
+=item *
+
 Match only the C<Question> and C<Answer> subsections of the C<DESCRIPTION>
 section:
 
 C<DESCRIPTION/Question|Answer>
 
-=item
+=item *
+
 Match the C<Comments> subsection of I<all> sections:
 
 C</Comments>
 
-=item
+=item *
+
 Match all subsections of C<DESCRIPTION> I<except> for C<Comments>:
 
 C<DESCRIPTION/!Comments>
 
-=item
+=item *
+
 Match the C<DESCRIPTION> section but do I<not> match any of its subsections:
 
 C<DESCRIPTION/!.+>
 
-=item
+=item *
+
 Match all top level sections but none of their subsections:
 
 C</!.+>
@@ -175,7 +182,7 @@ Where I<cmd-expr> is intended to match the name of one or more POD
 commands, and I<text-expr> is intended to match the paragraph text for
 the command. If a range-regex is supposed to match a POD command, then
 the first character of the regex (the one after the initial '/')
-absolutely I<must> be an single '=' character; it may not be anything
+absolutely I<must> be a single '=' character; it may not be anything
 else (not even a regex meta-character) if it is supposed to match
 against the name of a POD command.
 
@@ -230,11 +237,9 @@ C</=item mine/../=(item|back)/>
 
 #############################################################################
 
-use strict;
 #use diagnostics;
 use Carp;
 use Pod::Parser 1.04;
-use vars qw(@ISA @EXPORT $MAX_HEADING_LEVEL);
 
 @ISA = qw(Pod::Parser);
 @EXPORT = qw(&podselect);
@@ -262,8 +267,6 @@ reference to the object itself as an implicit first parameter.
 ## =cut
 ## 
 ## =end _PRIVATE_
-
-use vars qw(%myData @section_headings);
 
 sub _init_headings {
     my $self = shift;
@@ -328,11 +331,8 @@ This method should I<not> normally be overridden by subclasses.
 
 =cut
 
-use vars qw(@selected_sections);
-
 sub select {
-    my $self = shift;
-    my @sections = @_;
+    my ($self, @sections) = @_;
     local *myData = $self;
     local $_;
 
@@ -349,10 +349,10 @@ sub select {
     ## it seems incredibly unlikely that "+" would ever correspond to
     ## a legitimate section heading
     ##---------------------------------------------------------------------
-    my $add = ($sections[0] eq "+") ? shift(@sections) : "";
+    my $add = ($sections[0] eq '+') ? shift(@sections) : '';
 
     ## Reset the set of sections to use
-    unless (@sections > 0) {
+    unless (@sections) {
         delete $myData{_SELECTED_SECTIONS}  unless ($add);
         return;
     }
@@ -361,14 +361,13 @@ sub select {
     local *selected_sections = $myData{_SELECTED_SECTIONS};
 
     ## Compile each spec
-    my $spec;
-    for $spec (@sections) {
-        if ( defined($_ = &_compile_section_spec($spec)) ) {
+    for my $spec (@sections) {
+        if ( defined($_ = _compile_section_spec($spec)) ) {
             ## Store them in our sections array
             push(@selected_sections, $_);
         }
         else {
-            carp "Ignoring section spec \"$spec\"!\n";
+            carp qq{Ignoring section spec "$spec"!\n};
         }
     }
 }
@@ -394,7 +393,7 @@ This method should I<not> normally be overridden by subclasses.
 
 sub add_selection {
     my $self = shift;
-    $self->select("+", @_);
+    return $self->select('+', @_);
 }
 
 ##---------------------------------------------------------------------------
@@ -410,7 +409,7 @@ This method takes no arguments, it has the exact same effect as invoking
 
 sub clear_selections {
     my $self = shift;
-    $self->select();
+    return $self->select();
 }
 
 ##---------------------------------------------------------------------------
@@ -422,7 +421,7 @@ sub clear_selections {
 Returns a value of true if the given section and subsection heading
 titles match any of the currently selected section specifications in
 effect from prior calls to B<select()> and B<add_selection()> (or if
-there are no explictly selected/deselected sections).
+there are no explicitly selected/deselected sections).
 
 The arguments C<$heading1>, C<$heading2>, etc. are the heading titles of
 the corresponding sections, subsections, etc. to try and match.  If
@@ -441,7 +440,7 @@ sub match_section {
     ## Return true if no restrictions were explicitly specified
     my $selections = (exists $myData{_SELECTED_SECTIONS})
                        ?  $myData{_SELECTED_SECTIONS}  :  undef;
-    return  1  unless ((defined $selections) && (@{$selections} > 0));
+    return  1  unless ((defined $selections) && @{$selections});
 
     ## Default any unspecified sections to the current one
     my @current_headings = $self->curr_headings();
@@ -450,18 +449,17 @@ sub match_section {
     }
 
     ## Look for a match against the specified section expressions
-    my ($section_spec, $regex, $negated, $match);
-    for $section_spec ( @{$selections} ) {
+    for my $section_spec ( @{$selections} ) {
         ##------------------------------------------------------
         ## Each portion of this spec must match in order for
         ## the spec to be matched. So we will start with a 
         ## match-value of 'true' and logically 'and' it with
         ## the results of matching a given element of the spec.
         ##------------------------------------------------------
-        $match = 1;
+        my $match = 1;
         for (my $i = 0; $i < $MAX_HEADING_LEVEL; ++$i) {
-            $regex   = $section_spec->[$i];
-            $negated = ($regex =~ s/^\!//);
+            my $regex   = $section_spec->[$i];
+            my $negated = ($regex =~ s/^\!//);
             $match  &= ($negated ? ($headings[$i] !~ /${regex}/)
                                  : ($headings[$i] =~ /${regex}/));
             last unless ($match);
@@ -499,7 +497,8 @@ sub is_selected {
 
     ## Keep track of current sections levels and headings
     $_ = $paragraph;
-    if (/^=((?:sub)*)(?:head(?:ing)?|sec(?:tion)?)(\d*)\s+(.*)\s*$/) {
+    if (/^=((?:sub)*)(?:head(?:ing)?|sec(?:tion)?)(\d*)\s+(.*?)\s*$/)
+    {
         ## This is a section heading command
         my ($level, $heading) = ($2, $3);
         $level = 1 + (length($1) / 3)  if ((! length $level) || (length $1));
@@ -568,22 +567,22 @@ are used.
 
 All other arguments should correspond to the names of input files
 containing POD sections. A file name of "-" or "<&STDIN" will
-be interpeted to mean standard input (which is the default if no
+be interpreted to mean standard input (which is the default if no
 filenames are given).
 
 =cut 
 
 sub podselect {
     my(@argv) = @_;
-    my %defaults   = ();
+    my %defaults = ();
     my $pod_parser = new Pod::Select(%defaults);
     my $num_inputs = 0;
-    my $output = ">&STDOUT";
-    my %opts = ();
+    my $output = '>&STDOUT';
+    my %opts;
     local $_;
     for (@argv) {
         if (ref($_)) {
-            next unless (ref($_) eq 'HASH');
+        next unless (ref($_) eq 'HASH');
             %opts = (%defaults, %{$_});
 
             ##-------------------------------------------------------------
@@ -597,7 +596,7 @@ sub podselect {
                 $key =~ s/^(?=\w)/-/;
                 $key =~ /^-se[cl]/  and  $key  = '-sections';
                 #! $key eq '-range'    and  $key .= 's';
-                ($key => $val);    
+                ($key => $val);
             } (keys %opts);
 
             ## Process the options
@@ -618,7 +617,7 @@ sub podselect {
             ++$num_inputs;
         }
     }
-    $pod_parser->parse_from_file("-")  unless ($num_inputs > 0);
+    $pod_parser->parse_from_file('-')  unless ($num_inputs > 0);
 }
 
 #############################################################################
@@ -664,11 +663,11 @@ sub _compile_section_spec {
 
     ## Compile the spec into a list of regexs
     local $_ = $section_spec;
-    s|\\\\|\001|g;  ## handle escaped backward slashes
-    s|\\/|\002|g;   ## handle escaped forward slashes
+    s{\\\\}{\001}g;  ## handle escaped backward slashes
+    s{\\/}{\002}g;   ## handle escaped forward slashes
 
     ## Parse the regexs for the heading titles
-    @regexs = split('/', $_, $MAX_HEADING_LEVEL);
+    @regexs = split(/\//, $_, $MAX_HEADING_LEVEL);
 
     ## Set default regex for ommitted levels
     for (my $i = 0; $i < $MAX_HEADING_LEVEL; ++$i) {
@@ -679,13 +678,13 @@ sub _compile_section_spec {
     my $bad_regexs = 0;
     for (@regexs) {
         $_ .= '.+'  if ($_ eq '!');
-        s|\001|\\\\|g;       ## restore escaped backward slashes
-        s|\002|\\/|g;        ## restore escaped forward slashes
-        $negated = s/^\!//;  ## check for negation
-        eval "/$_/";         ## check regex syntax
+        s{\001}{\\\\}g;       ## restore escaped backward slashes
+        s{\002}{\\/}g;        ## restore escaped forward slashes
+        $negated = s/^\!//;   ## check for negation
+        eval "m{$_}";         ## check regex syntax
         if ($@) {
             ++$bad_regexs;
-            carp "Bad regular expression /$_/ in \"$section_spec\": $@\n";
+            carp qq{Bad regular expression /$_/ in "$section_spec": $@\n};
         }
         else {
             ## Add the forward and rear anchors (and put the negator back)
@@ -734,6 +733,8 @@ L<Pod::Parser>
 
 =head1 AUTHOR
 
+Please report bugs using L<http://rt.cpan.org>.
+
 Brad Appleton E<lt>bradapp@enteract.comE<gt>
 
 Based on code for B<pod2text> written by
@@ -742,4 +743,4 @@ Tom Christiansen E<lt>tchrist@mox.perl.comE<gt>
 =cut
 
 1;
-
+# vim: ts=4 sw=4 et
