@@ -1,0 +1,187 @@
+#!/usr/local/bin/perl5
+# -*- mode: Perl -*-
+##################################################################
+# This file controls the creation of all the MRTG config files from OV
+##################################################################
+# Created by Laurie Gellatly <gellatly@one.net.au>
+# See newrtrov.txt for a description of what is performed
+#################################################################
+#
+# Distributed under the GNU copyleft
+#
+# $Id: ovadd,v 1.1.1.1 2002/02/26 10:16:36 oetiker Exp $
+#
+use Socket;
+use strict;
+use vars '$DEBUG';
+my $DEBUG = 0;
+my $company = "Company";
+my $rundir = "/opt/mrtg/run";
+my $webdir = "/var/opt/ns-fasttrack/docs/mrtg/";
+my $cronfile = "mrtgc";
+my $roothtml = "routers.html";
+my $buildhtf = "buildht";
+my $dnsfile = "ovmrtgc.csv";
+
+# Change the next line to be " &" to submit all jobs at once
+my $backgrnd = " ";
+
+my($at,$router,$sysn,$sysncfg,$sysnhtml,$head,$cnt);
+my(@buildhtt,@sysipnms,@mrtgc,@sysnms); 
+
+sub main {
+
+  $router = $ARGV[0];
+  die <<USAGE  unless $router;
+
+USAGE: ovadd 'router IP ADDRESS/S'
+
+EXAMPLE:  ovadd 193.21.1.2  10.21.1.2 10.21.1.1
+
+
+USAGE
+   chdir $rundir;
+# Find the IP Address and SNMP sysNames from the arguments given
+   @sysipnms=`perl ovsysnms @ARGV`;
+   chomp(@sysipnms);
+# Generate the interfaces to collect on
+   `perl ovcols + @ARGV > collects`;
+# Start the collection happening on these interfaces
+   `xnmcollect -merge collects`;
+   `xnmcollect -event`;
+   for ($cnt = 0; $cnt < @sysipnms ; $cnt++){
+      ($router,$sysn) = split /\,/, $sysipnms[$cnt];
+      $sysn = lc($sysn);
+      $sysncfg = $sysn.".cfg";
+      $sysnhtml = $sysn.".html";
+# Create the .cfg file for each device
+      `perl $rundir\/cfgmakerov $router > $sysncfg`;
+# Create the root HTML file for this device in its directory
+      `perl $rundir\/index $sysncfg "Router $sysn" $sysn > $webdir$sysn\/$sysnhtml`;
+      $mrtgc[@mrtgc] = $sysn;
+   }
+
+   @mrtgc = sort(@mrtgc);
+   $cnt = 0;
+   $head = 0;
+   $at = 0;
+   open(BUILDHT, "<".$buildhtf);
+# This next piece of code assumes that the $buildhtf file is in alpha order
+# This code leaves old lines untouched (in case the IP address rather than
+# the sysName was used as the target
+   while(<BUILDHT>){
+      chomp;
+      if (/index (.*)\.cfg/){
+         $sysn = $1;
+         $head = $_;
+         if (($sysn lt $mrtgc[$at]) || ($at >= @mrtgc)) {
+            $buildhtt[@buildhtt] = $head;
+         }else {
+            do{
+               $cnt = $mrtgc[$at];
+               $buildhtt[@buildhtt] =
+ "perl $rundir\/index $cnt.cfg \"Router $cnt\" $cnt > $webdir$cnt\/$cnt.html";
+               ++$at;
+            }while (($sysn ge $mrtgc[$at]) && ($at < @mrtgc));
+            if ($sysn ne $mrtgc[$at-1]){
+               $buildhtt[@buildhtt] = $head;
+            }
+         }
+      }
+   }
+   close (BUILDHT);
+# In case there were none to start with add it the new members
+   while ($at < @mrtgc){
+      $cnt = $mrtgc[$at];
+      $buildhtt[@buildhtt] =
+ "perl $rundir\/index $cnt.cfg \"Router $cnt\" $cnt > $webdir$cnt\/$cnt.html";
+      ++$at;
+   }
+   open (BUILDHT,">".$buildhtf);
+   print BUILDHT <<ECHO;
+#This file builds the HTML for each device being monitored
+cd $rundir
+ECHO
+   for ($cnt = 0; $cnt < @buildhtt ; $cnt++){
+      print BUILDHT "$buildhtt[$cnt]\n";
+   }
+   close (BUILDHT);
+
+# Add on the new IPs and sysNames to the onces we already have
+   open (DNSFILE,"<".$dnsfile);
+   while(<DNSFILE>){
+      chomp;
+      $sysipnms[@sysipnms] = $_;
+   }
+   close (DNSFILE);
+
+   @sysipnms = sort srtipnms @sysipnms;
+   $sysn = ".";
+   for ($cnt = 0; $cnt < @sysipnms ; $cnt++){
+      $head = lc((split /\,/,$sysipnms[$cnt])[1]);
+      if($sysn eq $head){
+	 next;
+      }
+      $sysn = $head;
+      $sysipnms[@sysnms] = $sysipnms[$cnt];
+      $sysnms[@sysnms] = $sysn;
+   }
+# Now sysnms has the exact number of targets in it while sysipnms has
+# the first @sysnms entries correct!
+
+   open (DNSFILE,">".$dnsfile);
+   for ($cnt = 0; $cnt < @sysnms ; $cnt++){
+      print DNSFILE "$sysipnms[$cnt]\n";
+   }
+   close (DNSFILE);
+
+   open (HTMLF,">".$webdir.$roothtml);
+   print HTMLF <<ECHO;
+<HTML>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<CENTER><H1>$company Router MRTG Traffic Analysis </H1></CENTER> 
+
+<SPACER TYPE=VERTICAL SIZE=4>
+<CENTER><TABLE BORDER=0 WIDTH="100%" CELLSPACING=0 CELLPADDING=0>
+  <TR VALIGN=top>
+  <TD WIDTH=388 ALIGN="CENTER"><FONT FACE="Arial,Helvetica" SIZE=2>
+ECHO
+   for ($cnt = 0; $cnt < @sysnms ; $cnt++){
+      $sysn = $sysnms[$cnt];
+      $sysnhtml = $sysn.".html";
+      print HTMLF "<A HREF=\"$sysn\/$sysnhtml\">$sysn<\/A><br>\n";
+   }
+   print HTMLF <<ECHO;
+</FONT>
+</TD>
+</TABLE>
+</BODY>
+</HTML>
+ECHO
+   close(HTMLF);
+   open (MRTGC,">".$cronfile);
+   print MRTGC <<ECHO;
+#This file runs the MRTG for each config $rundir/file
+cd $rundir
+ECHO
+   for ($cnt = 0; $cnt < @sysnms ; $cnt++){
+      print MRTGC "perl $rundir\/mrtg $sysnms[$cnt].cfg $backgrnd\n";
+   }
+   print MRTGC <<ECHO;
+# Additional commands could go here. Under NT the next line won't return
+$buildhtf
+# End of rebuild ht file
+ECHO
+   close (MRTGC);
+# send to management station
+# (local host unless run from a management console)
+`ovevent "" .1.3.6.1.4.1.11.2.17.1.0.58916873 .1.3.6.1.4.1.11.2.17.2.1.0 Integer 14 .1.3.6.1.4.1.11.2.17.2.2.0 OctetString "$ENV{OVwSessionID}" .1.3.6.1.4.1.11.2.17.2.4.0 OctetString "OVMRTG ADD/Update for @ARGV COMPLETED"`
+
+}  
+main;
+exit(0);
+sub srtipnms{
+ lc((split( /\,/,$a))[1]) cmp lc( (split( /\,/,$b))[1]);
+}
+

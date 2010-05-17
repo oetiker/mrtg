@@ -1,0 +1,167 @@
+#!/usr/bin/perl
+
+my ($req,$place,$returnOID,$mode, $IPTABLES,@counters);
+
+$IPTABLES = "iptables"; # cmdline to iptables
+$place=".1.3.6.1.4.1.2055";
+
+@counters = loadChains();
+
+main();
+
+
+sub main {
+	my ($mode,$req);
+	if (scalar(@ARGV) == 2) {
+		($mode,$req) = @ARGV;
+	} else {
+		($req) = @ARGV;
+	}
+	
+	SWITCH: for ($mode) {
+		/-s/ && exit;
+		/-n/ && do {
+			SWITCH: for ($req) {
+				/$place$/ && do {
+					$returnOID = "$place.1";				
+					last SWITCH;
+				};
+				/$place\.1$/ && do {
+					$returnOID = "$place.2.1.1.1";
+					last SWITCH;
+				};
+				/$place\.2$/ && do {
+					$returnOID = "$place.2.1.1.1";
+					last SWITCH;
+				};
+				/$place\.2\.1$/ && do {
+					$returnOID = "$place.2.1.1.1";
+					last SWITCH;
+				};
+				/$place\.2\.1\.1$/ && do {
+					$returnOID = "$place.2.1.1.1";
+					last SWITCH;
+				};
+				/$place\.2\.1\.1\.(.*)$/ && do {
+					if ($1 < scalar(@counters)-1) {
+						$returnOID = "$place.2.1.1." . ($1 + 1);
+					} else {
+						$returnOID = "$place.2.1.2.1";
+					}
+					last SWITCH;
+				};
+				/$place\.2\.1\.2\.(.*)$/ && do {
+					if ($1 < scalar(@counters)-1) {
+						$returnOID = "$place.2.1.2." . ($1 + 1);
+					} else {
+						exit;
+					}
+					last SWITCH;
+				};
+				exit;
+			}
+			last SWITCH;
+		};	
+		SWITCH: for ($req) {
+			/$place$/ && exit;
+			/$place\.2\.1$/ && exit;
+			/$place\.2\.1\.1$/ && exit;
+			/$place\.2\.1\.2$/ && exit;
+			$returnOID = $req;
+		}
+	}
+	print "$returnOID\n";
+	$_ = $returnOID;  		
+	SWITCH: {
+		/^$place\.1$/ && do {
+			print "string\n", getHostname() ;
+			last SWITCH;
+		};
+		/^$place\.2\.1\.(1|2)\.(.*)$/ && do {
+			($a, $b) = split ("=", @counters[$2]);
+			if ($1 == 1) {
+				print "string\n$a\n";
+			} else {
+				print "counter\n$b\n";			
+			}
+			last SWITCH;
+		};
+		/^$place\.2\.1\.1\.3\.1\.1\.(1|2|3)$/ && do {
+			print "integer\n$1\n";
+			last SWITCH;
+		};
+		/^$place\.2\.1\.1\.2\.(1|2|3)$/ && do {
+					SWITCH: for ($1) {
+						/1/ && do {
+							print "string\nfilter\n";
+							last SWITCH
+						};
+						/2/ && do {
+							print "string\nnat\n";
+							last SWITCH
+						};
+						/3/ && do {
+							print "string\nmangle\n";
+							last SWITCH
+						};
+					}
+					last SWITCH;
+		};
+		
+		 print "string\nack... $returnOID $req\n";
+	}
+}
+
+sub getHostname {
+	return `/bin/hostname --fqdn`;
+}
+
+sub getChainCount {
+	my ($table);
+	$table = shift();
+	return scalar(getChainNames($table));
+}
+sub getChainNames {
+	my (@bufLines,$table,@chains);
+	$table = shift();
+	@bufLines = `$IPTABLES -t $table -nL`;
+	foreach (@bufLines) {
+			if (/^Chain (.*) \((.*)$/) {
+			push (@chains, $1);
+		}
+	}
+	return @chains;
+}
+
+sub getChainCounter {
+	my (@rules, @count, $value);
+	$table = shift();
+	$chain = shift();
+	@rules=`$IPTABLES -t $table -vnxL $chain`;
+	splice @rules, 0, 2;
+	$total=0;
+	foreach $value (@rules) {
+		@count=split(' ',$value);
+		$total += $count[1];
+	}
+	return $total;
+}
+
+sub getChains {
+	my ($table, @result, @names, $counter, $name,@buf);
+	$table = shift();
+	@chains = getChainNames($table);
+	foreach $name (@chains) {
+		$counter = getChainCounter ($table, $name);
+		push (@result, "$table/$name=$counter");
+	}
+	return @result;
+}
+sub loadChains {
+	my (@result, @buf, $table);
+	foreach $table ("filter","nat","mangle") {
+		@buf = getChains ($table);
+		push (@result, @buf);
+	}
+	return @result;
+}

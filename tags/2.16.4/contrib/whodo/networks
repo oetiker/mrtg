@@ -1,0 +1,24 @@
+#	Networks
+#
+loopback	127
+Sydney		203.167.218			# /23
+Melbourne	203.167.220
+Perth		203.167.221			# /25
+Brisbane	203.167.222			# /26
+CbrExportOffice	203.167.223.192	# /28
+SAP	194.39.139
+Almaty	172.20.197
+Ankara	172.20.81
+Auckland	172.20.53
+Bangkok	172.20.225
+Beijing	172.20.88
+Brunei		172.20.56
+Budapest	172.20.104.64			# /26
+Buenos_Aires	172.20.209
+Cairo		172.20.29
+Dubai		172.20.16.128			# /25
+Guangzhou	172.20.201
+DfatInternal	172.16				# /14	
+DfatInternal	172.21
+DfatInternal	172.22				# /15
+NetworkLinks	192.168
