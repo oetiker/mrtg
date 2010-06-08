@@ -16,7 +16,7 @@ sponsor</a>!</p>
 
 <p>
 #maarten.vanlaere@serverscheck.com
-<a href="http://www.serverscheck.com/?serv_source=mrtg"><img border="0" title="ServersCheck" alt="ServersCheck" src="$(ROOT)/logos/serverscheck.png"/></a>
+<a href="http://www.serverscheck.com/sensors/sensorgateway_availability.asp"><img border="0" title="ServersCheck" alt="ServersCheck" src="$(ROOT)/logos/mrtg_sensorgateway.png"/></a>
 #Erik A. Dahl <edahl@zenoss.org>
 <a href="http://www.zenoss.com/?mrtg"><img border="0" title="Zenoss Open Source IT Monitoring" alt="Zenoss Open Source IT Monitoring" src="$(ROOT)/logos/zenoss.png"/></a>
 </p>
