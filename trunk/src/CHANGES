@@ -1,3 +1,6 @@
+From: duncan_j_ferguson at yahoo.co.uk
+* fix cfgmaker to work in mixed v1/2/3 snmp environment
+
 From:  Stuart Henderson stu spacehopper.org
 * do not strigify arguments to conversion function let eval take care of this
 * untaint inlast and outlast to make  perl taint mode happy
