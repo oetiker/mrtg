@@ -2353,7 +2353,7 @@ sub getsnmparg ($$$$){
         foreach my $ri( 0..1 ) {
             next unless defined $res[ $ri ];
 	    local $SIG{__DIE__};
-            my $exp = "&MRTGConversion::$target->{ Conversion }( '$res[ $ri ]' )";
+            my $exp = "&MRTGConversion::$target->{ Conversion }( \$res[\$ri] )";
             $res[ $ri ] = eval $exp;
             warn "$NOW: WARNING: evaluation of \"$exp\" failed\n$@\n" if $@;
         }
