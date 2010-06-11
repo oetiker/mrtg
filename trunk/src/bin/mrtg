@@ -615,6 +615,11 @@ sub getcurrent {
 		$uptime = $target->[ $u ]{ _UPTIME_ };
 		$name = $target->[ $u ]{ _NAME_ };
 		$time = $target->[ $u ]{ _TIME_ };
+
+                if ($time =~ /^([-0-9.]+)$/) {
+                   $time = $1;
+                }
+
 	}
 
 	# Set the time to the current time if it was not set above
