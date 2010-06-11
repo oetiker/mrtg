@@ -1534,7 +1534,19 @@ sub snmpopen ($$$) {
     $args{'-maxmsgsize'} = $maxmsgsize if (defined($maxmsgsize));
     $args{'-debug'} = $debug if (defined($debug));
     $args{'-community'} = $community unless ($community eq "public");
-    delete $args{'-community'} if ($version == 3);
+
+
+    if ($version == 3) {
+        delete $args{'-community'};
+    } else {
+        delete $args{'-username'};
+        delete $args{'-authkey'};
+        delete $args{'-authpassword'};
+        delete $args{'-authprotocol'};
+        delete $args{'-privkey'};
+        delete $args{'-privpassword'};
+        delete $args{'-privprotocol'};
+    }
 
     ($sess, $tmp) = Net::SNMP->session(%args);
 
