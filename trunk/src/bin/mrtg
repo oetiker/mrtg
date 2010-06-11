@@ -947,7 +947,16 @@ sub writegraphics {
     #warn "$NOW: ERROR: outlast is undefined. Skipping $router\n" unless defined $outlast;
     #return undef unless defined $inlast and defined $outlast;
 
-    # set values to -1 to tell rateup about unknown values
+    # untaint in and out
+
+    if ($inlast =~ /^([-0-9.]+)$/) {
+        $inlast = $1;
+    }
+    if ($outlast =~ /^([-0-9.]+)$/) {
+        $outlast = $1;
+    }
+
+    # set values to -1 to tell rateup about unknown values    
     $inlast = -1 unless defined $inlast;
     $outlast = -1 unless defined $outlast;
     
