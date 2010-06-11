@@ -1,6 +1,7 @@
 From:  Stuart Henderson stu spacehopper.org
 * do not strigify arguments to conversion function let eval take care of this
 * untaint inlast and outlast to make  perl taint mode happy
+* teach cfgmaker about openbsd
 
 Changes 2.16.4, 2010-05-17
 --------------------------
