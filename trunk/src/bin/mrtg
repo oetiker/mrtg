@@ -895,12 +895,16 @@ sub writegraphics {
         debug('log', "RRDs::update($dotrrd, '$time:$inlast:$outlast')");
         my $start = gettimeofday();
 	my $rrddata;
-	if ( $RRDs::VERSION >= 1.2 ){
+	if ( $RRDs::VERSION >= 1.4 and $$cfg{rrdcached} ){
+	    $rrddata=RRDs::update($dotrrd, '--daemon', $$cfg{rrdcached}, "$time:$inlast:$outlast");
+            debug('prof',sprintf("RRDs::update $dotrrd (rrdcached) - %.3fs",gettimeofday()-$start));
+	} elsif ( $RRDs::VERSION >= 1.2 ){
 	    $rrddata=RRDs::updatev($dotrrd, "$time:$inlast:$outlast");
+            debug('prof',sprintf("RRDs::updatev $dotrrd - %.3fs",gettimeofday()-$start));
         } else {
             RRDs::update($dotrrd, "$time:$inlast:$outlast");
-        }
         debug('prof',sprintf("RRDs::update $dotrrd - %.3fs",gettimeofday()-$start));
+        }
         my $e = RRDs::error(); 
         warn "$NOW: ERROR: Cannot update $dotrrd with '$time:$inlast:$outlast' $e\n" if ($e);
 
