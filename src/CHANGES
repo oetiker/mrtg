@@ -1,3 +1,19 @@
+From: Steve Shipway s.shipway auckland.ac.nz
+* added rrdcached support
+  - new keyword:  RRDCached: which overrides anything set in the RRDCACHED_ADDRESS
+    environment variable and sets MRTG to work in RRDCached mode.  This verifies
+    that you're using a unix-domain socket and the socket is writeable.
+  - Check for environment variable RRDCACHED_ADDRESS and use this if no
+    explicit address was set in the cfg file, making the same config validity
+    checks.
+  - Make warning if using rrdcached to the effect that the thresholding
+    checks will no longer work.
+  - If in rrdcached-mode, and using RRDTool 1.4, then force use of update
+    rather than updatev (as rrdcached does not yet support updatev) and
+    consequently bypass the thresholding checks.
+  - Changes to validity check error messages  to also report the file
+    containing the error (as well as the line).
+
 From: john.belshaw cggveritas.com
 * added support for Arista to cfgmaker
 

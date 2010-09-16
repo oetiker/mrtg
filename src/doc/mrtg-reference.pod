@@ -386,6 +386,22 @@ Example:
 
  PathAdd: /usr/local/rrdtool/bin/
 
+=head2 RRDCached
+
+If you are running RRDTool 1.4 or later with B<rrdcached>, then you can 
+configure MRTG to take advantage of this for updates, either by using the 
+RRDCACHED_ADDRESS environment variable, or by setting the RRDCached keyword 
+in the configuration file.  Note that, if both are set, the configuration file
+keyword will take precedence.
+
+Currently, only UNIX domain sockets are supported, and you should note that
+using RRDCached mode will disable all Threshold checking normally done
+by MRTG.
+
+Example:
+
+ RRDCached: unix:/var/tmp/rrdcached.sock
+
 =head2 RunAsDaemon
 
 The RunAsDaemon keyword enables daemon mode operation. The purpose of daemon

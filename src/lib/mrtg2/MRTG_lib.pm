@@ -156,6 +156,11 @@ $VERSION = 2.100016;
        'conversioncode' =>
        [sub{-r $_[0]}, sub{"Cannot read conversion code file $_[0]"}],
 
+       # Check for an environment setting for RRDCACHED_ADDRESS
+       # Steve Shipway, Sep 2010
+       'rrdcached' =>
+       [sub{(($_[0] =~ /^unix:(\S+)/)and(-w $1))}, sub{"Currently, only UNIX domain sockets are supported for RRDCached, and must exist and be writeable."}],
+
        # Per Router CFG
        'target[]' => 
        [sub{1}, sub{"Internal Error"}], #will test this later
@@ -631,6 +636,18 @@ sub readcfg ($$$$;$$) {
     }
 
     close (CFG);
+
+	# Check for an environment setting for RRDCACHED_ADDRESS
+	# Steve Shipway, Sep 2010
+	if( $ENV{RRDCACHED_ADDRESS} and not exists $cfg->{ rrdcached } ) {
+		warn("WARNING: Using environment variable RRDCACHED_ADDRESS\n");
+		$cfg->{ rrdcached } = $ENV{RRDCACHED_ADDRESS};
+        quickcheck('rrdcached',0,$ENV{RRDCACHED_ADDRESS},'Environment variable RRDCACHED_ADDRESS','n/a',\%mrtgrules);
+	}
+	if( exists $cfg->{ rrdcached } ) {
+        warn ("WARNING: You are running with RRDCached enabled (".$cfg->{ rrdcached }.").  This will disable all Threshold checking, since RRDCached does not support updatev and an update/fetch will cancel out the caching benefits.\n");
+	}
+
 }
 
 # quick checks
@@ -644,15 +661,15 @@ sub quickcheck ($$$$$$) {
             return 1;
         } else {
             if ($second) {
-                die "ERROR: CFG Error in \"$first\[$second\]\", line $line: ".
+                die "ERROR: CFG Error in \"$first\[$second\]\", file $file line $line: ".
                   &{$rules->{$first.$braces}[1]}($arg)."\n\n"; 
             } else {
-                die "ERROR: CFG Error in \"$first\", line $line: ".
+                die "ERROR: CFG Error in \"$first\", file $file line $line: ".
                   &{$rules->{$first.$braces}[1]}($arg)."\n\n"; 
             } 
         }
     }
-    die "ERROR: CFG Error Unknown Option \"$first\" on line $line or above.\n".
+    die "ERROR: CFG Error Unknown Option \"$first\" in file $file on line $line or above.\n".
       "           Check doc/reference.txt for Help\n\n";
 }
 
@@ -836,6 +853,7 @@ sub cfgcheck ($$$$;$) {
         die "ERROR: File $cfg->{ conversioncode } conversion code evaluation failed\n$@\n"
             unless eval $code;
     }
+
     my $thresh_error;
 
     foreach $rou (@$routers) {
