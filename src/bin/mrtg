@@ -112,6 +112,7 @@ BEGIN {
 
 $main::STARTTIME = time;
 
+%main::verified_rrd = ();
     
 if ($MRTG_lib::OS eq 'OS2') {
 # in daemon mode we will pause 3 seconds to be sure that parent died
@@ -509,6 +510,17 @@ sub main {
 		POSIX::tzset();
 	    };
         }
+        # Has the cfg file been modified since we started? if so, reload it.
+        if( (-M $cfgfile)<0 and 
+          $cfg{'runasdaemon'} and $cfg{'runasdaemon'} =~ /y/i ) {
+            # reload the configuration
+            debug('base', "Re-reading Config File: $cfgfile");
+            @routers = (); %cfg = (); %rcfg = ();
+            readcfg($cfgfile,\@routers,\%cfg,\%rcfg);
+            cfgcheck(\@routers, \%cfg, \%rcfg, \@target, \%opts);
+            $^T = time; # reset the time so that we re-test RRD files etc
+        }
+        debug('base', "End of main Loop");
     } while ($cfg{'runasdaemon'} and $cfg{'runasdaemon'} =~ /y/i ); #In daemon mode run forever
     debug('base', "Exit main Loop");
     # OK we are done, remove the lock files ... 
@@ -787,6 +799,7 @@ sub writegraphics {
     my($absmax,$maxv, $maxvi, $maxvo, $i, $period, $res);
     my(@exec, @mxvls, @metas);
     my(%maxin, %maxout, %maxpercent, %avin, %avout, %avmxin, %avmxout,  %avpercent, %cuin, %cuout, %cupercent);
+    my($rrdinfo);
 
     @metas = ();
     $maxvi = $$rcfg{'maxbytes1'}{$router};
@@ -836,8 +849,74 @@ sub writegraphics {
         debug('base',"maxi:$absi, maxo:$abso");
         $absi = 'U' if $absi == 0;
         $abso = 'U' if $abso == 0;
+        # check to see if we already have an RRD file or have to create it
         # maybe we can convert an .log file to the new rrd format
-        if (-e $dotlog and not -e $dotrrd) {
+        if( $RRDs::VERSION >= 1.4 and $$cfg{rrdcached} and $$cfg{rrdcached} !~ /^unix:/ ) {
+             # rrdcached in network mode.  No log conversion possible.
+             # In this mode, we cannot use absolute paths.  So, we strip logdir from the name.
+             $dotrrd = "$$rcfg{'directory'}{$router}$router.rrd";
+             if( $RRDs::VERSION < 1.49 ) {
+               # This version of RRD doesnt support info, create and tune
+               debug('base',"Unable to verify RRD file with this version of rrdcached");
+               if( !$main::verified_rrd{$dotrrd} ) {
+                 warn "WARN: Unable to verify $dotrrd with this version of RRDTool\n";
+                 $main::verified_rrd{$dotrrd} = 1;
+               }
+             } elsif( !$main::verified_rrd{$dotrrd} ) {
+               # Test to see if it exists
+               debug('base',"Attempting to verify RRD file via rrdcached");
+               $rrdinfo = RRDs::info($dotrrd,'--daemon',$$cfg{rrdcached},'--noflush');
+               if(!$rrdinfo) { # doesnt exist, or cannot be accessed
+                  my $e = RRDs::error();
+                  warn "$NOW: Cannot access $dotrrd; will attempt to (re)create it: $e\n" if $e;
+  
+                  # don't fail if interval is not set
+                  my $interval = $$cfg{interval};
+                  my $minhb = int($$cfg{interval} * 60)*2;
+                  $minhb = 600 if ($minhb <600); 
+                  my $rows = $$rcfg{'rrdrowcount'}{$router} || int( 4000 / $interval);
+                  my $rows30m = $$rcfg{'rrdrowcount30m'}{$router} || 800;
+                  my $rows2h = $$rcfg{'rrdrowcount2h'}{$router} || 800;
+                  my $rows1d = $$rcfg{'rrdrowcount1d'}{$router} || 800;
+                  my @args = ($dotrrd, '-b', $time-10, '-s', int($interval * 60),
+                               "DS:ds0:$up_abs:$minhb:0:$absi",
+                               "DS:ds1:$up_abs:$minhb:0:$abso",
+                               "RRA:AVERAGE:0.5:1:$rows",
+                               ( $interval < 30  ? ("RRA:AVERAGE:0.5:".int(30/$interval).":".$rows30m):()),
+                                 "RRA:AVERAGE:0.5:".int(120/$interval).":".$rows2h,
+                               "RRA:AVERAGE:0.5:".int(1440/$interval).":".$rows1d,
+                               "RRA:MAX:0.5:1:$rows",
+                               ( $interval < 30  ? ("RRA:MAX:0.5:".int(30/$interval).":".$rows30m):()),
+                               "RRA:MAX:0.5:".int(120/$interval).":".$rows2h,
+                               "RRA:MAX:0.5:".int(1440/$interval).":".$rows1d);
+                  # do we have holt winters rras defined here ?
+                  if (defined $$rcfg{'rrdhwrras'} and defined $$rcfg{'rrdhwrras'}{$router}){
+                      push @args, split(/\s+/, $$rcfg{'rrdhwrras'}{$router});
+                  }
+                  push @args,"--daemon", $$cfg{rrdcached};
+  
+                  debug('base',"create $dotrrd via rrdcached");
+                  debug('log', "RRDs::create(".join(',',@args).")");
+                  RRDs::create(@args);
+                  $e = RRDs::error();
+                  die "$NOW: ERROR: Cannot create RRD ".join(',',@args)."- $e\n" if $e;
+              } else {
+                  # Does the RRD file need to be tuned?
+                  if(
+                      ($rrdinfo->{"ds[ds0].max"} != $absi) 
+                      ||($rrdinfo->{"ds[ds1].max"} != $abso) 
+                      ||($rrdinfo->{"ds[ds0].type"} ne $up_abs) 
+                      ||($rrdinfo->{"ds[ds1].type"} ne $up_abs) 
+                  ) {
+                      debug('base',"RRD file needs to be tuned");
+                      warn "$NOW: RRDFile $dotrrd needs to be tuned but cannot do this remotely.\n";
+                  }
+              }
+              $main::verified_rrd{$dotrrd} = 1;
+            } else {
+               debug('base',"No need to verify this file again");
+            }
+        } elsif (-e $dotlog and not -e $dotrrd) {
              debug('base',"converting $dotlog to RRD format");
              if(defined $RRDs::VERSION and $RRDs::VERSION < 1.000271){
                 die "$NOW: ERROR: RRDtool version 1.0.27 or later required to perform log2rrd conversion\n";
@@ -894,10 +973,11 @@ sub writegraphics {
         $outlast = 'U' unless defined $outlast and $outlast =~ /\S/ and $outlast ne '##UNDEF##';
         debug('log', "RRDs::update($dotrrd, '$time:$inlast:$outlast')");
         my $start = gettimeofday();
-	my $rrddata;
+	my $rrddata = 0;
 	if ( $RRDs::VERSION >= 1.4 and $$cfg{rrdcached} ){
-	    $rrddata=RRDs::update($dotrrd, '--daemon', $$cfg{rrdcached}, "$time:$inlast:$outlast");
+	    RRDs::update($dotrrd, '--daemon', $$cfg{rrdcached}, "$time:$inlast:$outlast");
             debug('prof',sprintf("RRDs::update $dotrrd (rrdcached) - %.3fs",gettimeofday()-$start));
+            $rrddata = \{ dummy => "" };
 	} elsif ( $RRDs::VERSION >= 1.2 ){
 	    $rrddata=RRDs::updatev($dotrrd, "$time:$inlast:$outlast");
             debug('prof',sprintf("RRDs::updatev $dotrrd - %.3fs",gettimeofday()-$start));
@@ -926,7 +1006,9 @@ sub writegraphics {
              debug('log', "RRDs::fetch($dotrrd,'AVERAGE','-s',$lasttime,'-e',$lasttime)");        
              $cuin{d}{$router} = $fetch->[0][0];
              $cuout{d}{$router} = $fetch->[0][1];
-        } else {
+	} elsif ( $RRDs::VERSION >= 1.4 and $$cfg{rrdcached} ){
+             # Cannot check thresholds
+        } elsif($rrddata) {
              my $utime = $time - ($time % int($cfg->{interval}*60));
 	     $cuin{d}{$router} = $rrddata->{"[$utime]RRA[AVERAGE][1]DS[ds0]"};
 	     $cuout{d}{$router} = $rrddata->{"[$utime]RRA[AVERAGE][1]DS[ds1]"};

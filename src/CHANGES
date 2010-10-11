@@ -13,6 +13,8 @@ From: Steve Shipway s.shipway auckland.ac.nz
     consequently bypass the thresholding checks.
   - Changes to validity check error messages  to also report the file
     containing the error (as well as the line).
+* Added support for glob patterns in include
+* Make daemon reload cfg automatically when it changes
 
 From: john.belshaw cggveritas.com
 * added support for Arista to cfgmaker

@@ -17,6 +17,7 @@ package MRTG_lib;
 require 5.005;
 use strict;
 use vars qw($OS $SL $PS @EXPORT @ISA $VERSION %timestrpospattern);
+use FileHandle;
 
 if (eval {local $SIG{__DIE__}; require Net_SNMP_util} ) {
 	import Net_SNMP_util;
@@ -159,7 +160,8 @@ $VERSION = 2.100016;
        # Check for an environment setting for RRDCACHED_ADDRESS
        # Steve Shipway, Sep 2010
        'rrdcached' =>
-       [sub{(($_[0] =~ /^unix:(\S+)/)and(-w $1))}, sub{"Currently, only UNIX domain sockets are supported for RRDCached, and must exist and be writeable."}],
+#       [sub{(($_[0] =~ /^unix:(\S+)/)and(-w $1))}, sub{"Currently, only UNIX domain sockets are supported for RRDCached, and must exist and be writeable."}],
+       [sub{1},sub{"Internal Error"}],
 
        # Per Router CFG
        'target[]' => 
@@ -468,14 +470,27 @@ sub readcfg ($$$$;$$) {
         chomp;
         my $line = $.;
         if (/^include:\s*(.*?\S)\s*$/i){
-                push @filestack, $file;
-                push @handstack, $hand;
+                my $newhandle;
+                my @nextfiles;
                 $nextfile = $1;
-                local *FH;
-                open (FH, $nextfile)
-                 || open (FH, ($cfgfile =~ m#(.+)${MRTG_lib::SL}[^${MRTG_lib::SL}]+$#)[0] . ${MRTG_lib::SL} . $nextfile)
+                if( $nextfile =~ /\*/ ) {
+                    @nextfiles = glob( $nextfile );
+                    @nextfiles = glob( ($cfgfile =~ m#(.+)${MRTG_lib::SL}[^${MRTG_lib::SL}]+$#)[0] . ${MRTG_lib::SL} . $nextfile )
+                        if(!@nextfiles);	
+                } else { 
+                    $nextfile =  ($cfgfile =~ m#(.+)${MRTG_lib::SL}[^${MRTG_lib::SL}]+$#)[0] . ${MRTG_lib::SL} . $nextfile 
+                        if(!-r $nextfile);
+                    @nextfiles = ( $nextfile ); 
+                }
+                foreach $nextfile ( @nextfiles ) {
+                    $newhandle = new FileHandle;
+                    open ($newhandle, $nextfile)
                  || do { die "ERROR: unable to open include file: $nextfile\n"};
-                $hand = *FH;
+                    push @handstack, $hand;
+                    push @filestack, $file;
+                    $hand = $newhandle;
+                    $file = $nextfile;
+                }
                 next;
         }
 
@@ -646,6 +661,9 @@ sub readcfg ($$$$;$$) {
 	}
 	if( exists $cfg->{ rrdcached } ) {
         warn ("WARNING: You are running with RRDCached enabled (".$cfg->{ rrdcached }.").  This will disable all Threshold checking, since RRDCached does not support updatev and an update/fetch will cancel out the caching benefits.\n");
+        if( $cfg->{ rrdcached } !~ /^unix:/ ) {
+            warn("WARNING: You are running RRDCached in TCP mode.  This means that it will use its own Base Directory instead of WorkDir for storing the RRD files.  Also, changes to MaxBytes and DS Type will not be actioned after the RRD file has been created.\n");
+        }
 	}
 
 }

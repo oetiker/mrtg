@@ -47,7 +47,23 @@ Example:
 
 If included files are specified with relative paths, both the current
 working directory and the directory containing the main config file will
-be searched for the files.
+be searched for the files.  The current working directory will be searched
+first.
+
+If the included filename contains an asterisk, then this is taken as a
+wildcard for zero or more characters, and all matching files are included.
+Thus, you can use this statement to include all files in a specified
+subdirectory.
+
+Example:
+
+ Include: servers/*.cfg
+
+In this case, you should be very careful that your wildcard pattern does not
+find a match relative to the current working directory if you mean it to be
+relative to the main config file directory, since the working directory is 
+checked for a match first (as with a normal Include directive).  Therefore,
+use of something like '*/*' is discouraged.
 
 =back
 
@@ -394,20 +410,24 @@ RRDCACHED_ADDRESS environment variable, or by setting the RRDCached keyword
 in the configuration file.  Note that, if both are set, the configuration file
 keyword will take precedence.
 
-Currently, only UNIX domain sockets are supported, and you should note that
-using RRDCached mode will disable all Threshold checking normally done
-by MRTG.
+Only UNIX domain sockets are fully supported prior to RRDTool v1.5, and 
+you should note that using RRDCached mode will disable all Threshold checking 
+normally done by MRTG.  Appropriate warning messages will be printed if
+necessary.
 
-Example:
+Examples:
 
  RRDCached: unix:/var/tmp/rrdcached.sock
+ 
+ RRDCached: localhost:42217
 
 =head2 RunAsDaemon
 
 The RunAsDaemon keyword enables daemon mode operation. The purpose of daemon
 mode is that MRTG is launched once and not repeatedly (as it is with cron). 
 This behavior saves computing resourses as loading and parsing
-of configuration files happens only once.
+of configuration files happens only once on startup, and if the configuration 
+file is modified.
 
 Using daemon mode MRTG itself is responible for timing the measurement
 intervals. Therfore its important to set the Interval keyword to an
@@ -450,6 +470,10 @@ additionally specify
 
 this will make mrtg run but without detaching it from the terminal.
 
+If the modification date on the configuration file changes during operation,
+then MRTG will re-read the configuration on the next polling cycle.  Note that
+sub-files which are included from the main configuration do not have their
+modification times monitored, only the top-level file is so checked.
 
 =head2 ConversionCode
 
