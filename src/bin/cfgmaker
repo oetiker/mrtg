@@ -658,7 +658,7 @@ ECHO
                         /^name$/ && do { if($$i{Name} ){ $if_ref = "#".$$i{Name};  last;} next};
                         /^type$/ && do { if($$i{Type} ){ $if_ref = "%".$$i{Type};  last;} next};
                         /^nr$/   && do { $if_ref = $ifindex; last };
-                        die "ERROR: Invalid value for --ifref: '$$router_opt{ifref}'\n";
+                        die "ERROR: Invalid value for --ifref: $$router_opt{ifref} ($_)\n";
                     }
                     if (not defined $if_ref) {
                         push @prob, "--ifref=$$router_opt{ifref} is not unique for this interface";
@@ -692,7 +692,7 @@ ECHO
                     foreach (split /,/,$$router_opt{ifdesc}) {
                         /^ip$/    && do { if($$i{Ip})   { $if_title_desc = $$i{Ip};    last } next };
                         /^eth$/   && do { if($$i{Eth})  { $if_title_desc = $$i{Eth};   last } next };
-                        /^descr$/ && do { if($$i{Descr}){ $if_title_desc = $$i{Descr}; last } next };
+                        /^descr?$/ && do { if($$i{Descr}){ $if_title_desc = $$i{Descr}; last } next };
                         /^alias$/ && do {$if_title_desc =
                                      "$$i{Descr} $$i{ifAlias} $$i{CiscolocIfDescr}";
                                     last };
@@ -704,7 +704,7 @@ ECHO
                         /^$/ && do {$if_title_desc = $if_type_desc;
                                 $if_title_desc =~ s/^$/$$i{Descr}/;
                                 last };
-                        die "ERROR: Invalid value for --ifdesc: '$$router_opt{ifdesc}'\n";
+                        die "ERROR: Invalid value for --ifdesc: '$$router_opt{ifdesc} ($_)'\n";
                     }
                 }
 
