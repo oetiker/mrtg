@@ -1528,7 +1528,7 @@ sub parsev3 ($) {
 		$v3opt{privpassword} = $$opt{privpassword};
 	}
 	if (exists ($$opt{privprotocol})) {
-		die "Only des, 3desede, aescfb128, aescffb192 and aescfb256 are defined for --privprotocol" if $$opt{privprotocol} !~ /^(3*des(ede)*|aescfb(128|192|256))$/;
+		die "Only des, 3des, 3desede, aes, aes128 are defined for --privprotocol" if $$opt{privprotocol} !~ /^(?:3?des(?:ede)?|aes(?:128)?)$/;
 		die "--privprotocol can only be used with --privpassword or --privkey" if ! exists($$opt{privpassword}) and ! exists($$opt{privkey});
 		$v3opt{privprotocol} = lc($$opt{privprotocol});
 	}
