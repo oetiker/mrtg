@@ -1,0 +1,346 @@
+# Gnu Makefile for NetWare rateup.nlm target * 17-Feb-2007
+# for use with gcc/nlmconv or Metrowerks CodeWarrior compiler
+# use with: make -f Makefile.NetWare [all|clean|dist|distclean|help]
+
+TARGET	= rateup
+DESCR	= MRTG Rateup Command Utility $(RATEUP_VERSION_STR)
+COPYR	= Distributed under the GNU General Public License
+WWWURL	= http://www.mrtg.org/
+
+MTSAFE	= YES
+#SCREEN	= NONE
+STACK	= 65536
+# Comment the line below if you dont want to load protected automatically.
+#LDRING	= 3
+
+# Edit the path below to point to your Novell NDK.
+ifndef NDKBASE
+	NDKBASE	= c:/novell
+endif
+# Edit the path below to point to your install destination.
+ifndef INSTDIR
+	INSTDIR	= s:/mrtg/run
+endif
+
+# All library code is statically linked to avoid problems with other lib NLMs. 
+# Base for the lib sources
+ifndef LIBBASE
+	LIBBASE	= ..
+endif
+# All library code is statically linked to avoid problems with other lib NLMs. 
+# Edit the path below to point to your libgd sources or set environment var.
+ifndef LIBGD
+	LIBGD	= $(LIBBASE)/gd-2.0.34
+endif
+# Edit the path below to point to your libpng sources or set environment var.
+ifndef LIBPNG
+	LIBPNG	= $(LIBBASE)/libpng-1.2.16
+endif
+# Edit the path below to point to your zlib sources or set environment var.
+ifndef ZLIBSDK
+	ZLIBSDK	= $(LIBBASE)/zlib-1.2.3
+endif
+
+# Edit the var below to point to your library architecture.
+ifndef LIBARCH
+#	LIBARCH = CLIB
+	LIBARCH = LIBC
+endif
+
+# The following defines your compiler.
+ifdef METROWERKS
+	CC = mwccnlm
+else
+	CC = gcc
+endif
+
+AWK	= awk
+#RM	= rm -f
+CP	= cp -afv
+MV	= mv -f
+
+ZIP	= zip -qzR9
+ARCHIVE	= rateup-$(RATEUP_VERSION_STR)-nw.zip
+
+# If you want to mark the target as MTSAFE you will need a tool for
+# generating the xdc data for the linker; here's a minimal tool:
+# http://www.gknw.de/development/prgtools/mkxdc.zip
+MPKXDC	= mkxdc
+
+# Must be equal to DEBUG or NDEBUG
+DB	= NDEBUG
+#DB	= DEBUG
+
+# Optimization: -O<n> or debugging: -g
+ifeq ($(DB),NDEBUG)
+	OPT	= -O2
+	OBJDIR	= release
+else
+	OPT	= -g
+	OBJDIR	= debug
+endif
+
+# Include the version info retrieved from source.
+-include $(OBJDIR)/version.inc
+
+# Global flags for all compilers
+CFLAGS	= $(OPT) -D$(DB) -nostdinc -DNETWARE -DN_PLAT_NLM -DHAVE_LIBPNG
+
+ifeq ($(CC),mwccnlm)
+	LD	= mwldnlm
+	LDFLAGS	= -nostdlib $(PRELUDE) $(OBJDIR)/*.o -o $@ -commandfile
+	CFLAGS	+= -gccinc -msgstyle gcc -inline off -opt nointrinsics -proc 586
+	CFLAGS	+= -relax_pointers
+	#CFLAGS	+= -w on,nounused,nounusedexpr
+	#CFLAGS	+= -ansi strict
+	ifeq ($(LIBARCH),LIBC)
+		PRELUDE = $(SDK_LIBC)/imports/libcpre.o
+		CFLAGS += -align 4
+	else
+		PRELUDE = "$(METROWERKS)/Novell Support/libraries/runtime/prelude.obj"
+		CFLAGS += -include "$(METROWERKS)/Novell Support/headers/nlm_prefix.h"
+		CFLAGS += -align 1
+	endif
+else
+	LD	= nlmconv
+	LDFLAGS	= -T
+	CFLAGS	+= -fno-builtin -fpcc-struct-return -fno-strict-aliasing
+	CFLAGS	+= -Wall # -Wno-unused # -pedantic
+	ifeq ($(LIBARCH),LIBC)
+		PRELUDE = $(SDK_LIBC)/imports/libcpre.gcc.o
+	else
+		PRELUDE = $(NDK_ROOT)/pre/prelude.o
+		CFLAGS += -include $(NDKBASE)/nlmconv/genlm.h
+	endif
+endif
+
+ifeq ($(findstring linux,$(OSTYPE)),linux)
+DL	= '
+DS	= /
+else
+DS	= \\
+endif
+
+ifeq ($(MTSAFE),YES)
+	XDCOPT = -n
+endif
+ifeq ($(MTSAFE),NO)
+	XDCOPT = -u
+endif
+ifdef XDCOPT
+	XDCDATA = $(OBJDIR)/$(TARGET).xdc
+endif
+ifndef COPYR
+	COPYR = Copyright (c) 2007 The Open Source Community.
+endif
+ifndef DESCR
+	DESCR = $(TARGET) Command Extension
+endif
+
+DESCR += ($(LIBARCH)) - $(CC) build
+
+NDK_ROOT = $(NDKBASE)/ndk
+SDK_CLIB = $(NDK_ROOT)/nwsdk
+SDK_LIBC = $(NDK_ROOT)/libc
+
+ifeq ($(LIBARCH),LIBC)
+	INCLUDES = -I$(SDK_LIBC)/include -I$(SDK_LIBC)/include/nks
+else
+	INCLUDES = -I$(SDK_CLIB)/include/nlm -I$(SDK_CLIB)/include
+endif
+
+INCLUDES += -I$(LIBGD) -I$(LIBPNG) -I$(ZLIBSDK)
+
+CFLAGS += $(INCLUDES)
+
+vpath %.c src $(LIBGD) $(LIBPNG) $(ZLIBSDK)
+
+GDOBJS	= \
+	$(OBJDIR)/gd.o \
+	$(OBJDIR)/gd_io.o \
+	$(OBJDIR)/gd_io_dp.o \
+	$(OBJDIR)/gd_io_file.o \
+	$(OBJDIR)/gd_io_ss.o \
+	$(OBJDIR)/gd_png.o \
+	$(OBJDIR)/gd_ss.o \
+	$(OBJDIR)/gdcache.o \
+	$(OBJDIR)/gdfonts.o \
+	$(OBJDIR)/gdhelpers.o \
+	$(OBJDIR)/gdtables.o \
+	$(EOLIST)
+ifeq "$(wildcard $(LIBGD)/gd_security.c)" "$(LIBGD)/gd_security.c"
+GDOBJS	+= \
+	$(OBJDIR)/gd_security.o \
+	$(EOLIST)
+endif
+
+PNGOBJS	= \
+	$(OBJDIR)/png.o \
+	$(OBJDIR)/pngerror.o \
+	$(OBJDIR)/pnggccrd.o \
+	$(OBJDIR)/pngget.o \
+	$(OBJDIR)/pngmem.o \
+	$(OBJDIR)/pngpread.o \
+	$(OBJDIR)/pngread.o \
+	$(OBJDIR)/pngrio.o \
+	$(OBJDIR)/pngrtran.o \
+	$(OBJDIR)/pngrutil.o \
+	$(OBJDIR)/pngset.o \
+	$(OBJDIR)/pngtrans.o \
+	$(OBJDIR)/pngvcrd.o \
+	$(OBJDIR)/pngwio.o \
+	$(OBJDIR)/pngwrite.o \
+	$(OBJDIR)/pngwtran.o \
+	$(OBJDIR)/pngwutil.o \
+	$(EOLIST)
+
+ZLIBOBJS	= \
+	$(OBJDIR)/adler32.o \
+	$(OBJDIR)/compress.o \
+	$(OBJDIR)/crc32.o \
+	$(OBJDIR)/deflate.o \
+	$(OBJDIR)/inflate.o \
+	$(OBJDIR)/inffast.o \
+	$(OBJDIR)/inftrees.o \
+	$(OBJDIR)/trees.o \
+	$(OBJDIR)/zutil.o \
+	$(EOLIST)
+ifeq "$(wildcard $(ZLIBSDK)/infblock.c)" "$(ZLIBSDK)/infblock.c"
+ZLIBOBJS	+= \
+	$(OBJDIR)/infblock.o \
+	$(OBJDIR)/infcodes.o \
+	$(OBJDIR)/infutil.o \
+	$(EOLIST)
+endif
+
+OBJS	= $(GDOBJS) $(PNGOBJS) $(ZLIBOBJS) $(OBJDIR)/$(TARGET).o
+
+
+all: $(OBJDIR) $(OBJDIR)/$(TARGET).nlm
+
+dist: all $(OBJDIR)/readme.txt
+	-$(RM) $(OBJDIR)/*.o $(OBJDIR)/$(TARGET).map $(OBJDIR)/$(TARGET).ncv
+	-$(RM) $(OBJDIR)/$(TARGET).def $(XDCDATA)
+	-$(RM) $(OBJDIR)/version.inc
+	@-$(CP) -a COPYRIGHT $(OBJDIR)
+	@echo Creating $(ARCHIVE)
+	@$(ZIP) $(ARCHIVE) $(OBJDIR)/* < $(OBJDIR)/readme.txt
+
+install: all
+	@[ -d $(INSTDIR) ] || mkdir $(INSTDIR)
+	@$(CP) $(TARGET).nlm $(INSTDIR)
+
+clean:
+	-$(RM) -r $(OBJDIR)
+
+distclean: clean
+	-$(RM) $(ARCHIVE)
+
+$(OBJDIR):
+	@mkdir $@
+
+$(OBJDIR)/version.inc: $(TARGET).c $(OBJDIR) get_ver.awk
+	@echo Creating $@
+	@$(AWK) -f get_ver.awk $< > $@
+
+$(OBJDIR)/%.o: %.c
+	@echo Compiling $<
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/$(TARGET).nlm: $(OBJDIR) $(OBJS) $(OBJDIR)/$(TARGET).def $(XDCDATA)
+	@echo Linking $@
+	@-$(RM) $@
+	@$(LD) $(LDFLAGS) $(OBJDIR)/$(TARGET).def
+ifeq ($(LD),nlmconv)
+	@$(MV) $(TARGET).nlm $(OBJDIR)
+endif
+
+$(OBJDIR)/%.xdc: Makefile.NetWare
+	@echo Creating $@
+	@$(MPKXDC) $(XDCOPT) $@
+
+$(OBJDIR)/%.def: Makefile.NetWare $(OBJDIR)/version.inc 
+	@echo $(DL)# DEF Linker File for use with gcc and nlmconv$(DL) > $@
+	@echo $(DL)# or with Codewarrior command line compiler.$(DL) >> $@
+	@echo $(DL)# Do not edit this file - it is created by make!$(DL) >> $@
+	@echo $(DL)# All your changes will be lost!!$(DL) >> $@
+	@echo $(DL)#$(DL) >> $@
+	@echo $(DL)copyright "$(COPYR)"$(DL) >> $@
+	@echo $(DL)description "$(DESCR)"$(DL) >> $@
+	@echo $(DL)version $(RATEUP_VERSION)$(DL) >> $@
+
+ifdef NLMTYPE
+	@echo $(DL)type $(NLMTYPE)$(DL) >> $@
+else
+	@echo $(DL)type 0$(DL) >> $@
+endif
+ifdef STACK
+	@echo $(DL)stack $(STACK)$(DL) >> $@
+endif
+	@echo $(DL)threadname "$(TARGET)"$(DL) >> $@
+ifdef SCREEN
+	@echo $(DL)screenname "$(SCREEN)"$(DL) >> $@
+else
+	@echo $(DL)screenname "DEFAULT"$(DL) >> $@
+endif
+ifeq ($(DB),DEBUG)
+	@echo $(DL)debug$(DL) >> $@
+endif
+ifeq ($(LIBARCH),CLIB)
+	@echo $(DL)start _Prelude$(DL) >> $@
+	@echo $(DL)exit _Stop$(DL) >> $@
+	@echo $(DL)import @$(NDK_ROOT)/nwsdk/imports/clib.imp$(DL) >> $@
+	@echo $(DL)import @$(NDK_ROOT)/nwsdk/imports/threads.imp$(DL) >> $@
+	@echo $(DL)import @$(NDK_ROOT)/nwsdk/imports/nlmlib.imp$(DL) >> $@
+	@echo $(DL)module clib$(DL) >> $@
+else
+	@echo $(DL)start _LibCPrelude$(DL) >> $@
+	@echo $(DL)exit _LibCPostlude$(DL) >> $@
+	@echo $(DL)check _LibCCheckUnload$(DL) >> $@
+	@echo $(DL)import @$(NDK_ROOT)/libc/imports/libc.imp$(DL) >> $@
+	@echo $(DL)import @$(NDK_ROOT)/libc/imports/netware.imp$(DL) >> $@
+	@echo $(DL)module libc$(DL) >> $@
+	@echo $(DL)pseudopreemption$(DL) >> $@
+	@echo $(DL)flag_on 64$(DL) >> $@
+endif
+ifeq ($(LDRING),0)
+	@echo $(DL)flag_on 16$(DL) >> $@
+endif
+ifeq ($(LDRING),3)
+	@echo $(DL)flag_on 512$(DL) >> $@
+endif
+ifdef XDCDATA
+	@echo $(DL)xdcdata $(XDCDATA)$(DL) >> $@
+endif
+ifeq ($(LD),nlmconv)
+	@echo $(DL)input $(OBJS)$(DL) >> $@
+	@echo $(DL)input $(PRELUDE)$(DL) >> $@
+	@echo $(DL)output $(TARGET).nlm$(DL) >> $@
+endif
+
+$(OBJDIR)/readme.txt: Makefile.NetWare $(OBJDIR)/version.inc
+	@echo Creating $@
+	@echo $(DL)This is a binary distribution for NetWare platform.$(DL) > $@
+	@echo $(DL)MRTG rateup version $(RATEUP_VERSION_STR)$(DL) >> $@
+	@echo $(DL)This binary was built with these libs:$(DL) >> $@
+	@echo $(DL)libpng Version : $(notdir $(LIBPNG))$(DL) >> $@
+	@echo $(DL)libGD  Version : $(notdir $(LIBGD))$(DL) >> $@
+	@echo $(DL)Zlib   Version : $(notdir $(ZLIBSDK))$(DL) >> $@
+	@echo $(DL)Please download the complete MRTG package for$(DL) >> $@
+	@echo $(DL)any further documentation:$(DL) >> $@
+	@echo $(DL)http://www.mrtg.org/$(DL) >> $@
+
+help: $(OBJDIR)/version.inc
+	@echo $(DL)===========================================================$(DL)
+	@echo $(DL)libpng Source = $(LIBPNG)$(DL)
+	@echo $(DL)libGD Source  = $(LIBGD)$(DL)
+	@echo $(DL)Zlib SDK      = $(ZLIBSDK)$(DL)
+	@echo $(DL)===========================================================$(DL)
+	@echo $(DL)RRDTool $(RATEUP_VERSION_STR) - available targets are:$(DL)
+	@echo $(DL)$(MAKE) all$(DL)
+	@echo $(DL)$(MAKE) clean$(DL)
+	@echo $(DL)$(MAKE) dist$(DL)
+	@echo $(DL)$(MAKE) distclean$(DL)
+	@echo $(DL)===========================================================$(DL)
+
+

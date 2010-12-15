@@ -1,0 +1,431 @@
+#!/opt/gnu/bin/perl
+# -*- mode: Perl -*-
+##################################################################
+# Config file creator
+##################################################################
+# Cloned form cfgmaker Mark Trettin <mkt@lucent.com>
+# Created by Tobias Oetiker <oetiker@ee.ethz.ch>
+# this produces a config file for one router, by bulling info
+# off the router via snmp
+#################################################################
+#
+# Distributed under the GNU copyleft
+#
+# $Id: atmmaker,v 1.1.1.1 2002/02/26 10:16:31 oetiker Exp $
+#
+use SNMP_Session;
+use BER;
+use Socket;
+use strict;
+
+%snmpget::OIDS = (  'sysDescr' => '1.3.6.1.2.1.1.1.0',
+		    'sysContact' => '1.3.6.1.2.1.1.4.0',
+		    'sysName' => '1.3.6.1.2.1.1.5.0',
+		    'sysLocation' => '1.3.6.1.2.1.1.6.0',
+		    'sysUptime' => '1.3.6.1.2.1.1.3.0',
+		    'ifNumber' =>  '1.3.6.1.2.1.2.1.0',
+		    ###################################
+		    # add the ifNumber ....
+		    'ifDescr' => '1.3.6.1.2.1.2.2.1.2',
+		    'ifType' => '1.3.6.1.2.1.2.2.1.3',
+		    'ifIndex' => '1.3.6.1.2.1.2.2.1.1',
+		    'ifSpeed' => '1.3.6.1.2.1.2.2.1.5', 
+		    'ifOperStatus' => '1.3.6.1.2.1.2.2.1.8',		 
+		    'ifAdminStatus' => '1.3.6.1.2.1.2.2.1.7',		 
+		    # up 1, down 2, testing 3
+		    'ipAdEntAddr' => '1.3.6.1.2.1.4.20.1.1',
+		    'ipAdEntIfIndex' => '1.3.6.1.2.1.4.20.1.2',
+		    'sysObjectID' => '1.3.6.1.2.1.1.2.0',
+		    'CiscolocIfDescr' => '1.3.6.1.4.1.9.2.2.1.1.28',
+		    # asx port group info
+		    'asxPortAdmnStat' => '1.3.6.1.4.1.326.2.2.2.1.2.2.1.2',
+		    'asxPortOperStat' => '1.3.6.1.4.1.326.2.2.2.1.2.2.1.3',
+		    'asxPortRemoteIpAddress'=> '1.3.6.1.4.1.326.2.2.2.1.2.2.1.6',
+		    'asxPortILMIRemoteIpAddress' => '1.3.6.1.4.1.326.2.2.2.1.2.2.1.22',
+		    'asxPortMaxBandwidthIn' => '1.3.6.1.4.1.326.2.2.2.1.2.2.1.9',
+		    'asxhwPortName' => '1.3.6.1.4.1.326.2.2.1.1.2.3.1.13',
+		    'asxPortNumber' => '1.3.6.1.4.1.326.2.2.2.1.2.2.1.1',
+		 );
+
+
+
+
+sub main {
+
+
+  my(%ifType_d)=('1'=>'Other',
+		 '2'=>'regular1822',
+		 '3'=>'hdh1822',
+		 '4'=>'ddnX25',
+		 '5'=>'rfc877x25',
+		 '6'=>'ethernetCsmacd',
+		 '7'=>'iso88023Csmacd',
+		 '8'=>'iso88024TokenBus',
+		 '9'=>'iso88025TokenRing',
+		 '10'=>'iso88026Man',
+		 '11'=>'starLan',
+		 '12'=>'proteon10Mbit',
+		 '13'=>'proteon80Mbit',
+		 '14'=>'hyperchannel',
+		 '15'=>'fddi',
+		 '16'=>'lapb',
+		 '17'=>'sdlc',
+		 '18'=>'ds1',
+		 '19'=>'e1',
+		 '20'=>'basicISDN',
+		 '21'=>'primaryISDN',
+		 '22'=>'propPointToPointSerial',
+		 '23'=>'ppp',
+		 '24'=>'softwareLoopback',
+		 '25'=>'eon',
+		 '26'=>'ethernet-3Mbit',
+		 '27'=>'nsip',
+		 '28'=>'slip',
+		 '29'=>'ultra',
+		 '30'=>'ds3',
+		 '31'=>'sip',
+		 '32'=>'frame-relay',
+		 '33'=>'rs232',
+		 '34'=>'para',
+		 '35'=>'arcnet',
+		 '36'=>'arcnetPlus',
+		 '37'=>'atm',
+		 '38'=>'miox25',
+		 '39'=>'sonet',
+		 '40'=>'x25ple',
+		 '41'=>'iso88022llc',
+		 '42'=>'localTalk',
+		 '43'=>'smdsDxi',
+		 '44'=>'frameRelayService',
+		 '45'=>'v35',
+		 '46'=>'hssi',
+		 '47'=>'hippi',
+		 '48'=>'modem',
+		 '49'=>'aal5',
+		 '50'=>'sonetPath',
+		 '51'=>'sonetVT',
+		 '52'=>'smdsIcip',
+		 '53'=>'propVirtual',
+		 '54'=>'propMultiplexor',
+		 '55'=>'100BaseVG'
+		 );
+
+  my($community,$router) = split /\@/, $ARGV[0];
+  die <<USAGE  unless $community && $router;
+
+USAGE: cfgmaker 'community'\@'router'
+
+EXAMPLE:  cfgmaker public\@ezwf7.ethz.ch >>mrtg.cfg
+
+USAGE
+
+  
+  my($sysDescr,$sysContact,$sysName,$sysLocation,$ifNumber,$sysObjectID) =
+    snmpget($router,$community,
+	    'sysDescr','sysContact','sysName',	'sysLocation', 'ifNumber',
+	    'sysObjectID');
+   $sysDescr =~ s/\r/<BR>/g;  # Change returns to <BR>
+   my($cisco_router_sysid) = '1\.3\.6\.1\.4\.1\.9';
+   my($ciscobox) = ($sysObjectID =~ /^$cisco_router_sysid/);
+   my($foreasx_switch_sysid) = '1\.3\.6\.1\.4\.1\.326';
+   my($foreasx) = ($sysObjectID =~ /^$foreasx_switch_sysid/);
+
+    print <<ECHO;
+
+
+######################################################################
+# Description: $sysDescr
+#     Contact: $sysContact
+# System Name: $sysName
+#    Location: $sysLocation
+#.....................................................................
+ECHO
+
+  my @ipadent = snmpgettable($router,$community, 'ipAdEntAddr');
+  my @ipadentif = snmpgettable($router,$community, 'ipAdEntIfIndex');
+
+  my(%ipaddr, %iphost,$index);
+  while (scalar @ipadentif){
+    $index = shift @ipadentif;
+    $ipaddr{$index} = shift @ipadent;
+    $iphost{$index} = 
+      gethostbyaddr(pack('C4',split(/\./,$ipaddr{$index})), AF_INET);
+    if ($iphost{$index} eq ''){
+	 $iphost{$index} = 'No hostname defined for IP address';
+    }
+  }
+
+  my(@ifdescr) = snmpgettable($router,$community, 'ifDescr');
+  my(@iftype) = snmpgettable($router,$community, 'ifType');
+  my(@ifspeed) = snmpgettable($router,$community, 'ifSpeed');
+  my(@ifadminstatus) = snmpgettable($router,$community, 'ifAdminStatus');
+  my(@ifoperstatus) = snmpgettable($router,$community, 'ifOperStatus');
+  my(@ifindex) = snmpgettable($router,$community, 'ifIndex');
+
+  # Get the user configurable interface description entered in the config 
+  # if it's a cisco-box
+  my @ciscodescr;
+  if ($ciscobox) {
+      @ciscodescr = snmpgettable($router,$community, 'CiscolocIfDescr');
+  }
+
+
+  if ($foreasx) {
+      # Get the FORE ATM Switch port configurations
+      # if it's a ASX Switch
+
+      my @asxipaddress;
+      my @asxilmiaddress;
+      my @asxifadminstatus;
+      my @asxifoperstatus;
+      my @asxifilmiaddress;
+      my @asxifipaddress;
+      my @asxmaxbandwidthin;
+      my @asxhwportname;
+      my @asxportnumber;
+
+      @asxportnumber = snmpgettable($router,$community, 'asxPortNumber');
+      @asxhwportname = snmpgettable($router,$community, 'asxhwPortName');
+      @asxipaddress = snmpgettable($router,$community, 'asxPortRemoteIpAddress');
+      @asxilmiaddress = snmpgettable($router,$community, 'asxPortILMIRemoteIpAddress');
+      @asxmaxbandwidthin = snmpgettable($router,$community, 'asxPortMaxBandwidthIn');
+      @asxifadminstatus = snmpgettable($router,$community, 'asxPortAdmnStat');
+      @asxifoperstatus = snmpgettable($router,$community, 'asxPortOperStat');
+
+
+      my(%ipaddr, %iphost,%ipiladdr, %ipilhost);
+
+      my(%sportnumber, %sportname, %sifadminstatus, %sifoperstatus, %smaxbandwidth);
+
+      while (scalar @asxportnumber) {
+	    $index = shift @asxportnumber;
+	    $sportnumber{$index} = $index;
+	    $sportname{$index} = shift @asxhwportname;
+	    $smaxbandwidth{$index} = shift @asxmaxbandwidthin;
+	    $sifadminstatus{$index} = shift @asxifadminstatus;
+	    $sifoperstatus{$index} = shift @asxifoperstatus;
+	    $ipaddr{$index} = shift @asxipaddress;
+	    $ipiladdr{$index} = shift @asxilmiaddress;
+
+	    $iphost{$index} = 
+	      gethostbyaddr(pack('C4',split(/\./,$ipaddr{$index})), AF_INET);
+	    if ($iphost{$index} eq ''){
+		 $iphost{$index} = $ipaddr{$index};
+	    }
+	    $ipilhost{$index} = 
+	      gethostbyaddr(pack('C4',split(/\./,$ipiladdr{$index})), AF_INET);
+	    if ($ipilhost{$index} eq ''){
+		 $ipilhost{$index} = $ipiladdr{$index};
+	    }
+      }
+
+      foreach $index (keys %sportnumber) {
+ 	my $c;
+	my $speed = int($smaxbandwidth{$index}*53); # cells to bytes
+ 	my $speed_str=&fmi($speed);
+	my $name="$router.$index";
+
+	if (($sifoperstatus{$index} != 1)
+		&& ($sifadminstatus{$index} == 3)) {
+	    print <<ECHO;
+########
+######## This Interface is one of the following
+######## - administratively not UP
+######## - it is in test mode
+######## - it is a softwareLoopback interface
+######## - has a unrealistic speed setting
+######## It is commented out for this reason.
+########
+ECHO
+	    $c="# ";
+	} else {
+	    $c = '';
+	}
+    
+	print <<ECHO;
+${c}
+${c}Target[$name]: CellsRcvd.$index&CellsTrans.$index:$community\@$router \* 53
+${c}MaxBytes[$name]: $speed
+${c}Options[$name]: growright
+${c}WithPeak[$name]: dwmy
+${c}Title[$name]: $sysName ($iphost{$index}): $sportname{$index}
+${c}PageTop[$name]: <H1>Traffic Analysis for $sportname{$index}
+${c} </H1>
+${c} <TABLE>
+${c}   <TR><TD>System:</TD><TD>$sysName in $sysLocation</TD></TR>
+${c}   <TR><TD>Maintainer:</TD><TD>$sysContact</TD></TR>
+${c}   <TR><TD>Interface:</TD><TD>$sportname{$index} ($index)</TD></TR>
+ECHO
+	print <<ECHO if $iphost{$index}!="255.255.255.255";
+${c}   <TR><TD>Remote IP:</TD><TD>$iphost{$index} ($ipaddr{$index})</TD></TR>
+ECHO
+	print <<ECHO if $ipilhost{$index}!="255.255.255.255";
+${c}   <TR><TD>Remote ILMI IP:</TD><TD>$ipilhost{$index} ($ipiladdr{$index})</TD></TR>
+ECHO
+	print <<ECHO;
+${c}   <TR><TD>Max Speed:</TD>
+${c}       <TD>$speed_str (Sonet)</TD></TR>
+${c}  </TABLE>
+${c}
+#---------------------------------------------------------------
+ECHO
+    }
+  }
+  else {
+
+	  my(%sifdesc,%siftype,%sifspeed,%sifadminstatus,%sifoperstatus,%sciscodescr);
+	  while (scalar @ifindex) {
+	  # as these arrays get filled from the bottom, 
+	  # we need to empty them from the botom as well ...
+	  # fifo
+	    $index = shift @ifindex;
+	    $sifdesc{$index} = shift @ifdescr;
+	    $siftype{$index} = shift @iftype;
+	    print STDERR $siftype{$index};
+	    $sifspeed{$index} = shift @ifspeed;
+	    $sifadminstatus{$index} = shift @ifadminstatus;
+	    $sifoperstatus{$index} = shift @ifoperstatus;
+	    # especially since cisco does not return a if
+	    # descr for each interface it has ...
+	    $sciscodescr{$index} = "<BR>" . (shift @ciscodescr) if @ciscodescr;
+	}
+
+	foreach $index (keys %sifdesc) {
+	my $c;
+	my $speed = int($sifspeed{$index} / 8); # bits to byte
+ 	my $speed_str=&fmi($speed);
+	my $name="$router.$index";
+
+	if (($sifadminstatus{$index} != 1)
+		|| ($siftype{$index} == 24)
+		|| ($speed == 0 ) 
+		|| ($speed > 400 * 10**6)  #speeds of 400 MByte/s are not realistic
+		|| ($sifoperstatus{$index} == 3)) {
+	print <<ECHO;
+########
+######## This Interface is one of the following
+######## - administratively not UP
+######## - it is in test mode
+######## - it is a softwareLoopback interface
+######## - has a unrealistic speed setting
+######## It is commented out for this reason.
+########
+ECHO
+  $c="# ";
+  }else {
+    $c = '';
+  }
+    
+  print <<ECHO;
+${c}
+${c}Target[$name]: $index:$community\@$router
+${c}MaxBytes[$name]: $speed
+${c}Options[$name]: growright
+${c}WithPeak[$name]: dwmy
+${c}Title[$name]: $sysName ($iphost{$index}): $sifdesc{$index}
+${c}PageTop[$name]: <H1>Traffic Analysis for $sifdesc{$index}
+${c} $sciscodescr{$index}</H1>
+${c} <TABLE>
+${c}   <TR><TD>System:</TD><TD>$sysName in $sysLocation</TD></TR>
+${c}   <TR><TD>Maintainer:</TD><TD>$sysContact</TD></TR>
+${c}   <TR><TD>Interface:</TD><TD>$sifdesc{$index} ($index)</TD></TR>
+${c}   <TR><TD>IP:</TD><TD>$iphost{$index} ($ipaddr{$index})</TD></TR>
+${c}   <TR><TD>Max Speed:</TD>
+${c}       <TD>$speed_str ($ifType_d{$siftype{$index}})</TD></TR>
+${c}  </TABLE>
+${c}
+#---------------------------------------------------------------
+ECHO
+  }
+ }
+}
+  
+main;
+exit(0);
+
+sub snmpget{  
+  my($host,$community,@vars) = @_;
+  my(@enoid, $var,$response, $bindings, $binding, $value, $inoid,$outoid,
+     $upoid,$oid,@retvals);
+  foreach $var (@vars) {
+    die "Unknown SNMP var $var\n" 
+      unless $snmpget::OIDS{$var};
+    push @enoid,  encode_oid((split /\./, $snmpget::OIDS{$var}));
+  }
+  srand();
+  my $session = SNMP_Session->open ($host ,
+                                 $community, 
+                                 161);
+  if ($session->get_request_response(@enoid)) {
+    $response = $session->pdu_buffer;
+    ($bindings) = $session->decode_get_response ($response);
+    $session->close ();    
+    while ($bindings) {
+      ($binding,$bindings) = decode_sequence ($bindings);
+      ($oid,$value) = decode_by_template ($binding, "%O%@");
+      my $tempo = pretty_print($value);
+      $tempo=~s/\t/ /g;
+      $tempo=~s/\n/ /g;
+      $tempo=~s/^\s+//;
+      $tempo=~s/\s+$//;
+
+      push @retvals,  $tempo;
+    }
+    
+    return (@retvals);
+  } else {
+    die "No answer from $ARGV[0]. You may be using the wrong community\n";
+  }
+}
+
+sub snmpgettable{
+  my($host,$community,$var) = @_;
+  my($next_oid,$enoid,$orig_oid, 
+     $response, $bindings, $binding, $value, $inoid,$outoid,
+     $upoid,$oid,@table,$tempo);
+  die "Unknown SNMP var $var\n" 
+    unless $snmpget::OIDS{$var};
+  
+  $orig_oid = encode_oid(split /\./, $snmpget::OIDS{$var});
+  $enoid=$orig_oid;
+  srand();
+  my $session = SNMP_Session->open ($host ,
+                                 $community, 
+                                 161);
+  for(;;)  {
+    if ($session->getnext_request_response(($enoid))) {
+      $response = $session->pdu_buffer;
+      ($bindings) = $session->decode_get_response ($response);
+      ($binding,$bindings) = decode_sequence ($bindings);
+      ($next_oid,$value) = decode_by_template ($binding, "%O%@");
+      # quit once we are outside the table
+      last unless BER::encoded_oid_prefix_p($orig_oid,$next_oid);
+      $tempo = pretty_print($value);
+      #print "$var: '$tempo'\n";
+      $tempo=~s/\t/ /g;
+      $tempo=~s/\n/ /g;
+      $tempo=~s/^\s+//;
+      $tempo=~s/\s+$//;
+      push @table, $tempo;
+     
+    } else {
+      die "No answer from $ARGV[0]\n";
+    }
+    $enoid=$next_oid;
+  }
+  $session->close ();    
+  return (@table);
+}
+
+sub fmi {
+  my($number) = $_[0];
+  my(@short);
+  @short = ("Bytes/s","kBytes/s","MBytes/s","GBytes/s","TBytes/s");
+  my $digits=length("".$number);
+  my $divm=0;
+  while ($digits-$divm*3 > 4) { $divm++; }
+  my $divnum = $number/10**($divm*3);
+  return sprintf("%1.1f %s",$divnum,$short[$divm]);
+}
+
+

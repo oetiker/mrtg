@@ -1,0 +1,38 @@
+#!/usr/local/bin/perl5
+# -*- mode: Perl -*-
+##################################################################
+# This file controls the creation of all the MRTG config files from OV
+##################################################################
+# Created by Laurie Gellatly <gellatly@one.net.au>
+# See newrtrov.txt for a description of what is performed
+#################################################################
+#
+# Distributed under the GNU copyleft
+#
+# $Id: ovtst,v 1.1.1.1 2002/02/26 10:16:36 oetiker Exp $
+#
+use Socket;
+use strict;
+use vars '$DEBUG';
+my $DEBUG = 0;
+my $webdir = "/var/opt/ns-fasttrack/docs/mrtg/";
+my $rundir = "/opt/mrtg/run";
+my $testout = "test.out";
+my $roothtml = "routers.html";
+
+my($router,$sysn,$sysncfg,$sysnhtml,$cnt,@sysipnms,@mrtgc,@sysnms); 
+
+sub main {
+
+   chdir $rundir;
+   @sysnms=%ENV;
+   chomp(@sysipnms);
+   open (MRTGC,">".$testout);
+   for ($cnt = 0; $cnt < @sysnms ; $cnt++){
+      print MRTGC "$sysnms[$cnt]\n";
+   }
+   close (MRTGC);
+   }  
+main;
+exit(0);
+
