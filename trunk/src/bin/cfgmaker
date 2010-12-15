@@ -654,7 +654,7 @@ ECHO
                     foreach  (split /,/,$$router_opt{ifref}) {
                         /^ip$/   && do { if($$i{Ip}   ){ $if_ref = "/".$$i{Ip};    last;} next};
                         /^eth$/  && do { if($$i{Eth}  ){ $if_ref = "!".$$i{Eth};   last;} next};
-                        /^descr$/&& do { if($$i{Descr}){ $if_ref = "\\".$$i{Descr};last;} next};
+                        /^descr?$/&& do { if($$i{Descr}){ $if_ref = "\\".$$i{Descr};last;} next};
                         /^name$/ && do { if($$i{Name} ){ $if_ref = "#".$$i{Name};  last;} next};
                         /^type$/ && do { if($$i{Type} ){ $if_ref = "%".$$i{Type};  last;} next};
                         /^nr$/   && do { $if_ref = $ifindex; last };
