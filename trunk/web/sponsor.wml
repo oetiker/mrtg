@@ -12,6 +12,10 @@ If you profit from MRTG and want to support the project as a whole, you
 could <a href="http://it.oetiker.ch/monitoring/sponsoring.var">become a
 sponsor</a>!</p>
 
+<h2>2011 Gold Sponsors</h2>
+
+<a href="http://www.serverscheck.com/sensors/sensorgateway_availability.asp"><img border="0" title="ServersCheck" alt="ServersCheck" src="$(ROOT)/logos/mrtg_sensorgateway.png"/></a>
+
 <h2>2010 Gold Sponsors</h2>
 
 <p>
@@ -21,6 +25,22 @@ sponsor</a>!</p>
 <a href="http://www.zenoss.com/?mrtg"><img border="0" title="Zenoss Open Source IT Monitoring" alt="Zenoss Open Source IT Monitoring" src="$(ROOT)/logos/zenoss.png"/></a>
 </p>
 
+<h2>2011 Silver Sponsors</h2>
+
+<p>
+# Ethan Galstad <egalstad@nagios.com> Tue, 28 Sep 2010 23:18:27 +0200
+<a href="http://www.nagios.com"><img border="0" alt="Silver Sponsor" src="$(ROOT)/logos/nagios.png"/></a>&nbsp;
+# Dan Munteanu <dmunte@kanetix.com>
+<a href="http://www.kanetix.ca/"><img border="0" alt="Silver Sponsor" src="$(ROOT)/logos/kanetix.png"/></a>&nbsp;
+# Michael Patterson <mike@plixer.com>  Mon, 29 Oct 2007 15:13:31 -0400
+<a href="http://www.plixer.com"><img border="0" alt="Silver Sponsor" src="$(ROOT)/logos/logo_plixer_blue101x51.gif"/></a>&nbsp;
+# christian@heutger.net
+<a href="http://www.psw.net"><img border="0" alt="Silver Sponsor" src="$(ROOT)/logos/psw.jpg"/></a>&nbsp;
+# Doug Nebeker <doug@poweradmin.com>
+<a href="http://www.poweradmin.com/servermonitor/?ref=mrtg"><img border="0" alt="Silver Sponsor" src="$(ROOT)/logos/poweradmin_server_monitor.png"/></a>&nbsp;
+<a href="http://it.oetiker.ch/monitoring/sponsoring.var"><img border="0" alt="Silver Sponsor" src="$(ROOT)/inc/silver-logo.png"/></a>&nbsp;
+</p>
+
 <h2>2010 Silver Sponsors</h2>
 
 <p>
@@ -28,8 +48,6 @@ sponsor</a>!</p>
 <a href="http://www.plixer.com"><img border="0" alt="Silver Sponsor" src="$(ROOT)/logos/logo_plixer_blue101x51.gif"/></a>&nbsp;
 # Ethan Galstad <egalstad@nagios.com> Tue, 28 Sep 2010 23:18:27 +0200
 <a href="http://www.nagios.com"><img border="0" alt="Silver Sponsor" src="$(ROOT)/logos/nagios.png"/></a>&nbsp;
-<a href="http://www.plixer.com"><img border="0" alt="Silver Sponsor" src="$(ROOT)/logos/logo_plixer_blue101x51.gif"/></a>&nbsp;
-<a href="http://it.oetiker.ch/monitoring/sponsoring.var"><img border="0" alt="Silver Sponsor" src="$(ROOT)/inc/silver-logo.png"/></a>&nbsp;
 </p>
 
 
