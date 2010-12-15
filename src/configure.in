@@ -127,14 +127,6 @@ if test x$GDFORM_EXT = xgif; then
   CPPFLAGS="$CPPFLAGS -DGFORM_GD=gdImageGif"
 fi
 
-AC_CHECK_LIB(gd,gdImageGd,[
-   GLIBS="-Wl,-Bstatic ${GLIBS} -Wl,-Bdynamic"
-        ],:,[-Wl,-Bstatic ${GLIBS} -Wl,-Bdynamic])
-
-if test x$GDFORM_EXT = xpng; then
-  CPPFLAGS="$CPPFLAGS -DGFORM_GD=gdImagePng"
-fi
-
 LIBS="${GLIBS} ${LIBS}" 
 
 
