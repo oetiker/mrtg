@@ -408,15 +408,23 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	{
 	  maxin = (long long) max (maxin, inmax);
 	  maxout = (long long) max (maxout, outmax);
-	  maxs = (long long) max (maxs, inmax);
-	  maxs = (long long) max (maxs, outmax);
+          if (!(options & OPTION_NO_I)){
+   	     maxs = (long long) max (maxs, inmax);
+          }
+          if (!(options & OPTION_NO_O)){
+  	     maxs = (long long) max (maxs, outmax);
+          }
 	}
       else
 	{
 	  maxin = (long long) max (maxin, inr);
 	  maxout = (long long) max (maxout, outr);
-	  maxs = (long long) max (maxs, inr);
-	  maxs = (long long) max (maxs, outr);
+          if (!(options & OPTION_NO_I)){
+  	     maxs = (long long) max (maxs, inr);
+          }
+          if (!(options & OPTION_NO_O)){
+  	     maxs = (long long) max (maxs, outr);
+          }
 	}
       if ((options & OPTION_DORELPERCENT) && outr)
 	{
