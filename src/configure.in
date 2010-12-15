@@ -129,6 +129,9 @@ fi
 
 LIBS="${GLIBS} ${LIBS}" 
 
+if test x$LD_RUN_PATH != x; then
+	SET_LD_RUN_PATH="LD_RUN_PATH=${LD_RUN_PATH}"
+fi
 
 dnl Make sure the header is here
 AC_CHECK_HEADER( gd.h,:,[ GDFORM_EXT="" ])
@@ -186,7 +189,7 @@ fi
 AC_SUBST(PERL)
 AC_SUBST(RRD_PERL)
 AC_SUBST(GDFORM_EXT)
-AC_SUBST(LD_RUN_PATH)
+AC_SUBST(SET_LD_RUN_PATH)
 AC_SUBST(LIBS)
 AC_SUBST(CFLAGS)
 AC_CONFIG_HEADERS(config.h)

@@ -21,7 +21,7 @@ CFLAGS = @CFLAGS@ @DEFS@
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 GDFORM_EXT = @GDFORM_EXT@
-LD_RUN_PATH = @LD_RUN_PATH@
+SET_LD_RUN_PATH = @SET_LD_RUN_PATH@
 LIBS = @LIBS@
 
 INSTALL = @INSTALL@
@@ -30,7 +30,8 @@ MKINSTALLDIRS = $(SHELL) $(top_srcdir)/mkinstalldirs
 all:	 bin/rateup subst
 
 bin/rateup: bin/rateup.o
-	LD_RUN_PATH=$(LD_RUN_PATH) $(CC) bin/rateup.o -o bin/rateup $(LDFLAGS)  $(LIBS) 
+	$(SET_LD_RUN_PATH) $(CC) bin/rateup.o -o bin/rateup $(LDFLAGS)  $(LIBS)
+
 
 bin/rateup.o: $(top_srcdir)/src/rateup.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(top_srcdir)/src/rateup.c -o bin/rateup.o
