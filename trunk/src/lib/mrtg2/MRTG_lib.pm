@@ -17,7 +17,6 @@ package MRTG_lib;
 require 5.005;
 use strict;
 use vars qw($OS $SL $PS @EXPORT @ISA $VERSION %timestrpospattern);
-use FileHandle;
 
 if (eval {local $SIG{__DIE__}; require Net_SNMP_util} ) {
 	import Net_SNMP_util;
@@ -483,9 +482,7 @@ sub readcfg ($$$$;$$) {
                     @nextfiles = ( $nextfile ); 
                 }
                 foreach $nextfile ( @nextfiles ) {
-                    $newhandle = new FileHandle;
-                    open ($newhandle, $nextfile)
-                 || do { die "ERROR: unable to open include file: $nextfile\n"};
+                    open my $newhandle, '<', $nextfile or die "ERROR: unable to open include file: $nextfile\n";
                     push @handstack, $hand;
                     push @filestack, $file;
                     $hand = $newhandle;
@@ -798,16 +795,16 @@ sub cfgcheck ($$$$;$) {
     if(defined $$cfg{libadd}){
         ensureSL(\$$cfg{libadd});
         debug('eval',"libadd $$cfg{libadd}\n");
-	local $SIG{__DIE__};
+    	local $SIG{__DIE__};
         eval "use lib qw( $$cfg{libadd} )";
-	my @match;
-	foreach my $dir (@INC){
-		push @match, $dir if -f "$dir/RRDs.pm";
-	}
-	warn "WARN: found several copies of RRDs.pm in your path: ".
-        (join ", ", @match)." I will be using $match[0]. This could ".
-	"be a problem if this is an old copy and you think I would be using a newer one!\n"
-		if $#match > 0;
+    	my @match;
+	    foreach my $dir (@INC){
+		    push @match, $dir if -f "$dir/RRDs.pm";
+    	}
+	    warn "WARN: found several copies of RRDs.pm in your path: ".
+            (join ", ", @match)." I will be using $match[0]. This could ".
+        	"be a problem if this is an old copy and you think I would be using a newer one!\n"
+		    if $#match > 0;
     }
     $$cfg{logformat} = 'rateup' unless defined $$cfg{logformat};
 
