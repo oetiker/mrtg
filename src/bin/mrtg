@@ -260,6 +260,7 @@ sub main {
     &lockit($lockfile,$templock);
 
     debug('base', "Reading Config File: $cfgfile");
+    my $cfgfile_age = -M $cfgfile;
     readcfg($cfgfile,\@routers,\%cfg,\%rcfg);
 
     imggen($cfg{icondir} || $cfg{imagedir} || $cfg{workdir});
@@ -511,14 +512,14 @@ sub main {
 	    };
         }
         # Has the cfg file been modified since we started? if so, reload it.
-        if( (-M $cfgfile)<0 and 
+        if ( -M $cfgfile < $cfgfile_age and 
           $cfg{'runasdaemon'} and $cfg{'runasdaemon'} =~ /y/i ) {
             # reload the configuration
+            $cfgfile_age = -M $cfgfile;
             debug('base', "Re-reading Config File: $cfgfile");
             @routers = (); %cfg = (); %rcfg = ();
             readcfg($cfgfile,\@routers,\%cfg,\%rcfg);
             cfgcheck(\@routers, \%cfg, \%rcfg, \@target, \%opts);
-            $^T = time; # reset the time so that we re-test RRD files etc
         }
         debug('base', "End of main Loop");
     } while ($cfg{'runasdaemon'} and $cfg{'runasdaemon'} =~ /y/i ); #In daemon mode run forever
