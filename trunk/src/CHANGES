@@ -4,6 +4,9 @@ From: Tobi
 * Only set LD_RUN_PATH if it is actually necessary. patch from #98
 * Net::SNMP only support aes128, des and 3des ... fix for cfgmaker from #99
 
+From: redrat@mail.ru
+* Fix russian translation bug #92
+
 Changes 2.17.0, 2010-12-15
 --------------------------
 From: Steve Shipway s.shipway auckland.ac.nz
