@@ -1749,7 +1749,7 @@ $$rcfg{'pagetop'}{$router}";
         print HTML "
 <!-- Begin $sample{$peri} -->
 		<div class=\"graph\">
-			<h2>".&$LOC("$sample{$peri}")." ".&$LOC("Average)")."</h2>
+			<h2>".&$LOC("$sample{$peri}").&$LOC(' Average\)')."</h2>
 			<img src=\"$imagepath$router-$full{$peri}.${main::GRAPHFMT}\" title=\"$full{$peri}\" alt=\"$full{$peri}\" />
 			<table>
 				<tr>
