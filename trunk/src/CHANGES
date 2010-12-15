@@ -3,6 +3,7 @@ From: Tobi
 * Stop staticly linking rateup. fix for #97
 * Only set LD_RUN_PATH if it is actually necessary. patch from #98
 * Net::SNMP only support aes128, des and 3des ... fix for cfgmaker from #99
+* Understand desc and descr in ifdesc option of cfgmaker
 
 From: redrat@mail.ru
 * Fix russian translation bug #92
