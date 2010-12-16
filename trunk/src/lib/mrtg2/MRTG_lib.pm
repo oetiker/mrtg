@@ -684,7 +684,7 @@ sub quickcheck ($$$$$$) {
         }
     }
     die "ERROR: CFG Error Unknown Option \"$first\" in file $file on line $line or above.\n".
-      "           Check doc/reference.txt for Help\n\n";
+      "           Check doc/mrtg-reference.txt for Help\n\n";
 }
 
 # complex config checks
