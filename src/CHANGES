@@ -6,7 +6,10 @@ From: Tobi
 * Understand desc and descr in ifdesc option of cfgmaker
 * only set $args{'-maxrepetitions'} if $Net_SNMP_util::MaxRepetitions > 0
 
-From: redrat@mail.ru
+From: Chris Chiappa <chris+debian@chiappa.net>
+* Updated squid docu #80
+
+From: redrat at mail.ru
 * Fix russian translation bug #92
 
 Changes 2.17.0, 2010-12-15

@@ -46,9 +46,15 @@ place free, if you want no prefix.
 Also an incomplete list of OIDs for the new SQUID release is
 added.
 
+You may need to turn on snmp_port in squid.conf to as it is disabled by default.
+
 I hope you enjoy it.
 
 =head1 CONFIG EXAMPLE
+
+First load the squid mib
+
+ LoadMIBs: /usr/share/squid/mib.txt
 
 You can measure responsetimes in ms and display it with MRTG
 correctly with:
@@ -56,10 +62,15 @@ correctly with:
  kMG[measure-ms]: m,,k,M,G,T
  short[measure-ms]: s
 
-
 You can display now MB/s as 1024*1024 B/s with:
 
  kilo[volume]: 1024
+
+Assuming you're not running squid's SNMP on the default snmp port, you need
+to include a port number in your target line:
+
+ Target[proxy-hit]: cacheHttpHits&cacheProtoClientHttpRequests:public@localhost:3401
+
 
 A sample config for squid:
 
@@ -93,3 +104,4 @@ A sample config for squid:
 
 Andreas Papst E<lt>andreas.papst@univie.ac.atE<gt>
 Dirk-Lüder Kreie E<lt>deelkar@gmx.deE<gt>
+Chris Chiappa E<lt>chris+debian@chiappa.netE<gt>
