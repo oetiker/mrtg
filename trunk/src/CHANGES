@@ -4,6 +4,7 @@ From: Tobi
 * Only set LD_RUN_PATH if it is actually necessary. patch from #98
 * Net::SNMP only support aes128, des and 3des ... fix for cfgmaker from #99
 * Understand desc and descr in ifdesc option of cfgmaker
+* only set $args{'-maxrepetitions'} if $Net_SNMP_util::MaxRepetitions > 0
 
 From: redrat@mail.ru
 * Fix russian translation bug #92
