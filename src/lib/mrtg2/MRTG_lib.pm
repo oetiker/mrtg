@@ -656,7 +656,7 @@ sub readcfg ($$$$;$$) {
             warn("WARNING: You are running RRDCached in TCP mode.  This means that it will use its own Base Directory instead of WorkDir for storing the RRD files.  Also, changes to MaxBytes and DS Type will not be actioned after the RRD file has been created.\n");
         }
 	}
-    if ($cfg->{enablesnmpv3} eq 'yes' and eval {local $SIG{__DIE__}; require Net_SNMP_util} ) {
+    if ($cfg->{enablesnmpv3} and $cfg->{enablesnmpv3} eq 'yes' and eval {local $SIG{__DIE__}; require Net_SNMP_util} ) {
         import Net_SNMP_util;
     } else {
         require SNMP_util;
@@ -1108,7 +1108,7 @@ sub cfgcheck ($$$$;$) {
         if (! defined $$rcfg{'yscale'}{$rou}) {
             $$rcfg{'yscale'}{$rou} = 1.0;
         }
-        if (defined $$rcfg{'options'}{'pntdate'}{$rou}) {
+        if (defined $$rcfg{'options'}{'pngdate'}{$rou}) {
             $$rcfg{'timestrpos'}{$rou} = 'RU';
             $$rcfg{'timestrfmt'}{$rou} = "%Y-%m-%d %H:%M %Z";
 
@@ -1724,7 +1724,7 @@ sub populateconfcache ($$$$$) {
 	next if $confcache->{___deadhosts}{$hostkey} and time - $confcache->{___deadhosts}{$hostkey} < 300;
 	$SNMP_Session::errmsg = undef;
 	$Net_SNMP_util::ErrorMessage = undef;
-	@ret = snmpwalk(v4onlyifnecessary($host, $ipv4only), $snmpoptions, $node);
+	@ret = &main::snmpwalk(v4onlyifnecessary($host, $ipv4only), $snmpoptions, $node);
 	unless ( $SNMP_Session::errmsg or $Net_SNMP_util::ErrorMessage){
 	    foreach my $ret (@ret)
 	      {
@@ -1752,7 +1752,7 @@ sub populateconfcache ($$$$$) {
     }
     $SNMP_Session::errmsg = undef;
     $Net_SNMP_util::ErrorMessage = undef;
-    @ret = snmpwalk(v4onlyifnecessary($host, $ipv4only), $snmpoptions, "ifPhysAddress");
+    @ret = &main::snmpwalk(v4onlyifnecessary($host, $ipv4only), $snmpoptions, "ifPhysAddress");
     unless ( $SNMP_Session::errmsg or $Net_SNMP_util::ErrorMessage){
 	foreach my $ret (@ret)
 	  {
