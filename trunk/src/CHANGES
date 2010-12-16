@@ -18,6 +18,8 @@ From: Tobi
 * explicitly import Socket6 routines in SNMP_Session. fix for #45
 * default ThreshHyst to 0.1 only if ThreshDir is define. fix for #42
 * point out when there is an unknown interface found. fix for #41.
+* allow for $speed to return 0 and still use SNMPv2 ... some Cisco Gear
+  seems todo that. Fix for #33
 
 From: Chris Chiappa <chris+debian@chiappa.net>
 * Updated squid docu #80

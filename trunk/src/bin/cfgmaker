@@ -909,7 +909,7 @@ sub IsCounterBroken ($$$) {
 	$Net_SNMP_util::ErrorMessage = undef;
         my $counter = (snmpget($snmphost,$v3opt, 'ifHCInOctets.'.$if))[0];
         debug('base',"snmpget $snmphost for ifHCInOctets.$if -> $counter");
-        if(not $speed or $counter eq "" or $counter =~ /\D/ or $SNMP_Session::errmsg or $Net_SNMP_util::ErrorMessage){
+        if(not defined $speed or $counter eq "" or $counter !~ /\d/ or $SNMP_Session::errmsg or $Net_SNMP_util::ErrorMessage){
             $SNMP_Session::errmsg = undef;
             $Net_SNMP_util::ErrorMessage = undef;
 	    $fallback = 1;
