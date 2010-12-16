@@ -762,8 +762,10 @@ sub cfgcheck ($$$$;$) {
 	warn ("WARNING: If \"ThreshMailSender\" is defined, then \"ThreshMailServer\" must be defined too.\n");
         $error = "yes";
     }
- 
-    $cfg->{threshhyst} = 0.1 unless $cfg->{threshhyst};
+    # default ThreshHyst to 0.1 if ThreshDir is defined
+    if ($cfg->{threshdir}){
+        $cfg->{threshhyst} = 0.1 unless $cfg->{threshhyst};
+    }
     # build relativ path from htmldir to image dir.
     my @htmldir = split /\Q${MRTG_lib::SL}\E+/, $$cfg{htmldir};
     my @imagedir =  split /\Q${MRTG_lib::SL}\E+/, $$cfg{imagedir};
