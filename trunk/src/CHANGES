@@ -15,6 +15,7 @@ From: Tobi
 * remove rececondition when writing new trafic graph files by writing to a
   temp file and moving it later. fix for #51
 * make snmpopt_current available in cfgmaker templates. fix for #48
+* explicitly import Socket6 routines in SNMP_Session. fix for #45
 
 From: Chris Chiappa <chris+debian@chiappa.net>
 * Updated squid docu #80
