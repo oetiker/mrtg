@@ -2265,18 +2265,13 @@ sub getsnmparg ($$$$){
         } else {
             $$target{Key}[$i] =~ s/\s+$//; # no trainling whitespace in keys ...
 
-	    if (not $$populated{$hostname} and 
-		not defined readfromcache($confcache,$hostkey,$$target{IfSel}[$i],$$target{Key}[$i])) {
+	    if (not defined readfromcache($confcache,$hostkey,$$target{IfSel}[$i],$$target{Key}[$i])) {
 		debug('snpo',"($i) Populate ConfCache for $$target{Host}$$target{SnmpOpt}");
 		populateconfcache($confcache,"$$target{Community}\@$$target{Host}$$target{SnmpOpt}",$$target{ipv4only},1,$$target{snmpoptions});
 		$$populated{$hostname} = 1; # set cache population to true for this cycle and host
 	    }
-#	    if ($$populated{$hostname} and 
-#		not defined readfromcache($confcache,$hostkey,$$target{IfSel}[$i],$$target{Key}[$i])){
-#		debug('repo', "ConfCache for host $hostname already updated into this cycle");
-#	    }
-	    if (not defined readfromcache($confcache,$hostkey,$$target{IfSel}[$i],$$target{Key}[$i])) {
-		warn "$NOW: WARNING: Could not match host:'$$target{Community}\@$$target{Host}$$target{SnmpOpt}' ref:'$$target{IfSel}[$i]' key:'$$target{Key}[$i]'\n";
+ 	    if (not defined readfromcache($confcache,$hostkey,$$target{IfSel}[$i],$$target{Key}[$i])) {
+                warn "$NOW: WARNING: Could not match host:'$$target{Community}\@$$target{Host}$$target{SnmpOpt}' ref:'$$target{IfSel}[$i]' key:'$$target{Key}[$i]'\n";
 		return 'NOMATCH';
 	    } else {
 		$ifnum[$i] = ".".readfromcache($confcache,$hostkey,$$target{IfSel}[$i],$$target{Key}[$i]);

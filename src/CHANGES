@@ -6,6 +6,8 @@ From: Tobi
 * Understand desc and descr in ifdesc option of cfgmaker
 * only set $args{'-maxrepetitions'} if $Net_SNMP_util::MaxRepetitions > 0
 * do not load Net_SNMP_util unless snmpv3 is requested ... fix for #75
+* be more agressive about updating the confcache. If a key is missing, go
+  looking for it again and complain. fix for #74
 
 From: Chris Chiappa <chris+debian@chiappa.net>
 * Updated squid docu #80
