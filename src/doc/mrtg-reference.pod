@@ -1050,14 +1050,14 @@ Example:
 =head2 RouterUptime
 
 In cases where you calculate the used bandwidth from
-several interfaces you normaly don't get the router uptime
+several interfaces you normally don't get the router uptime
 and router name displayed on the web page.
 
 If these interfaces are on the same router and the uptime and
 name should be displayed you have to specify
 its community and address again with the I<RouterUptime> keyword.
 
-If you want to use a special OID for queriing the router uptime,
+If you want to use a special OID for querying the router uptime,
 use prepend the oid.
 
 Example:
@@ -1891,7 +1891,7 @@ Threshold checking is configured through the following parameters:
 =head2 ThreshDir (GLOBAL)
 
 By defining ThreshDir to point to a writable directory, MRTG will only alert
-you when a threshold boundery has been crossed. 
+you when a threshold boundary has been crossed. 
 
 Example:
 
@@ -1901,7 +1901,7 @@ Example:
 
 If a threshold is broken, and you have a threshdir defined, then mrtg will
 send mail once the threshold becomes 'unborken' to avoid situations where
-broken and un-broken messages get sent in close succession, we only send an
+broken and unbroken messages get sent in close succession, we only send an
 unbroken message once the curent value is 0.1 (10%) away from the threshold.
 using the ThreshHyst config variable you can customize this value.
 
