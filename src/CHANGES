@@ -14,6 +14,7 @@ From: Tobi
 * add missing <p> tag arount 'last updated ... ' in html output. fix for #63
 * remove rececondition when writing new trafic graph files by writing to a
   temp file and moving it later. fix for #51
+* make snmpopt_current available in cfgmaker templates. fix for #48
 
 From: Chris Chiappa <chris+debian@chiappa.net>
 * Updated squid docu #80

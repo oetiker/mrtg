@@ -120,6 +120,7 @@ sub main {
 			$snmpopt[5] = 2;
 			warn "reverting to snmpV2c for router $router\n";
 			$routers{$router}{'snmp-options'} = join(":",@snmpopt);
+                        $routers{$router}{snmpopt_current} = $routers{$router}{'snmp-options'};
 		} else {
 			die "SNMP V3 requires a --username parameter as part of the User Security Model for router $routers{$router}{routerkey}" if $opt{enablesnmpv3} eq "no";
 			$routers{$router}{enablesnmpv3} = $opt{enablesnmpv3};
@@ -895,7 +896,6 @@ sub IsCounterBroken ($$$) {
     my $v3opt = shift;
     my $router = $$router_ref{routerkey};
     my $fallback = 0;
-    $$router_ref{snmpopt_current} = $$router_ref{'snmp-options'};
     local $SNMP_Session::suppress_warnings = 3;
     local $Net_SNMP_util::suppress_warnings = 3;
 
@@ -1441,6 +1441,7 @@ sub addrouter() {
             # The empty string simply means that no
             # specific SNMP options has been given.
             'snmp-options' => $snmpopt,
+            snmpopt_current => $snmpopt,
 
             # dns-domain is a domain which should be added
             # to the routers hostname.
