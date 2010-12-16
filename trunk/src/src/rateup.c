@@ -275,6 +275,7 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
      int currdatetimepos;
 {
   FILE *fo;
+  char file_tmp[10240];
   int i, x, n, type;
 
   long long maxv;
@@ -1107,15 +1108,22 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 		     currdatetimepos_x, currdatetimepos_y,
 		     (unsigned char *)currdatetimestr, i_grid);
     }
-
-  if ((fo = fopen (file, "wb")) == NULL)
+  file_tmp[0]=0;
+  strncat(file_tmp,file,1000);
+  strncat(file_tmp,".tmp",1000);
+  if ((fo = fopen (file_tmp, "wb")) == NULL)
     {
       perror (program);
-      fprintf (stderr, "%s, Rateup Error: Can't open %s for write\n", bufftime, file);
+      fprintf (stderr, "%s, Rateup Error: Can't open %s for write\n", bufftime, file_tmp);
       exit (1);
     }
   GFORM_GD (graph, fo);
   fclose (fo);
+  if (rename(file_tmp,file)){
+      perror (program);
+      fprintf (stderr, "%s, Rateup Error: Can't rename %s to %s\n", bufftime,file_tmp,file);
+      exit (1);
+  }
   gdImageDestroy (graph);
   gdImageDestroy (brush_out);
   gdImageDestroy (brush_outm);
