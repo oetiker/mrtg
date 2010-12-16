@@ -1026,7 +1026,9 @@ sub fmi ($$) {
 
 
 sub IfType ($) {
-  return {'1'=>'Other',
+  my $id = shift;
+  my $ift = {
+      '1'=>'Other',
       '2'=>'regular1822',
       '3'=>'hdh1822',
       '4'=>'ddnX25',
@@ -1168,9 +1170,9 @@ sub IfType ($) {
       '140'=>'Dynamic synchronous Transfer Mode (DTM)',
       '141'=>'Data Communications Network',
       '142'=>'IP Forwarding Interface',
-          '162'=>'Cisco Express Forwarding Interface',
-
-      }->{(shift)};
+      '162'=>'Cisco Express Forwarding Interface',
+   };
+   return ($ift->{$id} || "Uknown Interface Type");
 } # end IfType
 
 
