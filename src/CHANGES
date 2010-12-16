@@ -8,6 +8,9 @@ From: Tobi
 * do not load Net_SNMP_util unless snmpv3 is requested ... fix for #75
 * be more agressive about updating the confcache. If a key is missing, go
   looking for it again and complain. fix for #74
+* only apply 32bit counter wrap compensation when the wrap is within 32bit
+  range. fix for #70
+
 
 From: Chris Chiappa <chris+debian@chiappa.net>
 * Updated squid docu #80
