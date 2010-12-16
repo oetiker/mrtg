@@ -1697,7 +1697,7 @@ sub snmpwalk_flg ($$@) {
   $got = 0;
   @poid = @enoid;
 
-  if ($Net_SNMP_util::Version > 1) {
+  if ($Net_SNMP_util::Version > 1 and $Net_SNMP_util::MaxRepetitions > 0) {
     $args{'-maxrepetitions'} = $Net_SNMP_util::MaxRepetitions;
   }
   if ($Net_SNMP_util::Version > 2) {
