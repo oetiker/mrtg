@@ -5,6 +5,7 @@ From: Tobi
 * Net::SNMP only support aes128, des and 3des ... fix for cfgmaker from #99
 * Understand desc and descr in ifdesc option of cfgmaker
 * only set $args{'-maxrepetitions'} if $Net_SNMP_util::MaxRepetitions > 0
+* do not load Net_SNMP_util unless snmpv3 is requested ... fix for #75
 
 From: Chris Chiappa <chris+debian@chiappa.net>
 * Updated squid docu #80

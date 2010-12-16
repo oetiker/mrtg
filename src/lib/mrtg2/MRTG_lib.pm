@@ -18,12 +18,6 @@ require 5.005;
 use strict;
 use vars qw($OS $SL $PS @EXPORT @ISA $VERSION %timestrpospattern);
 
-if (eval {local $SIG{__DIE__}; require Net_SNMP_util} ) {
-	import Net_SNMP_util;
-} else {
-	require SNMP_util; 
-        import SNMP_util;
-}
 
 my %mrtgrules;
 
@@ -662,7 +656,12 @@ sub readcfg ($$$$;$$) {
             warn("WARNING: You are running RRDCached in TCP mode.  This means that it will use its own Base Directory instead of WorkDir for storing the RRD files.  Also, changes to MaxBytes and DS Type will not be actioned after the RRD file has been created.\n");
         }
 	}
-
+    if ($cfg->{enablesnmpv3} eq 'yes' and eval {local $SIG{__DIE__}; require Net_SNMP_util} ) {
+        import Net_SNMP_util;
+    } else {
+        require SNMP_util;
+        import SNMP_util;
+    }
 }
 
 # quick checks
