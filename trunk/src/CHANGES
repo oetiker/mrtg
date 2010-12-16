@@ -21,6 +21,7 @@ From: Tobi
 * allow for $speed to return 0 and still use SNMPv2 ... some Cisco Gear
   seems todo that. Fix for #33
 * add dlink support for ifAlias OIDs to cfgmaker from #50
+* add WWP (Ciena) support for ifAlias OIDs to cfgmaker from #66
 
 
 From: Chris Chiappa <chris+debian@chiappa.net>
