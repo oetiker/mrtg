@@ -10,7 +10,7 @@ From: Tobi
   looking for it again and complain. fix for #74
 * only apply 32bit counter wrap compensation when the wrap is within 32bit
   range. fix for #70
-
+* implement pngdate as TimeStrPos[x]: RU instead of separately. for for #68
 
 From: Chris Chiappa <chris+debian@chiappa.net>
 * Updated squid docu #80
