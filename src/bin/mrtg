@@ -1673,7 +1673,7 @@ $$rcfg{'addhead'}{$router}
 	</head>
 $$rcfg{bodytag}{$router}
 $$rcfg{'pagetop'}{$router}";
-
+    print HTML "<p>";
     if (defined $$rcfg{'timezone'}{$router}){    
     print HTML     
       &$LOC("The statistics were last updated <strong>$Today $$rcfg{'timezone'}{$router}</strong>");
@@ -1684,10 +1684,10 @@ $$rcfg{'pagetop'}{$router}";
     if ($uptime and ! $$rcfg{options}{noinfo}{$router}) {
         print HTML
           ",<br />\n".
-        &$LOC("at which time $namestring had been up for <strong>$uptime</strong>.").
-        "\n<!-- End Head -->";
+        &$LOC("at which time $namestring had been up for <strong>$uptime</strong>.")
     }
-
+    print HTML "</p>\n<!-- End Head -->";
+   
     my %sample= ('d' => "`Daily' Graph (".$interval.' Minute',
                  'w' => "`Weekly' Graph (30 Minute",
                  'm' => "`Monthly' Graph (2 Hour",
