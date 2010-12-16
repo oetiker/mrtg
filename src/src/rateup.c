@@ -97,7 +97,6 @@ short options = 0;
 #define OPTION_NOARROW		0x0020	/* noarrow */
 #define OPTION_NO_I		0x0040	/* ignore 'I' (first) variable */
 #define OPTION_NO_O		0x0080	/* ignore 'O' (second) variable */
-#define OPTION_PNGDATE		0x0100	/* show date & time in graph */
 #define OPTION_PRINTROUTER	0x0200	/* show title in graph */
 #define OPTION_LOGGRAPH		0x0400	/* Use a logarithmic Y axis */
 #define OPTION_MEANOVER		0x0800	/* max Y = mean-above-the-mean */
@@ -286,7 +285,6 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
   double inr, outr, muli = 1, interval;
   time_t now, onow, nextnow;
   struct tm tm2, *tm = &tm2;
-  struct tm tm3, *tmtz = &tm3;
   char **graph_label;
   char ylab[30];
   /* scaling helpers */
@@ -947,35 +945,6 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 	  gdImageString (graph, gdFontSmall, 81, 1,
 			 (unsigned char *) router, i_grid);
 	}
-    }
-
-  /* print the date & time */
-  if (options & OPTION_PNGDATE)
-    {
-      pngdate = (char *) calloc (1, 100);
-      tmtz = localtime (&NOW);
-      if (rtimezone == NULL)
-	{
-	  strftime (pngdate, 18, "%b %d %Y %H:%M", tmtz);
-	}
-      else
-	{
-	  strftime (pngdate, 19, "%b %d %Y %H:%M ", tmtz);
-	  if (((size_t) strlen (pngdate) + strlen (rtimezone)) < 100)
-	    {
-	      strcat (pngdate, rtimezone);
-	    }
-	  else
-	    {
-	      fprintf (stderr,
-		       "%s, Rateup ERROR: date + timezone string too long\n", bufftime);
-	      exit (1);
-	    }
-
-	}
-      gdImageString (graph, gdFontSmall,
-		     (81 + maxx * xscale) - gdFontSmall->w * strlen (pngdate),
-		     1, (unsigned char *) pngdate, i_grid);
     }
 
   /* draw the graph border */
@@ -2015,10 +1984,6 @@ main (argc, argv)
 	      break;
 	    case 'B':		/* Turn on the shaded border */
 	      options &= ~OPTION_NOBORDER;
-	      used = 1;
-	      break;
-	    case 'd':		/* Print date in image */
-	      options |= OPTION_PNGDATE;
 	      used = 1;
 	      break;
 	    case 'i':		/* Do not graph the I variable */

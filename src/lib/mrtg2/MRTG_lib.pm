@@ -1108,6 +1108,12 @@ sub cfgcheck ($$$$;$) {
         if (! defined $$rcfg{'yscale'}{$rou}) {
             $$rcfg{'yscale'}{$rou} = 1.0;
         }
+        if (defined $$rcfg{'options'}{'pntdate'}{$rou}) {
+            $$rcfg{'timestrpos'}{$rou} = 'RU';
+            $$rcfg{'timestrfmt'}{$rou} = "%Y-%m-%d %H:%M %Z";
+
+            delete $$rcfg{'options'}{'pntdate'}{$rou}
+        }
         if (! defined $$rcfg{'timestrpos'}{$rou}) {
             $$rcfg{'timestrpos'}{$rou} = 'NO';
         }

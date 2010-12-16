@@ -1604,7 +1604,7 @@ PNGTitle if one is given
 
 When using rateup for graph generation, this option will print a
 timestamp in the graph it generates, including a timezone if one is specified
-by the 'Timezone' parameter.
+by the 'Timezone' parameter. This is aequivalent to setting TimeStrPost[x]: RU
 
 =item logscale
 

@@ -1082,7 +1082,6 @@ sub writegraphics {
     push (@exec, '-l') if defined $$rcfg{'options'}{'logscale'}{$router};
     push (@exec, '-x') if defined $$rcfg{'options'}{'expscale'}{$router};
     push (@exec, '-m') if defined $$rcfg{'options'}{'secondmean'}{$router};
-    push (@exec, '-d') if defined $$rcfg{'options'}{'pngdate'}{$router};
     push (@exec, '-p') if defined $$rcfg{'options'}{'printrouter'}{$router};
 
     my $maxx = $$rcfg{'xsize'}{$router}; 
