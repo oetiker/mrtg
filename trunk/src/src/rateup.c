@@ -1457,8 +1457,14 @@ update (in, out, abs_max, absupdate)
 	  else
 	    {
 	      inr = diff (in, last.in);
-	      if (inr < 0)	/* wrapped 32-bit counter? */
-		inr += (long long) 1 << 32;
+	      if (inr < 0) {
+                if (inr > - (long long) 1 << 32) { 	/* wrapped 32-bit counter? */
+  		    inr += (long long) 1 << 32;
+                }
+                else {
+  		    inr = 0;
+                }
+              }                                        
 	    }
 	  if (absupdate == 2)
 	    {
@@ -1498,8 +1504,14 @@ update (in, out, abs_max, absupdate)
 	  else
 	    {
 	      outr = diff (out, last.out);
-	      if (outr < 0)	/* wrapped 32-bit counter? */
-		outr += (long long) 1 << 32;
+	      if (outr < 0) {	/* wrapped  counter? */
+                if (outr > - (long long) 1 << 32) {
+  		    outr += (long long) 1 << 32;
+                }
+                else {
+  		    outr = 0; /* 64bit counters do not wrap usually */
+                }
+              }
 	    }
 	  if (absupdate == 2)
 	    {
