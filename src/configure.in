@@ -1,4 +1,5 @@
 AC_INIT(src/rateup.c)
+AC_PREREQ(2.13)
 
 dnl Check for programs.
 AC_PROG_CC
