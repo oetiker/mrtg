@@ -1,7 +1,7 @@
 # things that the GNU standards document suggests all makefiles
 # should have.
 SHELL=/bin/sh
-VER=2.17.0
+VER=2.17.1
 .SUFFIXES:
 .SUFFIXES: .c .o .pl .pm .pod .man .1 .txt
 
