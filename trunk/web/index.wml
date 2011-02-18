@@ -1,6 +1,15 @@
 <PAGE AUTHOR = "Tobi Oetiker <tobi@oetiker.ch>"
         PAGE = "welcome">
 
+{#ExtraHead#:
+<meta property="og:title" content="MRTG - The Multi Router Treffic Grapher"/> 
+<meta property="og:type" content="product"/>
+<meta property="og:image" content="http://oss.oetiker.ch/mrtg/fb-logo.png"/>
+<meta property="og:url" content="http://www.mrtg.org/"/>
+<meta property="og:site_name" content="MRTG"/>
+<meta property="fb:admins" content="706717092"/>
+<meta property="og:description" content="MRTG allows you to monitor traffic on a wide variety of network devices"/>
+:##}
 
 <H1>Tobi Oetiker's MRTG - The Multi Router Traffic Grapher</H1>
 
@@ -24,6 +33,8 @@ machines.</p>
 <p>MRTG is written in perl and works on Unix/Linux as well as Windows and
 even Netware systems. MRTG is free software licensed under the Gnu GPL.</p>
 </div>
+
+<fb:like href="http://www.mrtg.org/" show_faces="false" width="300"></fb:like>
 
 <p>
 <img src="192.33.92.249_fa4_1-day.png"
@@ -59,3 +70,5 @@ options.</p>
 <P>You like MRTG? You want to encourage me to spend my time, working on
 it? You want me to implement a custom feature? Check out the <A
 HREF="sponsor.en.html">sponsorship</a> page.</P>
+
+<script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
