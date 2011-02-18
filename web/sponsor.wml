@@ -14,15 +14,11 @@ sponsor</a>!</p>
 
 <h2>2011 Gold Sponsors</h2>
 
-<a href="http://www.serverscheck.com/sensors/sensorgateway_availability.asp"><img border="0" title="ServersCheck" alt="ServersCheck" src="$(ROOT)/logos/mrtg_sensorgateway.png"/></a>
-
-<h2>2010 Gold Sponsors</h2>
-
 <p>
 #maarten.vanlaere@serverscheck.com
 <a href="http://www.serverscheck.com/sensors/sensorgateway_availability.asp"><img border="0" title="ServersCheck" alt="ServersCheck" src="$(ROOT)/logos/mrtg_sensorgateway.png"/></a>
 #Erik A. Dahl <edahl@zenoss.org>
-<a href="http://www.zenoss.com/?mrtg"><img border="0" title="Zenoss Open Source IT Monitoring" alt="Zenoss Open Source IT Monitoring" src="$(ROOT)/logos/zenoss.png"/></a>
+#<a href="http://www.zenoss.com/?mrtg"><img border="0" title="Zenoss Open Source IT Monitoring" alt="Zenoss Open Source IT Monitoring" src="$(ROOT)/logos/zenoss.png"/></a>
 </p>
 
 <h2>2011 Silver Sponsors</h2>
@@ -41,14 +37,14 @@ sponsor</a>!</p>
 <a href="http://it.oetiker.ch/monitoring/sponsoring.var"><img border="0" alt="Silver Sponsor" src="$(ROOT)/inc/silver-logo.png"/></a>&nbsp;
 </p>
 
-<h2>2010 Silver Sponsors</h2>
+#<h2>2010 Silver Sponsors</h2>
 
-<p>
+#<p>
 # Michael Patterson <mike@plixer.com>  Mon, 29 Oct 2007 15:13:31 -0400
-<a href="http://www.plixer.com"><img border="0" alt="Silver Sponsor" src="$(ROOT)/logos/logo_plixer_blue101x51.gif"/></a>&nbsp;
+#<a href="http://www.plixer.com"><img border="0" alt="Silver Sponsor" src="$(ROOT)/logos/logo_plixer_blue101x51.gif"/></a>&nbsp;
 # Ethan Galstad <egalstad@nagios.com> Tue, 28 Sep 2010 23:18:27 +0200
-<a href="http://www.nagios.com"><img border="0" alt="Silver Sponsor" src="$(ROOT)/logos/nagios.png"/></a>&nbsp;
-</p>
+#<a href="http://www.nagios.com"><img border="0" alt="Silver Sponsor" src="$(ROOT)/logos/nagios.png"/></a>&nbsp;
+#</p>
 
 
 <h2>Other means for making Tobi happy</h2>

@@ -2,7 +2,7 @@
  <nav:but welcome        "Welcome"                 index                         />
  <nav:but down           "Download"                download                      />
  <nav:but license        "License"                 license                       />
- <nav:but demo           "Demo"		           http://www.switch.ch/network/operation/statistics/geant2.html />
+ <nav:but demo           "Demo"		           http://www.six.sk/mrtg/aggregated.html />
  <nav:but doc            "Documentation"           doc/index 	       doc       />
  <nav:but 3party         "3rd Party Docs"          3party                        />
  <nav:but doc_mrtg-forum "Support"                 support/index       forum          />
