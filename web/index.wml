@@ -2,7 +2,7 @@
         PAGE = "welcome">
 
 {#ExtraHead#:
-<meta property="og:title" content="MRTG - The Multi Router Treffic Grapher"/> 
+<meta property="og:title" content="MRTG - The Multi Router Traffic Grapher"/> 
 <meta property="og:type" content="product"/>
 <meta property="og:image" content="http://oss.oetiker.ch/mrtg/fb-logo.png"/>
 <meta property="og:url" content="http://www.mrtg.org/"/>
