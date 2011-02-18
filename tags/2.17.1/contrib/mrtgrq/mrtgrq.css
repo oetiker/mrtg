@@ -1,0 +1,36 @@
+/*
+  Author: Adrian Turcu <adrianturcu@yahoo.com>
+  Created: 16 April 2000
+  Version: 1
+*/
+
+BODY {
+    background-color: f5fffa;
+}
+A {
+    text-decoration: none;
+}
+A:link {
+    color: 0000cd;
+}
+A:visited {
+    color: 0000cd;
+}
+A:active {
+    color: 0000cd;
+}
+
+
+H1 {white-space: nowrap; border: none; padding: 0.5em; margin-top: 25px; position: relative;}
+H1 A {text-decoration: none;}
+
+H1, H1 A {color: #f8f8ff; background: #4169e1;}
+
+.pt { border: none; padding: 0.25em; width: 1020px; text-align: center; font-weight: 800;}
+.pt, .pt A {text-decoration: none; color: #f8f8ff; background: #0000cd;}
+
+.ptl { border: none; padding: 0.25em; width: 1020px; text-align: left; font-weight: 800;}
+.ptl, .ptl A {text-decoration: none; color: #f8f8ff; background: #0000cd;}
+
+.pth { border: none;text-decoration: none; background: #e8e8ff; color: #111111; text-align: left; font-weight: 800;}
+.ptb { border: none;text-decoration: none; color: #0000cd; text-align: left; font-weight: 800;}

@@ -1,0 +1,33 @@
+#!/bin/sh
+##
+## OUTPUT_FILE has to have the same path with WorkDir value setted in the make-mrtg.cfg.awk file
+## MRTGRQ_CFG has to be the same file declared in the make-mrtg.cfg.awk file
+## AWK_EXE is awk executable with full path
+## MRTGRQ_AWK_FILE is the AWK file which will generate the config file in MRTG format ( core )
+##
+AWK_EXE="/bin/awk"
+MRTGRQ_AWK_FILE="/usr/local/mrtg/contrib/mrtgrq/make-mrtg.cfg.awk"
+MRTGRQ_PATH="/usr/local/mrtg/contrib/mrtgrq"
+MRTGRQ_CONFIG="/usr/local/mrtg/contrib/mrtgrq/mrtg-awk.cfg"
+MRTGRQ_TEMP="/usr/local/mrtg/contrib/mrtgrq/mrtgrq-temp.tmp"
+MRTGRQ_TELNET_HOST="your.email.server"
+MRTGRQ_TELNET_PORT="9000"
+##
+rm -f $MRTGRQ_CONFIG
+$MRTGRQ_PATH/getreport.pl $MRTGRQ_TELNET_HOST $MRTGRQ_TELNET_PORT > $MRTGRQ_TEMP
+/bin/cat  $MRTGRQ_TEMP | $AWK_EXE -f $MRTGRQ_AWK_FILE 
+rm -f $MRTGRQ_TEMP
+##
+##
+#####################################################################################################
+## Index Maker in MRTG Style
+############################
+#
+# OUTPUT_FILE="/home/httpd/html/mrtg/mrtgrq/index.html"
+# MRTGRQ_CFG="/usr/local/mrtg/contrib/mrtgrq/mrtg-awk.cfg"
+# export OUTPUT_FILE MRTGRQ_CFG
+#
+# /usr/local/mrtg/indexmaker -b '#ffffff' -1 -t 'Diskspace Quota' -o $OUTPUT_FILE $MRTGRQ_CFG
+#
+######################################################################################################
+

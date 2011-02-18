@@ -1,0 +1,66 @@
+This script organizes config files for MRTG
+and restarts the MRTG processes cleanly.
+ 
+Author: Scott Ripley, U.S. House of Representatives
+Version: 1.0 (and all that a 1.0 release entails)
+Contact: scott.ripley@mail.house.gov
+Copyright: (C) 2001 Scott Ripley
+ 
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+ 
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+1.0 Installing
+
+Since this is just a shell script, it can be installed anywhere.
+The standard location is the /usr/local/sbin directory. It creates
+temp files in the same directory as the MRTG binaries, which are
+cleared out at the end of the script.
+
+2.0 Configuration
+
+You will need to set your pathnames for MRTG, a back-up directory,
+and the location of your log files. That's it.
+
+Note: This script only works if you are running MRTG as a daemon.
+It relies on the presence of .pid files to identify your scripts.
+
+3.0 Using adm-mrtg
+
+The script reads mrtg's bin directory for pid files and displays
+the appropriate config name on-screen.
+
+If you make a change to a config file and want to reload it, type
+in the number of the config file name. It will kill the process,
+remove the .pid file and restart it. Once you go back to the home
+screen, you should see a new date for that config under the
+"Running" column.
+
+4.0 Backing up with adm-mrtg
+
+It is vitally important that you back up your config and log files
+from time to time. Adm-mrtg will do that for you with the simple
+press of the 'b' key.
+
+It puts all your config files into a tar file with the format
+"MRTG_<date>.cfgs.tar." It does the same with your .log and .old files.
+If you want to gzip the files, you can uncomment the gzip lines in the
+script.
+
+5.0 Technical notes
+
+The script was written in ksh on Solaris 7, but there's nothing
+particularly machine-specific in it. It should only require minor
+tweaking for other OS/shell combinations.
+
+If you have changes or additions you'd like to make, I would enjoy
+seeing a copy. Please e-mail your changes/comments/ideas to:
+scott.ripley@mail.house.gov, or nevada@mac.com.
+
+Thank you. 
