@@ -1,0 +1,61 @@
+Version 0.41b		25 October 1997
+Becomes a package again, minor code changes
+
+Version 0.41a		22 October 1997
+Merging of new configuration section for fixed IP into $interfaces
+Comments updated
+
+Version 0.41		21 October 1997
+Caters for static or fixed IP on all hosts
+
+Version 0.40Beta	21 October 1997
+Caters for static or fixed IP on localhost
+
+Version 0.35x           12 October 1997
+mrtg-dynip becomes a package instead of a single file.  Minor changes to
+comments
+
+Version 0.35r           11 October 1997
+Minor corrections and changes to comments
+
+Version 0.35f           9 October 1997
+Capacity introduced to deal with hosts upon which interface IP addresses are
+the same on different hosts, such as on masquerading firewall hosts and on
+address translation hosts. Avoids need to run more than one copy for this
+situation.
+
+Version 0.35c           8 October 1997
+Capacity introduced to deal with sets of hosts with inconsistent names for
+public community. Avoids need to run more than one copy for this situation.
+
+Version 0.35            6 October 1997 
+Capacity to Capacity to deal with information from multiple hosts
+introducedy for each host examined. This meant it was no longer necessary to
+run a copy for each host examined. 'Free form' configuration of interfaces
+introduced. Dropped option to use external snmpwalk.
+
+Version 0.32            5 October 1997
+Improved error handling
+
+Version 0.31		28 September 1997 
+Changed name from regen to mrtg-dynip.  Changed from 'all interfaces found
+on localhost' approach to deciding which interfaces to be included on a
+named host. Inactive interfaces labelled inactive instead of not being
+included. Free text descriptions of interfaces included. Reliance on ouput
+of 'ifconfig' dropped, this allows use of script by non UNIX machines and
+other hosts to be examined.
+
+Version 0.10		23 Sptember 1997
+Generalised use of pattern matching on snmpwalk command output to enable
+either UCD or CMU compiled versions found in path to work.
+Stats for multiple ethernet cards generated.
+
+Versions 0.03 to 0.05 	September 1997
+Use of index page of interface stats page.
+General configuration options added.
+Added use of Simon Leinen's Perl 5 SNMP modules to query snmp daemon, as an
+alternative to using snmpwalk from a package other than mrtg. 
+
+Version 0.01 to 0.02	28 August 1997 
+Concept proven with a basic working script. Testing begins on home Linux PC
+and on SydNet Internet and Network Services.

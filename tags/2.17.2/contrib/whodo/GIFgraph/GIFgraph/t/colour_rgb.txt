@@ -1,0 +1,46 @@
+! $XConsortium: rgb.txt,v 10.41 94/02/20 18:39:36 rws Exp $
+199  21 133		medium violet red
+176 196 222		light steel blue
+102 139 139		paleturquoise4
+159 121 238		mediumpurple2
+141 182 205		lightskyblue3
+  0 238 118		springgreen2
+255 160 122		light salmon
+154 205  50		yellowgreen
+178  58 238		darkorchid2
+ 69 139 116		aquamarine4
+! This is a comment
+ 71  60 139		slateblue4
+131 111 255		slateblue1
+192 255  62		olivedrab1
+139 105  20		goldenrod4
+205 155  29		goldenrod3
+142 229 238		cadetblue2
+255 211 155		burlywood1
+112 128 144		slategrey
+255 228 225		mistyrose
+ 50 205  50		limegreen
+224 255 255		lightcyan
+218 165  32		goldenrod
+220 220 220		gainsboro
+135 206 255		skyblue1
+240 255 240		honeydew
+238 238   0		yellow2
+205  79  57		tomato3
+135 206 235		skyblue
+ 85  26 139		purple4
+205 133   0		orange3
+205 183 158		bisque3
+238 213 183		bisque2
+ 87  87  87		grey34
+252 252 252		gray99
+161 161 161		gray63
+112 112 112		gray44
+ 94  94  94		gray37
+ 84  84  84		gray33
+ 66  66  66		gray26
+240 255 255		azure1
+139 137 137		snow4
+205 133  63		peru
+219 112 147		pale violet red
+139 129  76		lightgoldenrod4
