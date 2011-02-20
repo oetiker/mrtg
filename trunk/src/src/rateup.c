@@ -1119,17 +1119,24 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
     }
   GFORM_GD (graph, fo);
   fclose (fo);
-  if (rename(file_tmp,file)){
-      perror (program);
-      fprintf (stderr, "%s, Rateup Error: Can't rename %s to %s\n", bufftime,file_tmp,file);
-      exit (1);
-  }
   gdImageDestroy (graph);
   gdImageDestroy (brush_out);
   gdImageDestroy (brush_outm);
   gdImageDestroy (brush_outp);
   free (lhist);
   free (graph_label);
+
+#ifdef WIN32
+  /* got to remove the target under win32
+     or rename will not work ... */
+  unlink(file);  
+#endif
+  if (rename(file_tmp,file)){
+      perror (program);
+      fprintf (stderr, "%s, Rateup Error: Can't rename %s to %s\n", bufftime,file_tmp,file);
+      exit (1);
+  }
+
 
 }
 
@@ -1718,6 +1725,7 @@ update (in, out, abs_max, absupdate)
 	  fprintf (stderr, "%s, Rateup ERROR: Can't write new log file\n", bufftime);
 	  exit (1);
 	}
+#ifdef WIN32
       /* another fix to get things working under NT */
       if (unlink (buf2))
 	{
@@ -1725,7 +1733,7 @@ update (in, out, abs_max, absupdate)
 		   "%s, Rateup WARNING: %s Can't remove %s updating log file\n",
 		   bufftime, program, buf2);
 	}
-
+#endif
       if (rename (buf1, buf2))
 	{
 	  fprintf (stderr,

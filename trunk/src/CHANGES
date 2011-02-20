@@ -1,3 +1,10 @@
+Changes 2.17.2, 2011-02-20
+--------------------------
+From: Tobi
+* can not replace a file by renaming another to its name under WIN32
+  fix in rateup #104
+
+From: Tobi
 Changes 2.17.1, 2011-02-18
 --------------------------
 From: Tobi
