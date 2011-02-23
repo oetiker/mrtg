@@ -1,3 +1,6 @@
+From: Mike Mitchell <Mike.Mitchell@sas.com>
+* Updated Net_SNMP_util.pm and SNMP_util.pm to latest versions
+
 Changes 2.17.2, 2011-02-20
 --------------------------
 From: Tobi
