@@ -1,4 +1,4 @@
-#! /usr/bin/perl
+#! /usr/bin/perl -w
 # -*- mode: Perl -*-
 ##################################################################
 # MRTG 2.17.2  -- Config file creator
@@ -16,9 +16,9 @@
 # snpo - SNMP Polling
 # snpd - SNMP Detail
 #@main::DEBUG=qw(base);
-@main::DEBUG=qw();
+@main::DEBUG=qw(base snpo snpd);
 
-require 5.005;
+require 5.005; 
 use strict;
 
 BEGIN {
@@ -56,7 +56,12 @@ sub main {
 
     # assign defaults
     my %opt = ( 
-#        'snmp-options' => ':::::2' 
+        'enable-ipv6' => 0,
+        'use-16bit' => 0,
+        'community' => 'public',
+        'interfaces' => 1,
+        'enablesnmpv3' => 0,
+#        'snmp-options' => ':::::2'
     );
     my %routers;
     my %confcache;
@@ -65,8 +70,6 @@ sub main {
     $opt{fullcmd} =
             "$0 ".(join " ",
             map {$_ =~ /[ \[\]\*\{\}\;\>\<\&]/ ? qq{"$_"} : $_ } @ARGV);
-    $opt{community}="public";
-    $opt{interfaces}=1;
     options(\%opt,\%routers);
 
     # Check for IPv6 libraries if IPv6 is enabled.
@@ -84,6 +87,7 @@ sub main {
 
     if ($opt{'use-16bit'} == 1) {
         warn "WARNING: Using 16bit RequestIDs\n";
+        no warnings;
         $SNMP_Session::default_use_16bit_request_ids=1;
     }
     # Check for SNMP V3
@@ -202,14 +206,13 @@ sub InterfaceInfo($$$$$) {
     # interface speed var depends on snmp version
 
     my $snmp_version = ($router =~ /:/)? (split(':', $router, 6))[5] : 1;
-
     if ( $snmp_version =~ /[23]/ ) {
         debug('base',"Walking ifSpeed");
         my @ifSpeed = snmpwalk($snmphost, $v3opt,'ifSpeed');
 	debug('snpd',"\@ifSpeed = @ifSpeed\n");
         debug('base',"Walking ifHighSpeed");
         my @ifHighSpeed = snmpwalk($snmphost,$v3opt, 'ifHighSpeed');
-        for ( my $i=0; $i<=$#ifHighSpeed; $i++ ) {
+        for ( my $i=0; $i<=$#ifSpeed; $i++ ) {
             my ($if,$value) = split /:/, $ifSpeed[$i], 2;
 # the mib entry on ifSpeed says
 #            "An estimate of the interface's current bandwidth in bits
@@ -381,7 +384,7 @@ ECHO
 		foreach my $v3op (keys %$v3opt) {
 			push @v3options, $v3op."=>'".$$v3opt{$v3op}."'";
 		}
-	my $v3options = join(",",@v3options) if $$router_ref{'snmp-options'} =~ /(?=:.*?){4}:3/ ;
+	my $v3options = join(",",@v3options) if $$router_ref{'snmp-options'} =~ /(?::[^:]*){4}:3/ ;
         my $html_sysdescr = html_escape($sysdescr);
         my $router_name =
             ($$router_ref{routername}
@@ -446,8 +449,7 @@ ECHO
 
 
         if ($$router_opt{'interfaces'}) {
-            foreach my $ifindex (sort {int($a) <=> int($b)} keys %$router_ref) {
-                next unless $ifindex =~ /^\d+$/;
+            foreach my $ifindex (sort {int($a) <=> int($b)} grep /^\d+$/, keys %$router_ref) {
                 my $i = $$router_ref{$ifindex};
 
                 # Now define a number of variables used for this interface.
@@ -456,7 +458,7 @@ ECHO
                 # host and interface templates and for interface filters.
 
                 my $if_index = $ifindex;
-                my $if_eth = $$i{Eth};
+                my $if_eth = $$i{Eth} || 'No Ethernet Id';
 
                 # does it make sense to look at the interface ?
                 my @prob;
@@ -464,10 +466,10 @@ ECHO
                 my $default_iftype = 1;  # iftype assumed ok.
                 my $if_ok = 1;           #
 
-                my $if_admin = ($$i{ifAdminStatus} == 1);
-                my $if_oper = ($$i{ifOperStatus} == 1);
+                my $if_admin = (($$i{ifAdminStatus} || 0) == 1);
+                my $if_oper = (($$i{ifOperStatus} || 0) == 1);
 
-                my $if_type = $$i{ifType};
+                my $if_type = $$i{ifType} || -1;
                 my $if_is_ethernet = 0 < scalar(grep {$_ == $if_type;}
                                     (6,7,26,62,69,117));
                 my $if_is_isdn = (0 < scalar (grep {$_ == $if_type;}
@@ -491,30 +493,31 @@ ECHO
                     ($$router_dev{Vendor} eq 'cisco'
                     and $$i{Descr} =~ /^(unrouted )?[- ]?VLAN[- ]?\d*$/i);
 
-                my $if_ip = $$i{Ip};
-                my $if_snmp_descr = $$i{Descr};
+                my $if_ip = $$i{Ip} || 'No Ip';
+                my $if_snmp_descr = $$i{Descr} || 'No Description';
                 $if_snmp_descr =~ s/\n$//; # no you don't want to know who does this
                                            # ok ... dell 3524
                 $if_snmp_descr =~ s/ /-/g;
-                my $if_type_num = $$i{ifType};
-                my $if_snmp_name = $$i{Name};
-                my $if_snmp_alias = $$i{ifAlias};
-                my $if_cisco_descr = $$i{CiscolocIfDescr};
-                my $if_dns_name = $$i{DNSName};
-                my $if_vlan_id = $$i{vmVlan};
-                my $if_cisco_trunk = ($$i{vlanTrunkPortDynamicStatus} ==1);
-		my $if_MTU = $$i{ifMtu};
+                my $if_type_num = $$i{ifType} || 'Unknown Type';
+                $$i{ifType} ||= -1;
+                my $if_snmp_name = $$i{Name} || 'No Name';
+                my $if_snmp_alias = $$i{ifAlias} || '';
+                my $if_cisco_descr = $$i{CiscolocIfDescr} || '';
+                my $if_dns_name = $$i{DNSName} || 'No DNS name';
+                my $if_vlan_id = $$i{vmVlan} || 'No Vlan';
+                my $if_cisco_trunk = ($$i{vlanTrunkPortDynamicStatus} || 0 == 1);
+		my $if_MTU = $$i{ifMtu} || 'No MTU';
 
                 # For Nokia IPSO, find non-ethernet interfaces with IP addresses
                 # and add missing MAC address and Port Speed information to
                 # to the LOGICAL and LOGICAL+VLAN interfaces.
                 if ( $$router_dev{Vendor} eq 'nokiaipsofw' ) {
-                    if ($$i{ifType} ne "6" &&
+                    if ($$i{ifType} ne "6" and
                         $$router_dev{sysDescr} =~ / IPSO / &&
-                        $$i{Ip} =~ /^\d+/ &&
-                       ($$i{Eth} == undef ||
-                        $$i{ifSpeed} < 10 ||
-                        $$i{ifSpeed} == undef )
+                        $$i{Ip} =~ /^\d+/ and
+                       (not $$i{Eth} or
+                        not $$i{ifSpeed} or
+                        $$i{ifSpeed} < 10 )
                        ) {
                         my $logical_if_name = $$i{Name};
 
@@ -524,17 +527,16 @@ ECHO
                             $logical_if_name =~ /^(.*)(c\d+)$/;
 
                         foreach my $ifindexTMP (sort {int($a) <=> int($b)}
-                            keys %$router_ref) {
+                            grep /^\d+$/, keys %$router_ref) {
                             next unless $ifindexTMP =~ /^\d+$/;
 
                             my $physical_if_name = $$router_ref{$ifindexTMP};
 
                             if ($$physical_if_name{ifType} == 6 &&
                                 $logical_if_HEAD eq $$physical_if_name{Name} ) {
-                                $$i{Eth} = $$physical_if_name{Eth}
-                                if ( $$i{Eth} == undef );
+                                $$i{Eth} ||= $$physical_if_name{Eth};
                                 $$i{ifSpeed} = $$physical_if_name{ifSpeed}
-                                if ( $$i{ifSpeed} == undef || $$i{ifSpeed} < 10 );
+                                        if ( not $$i{ifSpeed} or $$i{ifSpeed} < 10 );
                             }
                         }
                     }
@@ -542,19 +544,19 @@ ECHO
 
                 # First investigate the state of the interface.
                 if (not defined $$router_opt{'no-down'}) {
-                    if ($$i{ifAdminStatus} == 2) {
+                    if (($$i{ifAdminStatus} || 0 )== 2) {
                         push @prob, "it is administratively DOWN";
                         $default_ifstate = 0;
-                    } elsif ($$i{ifAdminStatus} == 3) {
+                    } elsif (($$i{ifAdminStatus} || 0 ) == 3) {
                         push @prob, "it is in administrative TEST mode";
                         $default_ifstate = 0;
                     }
 
                     if (not defined $$router_opt{'show-op-down'}) {
-                       if ($$i{ifOperStatus} == 2) {
+                       if (($$i{ifOperStatus} || 0 ) == 2) {
                           push @prob, "it is operationally DOWN";
                           $default_ifstate = 0;
-                       } elsif ($$i{ifOperStatus} == 3) {
+                       } elsif (($$i{ifOperStatus} || 0 ) == 3) {
                            push @prob, "it is in operational TEST mode";
                           $default_ifstate = 0;
                       }
@@ -569,7 +571,7 @@ ECHO
                 } elsif ($$router_dev{Vendor} eq 'cisco' && $$i{ifType} == 19) { # by fwo@obsidian.co.za
                     push @prob, "it is a E1 controllers";
                     $default_iftype = 0;
-                } elsif ($$i{ifType} == 24) {
+                } elsif ($$i{ifType}  == 24) {
                     push @prob, "it is a Software Loopback interface" ;
                     $default_iftype = 0;
                 } elsif ($$router_dev{Vendor} eq 'cisco' && $$i{ifType} == 30) { # by blube@floridadigital.net
@@ -598,7 +600,7 @@ ECHO
 		# I settled on before since I'll assume the user knows
 		# what speed the zero-speed interfaces should be better
 		# than the simple logic below.
-		if ($$i{ifSpeed} == 0 && $$router_opt{'zero-speed'}) {
+		if (not $$i{ifSpeed} and $$router_opt{'zero-speed'}) {
 		    # Set all interfaces with zero speed to the value specified
 		    # by the --zero-speed= command line option.
 
@@ -614,20 +616,21 @@ ECHO
 		    $$i{ifSpeed} = $$router_opt{'zero-speed'};
 		}
 
-                if ($$i{ifSpeed} == 0 && $$router_dev{Vendor} eq 'foundry' && $$i{ifType} == 194) {
+                if (not $$i{ifSpeed} and $$router_dev{Vendor} eq 'foundry' and $$i{ifType} == 194) {
                     # foundry ATM subinterfaces always report 0 speed, make it 155Mbps instead.
                     $$i{ifSpeed} =  155000000;
-                } elsif ($$i{ifSpeed} == 0 && $$router_dev{Vendor} eq 'foundry' && $$i{ifType} == 135) {
+                } elsif (not $$i{ifSpeed} and $$router_dev{Vendor} eq 'foundry' and $$i{ifType} == 135) {
                     # Foundry virtual Ethernet interfaces always report 0 speed, make it 1GB instead.
                     $$i{ifSpeed} = 1000000000;
-                } elsif ($$i{ifSpeed} == 0 && $$router_dev{Vendor} eq 'cisco' && $$i{sysDescr} =~ /FWSM-Firewall / )  {
+                } elsif (not $$i{ifSpeed} and $$router_dev{Vendor} eq 'cisco' and $$i{sysDescr} =~ /FWSM-Firewall / )  {
                     # Cisco PIX Firewall Switch Modules have effective backplane speed of 600 Megs
 		    $$i{ifSpeed} = 600000000;
-                } elsif ($$i{ifSpeed} == 0 && $$router_dev{Vendor} eq '3com' && $$i{Descr} =~ /RMON VLAN (\d+)/ ) {
+                } elsif (not $$i{ifSpeed} and $$router_dev{Vendor} eq '3com' and $$i{Descr} =~ /RMON VLAN (\d+)/ ) {
                     $$i{ifSpeed} = 100000000;
                     $if_vlan_id = $1;
-                } elsif ($$i{ifSpeed} == 0) {
-                    push @prob, "has a speed of $$i{ifSpeed} which makes no sense";
+                } elsif (not $$i{ifSpeed}) {
+                    push @prob, "has no ifSpeed property";
+                    $$i{ifSpeed} = 0;
                     $if_ok = 0;
                 }
 
@@ -635,7 +638,7 @@ ECHO
 		my $nohc =0;
                 if ($message = IsCounterBroken($ifindex, $router_ref,$v3opt)) {
                     # set snmpopt_current to working snmp options
-		    if ($message ==1) {
+		    if ($message eq '1') {
 			    $nohc = 1;
 		    } else {
                             push @prob, "got '$message' from interface when trying to query";
@@ -647,7 +650,7 @@ ECHO
                 $community  =~ s/([@ ])/\\$1/g;
                 my $router_connect = "$community\@$$router_ref{routername}$$router_ref{snmpopt_current}";
    		
-		my $v3options = join(",",@v3options) if $$router_ref{snmpopt_current} =~ /(?=:.*?){4}:3/ ;
+		my $v3options = join(",",@v3options) if $$router_ref{snmpopt_current} =~ /(?::[^:]*){4}:3/ ;
 		
                 # determine interface reference
                 my $if_ref;
@@ -683,7 +686,7 @@ ECHO
                 my $html_if_type_desc = html_escape($if_type_desc);
                 my $desc_prefix = 'Traffic Analysis for ';
 
-                my $port_dot = $$i{Name};
+                my $port_dot = $$i{Name} || 'Unknown';
                 $port_dot =~ s/\//./g;
                 my $if_port_name = $$router_ref{$port_dot}{CiscoCatalystPortName};
                 my $if_pp_port_name = $$router_ref{$ifindex}{ppPortName};
@@ -727,7 +730,7 @@ ECHO
                 my $html_if_title = html_escape($if_title);
 
                 my $head_lines = "### Interface $ifindex >> Descr: '$if_snmp_descr' |".
-                                 " Name: '$if_snmp_name' | Ip: '$if_ip' | Eth: '$$i{Eth}' ###\n";
+                                 " Name: '$if_snmp_name' | Ip: '$if_ip' | Eth: '$if_eth' ###\n";
 
                 my $target_lines = "";
                 my $separator_lines = "\n\n";
@@ -735,7 +738,7 @@ ECHO
                 # escape the if reference
                 $if_ref =~ s/([& :])/\\$1/g;
                 my $default_target_directive = "Target[$target_name]: $if_ref:$router_connect";
-		$default_target_directive .= "\nSnmpOptions[$target_name]: $v3options"  if $$router_ref{snmpopt_current} =~ /(?=:.*?){4}:3/ ;
+		$default_target_directive .= "\nSnmpOptions[$target_name]: $v3options"  if $$router_ref{snmpopt_current} =~ /(?::[^:]*){4}:3/ ;
 		$default_target_directive .= "\nnoHC[$target_name]: yes" if $nohc == 1;
 	        my $if_snmp_descr_save = $if_snmp_descr;
 		$if_snmp_descr_save =~ s/"/'/g;
@@ -903,13 +906,13 @@ sub IsCounterBroken ($$$) {
     my $snmphost = v4onlyifnecessary($router, $ipv4only);
 
     if ($router =~ /:[\d.]*:[\d.]*:[\d.]*:[23]/) {
-        my $speed = (snmpget($snmphost, $v3opt, 'ifHighSpeed.'.$if))[0];
+        my $speed = (snmpget($snmphost, $v3opt, 'ifHighSpeed.'.$if))[0] || 'unknown';
         debug('base',"snmpget $snmphost for ifHighSpeed.$if -> $speed Mb/s");
         $SNMP_Session::errmsg = undef;
 	$Net_SNMP_util::ErrorMessage = undef;
-        my $counter = (snmpget($snmphost,$v3opt, 'ifHCInOctets.'.$if))[0];
+        my $counter = (snmpget($snmphost,$v3opt, 'ifHCInOctets.'.$if))[0] || 'unknown';
         debug('base',"snmpget $snmphost for ifHCInOctets.$if -> $counter");
-        if(not defined $speed or $counter eq "" or $counter !~ /\d/ or $SNMP_Session::errmsg or $Net_SNMP_util::ErrorMessage){
+        if( $speed eq 'unknown' or not $counter !~ /\d/ or $SNMP_Session::errmsg or $Net_SNMP_util::ErrorMessage){
             $SNMP_Session::errmsg = undef;
             $Net_SNMP_util::ErrorMessage = undef;
 	    $fallback = 1;
@@ -946,9 +949,6 @@ sub DeviceInfo ($$$) {
     my $router=shift;
     my $routers=shift;
     my $v3opt=shift;
-    my @variables = qw(sysDescr sysContact
-               sysName sysLocation
-               sysObjectID);
     my %DevInfo;
     my $ipv4only = $$routers{$router}{ipv4only};
 
@@ -956,7 +956,7 @@ sub DeviceInfo ($$$) {
     if (!(defined $variables[0])) {
         # Do we need to fall back to IPv4?
         my ($commmunity, $host) = ($1, $2) if ($router =~ /^(.*)@([^@]+)$/);
-        if ( ( ! $ipv4only ) && ( $host !=~ /^\[(.*)\]/) ) {
+        if ( ( ! $ipv4only ) && ( $host !~ /^\[(.*)\]/) ) {
             # Not using IPv4, not an IPv6 address, so a hostname
             debug ('base',"No response using IPv6 for $router, trying again using IPv4");
             $$routers{$router}{ipv4only} = 1;
@@ -967,10 +967,12 @@ sub DeviceInfo ($$$) {
     if ( defined $variables[0] ) {
         my (%DevInfo, %revOIDS);
 	
-	if ($$routers{$router}{enablesnmpv3} eq "yes") {
+	if ($$routers{$router}{enablesnmpv3} || '' eq "yes") {
+                no warnings;
         	%revOIDS = reverse %Net_SNMP_util::OIDS;
 	 }
 	 else {
+                no warnings;
 		%revOIDS = reverse %SNMP_util::OIDS;
 	}	
         foreach my $variable ( @variables ) {
@@ -997,6 +999,7 @@ sub DeviceInfo ($$$) {
             '1.3.6.1.4.1.30155' =>      'openBSD',
             '1.3.6.1.4.1.30065' =>      'arista',    
             );
+        $DevInfo{Vendor} = 'Unknown Vendor';
         foreach (keys %vendorIDs) {
             $DevInfo{Vendor} = $vendorIDs{$_} if ($DevInfo{sysObjectID} =~ /\Q$_\E/);
         }
@@ -1013,7 +1016,7 @@ sub fmi ($$) {
     my $number = shift;
     my $flags = shift;
     my(@short);
-    if ($$flags{bits} eq "set"){
+    if ($$flags{bits}){
         $number*=8;
         @short = ("bits/s","kbits/s","Mbits/s","Gbits/s");
     } else {
@@ -1302,7 +1305,7 @@ sub addrouter() {
             # Hostname or numeric IPv4 address
             ($routername, $snmpopt) = split(':', $tmpname, 2);
         }
-        @tmpsnmp = split(':', $snmpopt);
+        @tmpsnmp = split(':', $snmpopt || '');
 
         $routername =~ s/\.$//; # if the hostname ends in a '.' remove it
                                 # it seems to cause trouble in some other
@@ -1474,7 +1477,7 @@ sub addrouter() {
 } # end addrouter
 
 sub html_escape ($) {
-    my $s = shift;
+    my $s = shift || '';
     $s =~ s/&/&amp;/g;
     $s =~  s/</&lt;/g;
     $s =~  s/>/&gt;/g;
