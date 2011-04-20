@@ -912,7 +912,7 @@ sub IsCounterBroken ($$$) {
 	$Net_SNMP_util::ErrorMessage = undef;
         my $counter = (snmpget($snmphost,$v3opt, 'ifHCInOctets.'.$if))[0] || 'unknown';
         debug('base',"snmpget $snmphost for ifHCInOctets.$if -> $counter");
-        if( $speed eq 'unknown' or not $counter !~ /\d/ or $SNMP_Session::errmsg or $Net_SNMP_util::ErrorMessage){
+        if( $speed eq 'unknown' or $counter !~ /^\d+$/ or $SNMP_Session::errmsg or $Net_SNMP_util::ErrorMessage){
             $SNMP_Session::errmsg = undef;
             $Net_SNMP_util::ErrorMessage = undef;
 	    $fallback = 1;
