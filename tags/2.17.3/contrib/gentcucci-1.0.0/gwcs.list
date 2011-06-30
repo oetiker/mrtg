@@ -1,0 +1,32 @@
+# tc users logged on
+#
+# format
+#
+# ip_name(+ip_name(+ip_name...)):max acceptable users:absolute graphable max
+#
+# example
+#
+# tc1.i40:Coshocton 1:48:336
+#   tc1.i40			Access Server
+#   Coshocton 1			Title for device
+#   48				Maximum (red line) users possible per T1 count
+#   336				Absolute maxmimum possible number of users
+#
+# tc3.i40+tc5.i40:Coshocton Total (w/o Omni):368:672
+#   tc3.i40+tc5.i40		Access Servers
+#   Coshocton Total (w/o Omni)	Title for device
+#   48				Maximum (red line) users possible per T1 count
+#   336				Absolute maxmimum possible number of users
+#
+# Note: Absolute maximum is the highest potential number of users who can be
+#       on-line on a particular chassis (HARC) at one time, which is not the
+#       same as the number of channels plugged in to the chassis.  Absolute
+#       maximum is used in the event that someone forgets to reconfigure this
+#       file before adding additional capacity.  At present, one HARC can
+#       handle up to approximately 336 users.  If a chassis has 3 PRI's
+#       plugged into it, then 69:336 would be appropriate because each PRI
+#       will provide 23 channels for users, but the HARC can still handle a
+#       lot more than that.
+#
+tc1.i40:Coshocton TC (tc1.i40):69:336
+tc1.nwk:Newark TC (tc1.nwk):69:336

@@ -1,0 +1,105 @@
+The following requirements/outstanding issues exist for OVMRTG.
+===============================================================
+
+Installation Version 0.2
+------------------------
+
+After installing MRTG and HPOV the following additional customisation 
+needs to be done.
+The file $rundir/installov.cmds should be modified to reflect the locations of 
+1) the mrtg executables ($rundir)
+2) the web output directory ($webdir)
+3) the name of the cron file within $rundir ($cronfile)
+4) the name of the root HTML file within $webdir ($roothtml). 
+5) the name of the HTML rebuild file ($buildhtf)
+6) the company name for display in the HTML ($company)
+7) the directory where the HPOV databases exist {$OV_DB} ($ov_db)
+8) the directory where snmpCol.conf is found {$OV_CONF} ($ov_conf)
+9) Any command line changes to run the perl from within HPOV. May need
+   full directory paths to both perl and ovmrtg scripts
+
+NT:
+Suggested defaults for the above items under NT:
+3) mrtgkick.bat
+5) buildht.bat
+7) /OpenView/databases
+8) /OpenView/conf
+
+Then installov should be run from within the mrtg directory to 
+update the scripts.
+
+Next the perl script ovupdate should be run to create the new ovmrtgc.csv file
+
+mrtgmenu then needs to be placed into $OV_REGISTRATION/C and be readable
+by the group of users that might need to change mrtg targets. 
+You will need to shutdown and restart ovw to see the menu items 
+appear under the Misc menu. You do not need to do an ovstop!
+
+The gif files for MRTG banner are located in the common directory 
+$webdir for all the HTML's to reference a single copy.
+
+ISSUES
+------
+
+It is assumed that the HPOV host is also the web server for MRTG 
+so that mkdir's can be executed in the WEB directories.
+
+As the target/s are selected from the HPOV screen, it is assumed 
+that HPOV already knows what the read community names are for 
+these devices. OVMRTG uses this fact to alleviate the need for 
+it to know community names.
+
+Little error checking and reporting is currently done. If someone is 
+displaying the data collection screen then ovadd and ovdel will
+fail and will NOT report failure to the user.
+
+The SNMP sysName is used to create directories in the web area and is also
+used for most file and web names for that device. As such, the system name
+needs to be unique and set for each device that will be monitored. If it is
+not set for each device then the IP address is used instead. 
+Code that translates IP Address to sysname can be setup in ovsysnms 
+and in cfgmakerov if desired. All directories, configs html files etc 
+are produced for each target by the unique sysname.
+
+At present the data collects into the snmpCollect directory forever. 
+I've started to write a cleanup routine that will be able to keep 
+only recent history. (see ovcullfile)
+
+ovdel does not destroy the directories that are created for the deleted target
+(a safety measure). If you want to clean them up it is currently a 
+manual process.
+
+Access
+------
+
+$rundir & $webdir files & directories should be rw for the group of people
+that might be changing mrtg targets from within HPOV
+
+$OV_CONF/snmpCol.conf needs to be rw for OVMRTG users
+
+In the mrtg executable directory, the .cfg files are created. 
+A file called 'collects' is also created as a work file. 
+DO NOT create a file in this directory with this name.
+
+CRON
+----
+
+cron needs to be setup by the user. Typically a line like this works:
+0,5,10,15,20,25,30,35,40,45,50,55 * * * * /opt/mrtg/run/mrtgc 2>/opt/mrtg/run/log 1>&2
+The equivalent job should be setup under NT. 
+OVMRTG should not care if the host is Unix or NT.
+
+The end of ovadd and ovdel may be customised to perform extra tasks 
+by the cron job.
+
+Usage
+-----
+
+Once setup, the user selects the OVMRTG target/s from the OV screen.
+The Misc menu item is then selected, followed by Mrtg Actions and 
+then select either the 'Add/Update' or 'Stop collecting' options. 
+The third option, Show MRTG Targets, works on Unix systems ONLY at
+present. I only have the UNIX NNM developers kit. This option
+'selects' the current targets on the screen for easy updates. 
+
+To understand what happens for an add/update, see the file newrtrov.txt
