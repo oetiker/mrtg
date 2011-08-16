@@ -1,3 +1,6 @@
+From: Vitezslav Crhonek vcrhonek redhat.com
+* fix of a file pointer leak found by coverity scan
+
 From:  Adrian Minta
 * add support for zyxel ifAlias 
 
