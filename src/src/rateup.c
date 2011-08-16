@@ -1792,6 +1792,7 @@ readparam (char const *file)
   if (!(cbuf = fread (buff, 1, LENGTH_OF_BUFF, fp)))
     {
       fprintf (stderr, "%s, %s ERROR: Parameters file empty\n", bufftime, program);
+      fclose(fp);
       return (1);
     }
   fclose (fp);
