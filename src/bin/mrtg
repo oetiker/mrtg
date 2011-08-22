@@ -93,15 +93,6 @@ my $NOW = timestamp;
 # $SNMP_Session::suppress_warnings = 2;
 use locales_mrtg "0.07";
 
-# Import IPv6 libraries if available, as (unfortunately) they are
-# necessary for dead host detection (for IPv6 name lookups).
-BEGIN {
-    if (eval {local $SIG{__DIE__};require Socket6;})  {
-	import Socket qw(AF_UNSPEC SOCK_DGRAM);
-	import Socket6
-    }    
-}
-
 # Do not Flash Console Windows for the forked rateup process 
 BEGIN {
     if ($^O eq 'MSWin32'){
@@ -307,7 +298,9 @@ sub main {
 
     # Check we have the necessary libraries for IPv6 support
     if ($cfg{enableipv6} eq 'yes') {
-        if ( (eval {local $SIG{__DIE__};require Socket6;}) and (eval {local $SIG{__DIE__};require IO::Socket::INET6;}) ) {
+        if ( eval {local $SIG{__DIE__};require Socket; require Socket6; require IO::Socket::INET6;}) {
+            import Socket;
+            import Socket6;
             debug('base', "IPv6 libraries found, IPv6 enabled.");
         } else {
             warn "$NOW: WARNING: IPv6 libraries not found, IPv6 disabled.\n";
@@ -2244,7 +2237,7 @@ sub getsnmparg ($$$$){
             my @res;
             my ($too,$port,$otheropts) = split(':', $$target{SnmpOpt}, 3);
             $port = 161 unless defined $port;
-            @res = getaddrinfo($hostname, $port, AF_UNSPEC(), SOCK_DGRAM());
+            @res = getaddrinfo($hostname, $port, Socket::AF_UNSPEC(), Socket::SOCK_DGRAM());
             if (scalar (@res) < 5) {
                 warn "$NOW: WARNING: Skipping host $hostname as it does not resolve to an IPv4 or IPv6 address\n";
                 return 'DEADHOST';
