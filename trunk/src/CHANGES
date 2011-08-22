@@ -9,6 +9,7 @@ From: #110
 
 From: Tobi
 * enable warnings in cfgmaker and fix issues ... 
+* explicitly import SOCK_DGRAM and AF_UNSPEC to make ipv6 support work
 
 From: Mike Mitchell <Mike.Mitchell@sas.com>
 * Updated Net_SNMP_util.pm and SNMP_util.pm to latest versions

@@ -97,7 +97,7 @@ use locales_mrtg "0.07";
 # necessary for dead host detection (for IPv6 name lookups).
 BEGIN {
     if (eval {local $SIG{__DIE__};require Socket6;})  {
-	import Socket;
+	import Socket qw(AF_UNSPEC SOCK_DGRAM);
 	import Socket6
     }    
 }
