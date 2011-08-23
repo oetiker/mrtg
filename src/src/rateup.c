@@ -488,13 +488,21 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
         {
           short_si_out = kMG;
           kMGnumber = 0;
-	  short_si[0] = kMG;
           while ((short_si_out = strchr (short_si_out, ',')) != NULL)
 	    {
-	      short_si_out[0] = '\0';
 	      short_si_out++;
-              short_si[++kMGnumber] = short_si_out;
+              kMGnumber++;
 	    }
+          short_si = calloc(kMGnumber + 1, sizeof(*short_si));
+          short_si_out = kMG;
+          for (kMGnumber = 0; ; kMGnumber++)
+            {
+              short_si[kMGnumber] = short_si_out;
+             short_si_out = strchr(short_si_out, ',');
+              if (short_si_out == NULL) break;
+              short_si_out[0] = '\0';
+              short_si_out++;
+            }
         }
      }
   
@@ -1125,6 +1133,9 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
   gdImageDestroy (brush_outp);
   free (lhist);
   free (graph_label);
+  if (kMG)
+    free(short_si);
+
 
 #ifdef WIN32
   /* got to remove the target under win32
