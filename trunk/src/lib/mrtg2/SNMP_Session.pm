@@ -146,7 +146,7 @@ BEGIN {
 
     if (eval {local $SIG{__DIE__};require Socket6;} &&
        eval {local $SIG{__DIE__};require IO::Socket::INET6; IO::Socket::INET6->VERSION("1.26");}) {
-       Socket6->import(qw(pack_sockaddr_in6 inet_pton getaddrinfo));
+       Socket6->import(qw(pack_sockaddr_in6 inet_pton getaddrinfo unpack_sockaddr_in6));
 	$ipv6_addr_len = length(pack_sockaddr_in6(161, inet_pton(AF_INET6(), "::1")));
 	$SNMP_Session::ipv6available = 1;
     }
