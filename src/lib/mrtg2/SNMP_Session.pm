@@ -601,7 +601,7 @@ use Carp;
 BEGIN {
     if($SNMP_Session::ipv6available) {
 	    import IO::Socket::INET6;
-        Socket6->import(qw(pack_sockaddr_in6 inet_pton getaddrinfo));
+        Socket6->import(qw(pack_sockaddr_in6 inet_pton getaddrinfo unpack_sockaddr_in6));
     }
 }
 
