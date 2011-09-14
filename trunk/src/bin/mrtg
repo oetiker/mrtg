@@ -1739,7 +1739,7 @@ $$rcfg{'pagetop'}{$router}";
 
 	my $imagepath = ( $cfg->{htmldir} ne $cfg->{imagedir} ) ? "$dirrel$$cfg{imagehtml}$$rcfg{directory_web}{$router}" : "";
         print HTML "
-<!-- Begin $sample{$peri} -->
+<!-- Begin $sample{$peri} interval) -->
 		<div class=\"graph\">
 			<h2>".&$LOC("$sample{$peri}").&$LOC(' Average)')."</h2>
 			<img src=\"$imagepath$router-$full{$peri}.${main::GRAPHFMT}\" title=\"$full{$peri}\" alt=\"$full{$peri}\" />
@@ -1783,7 +1783,7 @@ print HTML "
         print HTML "
 			</table>
 		</div>
-<!-- End $sample{$peri} -->\n";
+<!-- End $sample{$peri} interval) -->\n";
 }
 
     if (!(defined $$rcfg{'options'}{'nolegend'}{$router})) {
