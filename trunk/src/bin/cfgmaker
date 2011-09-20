@@ -119,7 +119,7 @@ sub main {
      keys %routers)
     {
 	my @snmpopt = split(/:/,$routers{$router}{'snmp-options'});
-	if ($snmpopt[5] == 3) {
+	if ($snmpopt[5] and $snmpopt[5] == 3) {
 		if ($opt{enablesnmpv3} eq "revert") {
 			$snmpopt[5] = 2;
 			warn "reverting to snmpV2c for router $router\n";
@@ -697,9 +697,7 @@ ECHO
                         /^ip$/    && do { if($$i{Ip})   { $if_title_desc = $$i{Ip};    last } next };
                         /^eth$/   && do { if($$i{Eth})  { $if_title_desc = $$i{Eth};   last } next };
                         /^descr?$/ && do { if($$i{Descr}){ $if_title_desc = $$i{Descr}; last } next };
-                        /^alias$/ && do {$if_title_desc =
-                                     "$$i{Descr} $$i{ifAlias} $$i{CiscolocIfDescr}";
-                                    last };
+                        /^alias$/ && do { if($$i{ifAlias}){ $if_title_desc = "$$i{Descr} $$i{ifAlias} $$i{CiscolocIfDescr}"; last } next };
                         /^name$/ && do { if($$i{Name}) {$if_title_desc = "#".$$i{Name}; last } next };
                         /^catname$/ && do {$if_title_desc = "$if_port_name"; last };
                         /^ppname$/ && do {$if_title_desc = "$if_pp_port_name"; last};
@@ -977,8 +975,10 @@ sub DeviceInfo ($$$) {
 	}	
         foreach my $variable ( @variables ) {
             my ($oid, $value) = split ( ':', $variable, 2);
-            $DevInfo{ $revOIDS{'1.3.6.1.2.1.1.'.$oid} } = $value;
-        }
+            if ($revOIDS{'1.3.6.1.2.1.1.'.$oid}){
+                $DevInfo{ $revOIDS{'1.3.6.1.2.1.1.'.$oid} } = $value; 
+            }
+       }
         # vendor identification
         my %vendorIDs = (
             # Add your vendor here
