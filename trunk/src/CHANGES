@@ -1,3 +1,6 @@
+From: Tobi
+* in cfgmaker use ifdesc=alias only if there is actualy alias info
+
 From: Vitezslav Crhonek vcrhonek redhat.com
 * fix of a file pointer leak found by coverity scan
 * fix for kMG support in rateup
