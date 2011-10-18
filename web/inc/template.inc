@@ -48,7 +48,7 @@
 #<A HREF="http://www.mrtg.it/<where/>">IT</a><!--Vicki Vinci root@power.it -->
 <A HREF="http://lebos.org/mrtg/mrtg/<where/>"><img src="$(ROOT)/images/flags/lb.gif" border=0 alt="LB"/></a><!-- Jocelyn habib <jhabib@gmail.com> -->
 #<A HREF="http://mrtg.grunn.org/<where/>">NL</a><!--Webmaster <webmaster@grunn.org>-->
-<A HREF="http://mrtg.meulie.net/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></a><!--Evert Meulie <evert@meulie.net> -->
+<A HREF="http://mrtg.meulie.net/<where/>"><img src="$(ROOT)/images/flags/no.gif" border=0 alt="US"/></a><!--Evert Meulie <evert@meulie.net> -->
 #<A HREF="http://mrtg.hdl.com/mrtg/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></a><!--HDL Tech Support <wildcard@hdl.com> (Steve)  -->
 <A HREF="http://mrtg.mirroraty.org/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></A><!--Hossam Hossny <hossam@trexle.com>-->
 #<A HREF="http://mrtg.mirror.nexcast.net/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></A><!--James DeVincentis <admin@nexcast.net>-->

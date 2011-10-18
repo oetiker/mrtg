@@ -29,3 +29,15 @@ div#banner {
 	margin-top: 10px;
 	margin-right: 0px;
 }
+
+#pagepath {
+    font-size: 10px;
+}
+
+#pagepath .pathentry {
+    float: left;
+}
+
+#pagepath *:link, #pagepath *:visited {
+    margin: 0 0.2em;
+}
