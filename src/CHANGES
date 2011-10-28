@@ -1,3 +1,5 @@
+From: Ryan
+* fix for big5 translation
 From: Tobi
 * in cfgmaker use ifdesc=alias only if there is actualy alias info
 
