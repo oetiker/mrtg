@@ -42,7 +42,7 @@ sub big5
      'The statistics were last updated(.*)'   => '上次統計更新時間: $1',
      ' Average\)'                             => ' 平均)',
      'Average'                                => '平均',
-     'Max'                                    => '最大',
+     'Max$'                                   => '最大',
      'Current'                                => '目前',
      'version'                                => '版本',
      '`Daily\' Graph \((.*) Minute'           => '每日 圖表 ($1 分鐘',
@@ -59,12 +59,15 @@ sub big5
      '(\S+) per minute'			              => '$1/分',
      '(\S+) per hour'			              => '$1/小時',    
      '(.+)/s$'                                => '$1/秒',
-     # '(.+)/min$'                              => '$1/分',
+     '(.+)/min$'                              => '$1/分',
      '(.+)/h$'                                => '$1/小時',
-     # 'Bits'                                   => 'Bits',
-     # 'Bytes'                                  => 'Bytes'
+     #'([kMG]?)([bB])/s'                      => '$1$2/s',
+     #'([kMG]?)([bB])/min'                    => '$1$2/min',
+     #'([kMG]?)([bB])/h'                      => '$1$2/std',
+     # 'Bits'                                 => 'Bits',
+     # 'Bytes'                                => 'Bytes'
      'In'                                     => '流入',
-     'Out'                                    => '流出',
+     'Out$'                                   => '流出',
      'Percentage'                             => '百分比',
      'Ported to OpenVMS Alpha by'             => '移植到 OpenVM Alpha 作者',
      'Ported to WindowsNT by'                 => '移植到 WindowsNT 作者',
@@ -72,8 +75,8 @@ sub big5
      '^GREEN'                                 => '綠色',
      'BLUE'                                   => '藍色',
      'DARK GREEN'                             => '墨綠色',
-     # 'MAGENTA'                                => '紫色',
-     # 'AMBER'                                  => '琥珀色'
+     'MAGENTA'                                => '紫色',
+     'AMBER'                                  => '琥珀色'
   );
 
 # maybe expansions with replacement of whitespace would be more appropriate
