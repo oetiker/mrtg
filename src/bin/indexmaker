@@ -272,6 +272,8 @@ sub genindex ($$$$) {
 	die "ERROR: unknown sort order '$$opt{sort}'\n";
     }
 
+    die "ERROR: did not find any matching data in cfg file\n" unless @order;
+
     # -----------------------------------------------------------
     # issue page top
     # -----------------------------------------------------------
