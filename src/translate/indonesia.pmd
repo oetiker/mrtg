@@ -39,7 +39,7 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Trafik Keluar Maksimum dalam 5 Menit',
      'the device'                             => 'device',
      'The statistics were last updated(.*)'   => 'Statistik ini terakhir kali diupdate pada $1',
-     ' Average)'                             => ')',
+     ' Average\)'                             => ')',
      'Average'                                => 'Rata-rata',
      'Max'                                    => 'Maksimum',
      'Current'                                => 'Sekarang',

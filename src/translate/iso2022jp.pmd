@@ -37,7 +37,7 @@ sub iso2022jp
      '^Maximal 5 Minute Outgoing Traffic'     => '\e\\$B:GBg\e(B5\e\\$BJ,Aw?.NL\e(B',
      '^the device'                            => '\e\\$B%G%P%\\$%9\e(B',
      '^The statistics were last updated (.*)' => '\e\\$B99?7F|;~\e(B $1',
-     '^Average)'                             => '\e\\$BJ?6Q\e(B)',
+     '^Average\)'                             => '\e\\$BJ?6Q\e(B)',
      '^Average$'                              => '\e\\$BJ?6Q\e(B',
      '^Max$'                                  => '\e\\$B:GBg\e(B',
      '^Current'                               => '\e\\$B:G?7\e(B',

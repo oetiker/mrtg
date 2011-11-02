@@ -37,7 +37,7 @@ sub italian
      'Maximal 5 Minute Outgoing Traffic'      => 'Traffico massimo in uscita su 5 minuti',
      'the device'                             => 'Il dispositivo',
      'The statistics were last updated(.*)'   => 'Le statistiche l\' ultima volta sono state aggiornate $1',
-     ' Average)'                             => ' Media)',
+     ' Average\)'                             => ' Media)',
      'Average'                                => 'Media',
      'Max'                                    => 'Max',
      'Current'                                => 'Attuale',
