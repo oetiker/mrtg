@@ -37,7 +37,7 @@ sub eucjp
      '^Maximal 5 Minute Outgoing Traffic'     => '最大5分送信量',
      '^the device'                            => 'デバイス',
      '^The statistics were last updated (.*)' => '更新日時 $1',
-     '^Average\)'                             => '平均)',
+     '^Average)'                             => '平均)',
      '^Average$'                              => '平均',
      '^Max$'                                  => '最大',
      '^Current'                               => '最新',

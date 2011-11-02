@@ -39,7 +39,7 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Maxim&aacute;lis kimen&otilde; forgalom 5 perc alatt',
      'the device'                             => 'az eszk&ouml;z',
      'The statistics were last updated(.*)'   => 'A statisztika utols&oacute; friss&iacute;t&eacute;se:$1',
-     ' Average\)'                             => ' &aacute;tlag)',
+     ' Average)'                             => ' &aacute;tlag)',
      'Average'                                => '&Aacute;tlagos',
      'Max'                                    => 'Maximum',
      'Current'                                => 'Pillanatnyi',

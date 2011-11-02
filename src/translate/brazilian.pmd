@@ -40,7 +40,7 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Tr&aacute;fego M&aacute;ximo de Sa&iacute;da em 5 minutos',
      'the device'                             => 'dispositivo',
      'The statistics were last updated (.*)'  => '&Uacute;ltima atualiza&ccedil;&atilde;o das estat&iacute;sticas: $1',
-     ' Average\)'                             => ' - m&eacute;dia)',
+     ' Average)'                             => ' - m&eacute;dia)',
      'Average'                                => 'M&eacute;dia',
      'Max'                                    => 'M&aacute;x',
      'Current'                                => 'Atual',

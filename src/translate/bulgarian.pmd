@@ -39,7 +39,7 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => 'Максимален изходящ трафик за 5 минути',
      'the device'                             => 'устройството',
      'The statistics were last updated(.*)'   => 'Статистическите данни са отчетени на: $1',
-     ' Average\)'                             => ' средно)',
+     ' Average)'                             => ' средно)',
      'Average'                                => 'Средно',
      'Max'                                    => 'Макс.',
      'Current'                                => 'Текущо',
