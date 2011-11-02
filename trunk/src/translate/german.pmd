@@ -37,7 +37,7 @@ sub german
      'Maximal 5 Minute Outgoing Traffic'      => 'Maximaler hinausgehender Traffic in 5 Minuten',
      'the device'                             => 'das Gerät',
      'The statistics were last updated(.*)'   => 'Die Statistiken wurden am $1 zuletzt aktualisiert',
-     ' Average\)'                             => '',
+     ' Average)'                             => '',
      'Average'                                => 'Mittel',
      'Max'                                    => 'Maximal',
      'Current'                                => 'Aktuell',

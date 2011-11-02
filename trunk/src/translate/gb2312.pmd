@@ -38,7 +38,7 @@ return "" unless defined $string;
      'Maximal 5 Minute Outgoing Traffic'      => '5分钟最大流出量',
      'the device'                             => '装置',
      'The statistics were last updated(.*)'   => '上次统计更新时间: $1',
-     ' Average\)'                             => ' 平均)',
+     ' Average)'                             => ' 平均)',
      'Average'                                => '平均',
      'Max'                                    => '最大',
      'Current'                                => '目前',
