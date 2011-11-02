@@ -37,7 +37,7 @@ sub belarusian
      'Maximal 5 Minute Outgoing Traffic'      => 'Найбольшы выходны трафік за 5 хвілін',
      'the device'                             => 'прылада',
      'The statistics were last updated(.*)'   => 'Апошні раз статыстыка абнаўлялася: $1',
-     ' Average)'                             => ')',
+     ' Average\)'                             => ')',
      'Average'                                => 'спасярэднены',
      'Max'                                    => 'найбольшы',
      'Current'                                => 'бягучы',
