@@ -2338,7 +2338,7 @@ sub getsnmparg ($$$$){
         s/^GeTNEXT// && do { my $oid=$_;push @newret, (split /:/, snmpgetnext($targtemp,$$target{snmpoptions},$oid),2)[1]; 
                           debug('snpo',"snmpgetnext '$oid' -> ".($newret[-1]||'UNDEF'));next};
 	s/^CnTWaLK// && do { my $oid=$_;my @insts= (snmpwalk($targtemp,$$target{snmpoptions},$_)); 
-	    		undef @insts if $insts[1] =~/no/i; push @newret, $#insts;
+	    		undef @insts if $insts[1] =~/no/i; push @newret, scalar @insts;
 			debug('snpo',"snmpCountwalk '$oid' -> ".($newret[-1]||'UNDEF'));next};
         /IndexPOS.*\.(\d*)/ && do { my $idx=$1; s/IndexPOS/$idx/; s/\.\d*$//; push @newret, snmpget($targtemp,$$target{snmpoptions},$_); 
                           debug('snpo', "snmpget of oid '$_' after replacement of IndexPOS"); next};
