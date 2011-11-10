@@ -1,3 +1,6 @@
+From: Dannys
+* CnTWaLK should add the count and not max index
+
 From: Tobi
 * abort indexmaker if there is no data to be found
 
