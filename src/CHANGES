@@ -1,3 +1,6 @@
+From: trac
+* support ifAlias for Vyatta gear
+
 From: Dannys
 * CnTWaLK should add the count and not max index
 
