@@ -1,3 +1,6 @@
+From: rihad
+* prevent spurious warnings about unknonwn values of inlast outlast in mrtg
+
 From: tobi
 * add the process id tmp file extensions, to guard against multiple rateup
   instances messing things up for each other. (attempt to fix #115)
