@@ -302,7 +302,7 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
   char currdatetimestr[256];
   time_t currdatetime;
   int currdatetimepos_x, currdatetimepos_y;
-
+  
 #define NO_TIMESTAMPSTR (0)
 #define LU_CORNER (1)
 #define RU_CORNER (2)
@@ -1116,9 +1116,9 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
 		     currdatetimepos_x, currdatetimepos_y,
 		     (unsigned char *)currdatetimestr, i_grid);
     }
-  file_tmp[0]=0;
-  strncat(file_tmp,file,1000);
-  strncat(file_tmp,".tmp",1000);
+
+  snprintf(file_tmp,1000,"%s.tmp_%lu",file,(unsigned long)getpid());
+
   if ((fo = fopen (file_tmp, "wb")) == NULL)
     {
       perror (program);
@@ -1403,7 +1403,7 @@ update (in, out, abs_max, absupdate)
 	       (unsigned long) now);
       return;
     }
-  sprintf (buf, "%s.tmp", router);
+  sprintf (buf, "%s.tmp_%lu", router,(unsigned long)getpid());
   sprintf (buf1, "%s.log", router);
   sprintf (buf2, "%s.old", router);
   if ((lhist = calloc (1, sizeof (struct HISTORY) * (MAX_HISTORY + 1))) ==

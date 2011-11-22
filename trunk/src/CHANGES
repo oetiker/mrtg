@@ -1,3 +1,7 @@
+From: tobi
+* add the process id tmp file extensions, to guard against multiple rateup
+  instances messing things up for each other. (attempt to fix #115)
+
 From: morgph@debian.org
 * spelling fixes
 
