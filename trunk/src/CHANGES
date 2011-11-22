@@ -1,3 +1,6 @@
+From: morgph@debian.org
+* spelling fixes
+
 From: tobi
 * make threshold checking more robust against incomplete information in the
   config file #113
