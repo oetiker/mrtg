@@ -1032,8 +1032,12 @@ sub writegraphics {
     #warn "$NOW: ERROR: outlast is undefined. Skipping $router\n" unless defined $outlast;
     #return undef unless defined $inlast and defined $outlast;
 
-    # untaint in and out
 
+    # set values to -1 to tell rateup about unknown values    
+    $inlast = -1 unless defined $inlast;
+    $outlast = -1 unless defined $outlast;
+    
+    # untaint in and out
     if ($inlast =~ /^([-0-9.]+)$/) {
         $inlast = $1;
     }
@@ -1041,10 +1045,6 @@ sub writegraphics {
         $outlast = $1;
     }
 
-    # set values to -1 to tell rateup about unknown values    
-    $inlast = -1 unless defined $inlast;
-    $outlast = -1 unless defined $outlast;
-    
     if ($$rcfg{'options'}{'dorelpercent'}{$router}) {
         @exec = ("${FindBin::Bin}${MRTG_lib::SL}rateup", 
                  "$$cfg{'logdir'}$$rcfg{'directory'}{$router}","$router",
