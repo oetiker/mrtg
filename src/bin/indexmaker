@@ -753,7 +753,7 @@ Set title of generated index file (default: regexp)
 =item B<--bodyopt> I<text>
 
 The value of this argument gets appended to
-the E<lt>BODYE<gt> tag. This allows to set document colors.
+the E<lt>BODYE<gt> tag. This allows you to set document colors.
 By default this option is set to
 
  bgcolor="#ffffff" text="#000000" link="#000000" vlink="#000000" alink="#000000"
