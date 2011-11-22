@@ -2055,14 +2055,14 @@ sub threshcheck {
                     $threshval = sprintf "%.1f", ($threshval / $rcfg->{"maxbytes".($dir eq 'i' ? 1 : 2)}{$router} * 100); # the new code
                 }
     	        my $msghead = "";
-	            $msghead = "From: $cfg->{threshmailsender}\nTo: $rcfg->{${type}.'mailaddress'}{$router}"
-	    	        if $rcfg->{${type}.'mailaddress'}{$router};
-    	        my $pagetop = $rcfg->{pagetop}{$router};
+                $msghead = "From: $cfg->{threshmailsender}\nTo: $rcfg->{${type}.'mailaddress'}{$router}"
+	    	        if $rcfg->{${type}.'mailaddress'}{$router} and $cfg->{threshmailsender};
+    	        my $pagetop = $rcfg->{pagetop}{$router} || '';
     	        $pagetop =~ s|<h1>.*?</h1>||;
-	            $pagetop =~ s|\s*<tr>\s*<td>(.*?)</td>\s*<td>(.*?)</td>\s*</tr>\s*|$1 $2\n|g;
-	            $pagetop =~ s|\s*<.+?>\s*\n?||g;
+                $pagetop =~ s|\s*<tr>\s*<td>(.*?)</td>\s*<td>(.*?)</td>\s*</tr>\s*|$1 $2\n|g;
+	        $pagetop =~ s|\s*<.+?>\s*\n?||g;
 
-        	    my $msgbody = <<MESSAGE;
+         	my $msgbody = <<MESSAGE;
     
 $rcfg->{title}{$router}
 

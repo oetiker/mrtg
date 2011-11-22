@@ -1,3 +1,7 @@
+From: tobi
+* make threshold checking more robust against incomplete information in the
+  config file #113
+
 From: trac
 * support ifAlias for Vyatta gear
 
