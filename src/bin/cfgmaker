@@ -205,7 +205,7 @@ sub InterfaceInfo($$$$$) {
 
     # interface speed var depends on snmp version
 
-    my $snmp_version = ($router =~ /:/)? (split(':', $router, 6))[5] : 1;
+    my $snmp_version = (split(':', $router, 6))[5] || 1;
     if ( $snmp_version =~ /[23]/ ) {
         debug('base',"Walking ifSpeed");
         my @ifSpeed = snmpwalk($snmphost, $v3opt,'ifSpeed');
