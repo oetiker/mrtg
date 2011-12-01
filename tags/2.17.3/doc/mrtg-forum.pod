@@ -1,0 +1,138 @@
+=head1 NAME
+
+mrtg-forum - Interactive Help for MRTG users
+
+=head1 SYNOPSIS
+
+There is a lot of written documentation for mrtg, but nevertheless you may
+have a problem where you can't find the solution.
+In this case some Human Help may be necessary. With MRTG there are several
+ways to get Humans to help you.
+
+=head1 MAILING-LIST
+
+There are three mailing lists for MRTG available.
+
+=over
+
+=item mrtg
+
+for discussion among mrtg users.
+
+=item mrtg-announce
+
+for announcements regarding new versions of mrtg related software.
+
+=item mrtg-developers
+
+for discussion among people who write software in connection with mrtg or
+who hack mrtg itself.
+
+=back
+
+=head2 THE RULES
+
+Please note that the memebers of the mrtg mailinglist value politeness
+highly. This means behave in a way you would like others to behave
+towards you.
+
+=over
+
+=item *
+
+No shouting. (NO CAPS)
+
+=item *
+
+No rude language
+
+=item *
+
+No demands. everybody is on the list out of their own free will. If
+you do not get an answer to your question, chances are high that you
+did not give sufficent details about the nature of your problem or
+that the answer to your problem is in the documentation.
+
+=item *
+
+If you do not follow the rules you will be unsubscribed from the list
+with no further questions asked.
+
+=item *
+
+Decisions about your unsubscription from the list will be taken by
+
+ Alex van den Bogaerdt <alex at ergens.op.het.net>
+ Paul C. Williamson    <pwilliamson at MANDTBANK.COM>
+
+If you feel that you have been treated unfairly, you may send mail to
+me and explain the situation.
+
+ Tobi Oetiker <tobi@oetiker.ch>
+
+=back
+
+=head2 SUBSCRIBING
+
+These lists are managed by a mailing-list management program (listar).
+It allows you to subscribe to these lists by sending a message with the
+subject: B<subscribe> to the following address:
+
+ listname-request@lists.oetiker.ch
+
+You will then get a message asking you to confirm your subscription.
+
+For posting to the lists use the following address
+
+ listname@lists.oetiker.ch
+
+Note that only people who are subscribed to the list can post.
+
+Further information about the usage of the mailing lists is
+available by sending a message with the subject line B<help> to
+either one of the request addresses.
+
+There is also a webinterface to the lists on
+
+ http://lists.oetiker.ch
+
+List archives are on
+ 
+ http://www.mail-archive.com/index.php?hunt=mrtg
+
+and
+
+ http://gmane.org/find.php?list=mrtg
+
+=head1 NEWSGROUP
+
+For discussion of MRTG or related topics on the Usenet, please send your
+posts to:
+
+ news:comp.dcom.net-management
+
+Many MRTG users are in this forum and will help you. You can also find
+an archive of past activity from this Newsgroup on:
+
+ http://groups.google.com/group/comp.dcom.net-management
+
+=head1 IRC Channel
+
+For discussion of MRTG and related topics on IRC, the `#mrtg' channel on
+EFNet has been created.
+
+More information can be found at
+
+ http://mrtg.easymac.org
+
+=head1 MRTG Japan
+
+There is a special Mailinglist for MRTG Users in Japan. It carries
+translations of the traffic from MRTG-ANNOUNCE as well as updates on the
+Japanese Translation of the MRTG documentation. Go to
+http://www.mrtg.jp/ for further Information.
+
+=head1 AUTHOR
+
+Tobias Oetiker E<lt>tobi@oetiker.chE<gt> and many contributors
+

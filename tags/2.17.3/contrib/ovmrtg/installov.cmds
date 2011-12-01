@@ -1,0 +1,12 @@
+s~^my \$webdir .*~my $webdir = "/var/opt/ns-fasttrack/docs/mrtg/";~
+s~^my \$rundir .*~my $rundir = "/opt/mrtg/run";~
+s~^my \$company .*~my $company = "Company";~
+s~^my \$cronfile .*~my $cronfile = "mrtgc";~
+s~^my \$roothtml .*~my $roothtml = "routers.html";~
+s~^my \$buildhtf .*~my $buildhtf = "buildht";~
+s~^my \$dnsfile .*~my $dnsfile = "ovmrtgc.csv";~
+s~^my \$ov_db .*~my $ov_db = "/var/opt/OV/share/databases";~
+s~^my \$ov_conf .*~my $ov_conf = "/etc/opt/OV/share/conf";~
+s~Command ".*ovadd~Command "perl /opt/mrtg/run/ovadd~
+s~Command ".*ovdel~Command "perl /opt/mrtg/run/ovdel~
+s~Command ".*ovsho~Command "perl /opt/mrtg/run/ovsho~

@@ -1,0 +1,21 @@
+From leewm@hpsgmx18.sgp.hp.com Mon Nov  3 09:19:59 1997
+Date: Sat, 01 Nov 1997 23:03:45 SGP
+From: Wee-Meng LEE <leewm@hpsgmx18.sgp.hp.com>
+To: oetiker@ee.ethz.ch
+Subject: get-active.pl
+
+Hi Tobi,
+
+A collegue and I did some improvements in the get-active.pl
+script written by Russ Wright in the contrib directory.
+
+get-active2.pl does a summary page of all the router interfaces
+being monitored and it proved to be very useful.
+
+I'm not able to contact Russ but feel free to pass the code
+around.
+
+Rgds,
+weemeng
+
+
