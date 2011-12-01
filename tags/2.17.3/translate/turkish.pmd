@@ -1,0 +1,110 @@
+###### PATCHTAG00 ####################################################
+###      Turkish/Türkçe
+###      => Özgür C. Demir <ozgurcd@koc.net>
+###### PATCHTAG10 ####################################################
+  &turkish
+###### PATCHTAG20 ####################################################
+  'turkish'	 => \&turkish,
+  'turkce'	 => \&turkish,
+###### PATCHTAG30 ####################################################
+# Turkish/Türkçe
+    'turkish' =>
+    "Türkçeleþtiren
+				<a href=\"mailto:ozgurcd\@koc.net\">Özgür C. Demir</a>",
+###### PATCHTAG40 ####################################################
+$credits::LOCALE{'turkce'}=$credits::LOCALE{'turkish'};
+###### PATCHTAG50 ####################################################
+# Turkish
+
+sub turkish
+{
+  my $string = shift;
+return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+
+  %translations =
+  (  
+     'iso-8859-1'                             => 'iso-8859-9',
+     'Maximal 5 Minute Incoming Traffic'      => '5 dakika için en yüksek giriþ trafiði',
+     'Maximal 5 Minute Outgoing Traffic'      => '5 dakika için en yüksek çýkýþ trafiði',
+     'the device'                             => 'aygýt',
+     'The statistics were last updated(.*)'   => 'Ýstatistiklerin en son güncellenmesi $1',
+     ' Average\)'                             => ' Ortalama)',
+     'Average'                                => 'Ortalama',
+     'Max'                                    => 'EnYüksek;x',
+     'Current'                                => 'ÞuAnki',
+     'version'                                => 'sürüm',
+     '`Daily\' Graph \((.*) Minute'           => 'Günlük ($1 dakika :',
+     '`Weekly\' Graph \(30 Minute'            => 'Haftalýk (30 dakika :' ,
+     '`Monthly\' Graph \(2 Hour'              => 'Aylýk (2 saat :',
+     '`Yearly\' Graph \(1 Day'                => 'Yýllýk (1 gün :', 
+     'Incoming Traffic in (\S+) per Second'   => '$1 deki saniyelik giriþ trafiði',
+     'Outgoing Traffic in (\S+) per Second'   => '$1 deki saniyelik çýkýþ trafiði',
+     'at which time (.*) had been up for(.*)' => '$1 Ne zamandan $2 beri ayakta',
+     # '([kMG]?)([bB])/s'                      => '\$1\$2/s',
+     # '([kMG]?)([bB])/min'                    => '\$1\$2/min',
+     # '([kMG]?)([bB])/h'                       => '$1$2/t',
+     # 'Bits'                                  => 'Bit',
+     # 'Bytes'                                 => 'Byte'
+     'In'                                     => 'Giriþ',
+     'Out'                                    => 'Çýkýþ',
+     'Percentage'                             => 'Yüzge',
+     'Ported to OpenVMS Alpha by'             => 'OpenVMS Alpha ya uyarlayan',
+     'Ported to WindowsNT by'                 => 'WindowsNT ye uyarlayan',
+     'and'                                    => 've',
+     '^GREEN'                                 => 'YEÞÝL',
+     'BLUE'                                   => 'MAVÝ',
+     'DARK GREEN'                             => 'KOYU YEÞÝL',
+     'MAGENTA'                                => 'MACENTA',
+     'AMBER'                                  => 'AMBER'
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => 'Pazar',		'Pzr' => 'Dom',
+      'Monday'    => 'Pazartesi',	'Pzt' => 'Lun',
+      'Tuesday'   => 'Salý',		'Sal' => 'Mar',
+      'Wednesday' => 'Çarþamba',	'Çrþ' => 'Mi&eacute;',
+      'Thursday'  => 'Perþembe',	'Prþ' => 'Jue',
+      'Friday'    => 'Cuma',		'Cum' => 'Vie',
+      'Saturday'  => 'Cumartesi',	'Cmr' => 'Sab' 
+    );
+
+%month = 
+    (
+ 'January' => 'Ocak',    'February' => 'Þubat',     'March'     => 'Mart',
+ 'Jan'     => 'Ock',     'Feb'      => 'Þub',       'Mar'       => 'Mar',
+ 'April'   => 'Nisan',   'May'      => 'Mayýs',     'June'      => 'Haziran', 
+ 'Apr'     => 'Nis',     'May'      => 'May',       'Jun'       => 'Hzr',
+ 'July'    => 'Temmuz',  'August'   => 'Agustos',   'September' => 'Eylül', 
+ 'Jul'     => 'Tem',     'Aug'      => 'Agu',       'Sep'       => 'Eyl', 
+ 'October' => 'Ekim',    'November' => 'Kasým',     'December'  => 'Aralýk', 
+ 'Oct'     => 'Ekm',     'Nov'      => 'Kas',       'Dec'       => 'Ara' 
+    );
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+    {
+	if($foo[3]=~(/(.*)at(.*)/))
+      { 
+        @quux=split(/at/,$foo[3]);
+        $foo[3]=$quux[0]." a las ".$quux[1]; 
+      };
+      return "$wday{$foo[0]} $foo[1] de $month{$foo[2]} de $foo[3]"; 
+    };
+}

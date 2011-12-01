@@ -1,0 +1,21 @@
+From: "Gill, Vern" <vgill@technologist.com>
+Date: Fri, 9 Mar 2001 18:43:30 -0800 
+Subject: New Module for MRTG
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+I have "hacked" together a module for iptables. I used the ipchainacc
+1.1.0 from the contrib directory. Here's the scoop;
+Requires Perl
+
+There is one argument required, and it can be any of the following;
+filter
+nat
+mangle
+You may extend the functionality, but it also requires editing the
+script. To use, place the following in your mrtg.cfg;
+Target[iptables]: `/path-to/iptables-accounting argument`
+
+The script is probably ugly to perl gurus, but for a guy who has
+never used perl, I think it's pretty good.

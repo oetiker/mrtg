@@ -1,0 +1,112 @@
+======================================
+ DiskMon (getdisk.pl and showdisk.pl)
+======================================
+by Steven Micallef <smic@wire.net.au>
+
+---------------
+What they do
+---------------
+
+getdisk.pl and showdisk.pl work on the client/server principal.
+
+showdisk.pl - runs off the 'server' displaying disk partition % used.
+getdisk.pl  - runs off the 'client' and connects to the 'server' to get disk
+              info off showdisk.pl.
+
+
+-------------------
+Before you begin
+-------------------
+
+Before you Install, you need the following:
+
+- Perl
+- Net::Telnet Perl Module.
+
+You can get this straight from:
+
+ftp.oleane.net/pub/CPAN/mirrors/modules/by-module/Net/Net-Telnet-3.01.tar.gz
+
+
+-------------
+Installation
+-------------
+
+The following steps apply to EACH MACHINE YOU WANT TO MONITOR...
+
+1. Copy the showdisk.pl script to the host you wish to monitor.
+
+2. In your /etc/inetd.conf, insert the line:
+
+df	stream	tcp	nowait	root	<path of your TCP wrapper>	<path of showdisk.pl>
+
+Of course, the TCP wrapper isn't mandatory, but if you want to restrict access
+to the viewing of free disk space, I really recommend you install it.
+
+3. In your /etc/services file, put in the following line:
+
+df	9047/tcp
+
+The port you choose is up to you, but if you do change it from 9047, be sure
+to update getdisk.pl too (the port number is specified in the first few lines
+of the script).
+
+4. kill -HUP your inetd
+
+5. Test it by telnetting to the host at port 9047. You should get the
+following:
+
+bash~# telnet hostname 9047
+< usual connect messages >
+30
+40
+10
+20
+.
+.
+etc..
+
+Of course, the output depends on
+a) how many disks are on the machine, and
+b) how much space in % is used on each disk.
+
+If you didn't get any output, go back and make sure you did everything
+properly.
+
+
+--------------------------------
+Setting up getdisk.pl with MRTG
+--------------------------------
+
+The getdisk.pl script runs like so:
+
+./getdisk.pl <hostname> <disk number>
+
+For example, doing a ./getdisk sparky 1 will show how much % of the first
+partition (usually the root partition) on sparky is used.
+
+So how do you map a number to a partition? 
+On the host you installed showdisk.pl on, do the following:
+
+bash~# df -k
+Filesystem         1024-blocks  Used Available Capacity Mounted on
+/dev/hda1             202222   78786   112993     41%   /
+/dev/hdc3            2486311 1247138  1110635     53%   /usr
+/dev/hdc1            1486150  375570  1033782     27%   /backup
+                                                   ^
+The first disk is 1, the second 2, and so on..     |
+Example:                                           |
+  bash~# ./getdisk.pl hostname 3                   |
+  27         <-------------------------------------'
+
+Please look at sample.cfg to see how to setup getdisk.pl with MRTG.
+
+
+---
+I hope this is as useful to you as it has been to me. If you have any
+problems/bug reports/advice/complaints, email me.
+
+Enjoy.
+
+Steven Micallef
+<smic@wire.net.au>

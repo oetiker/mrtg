@@ -1,0 +1,20 @@
+From: Ilya Konstantinov <future@galanet.net>
+Date: 06 Sep 2000 18:53:33 -0200
+
+I have tweaked the ipchainacc perl script provided in MRTG's contrib for our
+own use at our LUG, and I thought the rest of the users might find my
+changes helpful.
+
+Changes:
+1. Made it account BYTES instead of PACKETS, like it used to do before.
+2. It now accepts (optional) two command-line arguments to make it
+return results for the 2nd etc. rules in the chain, so for example,
+I can insert rules into the 'acctin' and 'acctout' chains which'll match
+traffic with destination and source (respectively) port set to 80, so I
+could
+see how much traffic passes through HTTP only.
+
+so:
+ipchainacc 1 1
+should return counters of 2nd acctin and 2nd acctout rules.
+

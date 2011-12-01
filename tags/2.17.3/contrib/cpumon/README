@@ -1,0 +1,31 @@
+cpumon.pl
+
+        I use this script to monitor cpu usage on any process that
+        maintains a pid file.   Usage is very simple:
+
+        cpumon.pl <pidfile>
+
+        To install, first edit the "ps" and "psargs" variables as
+        needed.  I found it easier to have these defined rather than
+        hardcoded due to differences between ucb-based and SysV-based
+        ps functions.
+
+        cpumon.pl will return the cpu usage of the pid in the pidfile
+        you specify in the appropriate format for MRTG.  For monitoring
+        processes on remote machines that are not snmpable, I run this
+        program out of inetd (so I can tcp_wrap it) on a high port.
+        See http://www.blackened.com/ircstats/ for cpu monitoring
+        examples.
+
+        To run this from mrtg, the syntax would be like:
+
+Target[cpu]: `path/to/cpumon.pl /path/to/pidfile`
+
+        Direct questions or suggestions to me.
+
+        Have fun!
+
+        -mjr <mjr@blackened.com>
+
+
+

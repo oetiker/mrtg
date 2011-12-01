@@ -1,0 +1,727 @@
+#!/usr/local/bin/perl
+##################################################################
+# Multi Dynamic IP Traffic Grapher contibution to mrtg
+##################################################################
+#
+# Created by John Heenan <john@heenan.ironbark.id.au>
+#
+# Available from http://www.heenan.ironbark.id.au/mrtg-dynip
+#
+##################################################################
+#
+# Distributed under the GPL copyleft of GNU
+#
+# mrtg-dynip, v 0.41b 1997/10/25
+# 
+# Copyright John Heenan, with exception of datestr subroutine
+# (copied from mrtg executable) and much of internal_walk
+# subroutine (manner of using snmp modules copied from an example
+# by Simon Lenine)
+#
+###################################################################
+
+#Mrtg-dynip is a contribution to MRTG, enabling MRTG to generate multi
+#interface traffic graphs for IP interfaces on hosts that do not provide
+#consistent SNMP target numbers for their interfaces.  Such IP interfaces
+#include IP active serial interfaces attached to modems in a PPP dial in
+#environment. The hosts must run snmp agents.  For completeness, information
+#about interface devices with unvarying SNMP target numbers, such as
+#ethernet cards, can be configured to be included.
+
+#Mrtg-dynip's configuration is simplest where static (or fixed) IP is not
+#used for dial into a rotary modem pool.
+
+#Mrtg-dynip can be considred to have sophisticated modem bank monitoring
+#capacity, when the modems carry PPP or SLIP traffic.
+
+#Regenerates a named 'mrtg.cfg' file to ensure snmp data remains with a
+#consistent IP number, or overridable IP number of a real physical device
+#in a dial in IP environment, rather than with an interface name which
+#can get assinged to different real physical devices, and runs mrtg on
+#the generated file.
+
+#Generates a web index file of stats web pages. 
+
+#Please see the section 6 of the FAQ for this version for information on
+#for differences in interpreting graphs between some devices
+
+#Briefly, to someone dialling in, dynamic IP means when they dial a rotary 
+#number they do not get a consistent IP address. To the service provider it 
+#means a unique IP number is assinged to each telephone line/modem/port.
+
+#To someone dialling in, static or fixed IP means that their user name is
+#approved to use a unique IP address, whether they dial into a rotary for
+#a modem bank or into a non rotary number.  To the service provider, it means
+#if someone is dialling into a rotary for a modem pool, they allow the modem
+#port use a unique approved IP number for that user, that overrides the IP
+#address used when a dial in user does not request a fixed or static IP.
+
+#The public community should be used, however the public community on a
+#particular host does not need to be named 'public'.  This is catered for.
+
+#There is a large 'TODO' list for this contribution, including 
+#testing use of the 'ifLastChange' snmp object.
+
+#SET UP
+
+#Runs independently of an existing configured mrtg installation.  Following
+#the commented example will make the set up clearer.  The examples are for a
+#live ISP using web page http://www.stats.syd.net.au, you must change values
+#for your own use
+ 
+#  0   Ensure the path to the perl binary is set correctly on first line
+#  1   $HTTP_Work_Dir         ** Must set
+#  2   $HTTP_index_file       Default index.html may be OK if unique
+#  3   $mrtg_Dir              ** Must set
+#  4   $mrtgcfg_Dir           Setting to $mrtgDir is probably OK
+#  5   $mrtgcfg_file          Default mrtg-dynip.cfg should be OK
+#  6   $update		      Default will work (five minutes)
+#  7   $community_default     Default for this default may be OK (public)
+#  8   $email		      Set to "" to show nothing
+#  9   $home_page	      Set to "" to show nothing
+# 10   $home_page_descr       Set to "" to show nothing
+# 11   $suicidal              Non zero: bomb out if there are problems
+# 12   $firewall_masq_tran_if Best to leave as 0 (zero) if sufficient
+# 13   $use_non_dyn_IP_for_tty Safe to set to 0 (the non set value)
+# 14   $Dir_PID		      Must set if 13 is non zero
+# 15   External settings if 13 is set to non zero
+# 16   $interfaces             ** Must set
+
+#Ensure mrtg-dynip has executable permission.  See below as to where
+#mrtg-dynip may need to be installed.
+
+#Place a crontab entry, consistent with update time, similar to
+#0,5,10,15,20,25,30,35,40,45,50,55 * * * *  <next line continued here> 
+#cd /usr/src/mrtg/mrtg-2.5/; date >>/var/log/mrtg-dynip.log;
+#<continues previous line> ./mrtg-dynip >>/var/log/mrtg-dynip.log 2>&1
+#
+#Redirecting standard output and error to a log file with an indication
+#of time from 'date' is valuable for sorting out errors and preventing
+#messages from being emailed to the root account.
+#
+#If Perl5 snmp modules are not installed in standard libraries and 
+#the internal 'walk' is being used, then it is necessary to ensure
+#mrtg-dynip in installed in, and run from, a directory where the modules
+#are, typically the same directory the mrtg executable is in. 
+
+#The most difficult part in a dynamic IP environment may be choosing the IP
+#addresses to use for the scaler constant $interfaces, as you must ensure
+#the IP address used will always correspond to the physical interface
+#device, unless exception facility configured in.
+
+#For Internet Service Providers running ppp dial in lines, the choice will
+#be clear.  The IP addressess to use will be the 'remote' IP part of the
+#command line options for the real physical device (:remote_ip in
+#/etc/ppp/options.ttyXY file), unless static or fixed IP is allowed to
+#override this.  For dial out lines that can get a variable 'remote' IP, you
+#should be able to control what remote IP you get, no matter who you dial
+#into and what remote IP they may offer you, by configuring a remote IP as
+#for a dial in line above.
+
+#If the final negotiated ppp address pair as seen by your machine,
+#local_ip:remote_ip, is equal to a_ip:b_ip, then the local_ip:remote_ip as
+#seen by the other machine is b_ip:a_ip. Since the remote IP seen by your
+#side of the line is the local IP as seen and negotiated by the machine on
+#the other side of the line, you can choose whatever remote IP address suits
+#your side of the connection.  Specifying a 'remote' IP other than 0.0.0.0
+#will, by default with pppd, result in an IP the other machine will have to
+#accept as their local to succesfully negotiate a connection.  However it is
+#two way: the other machine can do the same to you for its corresponding
+#'remote' IP.  Hence mrtg-dynip can work on both machines.
+
+#Please note: If you have interface devices which register ppp10 or 
+#above, your snmp daemon may not supply information.  This is not due 
+#to a bug in mrtg, the snmp modules or this mrtg-dynip.
+
+#Latest version of this software should be available from
+#http://www.heenan.ironbark.id.au/source/mrtg-dynip
+#The configuration herein is provivded as an example only. 
+#This file is used to generate http://www.stats.syd.net.au. 
+
+######## Start of configuration section, numbered 0 to 16.
+
+######## Set this, 0
+#Check the perl path is correct on the very first line!
+
+######## Set this, 1
+#Define $WorkDir to be the directory for web pages and data to be housed
+#Ensure each directory path ends with a seperator. If intending to run on 
+#an NT machine, then ensure the directory seperator is '\\' instead of '/'
+$HTTP_Work_Dir='/var/lib/httpd/htdocs/mrtg/';
+
+########  Set this, 2
+#Define name of index html file, only condition is that it not the same name
+#as a html that will be regenerated.  All names of generated files contain
+#an IP address.
+$HTTP_index_file='index.html';
+
+####### Set this, 3
+#Set to full directory path the mrtg executable is in.  Place this file
+#it if that is where the Perl 5 snmp modules are and $use_internal_walk
+#will not be set to 1 (see below).
+#Ensure each directory path ends with a seperator. If intending to run on
+#an NT machine, then ensure the directory seperator is '\\' instead of '/'
+$mrtg_Dir="/usr/src/mrtg/mrtg-2.5/";
+
+####### Set this, 4
+#Set to full directory path the 'mrtg.cfg' file below is to be placed in.
+#The default choice is to choose same directory as for $mrtg_Dir above
+#Ensure each directory path ends with a seperator. If intending to run on
+#an NT machine, then ensure the directory seperator is '\\' instead of '/'
+###$mrtgcfg_Dir="/usr/src/mrtg/mrtg-2.5/";
+$mrtgcfg_Dir=$mrtg_Dir;
+
+####### Set this, 5
+#Set the name you would like the 'mrtg.cfg' file to be.  By locating or
+#naming differently from existing 'mrtg.cfg' files, you can run this
+#software independently of your existing mrtg installation.
+$mrtgcfg_file="mrtg-dynip.cfg";
+
+####### Set this, 6
+#Set this to update interval in amount of minutes.  Ensure when this file
+#is run from crond and that the cron run inteval matches this update 
+#interval
+$update=5;
+
+######## Set this, 7
+#Default community "public" may be sufficient. The community defined here
+#is the default community to use if no community is defined in the
+#for a particular interface in configuration of $interface in section 12.
+$community_default="public";
+
+######## Set this, 8
+#Email address of network manager(s).  Ensure a '\' appears before
+#'@' in email address, as in example.
+#$email="";         #No attempt to display if null
+$email="admin\@syd.net.au";
+
+######## Set this, 9
+#Web address of home page for your system, do not include http:// at start
+#$home_page="";  	#No attempt to display if null   
+$home_page="www.syd.net.au";
+
+######## Set this, 10         
+#Text for clickable link to home page of your system
+#$home_page_descr="";  	#No attempt to display if null    
+$home_page_descr="SydNet Internet and Network Services";
+
+######## Set this, 11
+#Set to a non zero if you want the program to die if there are problems
+#with responses from agents or hosts. Useful in testing phase.
+#$suicidal = 0; #Program is to soldier on if there are no responses from a host
+$suicidal = 1; #Program is to bomb out if there are problems with reponses
+
+######## Set this, 12
+#Set this to a non zero if you have interfaces with the same IP number on
+#different masquerading firewall, or address translation, routers/hosts,
+#otherwise leave as 0.  This adds the name of the host to all web page file
+#names as well as the IP addresses.  Avoid using this option as its use make
+#it more difficult to keep track of interface data. 
+#$firewall_masq_tran_if = 1;
+$firewall_masq_tran_if = 0;
+
+######## Set this, 13
+#If you have hosts upon which you do not make it a requirement that an
+#interface device uses a partciular IP number (that is you might provide
+#fixed IP address use into a rotary modem pool) then you can set this option
+#on and set item 17 appropriately.  Set to zero not to use, non zero to use
+$use_non_dyn_IP_for_tty=1;
+#$use_non_dyn_IP_for_tty=0;
+
+######## Set this, 14
+#If you set option 13 above, then set to full directory path external
+#process will place a single line with the IP address into a file
+#with name that includes name of SNMP hsot and physical interface device
+#name.
+#
+#Ensure each directory path ends with a seperator. If intending to run on an
+#NT machine, then ensure the directory seperator is '\\' instead of '/'
+$Dir_PID="/var/run/";
+
+######## Set this, 15
+#If you haVe set option 13 above then you need to ensure
+#an external program provides required information from whatever
+#hosts you indicate in 16 are ports that can have their preferred
+#IP overridden.  
+#
+#For UNIX style localhosts the following lines can be inserted in
+#/etc/ppp/ip-up and /etc/ppp/ipdown.  Following a reboot stale
+#files should be removed automatically by startup, lest the machine
+#crashed.  For hosts other than the host upon which this script is 
+#running, ip-up and ip-down will need to be modified to ensure the 
+#information goes to /var/run of appropriate host.  This can be done 
+#using remote shell or other mechanisms, such as remote copy, nfs, 
+#auto processed email and special client/server networking.
+#
+#It is vital the 'host_name' for writing to /var/run/, as indicated in
+#/var/run/mrtg-dynip.host_name~~ttyXY, matches exactly the equivalent
+#host name in mrtg-dynip. This 'host_name' may be a single name,
+#a dotted name or a dotted numeric IP address.
+#
+#/etc/ppp/ip-up for a localhost running a bash shell can include
+#
+#tty_name="$2"
+#IP_remote="$5"
+#/bin/echo $IP_remote > /var/run/mrtg-dynip.localhost~~${tty_name##/*/}
+#
+#The name of the file must exactly matched that sought for.  
+#
+#/etc/ppp/ip-down for a localhost running a bash shell can include
+#
+#tty_name=$2
+#/bin/rm -f /var/run/mrtg-dynip.localhost~~${tty_name##/*/}
+
+######## Set this, 16
+#A pair of lines between blank lines represents an interface on a 
+#particular host.  
+#
+#You can comment out a single pair of lines with a '#' or any non digit
+#(except whitespace) as the first character of a pair of lines.
+#
+#The first line has the following format
+#'n' 'IP-addr' 'if-speed' 'snmp host' 'snmp community'
+#
+#The second line has the following format
+#	'Any free text description of interface'
+# 
+#The items must not be enclosed by '"' or '''.  Plese see example
+#below before reading any further. Any whitespace or combination
+#of whitespace (tabs or spaces) can seperate the items. However it
+#is important the two lines with 'END_OF_INTERFACES' end without
+#whitespace. 
+#
+#'n' is place this entry is to appear in the index of interfaces web file.
+#The number of digits should be the same for each interface, for example
+#use sequence 000 010 020 for successive numbers. You can temporarily
+#take an interface out of consideration by placing any non digit 
+#(except whitespace) before these digits, for example replace 010 
+#by N010 or #010
+#
+#'IP-addr' is a consistent IP address of a physical interface. Exceptions
+#can be catered for.  If you allow fixed (or static) IP into the physical
+#interface to override, then you can ensure the line is still marked active
+#in addition to the static IP entry being marked active.  To ensure this
+#occurs, append '~~ttyXY' to the IP address where ttyXY is the value
+#returned by ${tty_name##/*/} for the phyical device (or port) as indicated
+#in section 15.  To keep a value in place, even if the port is not part of
+#an IP overridable rotary pool, append a '~' to the end, such that complete
+#appendage to the IP address is now '~~ttyXY~'.  You can keep the appendages
+#even if you turn off, or do nor use, $use_non_dyn_IP_for_tty.
+#
+#'if-speed' is the interface speed in integer bits/sec. K and M multipliers
+#for Kb/s and Mb/s can be used (see example). If you want to use decimal
+#values then rewrite with a lower multiplier, for example write 
+#33.3K as  34099 (integer portion of 33.3 multiplied by 1024).
+#
+#'snmp host' is a common and consistent DNS name, or IP address, for
+#interfaces that belong to a particular machine.  For efficiency of snmp
+#agent use it is better all interfaces that belong to a particular machine
+#use a consistent name.
+#
+#'snmp community' is the community name of the 'public' community
+#for an interface (the public community does not have to be named 
+#'public').  This vale does not have to be set: if this value is 
+#not set then the value of $community_default is used instead.
+#
+#'Any free text description of the interface ' on the second line
+#is as indicated.  It need not begin with whitepace (tabs or spaces).
+#
+#For dynamic IP interfaces, you must use unvarying 'remote' IPs as indicated
+#above.  Virtual interface devices should not be used, they provide the same
+#statistics as the real interface they are a virtual interface of.
+
+#The configuration herein is provivded as an example only.
+#This file is used to generate http://www.stats.syd.net.au.
+
+{
+$interfaces = <<END_OF_INTERFACES
+
+010     139.130.36.136   	64K     203.35.74.100
+        SydNet - Telstra Internet link: 64K ISDN router interface connected 14 October 1997
+
+020     203.35.74.101   	10M     localhost
+        Ethernet interface on machine for permanent links and dial up lines
+
+040     203.35.74.9~~ttyC9~	33K     localhost
+        Permanent link for user pmw
+
+050     203.35.74.120~~ttyC10~	33K     localhost
+        Permanent link for machine chaosorb.syd.net.au
+
+060     203.35.74.11~~ttyC11~ 	33K     localhost
+        Permanent link for domain arty.com.au
+
+073     203.35.74.108     	33K	localhost
+	Static IP address for SydNet technical and sys admin staff member
+
+076     203.35.74.107     	33K	localhost
+	Static IP address for SydNet security staff member
+
+079     203.35.74.105     	33	localhost
+        Static IP address for non permanent rotary dial in user foo
+
+081     203.35.74.109     	33K     localhost
+        Static IP address for non permanent rotary dial in user kebo
+
+101     203.35.74.1~~ttyC1	33K     localhost
+	Rotary dial up line 1
+
+102     203.35.74.2~~ttyC2	33K     localhost
+	Rotary dial up line 2
+
+103     203.35.74.3~~ttyC3     	33K     localhost
+	Rotary dial up line 3
+
+104     203.35.74.4~~ttyC4     	33K     localhost
+	Rotary dial up line 4
+
+105     203.35.74.5~~ttyC5     	33K     localhost
+	Rotary dial up line 5
+
+106     203.35.74.6~~ttyC6     	33K     localhost
+	Rotary dial up line 6
+
+107     203.35.74.7~~ttyC7     	33K     localhost
+	Rotary dial up line 7
+
+108     203.35.74.8~~ttyC8     	33K     localhost
+	Rotary dial up line 8
+
+109     203.35.74.10~~ttyC0     33K     localhost
+	Rotary dial up line 9
+
+END_OF_INTERFACES
+}
+
+#Convenient record of tty to dynamic IP mappings on localhost
+#ttyC0        203.35.74.10
+#ttyC1        203.35.74.1
+#ttyC2        203.35.74.2
+#ttyC3        203.35.74.3
+#ttyC4        203.35.74.4
+#ttyC5        203.35.74.5
+#ttyC6        203.35.74.6
+#ttyC7        203.35.74.7
+#ttyC8        203.35.74.8
+#ttyC9~       203.35.74.9
+#ttyC10~      203.35.74.120
+#ttyC11~      203.35.74.11
+#ttyC12       203.35.74.12
+#ttyC13       203.35.74.13
+#ttyC14       203.35.74.14
+#ttyC15       203.35.74.15
+
+###### You have reached the end of the configuration section, there is no
+#need to make any adjustments below for normal operation.
+
+@lines = split(/\n/,$interfaces);
+$line=0;
+while ($line <= $#lines)
+{ 
+  @elements = split (" ",$lines[$line]);
+  if (defined ($elements[3]))
+  {
+    $order=$elements[0];
+    ($ip,$tty) = split (/~~/,$elements[1]);
+    $speed = $elements[2];
+    $snmp_host = $elements[3];
+    $community = defined ($elements[4]) ? $elements[4] : $community_default;
+    $descr=$lines[$line+1];
+    $descr =~ s/^\s*//;
+    $ip_descr{$ip."@".$snmp_host} = [$order,$speed,$community,$descr];
+    $snmp_comm_host{$community."@".$snmp_host}{$ip}=1;
+    $dyn_port{$snmp_host."~~".$tty} = $ip if ($use_non_dyn_IP_for_tty && $tty && $tty !~ /~$/);
+    $line=$line+2;
+  }
+  else
+  {
+    $line++;
+  }
+}
+
+#Use Simon Leinen's Perl 5 snmp modules included with mrtg
+#consistent with manner Simon uses in examples
+{
+&snmp_get_response;
+}
+
+if ($use_non_dyn_IP_for_tty != 0)
+{
+  foreach $tty (keys(%dyn_port))
+  {
+     if ( -e $Dir_PID."mrtg-dynip.".$tty )
+     {
+      ($snmp_host) = split (/~~/,$tty);
+      if ( (defined($target{$dyn_port{$tty}."@".$snmp_host})) == 0)
+      {
+        $ip_active = `cat $Dir_PID"mrtg-dynip."$tty`;
+	$ip_active =~ s/\s+$//;
+	if (defined ( $target{$ip_active."@".$snmp_host}))
+	{
+$target{$dyn_port{$tty}."@".$snmp_host} = $target{$ip_active."@".$snmp_host};
+	}
+      }
+    }
+  }  
+}
+
+open MRTGCFG, ">$mrtg_Dir"."$mrtgcfg_file"
+         || die "$mrtg_Dir"."$mrtgcfg_file file could not be opened\n";
+
+$ip_descr_ptr = \%ip_descr;
+
+foreach $ip_i (keys(%target))
+{
+if ($$ip_descr_ptr{$ip_i}->[0] =~ /^\d/) 
+{
+($speed_fig,$speed_mult) = $$ip_descr_ptr{$ip_i}->[1] =~ /^(\d+)(\D*)/;
+if ($speed_mult =~ /M|m/)
+{
+  $scale = int ( $speed_fig * 1024 * 1024 / 8 );
+}
+elsif ($speed_mult =~ /K|k/)
+{
+  $scale = int ( $speed_fig * 1024 / 8 );
+}
+elsif ( $speed_mult eq "" )
+{
+  $scale = int ( $speed_fig / 8 );
+}
+else
+{
+  die("Incorrect speed format in scaler constant $interfaces\n");
+}
+
+($ip_if,$host) = split (/@/,$ip_i);
+if ($firewall_masq_tran_if != 0)
+{
+$snmp_target=$ip_i;
+}
+else
+{
+$snmp_target=$ip_if;
+}
+
+print MRTGCFG <<END
+Target[$snmp_target]: $target{$ip_i}:$$ip_descr_ptr{$ip_i}->[2]\@$host
+MaxBytes[$snmp_target]: $scale
+Title[$snmp_target]: Traffic Analysis through interface device with IP address $ip_if of host $host
+PageTop[$snmp_target]: <H1>Stats for interface device with description $$ip_descr_ptr{$ip_i}->[3]</H1>
+
+END
+}
+}
+{
+print MRTGCFG <<END
+
+WorkDir: $HTTP_Work_Dir
+END
+}
+close MRTGCFG;
+
+$interval = $update * 60;
+$expires = gmtime (time + $interval + 60);
+$now=&datestr(time);
+
+open MRTGCFGWEB, ">$HTTP_Work_Dir"."$HTTP_index_file"
+	 || die "Mrtg web index file could not be created\n";
+{
+print MRTGCFGWEB <<END
+<HTML><HEAD> 
+<META HTTP-EQUIV=\"Refresh\" CONTENT=\"$interval\">
+<META HTTP-EQUIV=\"Expires\" CONTENT=\"$expires GMT\"> 
+
+<TITLE>Index of stats pages for interface devices on interfaces described below</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000"> 
+<FONT FACE="Arial,Helvetica">
+<H1>Active and inactive interace device stats on interfaces described below</H1>
+This page last updated on $now<p>
+END
+}
+
+if ($home_page && $home_page_descr)
+{
+print MRTGCFGWEB <<END
+<p>
+A network management service courtesy of <a href=\"http://$home_page\">
+$home_page_descr</a>
+<p>
+END
+}
+
+if ($email)
+{
+print MRTGCFGWEB <<END
+<p>
+Information and contact address: network management at email 
+<a href=\"mailto:$email\">$email</a>
+<p>
+END
+}
+
+{
+print MRTGCFGWEB <<END
+<p>
+Static IP address and rotary line both marked active if line 
+in use by a static IP address 
+<p>
+END
+}
+
+{
+print MRTGCFGWEB <<END
+</FONT>
+<table>
+END
+}
+
+foreach $ip_i (keys %ip_descr)
+{
+$ip_order{$$ip_descr_ptr{$ip_i}->[0]} = $ip_i if ($$ip_descr_ptr{$ip_i}->[0] =~ /^\d/);
+}
+
+foreach $i (sort (keys %ip_order))
+{
+$ip_i = $ip_order{$i};
+
+if ($firewall_masq_tran_if != 0)
+{
+$file_name=$ip_i;
+}
+else
+{
+($file_name) = split (/@/,$ip_i);
+}
+
+if ( defined ($target{$ip_i}) )
+{
+print MRTGCFGWEB <<END
+<tr><td><FONT FACE="Arial,Helvetica">ACTIVE</FONT></td> <td><FONT FACE="Arial,Helvetica"><A HREF=\"$file_name.html\">$$ip_descr_ptr{$ip_i}->[3]</a></FONT></td></tr>
+END
+}
+else
+{
+print MRTGCFGWEB <<END
+<tr><td><FONT FACE="Arial,Helvetica">INACTIVE</FONT></td> <td><FONT FACE="Arial,Helvetica"><A HREF=\"$file_name.html\">$$ip_descr_ptr{$ip_i}->[3]</a></td></FONT></tr>
+END
+}
+}
+{
+print MRTGCFGWEB <<END
+</table>
+<FONT FACE="Arial,Helvetica">
+<p> This web page (but not the web pages above)
+generated by mrtg-dynip, version 0.41b, 1997/10/25
+created by <br>John Heenan, <a
+href="mailto:john\@heenan.ironbark.id.au">john\@heenan.ironbark.id.au</a>
+
+<P>Mrtg-dynip is a contribution to MRTG, enabling MRTG to generate multi
+interface traffic graphs for IP interfaces on hosts that do not provide
+consistent SNMP target numbers for their interfaces.  Such IP interfaces
+include IP active serial interfaces attached to modems in a PPP dial in
+environment. The hosts must run snmp agents.  For completeness, information
+about interface devices with unvarying SNMP target numbers, such as
+ethernet cards, can be configured to be included.<P>
+
+Mrtg-dynip can be considred to have sophisticated modem bank monitoring
+capacity, when the modems carry PPP or SLIP traffic.<P>
+
+This web page and web pages above, auto update details, and refresh, every
+$update minutes.<p>
+
+Source code for the latest non beta version of the mrtg-dynip software
+contribution is available from <a
+href="http://www.heenan.ironbark.id.au/source/mrtg-dynip">
+http://www.heenan.ironbark.id.au/source/mrtg-dynip</a><p> 
+END
+}
+
+print MRTGCFGWEB "</FONT></BODY></HTML>","\n";
+
+close MRTGCFGWEB; 
+
+exec ("$mrtg_Dir"."mrtg $mrtgcfg_Dir"."$mrtgcfg_file");
+
+sub datestr {
+($time) = shift(@_) || return 0;
+($wday) = ('Sunday','Monday','Tuesday','Wednesday',
+                'Thursday','Friday','Saturday')[(localtime($time))[6]];
+($month) = ('January','February' ,'March' ,'April' ,
+                 'May' , 'June' , 'July' , 'August' , 'September' ,
+                 'October' ,
+                 'November' , 'December' )[(localtime($time))[4]];
+($mday,$year,$hour,$min) = (localtime($time))[3,5,2,1];
+if ($min<10) {$min = "0$min";}
+return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+}
+
+sub snmp_get_response
+{
+use BER;
+use SNMP_Session;
+
+SOLDIER_ON: foreach $comm_host (keys (%snmp_comm_host))
+{
+($community,$host) = split (/@/,$comm_host);
+if ($session = SNMP_Session->open ($host, $community, 161))
+{
+@ipRouteIfIndex = split ('\.', '1.3.6.1.2.1.4.21.1.2');
+@ipAdEntIfIndex = split ('\.', '1.3.6.1.2.1.4.20.1.2');
+$if_route_index_index = encode_oid (@ipRouteIfIndex);
+$if_index_index = encode_oid (@ipAdEntIfIndex);
+
+  @oids = ($if_route_index_index);
+  for (;;) {
+    if ($session->getnext_request_response (@oids)) {
+        $response = $session->pdu_buffer;
+        ($bindings) = $session->decode_get_response ($response);
+        @next_oids = ();
+        ($binding,$bindings) = decode_sequence ($bindings);
+        ($oid,$value) = decode_by_template ($binding, "%O%@");
+        last unless BER::encoded_oid_prefix_p ($if_route_index_index, $oid);
+        push @next_oids, $oid;
+        ($ip_if) = pretty_print ($oid) =~ /.*\.(\d+\.\d+\.\d+\.\d+)$/;
+        $target_i = pretty_print ($value);
+        $target{$ip_if."@".$host} = $target_i if ( defined ($snmp_comm_host{$community."@".$host}{$ip_if}) );
+    } else 
+        {
+          die ("Suicide: no response from community $community on host $host","\n") if ($suicidal != 0);
+          print ("Soldiering on: no response from community $community on host $host","\n");
+          $session->close ();
+          last SOLDIER_ON;
+        }
+    @oids = @next_oids;
+  }
+
+  @oids = ($if_index_index);
+  for (;;) {
+    if ($session->getnext_request_response (@oids)) {
+        $response = $session->pdu_buffer;
+        ($bindings) = $session->decode_get_response ($response);
+        @next_oids = ();
+        ($binding,$bindings) = decode_sequence ($bindings);
+        ($oid,$value) = decode_by_template ($binding, "%O%@");
+        last unless BER::encoded_oid_prefix_p ($if_index_index, $oid);
+        push @next_oids, $oid;
+        ($ip_if) = pretty_print ($oid) =~ /.*\.(\d+\.\d+\.\d+\.\d+)$/;
+        $target_i = pretty_print ($value);
+        $target{$ip_if."@".$host} = $target_i if ( defined ($snmp_comm_host{$community."@".$host}{$ip_if}) );
+    } else 
+        {
+          die ("Suicide: no response from community $community on host $host","\n") if ($suicidal != 0);
+          print ("Soldiering on: no response from community $community on host $host","\n");
+	  $session->close ();
+          last SOLDIER_ON;
+        }
+    @oids = @next_oids;
+  }
+$session->close ();
+}
+else
+  {
+     die ("Suicide: unable to open SNMP session to community $community on host $host","\n") if ($suicidal != 0);
+     print ("Soldiering on: unable to open SNMP session to community $community on host $host","\n");
+  }
+}
+}

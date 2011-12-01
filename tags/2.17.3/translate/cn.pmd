@@ -1,0 +1,132 @@
+###### PATCHTAG00 ####################################################
+###      cn/中文汉字
+###      => 李晨光 <zurkabsd@yahoo.com.cn>
+###	 => MSN:chenguang2001@hotmail.com FreeBSD Fan
+###	 => MRTG完美汉化.
+###### PATCHTAG10 ####################################################
+  &cn
+###### PATCHTAG20 ####################################################
+  'cn'          => \&cn,
+  '中文汉字'         => \&cn,
+###### PATCHTAG30 ####################################################
+# cn/中文汉字
+   'cn' =>
+   "  <HR NOSHADE>
+    MRTG完美汉化：
+    <NOBR><A HREF=\"http://www.darkstage.net\">李晨光</A>
+  <A HREF=\"mailto:zurkabsd\@yahoo.com.cn\">
+  &lt;zurkabsd\@yahoo.com.cn&gt;</A></NOBR>",
+###### PATCHTAG40 ####################################################
+$credits::LOCALE{'中文汉字'}=$credits::LOCALE{'cn'};
+###### PATCHTAG50 ####################################################
+# cn s-Chinese
+
+sub cn
+{
+  my $string = shift;
+return "" unless defined $string;
+  my(%translations,%month,%wday);
+
+  my($i,$j);
+  my(@dollar,@quux,@foo);
+
+  
+  # regexp => replacement string NOTE does not use autovars $1,$2...
+
+  %translations =
+  (  
+     'charset=iso-8859-1'                     => 'charset=gb2312',
+     'Maximal 5 Minute Incoming Traffic'      => '5分钟最大流入量',
+     'Maximal 5 Minute Outgoing Traffic'      => '5分钟最大流出量',
+     'the device'                             => '设备',
+     'The statistics were last updated(.*)'   => '统计最后更新时间：$1',
+     ' Average\)</B><BR>'                     => ' 平均)</B><BR>',
+     '<TD ALIGN=right><SMALL>Average(.*)'     => '<TD ALIGN=right><SMALL>平均$1',
+     '<TD ALIGN=right><SMALL>Max(.*)'         => '<TD ALIGN=right><SMALL>最大$1',
+     '<TD ALIGN=right><SMALL>Current(.*)'     => '<TD ALIGN=right><SMALL>当前$1',
+     'version'                                => '版本',
+     '<B>`Daily\' Graph \((.*) Minute'        => '<B>"每日" 图表 ($1 分钟',
+     '<B>`Weekly\' Graph \(30 Minute'         => '<B>"每周" 图表 (30 分钟' ,
+     '<B>`Monthly\' Graph \(2 Hour'           => '<B>"每月" 图表 (2 小时',
+     '<B>`Yearly\' Graph \(1 Day'             => '<B>"每年" 图表 (1 天', 
+     'Incoming Traffic in (\S+) per Second'   => '每秒流入 $1 量',
+     'Outgoing Traffic in (\S+) per Second'   => '每秒流出 $1 量',
+     'at which time (.*) had been up for(.*)' => '此时 $1 已运作了： $2 ',
+     '(.+)/s$'                                => '$1/秒',
+     '(.+)/min$'                              => '$1/分',
+     '(.+)/h$'                                => '$1/时',
+     # 'Bits'                                 => 'Bits',
+     # 'Bytes'                                => 'Bytes'
+     '&nbsp;In:</FONT>'                       => '&nbsp;流入：</FONT>',
+     '&nbsp;Out:</FONT>'                      => '&nbsp;流出：</FONT>',
+     '&nbsp;Percentage</FONT>'                => '&nbsp;百分比：</FONT>',
+     'Ported to OpenVMS Alpha by'             => '移植到 OpenVMS 者', 
+     'Ported to WindowsNT by'                 => '移植到 WindowsNT 者',
+     'and'                                    => '和',
+     '^GREEN'                                 => '绿',
+     'BLUE'                                   => '蓝',
+     'DARK GREEN'                             => '墨绿',
+     'MAGENTA'                                => '紫',
+     'AMBER'                                  => '琥珀色'
+  );
+
+# maybe expansions with replacement of whitespace would be more appropriate
+
+foreach $i (keys %translations)
+{  
+  my $trans = $translations{$i};
+  $trans =~ s/\|/\|/;  
+  return $string if eval " \$string =~ s|\${i}|${trans}| ";
+};
+
+%wday = 
+    (
+      'Sunday'    => '星期天',    'Sun' => '日',
+      'Monday'    => '星期一',    'Mon' => '一',
+      'Tuesday'   => '星期二',    'Tue' => '二',
+      'Wednesday' => '星期三',    'Wed' => '三',
+      'Thursday'  => '星期四',    'Thu' => '四',
+      'Friday'    => '星期五',    'Fri' => '五',
+      'Saturday'  => '星期六',    'Sat' => '六' 
+
+    );
+
+%month = 
+    (
+      'January'   => ' 一 月',    'February'  => ' 二 月',      'March'     => ' 三 月',
+      'April'     => ' 四 月',    'May'       => ' 五 月',      'June'      => ' 六 月', 
+      'July'      => ' 七 月',    'August'    => ' 八 月',      'September' => ' 九 月', 
+      'October'   => ' 十 月',    'November'  => '十一月',      'December'  => '十二月', 
+      'Jan'       => '１月',      'Feb'       => '２月',        'Mar'       => '３月',
+      'Apr'       => '４月',      'May'       => '５月',        'Jun'       => '６月',
+      'Jul'       => '７月',      'Aug'       => '８月',        'Sep'       => '９月', 
+      'Oct'       => '１０月',      'Nov'       => '１１月',        'Dec'       => '１２月' 
+
+	);
+
+
+  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
+  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
+    {
+	  if($foo[3]=~(/(.*)at(.*)/))
+        { 
+          @quux=split(/at/,$foo[3]);
+	      $foo[3]=$quux[0];
+          $foo[4]=$quux[1]; 
+        };
+      return "$foo[3]年 $month{$foo[2]} $foo[1] 日 ，$wday{$foo[0]} ，$foo[4]"; 
+    };
+
+#
+# handle two different time/date formats:  
+# return "$wday, $mday $month ".($year+1900)." at $hour:$min";
+# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
+#
+
+# handle nontranslated strings which ought to be translated
+# print STDERR "$_\n" or print DEBUG "not translated $_";
+# but then again we might not want/need to translate all strings
+  
+  return $string;
+
+};
