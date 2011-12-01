@@ -115,7 +115,6 @@ char **short_si = short_si_def;
 char *longup = NULL;
 char *shortup = NULL;
 char *pngtitle = NULL;
-char *pngdate = NULL;
 char *rtimezone = NULL;
 char weekformat = 'V';		/* strftime() fmt char for week #  */
 
