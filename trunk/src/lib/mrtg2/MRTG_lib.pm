@@ -782,6 +782,7 @@ sub cfgcheck ($$$$;$) {
     debug('dir', "imagehtml = $$cfg{imagehtml}");
 
     $SNMP_util::CacheFile = "$$cfg{'logdir'}oid-mib-cache.txt";
+    $Net_SNMP_util::CacheFile = "$$cfg{'logdir'}oid-mib-cache.txt";
 
     if (defined $$cfg{loadmibs}) {
         my($mibFile);
