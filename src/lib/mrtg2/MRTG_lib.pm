@@ -1113,8 +1113,7 @@ sub cfgcheck ($$$$;$) {
         }
         if (defined $$rcfg{'options'}{'pngdate'}{$rou}) {
             $$rcfg{'timestrpos'}{$rou} = 'RU';
-            $$rcfg{'timestrfmt'}{$rou} = "%Y-%m-%d %H:%M %Z";
-
+            $$rcfg{'timestrfmt'}{$rou} = $$rcfg{'timezone'}{$rou} ? "%Y-%m-%d %H:%M %Z" : "%Y-%m-%d %H:%M";
             delete $$rcfg{'options'}{'pntdate'}{$rou}
         }
         if (! defined $$rcfg{'timestrpos'}{$rou}) {
