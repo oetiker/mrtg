@@ -1,9 +1,13 @@
+From: tobi
+* set oid-mib-cache file for New_SNMP_util as well #106
+
 From: rihad
 * prevent spurious warnings about unknonwn values of inlast outlast in mrtg
 
 From: tobi
 * add the process id tmp file extensions, to guard against multiple rateup
   instances messing things up for each other. (attempt to fix #115)
+* quell warning in CnTWaLK mode #111
 
 From: morgph@debian.org
 * spelling fixes
