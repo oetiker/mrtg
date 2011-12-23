@@ -1,0 +1,1 @@
+rsync --exclude="bin/lib/**" --copy-unsafe-links --verbose --times --delete --exclude pub --exclude='*~' --exclude=".svn" --exclude=".condor" -r . oposs@oss.oetiker.ch:public_html/mrtg
