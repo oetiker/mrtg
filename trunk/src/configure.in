@@ -27,7 +27,7 @@ AC_CHECK_FUNCS(strtoll)
 
 # Taken from libIDL-0.8.2
 AC_MSG_CHECKING([for printf long long format specifier])
-AC_CACHE_VAL(long_long_format_specifier,[
+AC_CACHE_VAL(mr_cv_long_long_format_specifier,[
     for format in ll l q I64; do
         AC_TRY_RUN([#include <stdio.h>  
             int main()
@@ -39,14 +39,14 @@ AC_CACHE_VAL(long_long_format_specifier,[
                 exit (b!=a);
             }
             ],
-            long_long_format_specifier="%${format}d"
-            long_long_format="${format}d"
+            mr_cv_long_long_format_specifier="%${format}d"
+            mr_cv_long_long_format="${format}d"
             break)
         done])
-AC_MSG_RESULT($long_long_format_specifier)
-AC_DEFINE_UNQUOTED(LLD, "$long_long_format_specifier",
+AC_MSG_RESULT($mr_cv_long_long_format_specifier)
+AC_DEFINE_UNQUOTED(LLD, "$mr_cv_long_long_format_specifier",
     [How to print a long long])
-AC_DEFINE_UNQUOTED(LLD_FORMAT, "$long_long_format",
+AC_DEFINE_UNQUOTED(LLD_FORMAT, "$mr_cv_long_long_format",
     [long long format without % specifier])
 
 AH_BOTTOM(
