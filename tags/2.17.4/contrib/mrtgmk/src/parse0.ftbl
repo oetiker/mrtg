@@ -1,0 +1,44 @@
+/*
+Iulian Radu [v2.0@07.1999]
+*/
+
+struct fncttbl parse0_ftbl[]={
+    {"ENDCOMMENT",NULL},	//end of comment block - need to be be 1st
+    {"COMMENT",fcomment},	//1
+    {"XDEBUG",fxdebug},
+    {"INCLUDE",finclude},
+    {"DEFHOST",fdefhost},	
+    {"MRTG.CFG",fmrtgcfg},
+    {"HTMLFILE",fhtmlfile},
+    {"CFGDIR",fcfgdir},
+    {"NOCFGDIR",fnocfgdir},
+    {"HTMLCODE",fhtmlcode0},
+    {"MRTGTEXT",fmrtgtext},	//10
+    {"TITLE",ftitle},
+    {"BODY",fbody},
+    {"NOBODY",fnobody},
+    {"BASE",fbase},
+    {"NOBASE",fnobase},
+    {"EXEC",fexec},
+    {"GIFD",fgifd},
+    {"GIFW",fgifw},
+    {"GIFM",fgifm},
+    {"GIFY",fgify},		//20
+    {"ALIAS",falias},		
+    {"DELALIAS",fdelalias},
+    {"CHECK4ALIAS",fcheck4alias},
+    {"MKLINK",fmklink},
+    {"MKD",fmkd},
+    {"MKW",fmkw},
+    {"MKM",fmkm},
+    {"MKY",fmky},
+    {"MSG",fmsg},		
+    {"HTMLLINK",fhtmllink0},	//30
+    {"LINK2DH",flink2dh0},
+    {"CHNGTRGNAME",fchngtrgname},
+    {"CONVIP2NAME",fconvip2name},
+    {"CONVNAME2IP",fconvname2ip}
+    };
+
+#define NEFTBL0 35
+

@@ -1,0 +1,136 @@
+# things that the GNU standards document suggests all makefiles
+# should have.
+SHELL=/bin/sh
+VER=2.17.4
+.SUFFIXES:
+.SUFFIXES: .c .o .pl .pm .pod .man .1 .txt
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
+libdir = @libdir@
+mandir = @mandir@
+datadir = @datadir@
+
+top_srcdir = @top_srcdir@
+
+# Where is perl 5 on this machine
+PERL = @PERL@
+CC = @CC@
+CFLAGS = @CFLAGS@ @DEFS@
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+GDFORM_EXT = @GDFORM_EXT@
+SET_LD_RUN_PATH = @SET_LD_RUN_PATH@
+LIBS = @LIBS@
+
+INSTALL = @INSTALL@
+MKINSTALLDIRS = $(SHELL) $(top_srcdir)/mkinstalldirs
+
+all:	 bin/rateup subst
+
+bin/rateup: bin/rateup.o
+	$(SET_LD_RUN_PATH) $(CC) bin/rateup.o -o bin/rateup $(LDFLAGS)  $(LIBS)
+
+
+bin/rateup.o: $(top_srcdir)/src/rateup.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(top_srcdir)/src/rateup.c -o bin/rateup.o
+
+subst:
+	$(PERL) -0777 -p -i~ -e "s'^#!\s*/\S*perl'#! $(PERL)'" $(top_srcdir)/bin/cfgmaker $(top_srcdir)/bin/indexmaker $(top_srcdir)/bin/mrtg
+	$(PERL) -0777 -p -i~ -e 's@GRAPHFMT="...";@GRAPHFMT="$(GDFORM_EXT)";@' $(top_srcdir)/bin/mrtg $(top_srcdir)/bin/indexmaker
+
+clean:
+	-rm -f bin/rateup
+	-rm -f config.cache
+	-rm -f bin/rateup.o
+
+install: all
+	$(MKINSTALLDIRS) $(DESTDIR)$(bindir)
+	for x in $(top_srcdir)/bin/mrtg $(top_srcdir)/bin/cfgmaker $(top_srcdir)/bin/indexmaker $(top_srcdir)/bin/mrtg-traffic-sum; do \
+	  $(INSTALL) -m 755 $$x $(DESTDIR)$(bindir); done
+	for x in bin/rateup; do \
+	  $(INSTALL) -m 755 $$x $(DESTDIR)$(bindir); done
+	$(MKINSTALLDIRS) $(DESTDIR)$(libdir)/mrtg2/Pod
+	for x in $(top_srcdir)/lib/mrtg2/*.pm; do \
+	  $(INSTALL) -m 644 $$x $(DESTDIR)$(libdir)/mrtg2; done
+	for x in $(top_srcdir)/lib/mrtg2/Pod/*.pm; do \
+	  $(INSTALL) -m 644 $$x $(DESTDIR)$(libdir)/mrtg2/Pod; done
+	$(MKINSTALLDIRS) $(DESTDIR)$(datadir)/mrtg2/icons
+	for x in $(top_srcdir)/images/*.gif $(top_srcdir)/images/*.png; do \
+	  $(INSTALL) -m 644 $$x $(DESTDIR)$(datadir)/mrtg2/icons; done
+	$(MKINSTALLDIRS) $(DESTDIR)$(datadir)/doc/mrtg2
+	(cd $(top_srcdir); for x in COPYING COPYRIGHT README CHANGES THANKS doc/*.pod doc/*.txt doc/*.png; do \
+	  $(INSTALL) -m 644 $$x $(DESTDIR)$(datadir)/doc/mrtg2; done)
+	$(MKINSTALLDIRS) $(DESTDIR)$(mandir)/man1
+	for x in $(top_srcdir)/doc/*.1; do \
+	  $(INSTALL) -m 644 $$x $(DESTDIR)$(mandir)/man1; done
+
+########### Distribution Tools
+
+###
+### Things you might NOT want to play with ... 
+###
+
+ARCHIVE = mrtg-$(VER)
+DIRNAME = mrtg-$(VER)
+
+POD = doc/mrtg-faq.pod      doc/mrtg-logfile.pod  doc/mrtg-nt-guide.pod      doc/mrtg-nw-guide.pod \
+      doc/mrtg-unix-guide.pod   \
+      doc/mrtg-forum.pod    doc/mrtg-mibhelp.pod  doc/mrtg-reference.pod     doc/mrtg-webserver.pod    \
+      doc/mrtg-rrd.pod      doc/mrtg-squid.pod    doc/mrtg.pod       doc/mrtg-contrib.pod \
+      doc/cfgmaker.pod      doc/indexmaker.pod    doc/mrtglib.pod    doc/mrtg-ipv6.pod doc/mrtg-traffic-sum.pod
+
+MAN = $(POD:.pod=.1)
+TXT = $(POD:.pod=.txt)
+
+getpod:
+	-rm $(MAN) $(TXT)
+	-for x in cfgmaker indexmaker mrtg-mailer mrtg-traffic-sum; do \
+           rm doc/$$x.pod; ln -s ../bin/$$x doc/$$x.pod; done
+	-rm doc/mrtglib.pod;ln -s ../lib/mrtg2/MRTG_lib.pm doc/mrtglib.pod
+
+.pod.1:
+	pod2man --release=$(VER) --center=mrtg $<  > $@
+
+.1.txt:
+	@NROFF@ -man -Tascii $< > $@
+
+man: $(MAN)
+
+txt: $(TXT)
+
+versync:
+	$(PERL) -i -p -e 's|VERSION\s*=\s*"\d+\.\d+\.\d+([a-z0-9]+)?"|VERSION = "$(VER)"|gi; s|mrtg-\d+\.\d+\.\d+([a-z0-9]+)?|mrtg-$(VER)|gi; s|MRTG\s\d+\.\d+\.\d+([a-z0-9]+)?|MRTG $(VER)|gi' bin/mrtg bin/cfgmaker bin/indexmaker lib/mrtg2/*.pm src/*.c `find doc/ -name \*.pod -type f` 
+	cd translate && $(PERL) mergelocale.pl skeleton.pm0 *.pmd && cp locales_mrtg.pm ../lib/mrtg2
+
+doc:    getpod versync man txt
+
+rateupexe:
+	i386-mingw32msvc-gcc -Wall -Wno-format -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -O3 -mwindows -Ilibs-i386-mingw32msvc/zlib -Ilibs-i386-mingw32msvc/libpng -Ilibs-i386-mingw32msvc/gd -c src/strftime.c -o src/strftime.o
+	i386-mingw32msvc-gcc -Wall -Wno-format -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -O3 -mwindows -Ilibs-i386-mingw32msvc/zlib -Ilibs-i386-mingw32msvc/libpng -Ilibs-i386-mingw32msvc/gd -c src/rateup.c -o src/rateup.o -Dstrftime=strftime_
+	i386-mingw32msvc-gcc -Llibs-i386-mingw32msvc/zlib -Llibs-i386-mingw32msvc/libpng -Llibs-i386-mingw32msvc/gd  src/rateup.o src/strftime.o -o bin/rateup.exe -lgd -lpng -lz
+	i386-mingw32msvc-strip bin/rateup.exe
+
+tar:	doc rateupexe
+	autoconf
+	gchmod -R u=rwX,go=rX .
+	(cd .. ; ln -s src $(DIRNAME))
+	(cd .. ; sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | tar -czv --files-from=- -f $(DIRNAME)/$(ARCHIVE).tar.gz --exclude='*~' --exclude="*.rej" --exclude="*.orig" --exclude=".svn")
+	$(PERL) -0777 -pi -e 's@GRAPHFMT="...";@GRAPHFMT="png";@' bin/mrtg bin/indexmaker
+	# build rateup for windows ...
+	(cd .. ; touch $(DIRNAME)/contrib/a~;sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | xargs zip -r $(DIRNAME)/$(ARCHIVE).zip; zip $(DIRNAME)/$(ARCHIVE).zip $(DIRNAME)/bin/rateup.exe  $(DIRNAME)/bin/rateup.nlm $(DIRNAME)/bin/rateup.nlm; zip -d $(DIRNAME)/$(ARCHIVE).zip '*~' '*.svn*')
+	-rm ../$(DIRNAME)
+
+dist: tar
+	svn commit -m 'released version $(VER)'
+	svn copy -m "tagging version $(VER)" svn://svn.oetiker.ch/mrtg/trunk/src svn://svn.oetiker.ch/mrtg/tags/$(VER)
+	md5sum $(ARCHIVE).tar.gz >$(ARCHIVE).tar.gz.md5
+	gpg -s $(ARCHIVE).tar.gz.md5
+	chmod 644  $(ARCHIVE).tar.gz.md5*
+	scp CHANGES $(ARCHIVE).* oposs@james.oetiker.ch:public_html/mrtg/pub/
+	ssh oposs@james.oetiker.ch "cd  public_html/mrtg/pub; rm mrtg.tar.gz;ln -s $(ARCHIVE).tar.gz mrtg.tar.gz"
+
+betadist: tar
+	mv $(ARCHIVE).* ${HOME}/public_html/webtools/mrtg/pub/beta
+	cp CHANGES ${HOME}/public_html/webtools/mrtg/pub/beta

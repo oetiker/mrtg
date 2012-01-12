@@ -1,0 +1,29 @@
+# use this method if you think it is better...
+# I did this one after I learnt a bit more perl!
+
+
+##
+# munge the output data
+#
+while (<SOCK>) {
+   $line = $_;
+   ($a, $curfrm, $b, $curto, $c, $d) = split(' ',$line);
+}
+if ($a = "T") {
+# do some sums
+$msgsfrm = $curfrm - $oldfrm;
+$msgsto = $curto - $oldto;
+chomp $msgsfrm;
+chomp $msgsto;    
+
+# open the old file for overwrite
+open (OLD,">/tmp/mailstat.old") or die "can't open file!\n";
+# print the data for mrtg
+  print "$msgsfrm\n$msgsto\n1\n$remote\n";
+
+# print the data to the old file
+print OLD "$curfrm $curto\n";
+    } #endif
+
+close (SOCK) or die "close: $!";
+exit;        

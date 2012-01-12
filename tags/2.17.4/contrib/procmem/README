@@ -1,0 +1,83 @@
+===============================================
+Cisco CPU & Memory monitoring
+===============================================
+by Dimitrios Stergiou <dste@intranet.gr>
+
+Contents
+--------
+
+MRTG Libraries:
+				BER.pm
+				MRTG_lib.pm
+				SNMP_Session.pm
+				SNMP_util.pm
+				locales_mrtg.pl
+
+mrtg.cfg creators:
+				create-cfg-mem.pl
+				create-cfg-proc.pl
+
+actual mrtg scripts:
+				getproc.pl
+				getmem.pl
+
+ Quick Installation
+------------
+
+1. Copy getmem.pl and getproc.pl to an appropriate location. Perhaps, in the dir   you have the MRTG binary
+
+2. Edit both scripts and change the line:
+   use lib "/home/alexander1/dste/cisco";
+   make it point to the lib dir on the directory you have the mrtg distribution
+
+3. Edit create-cfg-mem.pl and create-cfg-proc.pl and change the line:
+   Target[$target]: `/home/alexander1/dste/cisco/getmem.pl $ARGV[0] $pool`
+   make it point to the executable you installed on step 1
+
+4. Run create-cfg-mem.pl to create a conf file for mrtg. Use:
+   create-cfg-mem.pl router_to_poll > memory.cfg
+
+5. Run create-cfg-proc.pl to create a conf file for mrtg. Use:
+   create-cfg-proc.pl router_to_poll > proc.cfg
+
+6. Run MRTG with the configuration files generated above
+
+Usage
+-----
+
+1) Memory monitoring:
+Cisco routers use memory pools to allocate memory to various subsystems. The only mandatory subsystem is "Processor". Additionaly you may have "PCI", "I/O",etc.
+
+create-cfg-mem.pl will query the router about its memory pools, find out how many pools the router uses, and create a configuration file that will monitor all pools found. 
+
+In order for the graph to be drawn, we need a MaxBytes value. This value is acquired from the router, using the following formula:
+
+foreach pool on the router {
+  MaxBytes = memory used for pool + memory free for pool
+}
+
+If you sum up all the pools (MaxBytes value) you will find that the sum is less than the physical memory of your router. I suppose, that the part we are missing is filled by the IOS.
+
+References:
+http://www.cisco.com/public/mibs/v2/CISCO-MEMORY-POOL-MIB.my
+
+2) CPU Utilization monitoring:
+create-cfg-proc.pl will create a configuration file used to monitor the following 3 variables on a Cisco router:
+- cpmCPUTotal5sec
+- cpmCPUTotal1min
+- cpmCPUTotal15min
+
+Unfortunately, this feature seems to work only on 12.0(x)T IOS, so if it doesn't work on your router, dont blame me. The script will try to find out if your router is capable of returning values about its processor usage though.
+
+References:
+http://www.cisco.com/public/mibs/v2/CISCO-PROCESS-MIB.my
+
+
+----
+I hope this is as useful to you as it has been to me. If you have any
+problems/bug reports/advice/complaints, email me.
+ 
+Enjoy.
+                                                       
+Dimitrios Stergiou
+<dste@intranet.gr>

@@ -1,0 +1,618 @@
+#! /usr/bin/perl
+# -*- mode: Perl -*-
+##################################################################
+# New MRTG 2.8.12 Based -- Config file creator
+##################################################################
+# this produces a config file for one router, by pulling info
+# off the router via snmp
+# Modified by Graziano Sommariva <Graziano.Sommariva@elsag.it>
+# to monitor DLCI's and to include some code from newer release(2.9.12).
+# NOTE: IPONLY has been disabled.
+#       Added --ip option
+#################################################################
+#
+# Distributed under the GNU copyleft
+
+require 5.004;
+use strict;
+
+BEGIN {
+    # Automatic OS detection ... do NOT touch
+    if ( $^O =~ /^(?:(ms)?(dos|win(32|nt)?))/i ) {
+        $main::OS = 'NT';
+        $main::SL = '\\';
+        $main::PS = ';';
+    } elsif ( $^O =~ /^VMS$/i ) {
+        $main::OS = 'VMS';
+        $main::SL = '.';
+        $main::PS = ':';
+    } else {
+        $main::OS = 'UNIX';
+        $main::SL = '/';
+        $main::PS = ':';
+    }
+}
+
+use FindBin;
+use lib "${FindBin::Bin}";
+use lib "${FindBin::Bin}${main::SL}..${main::SL}lib${main::SL}mrtg2";
+
+use BER "0.57";
+use SNMP_Session "0.59";
+use SNMP_util "0.57";
+
+use Getopt::Long;
+use Socket;
+use strict;
+use vars '$DEBUG';
+my $DEBUG = 0;
+
+my (%optctl) = ();
+my ($session, %ipaddr, %iphost);
+
+sub main {
+
+    snmpmapOID('ipAdEntAddr' => '1.3.6.1.2.1.4.20.1.1',
+	       'ipAdEntIfIndex' => '1.3.6.1.2.1.4.20.1.2',
+	       'sysObjectID' => '1.3.6.1.2.1.1.2.0',
+	       'CiscolocIfDescr' => '1.3.6.1.4.1.9.2.2.1.1.28',
+	       'ifAlias' => '1.3.6.1.2.1.31.1.1.1.18');
+
+  my(%ifType_d)=('1'=>'Other',
+		 '2'=>'regular1822',
+		 '3'=>'hdh1822',
+		 '4'=>'ddnX25',
+		 '5'=>'rfc877x25',
+		 '6'=>'ethernetCsmacd',
+		 '7'=>'iso88023Csmacd',
+		 '8'=>'iso88024TokenBus',
+		 '9'=>'iso88025TokenRing',
+		 '10'=>'iso88026Man',
+		 '11'=>'starLan',
+		 '12'=>'proteon10Mbit',
+		 '13'=>'proteon80Mbit',
+		 '14'=>'hyperchannel',
+		 '15'=>'fddi',
+		 '16'=>'lapb',
+		 '17'=>'sdlc',
+		 '18'=>'ds1',
+		 '19'=>'e1',
+		 '20'=>'basicISDN',
+		 '21'=>'primaryISDN',
+		 '22'=>'propPointToPointSerial',
+		 '23'=>'ppp',
+		 '24'=>'softwareLoopback',
+		 '25'=>'eon',
+		 '26'=>'ethernet-3Mbit',
+		 '27'=>'nsip',
+		 '28'=>'slip',
+		 '29'=>'ultra',
+		 '30'=>'ds3',
+		 '31'=>'sip',
+		 '32'=>'frame-relay',
+		 '33'=>'rs232',
+		 '34'=>'para',
+		 '35'=>'arcnet',
+		 '36'=>'arcnetPlus',
+		 '37'=>'atm',
+		 '38'=>'miox25',
+		 '39'=>'sonet',
+		 '40'=>'x25ple',
+		 '41'=>'iso88022llc',
+		 '42'=>'localTalk',
+		 '43'=>'smdsDxi',
+		 '44'=>'frameRelayService',
+		 '45'=>'v35',
+		 '46'=>'hssi',
+		 '47'=>'hippi',
+		 '48'=>'modem',
+		 '49'=>'aal5',
+		 '50'=>'sonetPath',
+		 '51'=>'sonetVT',
+		 '52'=>'smdsIcip',
+		 '53'=>'propVirtual',
+		 '54'=>'propMultiplexor',
+		 '55'=>'100BaseVG',
+             '56'=>'Fibre Channel',
+             '57'=>'HIPPI Interface',
+             '58'=>'Obsolete for FrameRelay',
+             '59'=>'ATM Emulation of 802.3 LAN',
+             '60'=>'ATM Emulation of 802.5 LAN',
+             '61'=>'ATM Emulation of a Circuit',
+             '62'=>'FastEthernet (100BaseT)',
+             '63'=>'ISDN & X.25',
+             '64'=>'CCITT V.11/X.21',
+             '65'=>'CCITT V.36',
+             '66'=>'CCITT G703 at 64Kbps',
+             '67'=>'Obsolete G702 see DS1-MIB',
+             '68'=>'SNA QLLC',
+             '69'=>'Full Duplex Fast Ethernet (100BaseFX)',
+             '70'=>'Channel',
+             '71'=>'Radio Spread Spectrum (802.11)',
+                 '72'=>'IBM System 360/370 OEMI Channel',
+                 '73'=>'IBM Enterprise Systems Connection',
+                 '74'=>'Data Link Switching',
+                 '75'=>'ISDN S/T Interface',
+                 '76'=>'ISDN U Interface',
+                 '77'=>'Link Access Protocol D (LAPD)',
+                 '78'=>'IP Switching Opjects',
+                 '79'=>'Remote Source Route Bridging',
+                 '80'=>'ATM Logical Port',
+                 '81'=>'AT&T DS0 Point (64 Kbps)',
+                 '82'=>'AT&T Group of DS0 on a single DS1',
+                 '83'=>'BiSync Protocol (BSC)',
+                 '84'=>'Asynchronous Protocol',
+                 '85'=>'Combat Net Radio',
+                 '86'=>'ISO 802.5r DTR',
+                 '87'=>'Ext Pos Loc Report Sys',
+                 '88'=>'Apple Talk Remote Access Protocol',
+                 '89'=>'Proprietary Connectionless Protocol',
+                 '90'=>'CCITT-ITU X.29 PAD Protocol',
+                 '91'=>'CCITT-ITU X.3 PAD Facility',
+                 '92'=>'MultiProtocol Connection over Frame/Relay',
+                 '93'=>'CCITT-ITU X213',
+                 '94'=>'Asymetric Digitial Subscriber Loop (ADSL)',
+                 '95'=>'Rate-Adapt Digital Subscriber Loop (RDSL)',
+                 '96'=>'Symetric Digitial Subscriber Loop (SDSL)',
+                 '97'=>'Very High Speed Digitial Subscriber Loop (HDSL)',
+                 '98'=>'ISO 802.5 CRFP',
+                 '99'=>'Myricom Myrinet',
+                 '100'=>'Voice recEive and transMit (voiceEM)',
+                 '101'=>'Voice Foreign eXchange Office (voiceFXO)',
+                 '102'=>'Voice Foreign eXchange Station (voiceFXS)',
+                 '103'=>'Voice Encapulation',
+                 '104'=>'Voice Over IP Encapulation',
+                 '105'=>'ATM DXI',
+                 '106'=>'ATM FUNI',
+                 '107'=>'ATM IMA',
+                 '108'=>'PPP Multilink Bundle',
+                 '109'=>'IBM IP over CDLC',
+                 '110'=>'IBM Common Link Access to Workstation',
+                 '111'=>'IBM Stack to Stack',
+                 '112'=>'IBM Virtual IP Address (VIPA)',
+                 '113'=>'IBM Multi-Protocol Channel Support',
+                 '114'=>'IBM IP over ATM',
+                 '115'=>'ISO 802.5j Fiber Token Ring',
+                 '116'=>'IBM Twinaxial Data Link Control (TDLC)',
+                 '117'=>'Gigabit Ethernet',
+                 '118'=>'Higher Data Link Control (HDLC)',
+                 '119'=>'Link Access Protocol F (LAPF)',
+                 '120'=>'CCITT V.37',
+                 '121'=>'CCITT X.25 Multi-Link Protocol',
+                 '122'=>'CCITT X.25 Hunt Group',
+                 '123'=>'Transp HDLC',
+                 '124'=>'Interleave Channel',
+                 '125'=>'Fast Channel',
+                 '126'=>'IP (for APPN HPR in IP Networks)',
+                 '127'=>'CATV MAC Layer',
+                 '128'=>'CATV Downstream Interface',
+                 '129'=>'CATV Upstream Interface',
+                 '130'=>'Avalon Parallel Processor',
+                 '131'=>'Encapsulation Interface',
+                 '132'=>'Coffee Pot',
+                 '133'=>'Circuit Emulation Service',
+                 '134'=>'ATM Sub Interface',
+                 '135'=>'Layer 2 Virtual LAN using 802.1Q',
+                 '136'=>'Layer 3 Virtual LAN using IP',
+                 '137'=>'Layer 3 Virtual LAN using IPX',
+                 '138'=>'IP Over Power Lines',
+                 '139'=>'Multi-Media Mail over IP',
+                 '140'=>'Dynamic synchronous Transfer Mode (DTM)',
+                 '141'=>'Data Communications Network',
+                 '142'=>'IP Forwarding Interface',
+                 '162'=>'Cisco Express Forwarding Interface'
+                 );
+
+  my($vendor)=0;
+#  my($iponly)=0;
+  my($workdir)=0;
+  my($ip)=0;
+  my($community,$router,%defaults);
+  my($res);
+
+  # Just need to make sure that all perl installations have the GetOpt module
+  #   - fwo@obsidian.co.za
+  #
+#  $res = GetOptions(\%optctl,"vendor","iponly","workdir=s","options=s","ip=s");
+  $res = GetOptions(\%optctl,"vendor","workdir=s","options=s","ip=s");
+  if($res == 0 ) {
+      print "\nError in arguments. Please run cfgmaker with no arguments for help!\n\n";
+      exit 1;
+  }
+
+  if($optctl{"vendor"})   { $vendor = 1; }
+#  if($optctl{"iponly"})   { $iponly = 1; }
+  if($optctl{"workdir"})  { $workdir = $optctl{"workdir"}; }
+  if($optctl{"ip"})  { $ip = $optctl{"ip"}; }
+  if($optctl{"options"}) { 
+      foreach $res(split(',',$optctl{"options"})) {
+	  chomp($res);
+	  next if($res eq "growright");
+	  next if($res eq "bits");
+	  next if($res eq "perminute");
+	  next if($res eq "perhour");
+	  next if($res eq "noinfo");
+	  next if($res eq "nopercent");
+	  next if($res eq "transparent");
+	  next if($res eq "integer");
+	  next if($res eq "dorelpercent");
+	  next if($res eq "gauge");
+	  next if($res eq "absolute");
+	  next if($res eq "unknaszero");
+	  print "\nERROR:$res is not a valid option for --options, exiting!\n";
+	  exit 1;
+      }
+  }
+  $res = 0;
+#TODO: check for conflicting info in options - l->r and r->l
+#  print STDERR "iponly=$iponly\n" if $DEBUG;
+  print STDERR "vendor=$vendor\n" if $DEBUG;
+  print STDERR "workdir=$workdir\n" if $DEBUG;
+
+  ($community,$router) = ($1,$2) if $ARGV[0] =~ /(.*)\@(.*)/;
+  if(!($community) && !($router)) {
+  print <<USAGE;
+
+USAGE: cfgmaker [--vendor] [other options] 'community'\@'router'
+
+use the --vendor option to try and wrestle some better information
+    from willing livingston and cisco routers ... (may not work)
+
+[other options] can be one of the following:
+
+#use the --iponly option to force the targets to the ip adress of the router 
+#    being queried. Also note that the 'router' option must be the ip address
+#    and not the symbolic name.
+
+use the --workdir '/some/path' option to add the WorkDir option to the cfg file 
+    being generated.
+
+use the --ip 'IP Address' to use in SNMP requests 
+
+use the --options 'defaults' to set default options for each target. defaults 
+    is a comma seperated list and can contain the following :
+        growright bits perminute perhour noinfo nopercent transparent
+	integer dorelpercent gauge absolute unknaszero
+
+    See the mrtg.cfg doccumentation for descriptions of the above options.
+    NOTE: no checking for conflicting options are done at the moment.
+
+EXAMPLE:  cfgmaker public\@ezwf7.ethz.ch >>mrtg.cfg
+
+USAGE
+    exit 1;
+  }
+#  if($iponly) { 
+#      # We only want to work with ip numbers and not names
+#      # Check to see whether the name is a valid ip address
+#      # If not bail - we do not want to deal with reverse dns
+#      #    issues - fwo@obsidian.co.za 2000/01/17
+#      chomp($router);
+#      if(!($router =~ /^[0-9]{1,3}.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$/)){
+#	  print "\nERROR: when specifying --iponly, please use a valid\n";
+#	  print "ip address for the router. Do not use a symbolic name.\n\n";
+#	  exit 1;
+#      }
+#  }
+    print "IconDir: /mrtgicons/\n\n";
+  if($workdir) {
+  	print "WorkDir: $workdir\n\n";
+  } else {
+  	print "# Add a WorkDir: /html line to this file\n\n";
+  }
+
+  my($sysDescr,$sysContact,$sysName,$sysLocation,$ifNumber,$sysObjectID);
+  my($sysDescr_orig,$cisco_router_sysid,$livingston_router_sysid,$ciscobox,$portmaster);
+
+  if($optctl{"ip"}) {
+     $session = SNMP_Session->open ($ip, $community, 161)
+	|| die "Error opening SNMP session to $ip";
+
+     ($sysDescr,$sysContact,$sysName,$sysLocation,$ifNumber,$sysObjectID) = snmpget("$community\@$ip",'sysDescr','sysContact','sysName','sysLocation','ifNumber', 'sysObjectID');
+
+     $sysDescr_orig=$sysDescr;
+     $sysDescr_orig =~ s/[\r\n ]+/ /g;
+     $sysDescr =~ s/[\r\n]+/<BR>/g;  # Change returns to <BR>
+     $cisco_router_sysid = '1\.3\.6\.1\.4\.1\.9';
+     $livingston_router_sysid = '1\.3\.6\.1\.4\.1\.307';
+     $ciscobox = ($sysObjectID =~ /^$cisco_router_sysid/);
+     $portmaster = ($sysObjectID =~ /^$livingston_router_sysid/);
+  } else { 
+     $session = SNMP_Session->open ($router, $community, 161)
+	|| die "Error opening SNMP session to $router";
+     ($sysDescr,$sysContact,$sysName,$sysLocation,$ifNumber,$sysObjectID) = snmpget("$community\@$router",'sysDescr','sysContact','sysName','sysLocation','ifNumber', 'sysObjectID');
+     $sysDescr_orig=$sysDescr;
+     $sysDescr_orig =~ s/[\r\n ]+/ /g;
+     $sysDescr =~ s/[\r\n]+/<BR>/g;  # Change returns to <BR>
+     $cisco_router_sysid = '1\.3\.6\.1\.4\.1\.9';
+     $livingston_router_sysid = '1\.3\.6\.1\.4\.1\.307';
+     $ciscobox = ($sysObjectID =~ /^$cisco_router_sysid/);
+     $portmaster = ($sysObjectID =~ /^$livingston_router_sysid/);
+  } 
+  print <<ECHO;
+
+
+######################################################################
+# Description: $sysDescr_orig
+#     Contact: $sysContact
+# System Name: $sysName
+#    Location: $sysLocation
+#.....................................................................
+ECHO
+
+  $session->map_table ([[1,3,6,1,2,1,4,20,1,1],	# ipAdEntAddr
+			[1,3,6,1,2,1,4,20,1,2]], # ipAdEntIf
+		       sub ($@) {
+			   my ($index, $ipadentaddr, $ipadentif) = @_;
+			   grep (defined $_ && ($_=pretty_print $_),
+				 ($ipadentif, $ipadentaddr));
+			   $ipaddr{$ipadentif} = $ipadentaddr;
+			   $iphost{$ipadentif} = 
+			       gethostbyaddr(pack('C4',split(/\./,$ipaddr{$ipadentif})), AF_INET);
+			   if (!defined $iphost{$ipadentif} || ($iphost{$ipadentif} eq '')){
+			       $iphost{$ipadentif} = 'No hostname defined for IP address';
+			   }
+		       });
+
+  print STDERR "Got Addresses\n" if $DEBUG;
+  print STDERR "Got IfTable\n" if $DEBUG;
+
+  my(%sifdesc,%siftype,%sifspeed,%sifadminstatus,%sifoperstatus,%sciscodescr);
+
+  ### May need the cisco IOS version number so we know which oid to use
+  ###   to get the cisco description.
+  ###
+  ### - mjd 2/5/98 (Mike Diehn) (mdiehn@mindspring.net)
+  ###
+  my ($cisco_ver, $cisco_descr_oid, @ciscodescr);
+  if ( $ciscobox ) {
+    ($cisco_ver) = ($sysDescr =~ m/Version\s+([\d\.]+)\(\d/o);
+    $cisco_descr_oid = ($cisco_ver ge "11.2") ? "ifAlias" : "CiscolocIfDescr";
+  }
+
+$session->map_table ([[1,3,6,1,2,1,2,2,1,1], # ifIndex
+		      [1,3,6,1,2,1,2,2,1,2], # ifDescr
+		      [1,3,6,1,2,1,2,2,1,3], # ifType
+		      [1,3,6,1,2,1,2,2,1,5], # ifSpeed
+		      [1,3,6,1,2,1,2,2,1,7], # ifAdminStatus
+		      [1,3,6,1,2,1,2,2,1,8]], # ifOperStatus
+sub ($@) {
+    my ($rowindex,$index,$ifdescr,$iftype,$ifspeed,$ifadminstatus,$ifoperstatus) = @_;
+    grep (defined $_ && ($_=pretty_print $_),
+	  ($index,$ifdescr,$iftype,$ifspeed,$ifadminstatus,$ifoperstatus));
+    $sifdesc{$index} = $ifdescr;
+    $siftype{$index} = $iftype;
+    $sifspeed{$index} = $ifspeed;
+    $sifadminstatus{$index} = $ifadminstatus;
+    $sifoperstatus{$index} = $ifoperstatus;
+    if ($portmaster && $vendor) {
+      
+      # We can only approximate speeds
+      # 
+      # so we think that ppp can do 76800 bit/s, and slip 38400.
+      # (actualy, slip is a bit faster, but usualy users with newer modems
+      # use ppp). Alternatively, you can set async speed to 115200 or
+      # 230400 (the maximum speed supported by portmaster).
+      # 
+      # But if the interface is ptpW (sync), max speed is 128000
+      # change it to your needs. On various Portmasters there are
+      # various numbers of sync interfaces, so modify it.
+      # 
+      #  The most commonly used PM-2ER has only one sync.
+      # 
+      #  Paul Makeev (mac@redline.ru)
+      # 
+
+      if ($siftype{$index} eq '23') {
+              if ($sifdesc{$index} eq 'ptpW1') {
+                      $sifspeed{$index} = 128000;
+              } else {
+                      $sifspeed{$index} = 76800;
+              }
+      } elsif ($siftype{$index} eq '28') {
+              $sifspeed{$index} = 38400;
+      } elsif ($siftype{$index} eq '6') {
+              $sifspeed{$index} = 10000000;
+      }
+    }
+
+    ### Move this section south so we know what type of
+    ###  circuit we're looking at before we retrieve
+    ###  the cisco interface alias.
+    ###
+    ### This whole cicso thing should be re-written, but since
+    ###   this script doesn't need to run quickly...
+    ###
+    ###  - mjd 2/5/98
+    ###
+    # Get the user configurable interface description entered in the config 
+    # if it's a cisco-box
+    #
+    my($cisco_descr_oid);
+    if ($ciscobox && $vendor) {
+
+	my ($enoid, @descr);
+
+	$enoid = $cisco_descr_oid . "." . $index;
+
+	if ( $cisco_ver ge "11.2" or $siftype{$index} != '32' ) {
+
+	  ### This is either not a frame-relay sub-interface or
+	  ###  this router is running IOS 11.2+ and interface
+	  ###  type won't matter. In either of these cases, it's
+	  ###  ok to try getting the ifAlias or ciscoLocIfDesc.
+	  ###
+	  @descr = snmpget("$community\@$router", $enoid);
+
+	} else {
+
+	  ### This is a frame-relay sub-interface *and* the router
+	  ###  is running an IOS older than 11.2. Therefore, we can
+	  ###  get neither ifAlias nor ciscoLocIfDesc. Do something
+	  ###  useful.
+	  ###
+	  @descr = ("Cisco PVCs descriptions require IOS 11.2+.");
+
+	} # end if else
+
+	### Put whatever I got into the array we'll use later to append the result
+	###   of this operation onto the results from the ifDescr fetch.
+	###
+	push @ciscodescr, shift @descr;
+
+    } # end if ($cisco_box && $vendor)
+
+    # especially since cisco does not return a if
+    # descr for each interface it has ...
+    ## JB 2/8/97 - sometimes IOS inserts E1 controllers in the standard-MIB
+    ## interface table, but not in the local interface table. This puts the
+    ## local interface description table out-of-sync. the following 
+    ## modification skips over E1 cards as interfaces.
+    #
+    ### I suspect that the mod I made above, to use the ifAlias
+    ###   oid if possible, may cause problems here. If it seems
+    ###   that your descriptions are out of sync, try commenting
+    ###   out the "if ( condition )" and it's closing right brace
+    ###   so that the "shift @ciscodescr" get executed for *all*
+    ###   iterations of this loop.
+    ###
+    ### - mjd 2/5/95
+    ###
+    if ($ciscobox && $siftype{$index} != 18) {
+          $sciscodescr{$index} = "<BR>" . (shift @ciscodescr) if @ciscodescr;
+    }
+});
+  my $index;
+  foreach $index ( sort { $a <=> $b } keys %sifdesc) {
+    my $c;
+    my $speed = int($sifspeed{$index} / 8); # bits to byte
+    my $speed_str=&fmi($speed);
+    my $name="$iphost{$index}";
+
+#    $name = "$router.int.$index" if not $name or $name =~ /\s/ or $iponly;
+    $name = "$router.int.$index";
+
+  my $err_msg;
+    
+  $err_msg .= "######## - administratively not UP\n" if ($sifadminstatus{$index} != 1);
+# this check added by Josh - don't query E1-stack controllers
+  $err_msg .= "######## - DS1 type\n" 
+	  if ($siftype{$index} == 18);
+# i might be mistaken on this one - fwo@obsidian.co.za
+  $err_msg .= "######## - E1 type\n" 
+	  if ($siftype{$index} == 19);
+  $err_msg .= "######## - it is a softwareLoopback interface\n" 
+	  if ($siftype{$index} == 24);
+  $err_msg .= "######## - it is a a DS3 contorller\n" 
+	  if ($siftype{$index} == 30);
+  $err_msg .= "######## - it is a ISDN S/T Interface\n" 
+	  if ($siftype{$index} == 75);
+  $err_msg .= "######## - it is a AT&T DS0 Point (64 Kbps)\n" 
+	  if ($siftype{$index} == 81);
+  $err_msg .= "######## - it is a CEF Sub-interface\n" 
+	  if ($siftype{$index} == 162);
+  $err_msg .= "######## - has an unrealistic speed setting\n" 
+	  if (($speed == 0 ) || ($speed > 400 * 10**6));  
+  $err_msg .= "######## - administratively not UP\n" 
+	  if ($sifoperstatus{$index} == 3) ;
+  if($err_msg ne "") {
+    print <<ECHO;
+########
+######## This Interface not configured :
+$err_msg######## It is commented out for this reason.
+########
+ECHO
+    $c="# ";
+  }else {
+    $c = '';
+  }
+    
+  print <<ECHO;
+${c}
+ECHO
+if($optctl{"ip"}) {
+  print "${c}Target[$name]: $index:$community\@$ip\n";
+} else {
+  print "${c}Target[$name]: $index:$community\@$router\n";
+}
+print <<ECHO;
+#${c}MaxBytes[$name]: $speed
+${c}MaxBytes[$name]: 1250000
+${c}YSize[$name]: 300
+${c}XSize[$name]: 600
+${c}Suppress[$name]: y
+${c}Title[$name]: $sysName ($iphost{$index}): $sifdesc{$index}
+${c}Options[$name]: bits, growright, nopercent
+ECHO
+#if($optctl{"options"}) {
+#    print "${c}Options[$name]: $optctl{'options'}\n";
+#}
+print <<ECHO;
+${c}PageTop[$name]: <H1>Traffic Analysis for $sifdesc{$index}
+${c} $sciscodescr{$index}</H1>
+${c} <TABLE>
+${c}   <TR><TD>System:</TD><TD>$sysName in $sysLocation</TD></TR>
+${c}   <TR><TD>Maintainer:</TD><TD>$sysContact</TD></TR>
+${c}   <TR><TD>Interface:</TD><TD>$sifdesc{$index} ($index)</TD></TR>
+${c}   <TR><TD>IP:</TD><TD>$iphost{$index} ($ipaddr{$index})</TD></TR>
+${c}   <TR><TD>Max Speed:</TD>
+${c}       <TD>$speed_str ($ifType_d{$siftype{$index}})</TD></TR>
+${c}  </TABLE>
+${c}
+#---------------------------------------------------------------
+ECHO
+  }
+#
+# Frame-Relay
+#
+
+  my(%circuits);
+
+  $session->map_table ([[1,3,6,1,2,1,10,32,2,1,1], # Ifindex
+                        [1,3,6,1,2,1,10,32,2,1,2]],# DLCI
+  sub ($@) {
+      my ($rwindex,$crindex,$dlci) = @_;
+      grep (defined $_ && ($_=pretty_print $_),
+  	  ($rwindex,$crindex,$dlci) );
+      my($tmpindex);
+      $tmpindex = $crindex.".".$dlci;
+      $circuits{$tmpindex} = $tmpindex;
+  });
+
+  foreach $index ( sort { $a <=> $b } keys %circuits) {
+    my ($tmpname) = $router.".dlci.".$index;
+    printf "\n\n";
+    printf "Options[%s]: bits, noinfo, growright, nopercent\n",$tmpname;
+    printf "YSize[%s]: 300\n",$tmpname;
+    printf "XSize[%s]: 600\n",$tmpname;
+    printf "YLegend[%s]: Bits per Second\n",$tmpname;
+    printf "Suppress[%s]: y\n",$tmpname;
+    if($optctl{"ip"}) {
+       printf "Target[%s]: .1.3.6.1.2.1.10.32.2.1.9.%s\&.1.3.6.1.2.1.10.32.2.1.7.%s:%s\@%s\n",$tmpname,$index,$index,$community,$ip;
+    } else {
+       printf "Target[%s]: .1.3.6.1.2.1.10.32.2.1.9.%s\&.1.3.6.1.2.1.10.32.2.1.7.%s:%s\@%s\n",$tmpname,$index,$index,$community,$router;
+    }
+    printf "MaxBytes[%s]: 1250000\n",$tmpname;
+    printf "Title[%s]: Traffic Analysis for DLCI %s\n",$tmpname,$index;
+    printf "PageTop[%s]: <H1>Traffic Analysis for DLCI %s</H1>\n",$tmpname,$index;
+    printf " <TABLE>";
+    printf "  <TR><TD>System:</TD><TD>%s in %s</TD></TR>",$sysName,$sysLocation;
+    printf "  <TR><TD>Maintainer:</TD><TD>%s</TD></TR>",$sysContact;
+    printf "  <TR><TD>InterfaceID.DLCI:</TD><TD>%s</TD></TR>",$tmpname;
+    printf " </TABLE>";
+  }
+}
+  
+main;
+exit(0);
+
+sub fmi {
+  my($number) = $_[0];
+  my(@short);
+  @short = ("Bytes/s","kBytes/s","MBytes/s","GBytes/s");
+  my $digits=length("".$number);
+  my $divm=0;
+  while ($digits-$divm*3 > 4) { $divm++; }
+  my $divnum = $number/10**($divm*3);
+  return sprintf("%1.1f %s",$divnum,$short[$divm]);
+}

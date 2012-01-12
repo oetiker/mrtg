@@ -1,0 +1,193 @@
+=head1 NAME
+
+mrtg-mibhelp - A Table of some interesting OIDs
+
+=head1 OVERVIEW
+
+This File Contains a collection of interesting MIB Entries ...
+mrtg knows about their names ... depending on the ASN.1 Syntax
+you may have to put B<gauge> into the B<Options[]:> parameter.
+
+For information about how to create a B<Target[]:> parameter which
+references these MIB entries, please consult mrtg-reference.
+
+=head1 MIB LIST
+
+=head2 ifOperStatus
+
+ Descriptor:		ifOperStatus
+ Identifier:		1.3.6.1.2.1.2.2.1.8
+ ASN.1 Syntax:		INTEGER
+ Enumeration:		up 1, down 2, testing 3
+
+The current operational state of the interface.
+The testing(3) state indicates that no operational
+packets can be passed.
+
+=head2 ifAdminStatus
+
+ Descriptor:		ifAdminStatus
+ Identifier:		1.3.6.1.2.1.2.2.1.7
+ ASN.1 Syntax:		INTEGER
+ Enumeration:		up 1, down 2, testing 3
+
+The current administrative state of the interface.
+The testing(3) state indicates that no operational
+packets can be passed.
+
+
+=head2 ifInOctets
+
+ Descriptor:            ifInOctets
+ Identifier:		1.3.6.1.2.1.2.2.1.10
+ ASN.1 Syntax:		Counter32
+
+The total number of octets received on the
+interface, including framing characters.
+
+=head2 ifInUcastPkts
+
+ Descriptor:            ifInUcastPkts
+ Identifier:		1.3.6.1.2.1.2.2.1.11
+ ASN.1 Syntax:		Counter32
+
+The number of subnetwork-unicast packets
+delivered to a higher-layer protocol.
+
+=head2 ifInNUcastPkts
+
+ Descriptor:            ifInNUcastPkts
+ Identifier:		1.3.6.1.2.1.2.2.1.12
+ ASN.1 Syntax:		Counter32
+
+The number of non-unicast (i.e., subnetwork-
+broadcast or subnetwork-multicast) packets
+delivered to a higher-layer protocol.
+
+=head2 ifInDiscards
+
+ Descriptor:            ifInDiscards
+ Identifier:		1.3.6.1.2.1.2.2.1.13
+ ASN.1 Syntax:		Counter32
+
+The number of inbound packets which were chosen
+to be discarded even though no errors had been
+detected to prevent their being deliverable to a
+higher-layer protocol.  One possible reason for
+discarding such a packet could be to free up
+buffer space.
+
+=head2 ifInErrors
+
+ Descriptor:            ifInErrors
+ Identifier:		1.3.6.1.2.1.2.2.1.14
+ ASN.1 Syntax:		Counter32
+
+The number of inbound packets that contained
+errors preventing them from being deliverable to a
+higher-layer protocol.
+
+=head2 ifInUnknownProtos
+
+ Descriptor:            ifInUnknownProtos
+ Identifier:		1.3.6.1.2.1.2.2.1.15
+ ASN.1 Syntax:		Counter32
+
+The number of packets received via the interface
+which were discarded because of an unknown or
+unsupported protocol.
+
+=head2 ifOutOctets
+
+ Descriptor:            ifOutOctets
+ Identifier:		1.3.6.1.2.1.2.2.1.16
+ ASN.1 Syntax:		Counter32
+
+The total number of octets transmitted out of the
+interface, including framing characters.
+
+=head2 ifOutUcastPkts
+
+ Descriptor:            ifOutUcastPkts
+ Identifier:		1.3.6.1.2.1.2.2.1.17
+ ASN.1 Syntax:		Counter32
+
+The total number of packets that higher-level
+protocols requested be transmitted to a
+subnetwork-unicast address, including those that
+were discarded or not sent.
+
+=head2 ifOutNUcastPkts
+
+ Descriptor:             ifOutNUcastPkts
+ Identifier:		1.3.6.1.2.1.2.2.1.18
+ ASN.1 Syntax:		Counter32
+
+The total number of packets that higher-level
+protocols requested be transmitted to a non-
+unicast (i.e., a subnetwork-broadcast or
+subnetwork-multicast) address, including those
+that were discarded or not sent.
+
+=head2 ifOutDiscards
+
+ Descriptor:             ifOutDiscards
+ Identifier:		1.3.6.1.2.1.2.2.1.19
+ ASN.1 Syntax:		Counter32
+
+The number of outbound packets which were chosen
+to be discarded even though no errors had been
+detected to prevent their being transmitted.  One
+possible reason for discarding such a packet could
+be to free up buffer space.
+
+=head2 ifOutErrors
+
+ Descriptor:             ifOutErrors
+ Identifier:		1.3.6.1.2.1.2.2.1.20
+ ASN.1 Syntax:		Counter32
+
+The number of outbound packets that could not be
+transmitted because of errors.
+
+=head2 ifOutQLen
+
+ Descriptor:             ifOutQLen
+ Identifier:		1.3.6.1.2.1.2.2.1.21
+ ASN.1 Syntax:		Unsigned32
+
+The length of the output packet queue (in
+packets).
+
+=head2 frInOctets
+
+From: Simon Ferrett <simonf@world.net>
+
+ 'frInOctets' => '1.3.6.1.2.1.10.32.2.1.9'
+ 'frOutOctets' => '1.3.6.1.2.1.10.32.2.1.7'
+
+which when used in the form:
+
+ frInOctets.pp.dd&frOutOctets.pp.dd:community@cisco.router
+
+where pp is the physical port that the frame relay pvc is
+defined on and dd is the DLCI of the pvc gets you the in
+and out octets for just that pvc.
+
+=head2 ifAdminHack and ifOperHack
+
+The return values of ifAdminStatus and ifOperStatus are not very useful
+for graphing. Use ifOperHack and ifAdminHack instead. They return 1 for
+UP and 0 otherwise.
+
+Note these are not real MIB entities but mrtg hacks
+
+=head2 PseudoZero and PseudoOne
+
+will return 0 and 1 respectively
+
+Note these are not real MIB entities but mrtg hacks
+
+=head1 AUTHOR
+
+Tobias Oetiker E<lt>tobi@oetiker.chE<gt>

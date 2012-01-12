@@ -1,0 +1,60 @@
+=head1 NAME
+
+mrtg-contrib - Contribution Guidelines for MRTG
+
+=head1 DESCRIPTION
+
+If you have written an extension to mrtg or created a bug fix, please
+consider contributing it to the project. As I get quite a number of
+contributions every week, here are a few guidelines which explain how to
+contribute so that I can use the contribution without too much additional
+work.
+
+=head2 Translations
+
+MRTG messages have been translated to a number of languages but there are
+still many which have not been covered yet. If you want to add yours, go
+into the F<mrtg-2.17.4/translate> directory and follow the instructions
+given in the F<README> file.
+
+=head2 Patches
+
+When you have created your modification or extension to mrtg and want to
+submit it to me, please crate a patch for the files which you have modified.
+Do not send entire files unless they are new.
+
+To create a patch, get hold of a copy of GNU diff (Many Unix systems will
+have this installed already. In the NT world you might want to get
+http://sources.redhat.com/cygwin/ to get all the nice GNU tools available.)
+and type
+
+ diff --unified --ignore-space-change old-file new-file > simple.patch
+
+or if you have modified several files do
+
+ diff --recursive --unified --ignore-space-change old-dir/ new-dir/ >long.patch
+
+=head2 Documentation
+
+All documentation of mrtg is done with the perl B<POD> system. If you want to
+learn about it, type
+
+ perldoc perlpod
+
+and read the instructions. If you have bugfixes or additions to the existing
+documents, make sure you modify the B<POD> files and not the html or txt
+versions.
+
+I take documentation very seriously. Whenever you create a new feature for
+mrtg which you want to get included in the official release, your patch must
+also contain modifications for the relevant B<pod> file in the F<doc> tree or
+for the documentation sections of F<cfgmaker> and F<indexmaker>.
+
+=head1 ADDRESS
+
+Send your patches, translations and contributions to Tobias Oetiker
+E<lt>tobi@oetiker.chE<gt>
+
+=head1 AUTHOR
+
+Tobias Oetiker E<lt>tobi@oetiker.chE<gt>

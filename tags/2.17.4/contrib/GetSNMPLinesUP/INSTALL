@@ -1,0 +1,15 @@
+
+Read the docs from MRTG :). Learn to use MRTG :).
+
+Change "ADMINDIR"   in  the Makefile to where   you   want to  put the
+executable and the tables.
+
+Change "$SNMPGet", "$TableBase"  and "$Community" in GetSNMPLinesUP.pl
+for your correct values.
+
+See sample.cfg for a sample configuration entry of a machine with some
+modems connected.
+
+See ModemTable.dial-machine for the  corresponding variables to  check
+in this sample.
+

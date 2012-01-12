@@ -1,0 +1,24 @@
+Welcome to MRTG
+==================================================================
+
+I bet you are eager to get going with the program.
+
+All documentation is stored in the doc sub directory.
+
+For installing on UNIX, follow the instructions in
+
+  doc/mrtg-unix-guide.txt
+
+If you want to setup MRTG on NT, read
+
+  doc/mrtg-nt-guide.txt
+
+There are many more documents in the doc directory. Look
+at the
+
+  doc/mrtg.txt
+
+file for an overview.
+
+------------------------------------------------------------------
+Tobias Oetiker <tobi@oetiker.ch>
