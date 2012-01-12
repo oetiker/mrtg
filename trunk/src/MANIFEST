@@ -10,7 +10,6 @@ Makefile.NetWare
 get_ver.awk
 configure
 config.h.in
-install-sh
 mkinstalldirs
 configure.in
 install-sh
