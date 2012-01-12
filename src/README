@@ -16,9 +16,9 @@ If you want to setup MRTG on NT, read
 There are many more documents in the doc directory. Look
 at the
 
-  doc/index.html
+  doc/mrtg.txt
 
 file for an overview.
 
 ------------------------------------------------------------------
-Tobias Oetiker <oetiker@ee.ethz.ch>
+Tobias Oetiker <tobi@oetiker.ch>
