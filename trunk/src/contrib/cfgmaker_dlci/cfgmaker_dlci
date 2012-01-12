@@ -3,7 +3,6 @@
 ##################################################################
 # New MRTG 2.8.12 Based -- Config file creator
 ##################################################################
-# Created by Tobias Oetiker <oetiker@ee.ethz.ch>
 # this produces a config file for one router, by pulling info
 # off the router via snmp
 # Modified by Graziano Sommariva <Graziano.Sommariva@elsag.it>

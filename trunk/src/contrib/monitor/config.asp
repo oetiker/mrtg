@@ -259,7 +259,7 @@ a:hover      { color: red }
         <SPACER TYPE=VERTICAL SIZE=4>
       <table border="0" cellspacing="0" cellpadding="0">
        <tr valign="top">
-        <td><font face="Arial,Helvetica" size="2"><a href="http://ee-staff.ethz.ch/~oetiker">Tobias Oetiker</a> <a href="mailto:oetiker@ee.ethz.ch">&lt;oetiker@ee.ethz.ch&gt;</a>
+        <td><font face="Arial,Helvetica" size="2"><a href="http://tobi.oetiker.ch">Tobias Oetiker</a> <a href="mailto:tobi@oetiker.ch">&lt;tobi@oetiker.ch&gt;</a>
         and&nbsp;<a href="http://www.bungi.com">Dave&nbsp;Rand</a>&nbsp;<a href="mailto:dlr@bungi.com">&lt;dlr@bungi.com&gt;</a></font></td>
        </tr>
       </table>

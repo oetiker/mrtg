@@ -1,6 +1,5 @@
 From webmaster@hiway.com.br Fri Feb 16 23:24:20 2001
 From: Fernando Braghetto - Webmaster Hiway <webmaster@hiway.com.br>
-To: oetiker@ee.ethz.ch
 Date: Thu, 15 Feb 2001 09:51:27 -0300
 Subject: [Contribution] TCH Modem
 
