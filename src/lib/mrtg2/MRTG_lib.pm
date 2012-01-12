@@ -1,7 +1,7 @@
 # -*- mode: Perl -*-
 package MRTG_lib;
 ###################################################################
-# MRTG 2.17.3  Support library MRTG_lib.pm
+# MRTG 2.17.4  Support library MRTG_lib.pm
 ###################################################################
 # Created by Tobias Oetiker <tobi@oetiker.ch>
 #            and Dave Rand <dlr@bungi.com>

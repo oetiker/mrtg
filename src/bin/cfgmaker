@@ -1,7 +1,7 @@
 #! /usr/bin/perl -w
 # -*- mode: Perl -*-
 ##################################################################
-# MRTG 2.17.3  -- Config file creator
+# MRTG 2.17.4  -- Config file creator
 ##################################################################
 # Created by Tobias Oetiker <tobi@oetiker.ch>
 # this produces an mrtg config file for one router or more routers
@@ -1254,7 +1254,7 @@ sub options ($$) {
 	'zero-speed=s',
         '<>', $addrouter_ornf) or pod2usage(2);
 
-    die("cfgmaker for mrtg-2.17.3\n") if $$opt{version};
+    die("cfgmaker for mrtg-2.17.4\n") if $$opt{version};
     pod2usage(-exitval => 0, -verbose => 2) if $$opt{man};
     pod2usage(-verbose => 1) if not keys %$routers;
 } # end options
@@ -1561,7 +1561,7 @@ __END__
 
 =head1 NAME
 
-cfgmaker - Creates mrtg.cfg files (for mrtg-2.17.3)
+cfgmaker - Creates mrtg.cfg files (for mrtg-2.17.4)
 
 =head1 SYNOPSIS
 

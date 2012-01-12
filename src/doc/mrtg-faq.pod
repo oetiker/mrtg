@@ -14,7 +14,7 @@ In the following sections you'll find some additonal Frequently Asked Questions,
 =head2 Why is there no "@#$%" (my native language) version of MRTG?
 
 Nobody has contributed a F<@#$%.pmd> file yet. Go into the
-F<mrtg-2.17.3/translate> directory and create your own translation file.
+F<mrtg-2.17.4/translate> directory and create your own translation file.
 When you are happy with it send it to me for inclusion with the next mrtg
 release.
 
@@ -22,7 +22,7 @@ release.
 =head2 I need a script to make mrtg work with my xyz device.
 
 Probably this has already been done. Check the stuff in the
-F<mrtg-2.17.3/contrib> directory. There is a file called F<00INDEX> in
+F<mrtg-2.17.4/contrib> directory. There is a file called F<00INDEX> in
 that directory which tells what you can find in there.
 
 =head2 How does this SNMP thing work
