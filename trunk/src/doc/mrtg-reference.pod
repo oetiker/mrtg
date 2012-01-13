@@ -800,7 +800,7 @@ colon-separated suffixes. You can also append a pipe symbol ( | ) and
 the name of a numeric conversion subroutine as described under the global
 keyword "ConversionCode" above. The full syntax is as follows:
 
- community@router[:[port][:[timeout][:[retries][:[backoff][:[version]][|name]]]]]
+ community@router[:[port][:[timeout][:[retries][:[backoff][:[version]]]]][|name]
 
 where the meaning of each parameter is as follows:
 
