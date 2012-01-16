@@ -1563,8 +1563,10 @@ update (in, out, abs_max, absupdate)
 	}
       else
 	{
-	  strcpy (last.in, in);
-	  strcpy (last.out, out);
+	  strncpy (last.in, in, MAXL); 
+          last.in[MAXL-1]='\0';         
+	  strncpy (last.out, out,MAXL);
+          last.out[MAXL-1]='\0';
 	}
       fprintf (fo, "%lu " LLD " " LLD " " LLD " " LLD "\n",
 	       (unsigned long) now, inrate, outrate, inrate, outrate);
