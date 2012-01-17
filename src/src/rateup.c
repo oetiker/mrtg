@@ -2116,6 +2116,7 @@ main (argc, argv)
 	      history[x].in = rand () % atoi (argv[argi + 1]);
 	      history[x].out = rand () % atoi (argv[argi + 2]);
 	    }
+	  /* fallthrough */
 	case 'u':		/* Update file */
 	  if (argv[argi][1] == 'p')
 	    {
