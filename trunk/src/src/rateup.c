@@ -1132,9 +1132,10 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
   gdImageDestroy (brush_outp);
   free (lhist);
   free (graph_label);
-  if (kMG)
+  if (kMG) {
     free(short_si);
-
+    short_si = short_si_def;
+  }
 
 #ifdef WIN32
   /* got to remove the target under win32
