@@ -364,16 +364,16 @@ $VERSION = 2.100016;
        [sub{1}, sub{"Internal Threshold Config Error"}],
 
        'threshprogi[]' =>
-       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{ $_[0] && ( -e $_[0] ) && ( $_[0] = ( $_[0] =~ /(.+)/ )) }, sub{"Threshold program $_[0] cannot be executed"}],
 
        'threshprogo[]' =>
-       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{$_[0] && (-e $_[0])  && ( $_[0] = ( $_[0] =~ /(.+)/ ))}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'threshprogoki[]' =>
-       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{$_[0] && (-e $_[0])  && ( $_[0] = ( $_[0] =~ /(.+)/ ))}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'threshprogoko[]' =>
-       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{$_[0] && (-e $_[0])  && ( $_[0] = ( $_[0] =~ /(.+)/ ))}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'threshmailaddress[]' =>
        [sub{$_[0] && ($_[0] =~ /\S+\@\S+/)}, sub{"ThreshMailAddress $_[0] does not look like an email address at all"}],
@@ -394,16 +394,16 @@ $VERSION = 2.100016;
        [sub{1}, sub{"Internal Threshold Config Error"}],
 
        'hwthreshprogi[]' =>
-       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{$_[0] && (-e $_[0])  && ( $_[0] = ( $_[0] =~ /(.+)/ ))}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'hwthreshprogo[]' =>
-       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{$_[0] && (-e $_[0])  && ( $_[0] = ( $_[0] =~ /(.+)/ ))}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'hwthreshprogoki[]' =>
-       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{$_[0] && (-e $_[0])  && ( $_[0] = ( $_[0] =~ /(.+)/ ))}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'hwthreshprogoko[]' =>
-       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{$_[0] && (-e $_[0])  && ( $_[0] = ( $_[0] =~ /(.+)/ ))}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'hwthreshmailaddress[]' =>
        [sub{$_[0] && ($_[0] =~ /\S+\@\S+/)}, sub{"ThreshMailAddress $_[0] does not look like an email address at all"}],
