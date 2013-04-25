@@ -168,8 +168,15 @@ the config file option, but the switch is required for proper FHS operation
 
 =item B<--fhs>
 
-Configure all mrtg paths to conform to the FHS specification;
-http://www.pathname.com/fhs/
+Configure all mrtg paths to conform to the FHS specification
+L<http://www.pathname.com/fhs/>. The following default values are assumed:
+
+ confcachefile - /var/cache/mrtg/mrtg.ok
+ pid-file      - /var/run/mrtg.pid
+ lock-file     - /var/cache/mrtg/mrtg.lck
+ log-file      - /var/log/mrtg.log 
+ 
+
 
 =item B<--check>
 
