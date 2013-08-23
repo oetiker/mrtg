@@ -2038,10 +2038,12 @@ sub threshcheck {
                 hwthresh => $cu{$dir}{d_hwfail}{$router}
         );
         for my $type (keys %thresh){
-            my $threshval = $thresh{$type};
-            next if not defined $threshval;
             for my $bound (qw(min max)){
-	            # skip unless a threshold is defined for this "$router"
+                # it gets set inside the loop because threshval gets modified further
+                # down in the code
+                my $threshval = $thresh{$type};
+                next if not defined $threshval;
+
                 my $boundval = $rcfg->{$type.$bound.$dir}{$router};
                 next unless defined $boundval;
     
