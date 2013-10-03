@@ -426,6 +426,13 @@ ECHO
                       and  $section = $1;
                  last;
                };
+             /^ifname$/ && 
+               do{
+                 $section = "No Portname for $item";
+                 $$rcfg{pagetop}{$item} =~ m,<td>ifname:</td>\s*<td>(.*?)</td>,i
+                      and  $section = $1;
+                 last;
+               };
             die "ERROR: unknown sectioning type $_\n";
 	};
 	if (defined $$rcfg{host}{$item} and
@@ -712,6 +719,7 @@ indexmaker [options] mrtg.cfg [other.cfg ...]
  --section=title     title as section headings for graphs
  --section=name      graph name as section heading
  --section=descr     graph description as section heading
+ --section=ifname    interface name (ifName) as section heading
  --section=portname  port name entry in pagetop as section heading
  --sectionhost       Try to prepend the host to the section heading if missing
 
