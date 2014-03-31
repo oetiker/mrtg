@@ -1368,27 +1368,27 @@ sub addrouter() {
             # targets [_], [^] or [_], process those statements
             # tenderly and populate the $$flags{}{} hashes accordingly.
             for my $g (@{$$opt{"global"}}) {
-                my ($t,$fs);
-                $g =~ /^options\[([_^\$])\]:\s*(.*)$/i;
-                $t = $1;
-                $fs = $2;
-                $t =~ s/_/default/;
-                $t =~ s/\^/prepend/;
-                $t =~ s/\$/append/;
+                if ($g =~ /^options\[([_^\$])\]:\s*(.*)$/i){
+                   my ($t,$fs);
+                   $t = $1;
+                   $fs = $2;
+                   $t =~ s/_/default/;
+                   $t =~ s/\^/prepend/;
+                   $t =~ s/\$/append/;
 
-                # If a line like "options[X]:" is found clear
-                # all flags for that category and then go to next
-                # --global 'Options[..' line if any.
-                if ($fs =~ /^\s*$/) {
-                    $$flags{$t} = {};
-                    next;
-                } else {
-                    for my $f (split /\s*,\s*/,$fs) {
+                   # If a line like "options[X]:" is found clear
+                   # all flags for that category and then go to next
+                   # --global 'Options[..' line if any.
+                   if ($fs =~ /^\s*$/) {
+                      $$flags{$t} = {};
+                      next;
+                  } else {
+                     for my $f (split /\s*,\s*/,$fs) {
                         $$flags{$t}{$f} = "set";
-                    }
-                }
+                     }
+                  }
+               }
             }
-
             $$opt{$o} = [] if ($o =~ /^global$/);
         }
 
