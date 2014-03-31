@@ -1,5 +1,6 @@
 From: tobi
 * add --descr=ifname option to indexmaker
+* fix parsing of global option in cfgmaker
 
 From: Steve Alligood <steve@betterlinux.com>
 * make sure threshval does not get clobberd
