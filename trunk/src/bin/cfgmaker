@@ -616,16 +616,16 @@ ECHO
 		    $$i{ifSpeed} = $$router_opt{'zero-speed'};
 		}
 
-                if (not $$i{ifSpeed} and $$router_dev{Vendor} eq 'foundry' and $$i{ifType} == 194) {
+                if (not $$i{ifSpeed} and $$router_dev{Vendor} eq 'foundry' and $$i{ifType} and $$i{ifType} == 194) {
                     # foundry ATM subinterfaces always report 0 speed, make it 155Mbps instead.
                     $$i{ifSpeed} =  155000000;
-                } elsif (not $$i{ifSpeed} and $$router_dev{Vendor} eq 'foundry' and $$i{ifType} == 135) {
+                } elsif (not $$i{ifSpeed} and $$router_dev{Vendor} eq 'foundry' and $$i{ifType} and $$i{ifType} == 135) {
                     # Foundry virtual Ethernet interfaces always report 0 speed, make it 1GB instead.
                     $$i{ifSpeed} = 1000000000;
-                } elsif (not $$i{ifSpeed} and $$router_dev{Vendor} eq 'cisco' and $$i{sysDescr} =~ /FWSM-Firewall / )  {
+                } elsif (not $$i{ifSpeed} and $$router_dev{Vendor} eq 'cisco' and $$i{sysDescr} and $$i{sysDescr} =~ /FWSM-Firewall / )  {
                     # Cisco PIX Firewall Switch Modules have effective backplane speed of 600 Megs
 		    $$i{ifSpeed} = 600000000;
-                } elsif (not $$i{ifSpeed} and $$router_dev{Vendor} eq '3com' and $$i{Descr} =~ /RMON VLAN (\d+)/ ) {
+                } elsif (not $$i{ifSpeed} and $$router_dev{Vendor} eq '3com' and $$i{Descr} and $$i{Descr} =~ /RMON VLAN (\d+)/ ) {
                     $$i{ifSpeed} = 100000000;
                     $if_vlan_id = $1;
                 } elsif (not $$i{ifSpeed}) {
