@@ -3,7 +3,7 @@ AC_PREREQ(2.13)
 
 dnl Check for programs.
 AC_PROG_CC
-AC_PREFIX_DEFAULT( /usr/local/mrtg-2 )
+AC_PREFIX_DEFAULT( /opt/mrtg-2 )
 
 AC_PROG_CPP
 AC_PROG_MAKE_SET

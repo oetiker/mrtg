@@ -1,6 +1,9 @@
+Changes 2.17.6, 2014-12-02
+--------------------------
 From: tobi
 * add --descr=ifname option to indexmaker
 * fix parsing of global option in cfgmaker
+* add dcn id to cfgmaker (baed on input from Pawel Golaszeswski)
 
 From: Steve Alligood <steve@betterlinux.com>
 * make sure threshval does not get clobberd
