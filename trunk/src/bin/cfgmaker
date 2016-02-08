@@ -980,6 +980,7 @@ sub DeviceInfo ($$$) {
         my %vendorIDs = (
             # Add your vendor here
             # sysObjectID                Vendora
+            '1.3.6.1.4.1.11863.'    =>      'tplink',
             '1.3.6.1.4.1.43.' =>        '3com',
             '1.3.6.1.4.1.11.' =>        'hp',
             '1.3.6.1.4.1.9.' =>         'cisco',
