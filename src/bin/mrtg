@@ -16,7 +16,7 @@
 ###################################################################
 my @STARTARGS=($0,@ARGV);
 
-@main::DEBUG=qw();
+@main::DEBUG=qw(log cfg);
 # DEBUG TARGETS
 # cfg  - watch the config file reading
 # dir  - directory mangeling
@@ -84,24 +84,6 @@ use lib "${FindBin::Bin}";
 use lib "${FindBin::Bin}${main::SL}..${main::SL}lib${main::SL}mrtg2";
 use Getopt::Long;
 use Math::BigFloat;
-
-# Module invocation and variables for sending a copy of the time series data
-# to graphite.
-use Net::Graphite;
-my $graphite;                           #use this for object
-my $sendtographite = 1;                 #turn graphite sender on/off
-my $graphitehost = "localhost";         #graphite server
-my $graphiteport = 2003;                #graphite port
-my $graphiteproto = "tcp";              #graphite protocol
-my $graphitetrace = 0;                  #send data to STDERR for debug
-my $graphitetimeout = 1;                #socket connect timeout in seconds
-my $graphiteff = 1;                     #fire & forget, if true, ignore sending errors
-my $graphiteconerr = 0;                 #if true, forward connect error to caller
-my $graphitensprefix = "m2g";           #prefix for graphite name space (m2g = mrtg-to-graphite)
-my ($graphitein,$graphiteout);          #use these to convert MRTG's in & out vars to graphite namespace
-my ($graphiterouter);
-# end mod for sending data to graphite
-
 
 # search for binaries in the bin and bin/../lib  directory
 use MRTG_lib "2.100016";
@@ -326,6 +308,11 @@ sub main {
         }
     }
 
+    # Module invocation for sending a copy of the time series data to graphite.
+    if(defined $cfg{sendtographite}) {
+      require Net::Graphite;
+    }
+
     # from our last run we kept some info about
     # the configuration of our devices around
     debug('base', "Reading Interface Config cache");
@@ -375,27 +362,6 @@ sub main {
     &demonize_me($pidfile,$cfgfile) if defined $cfg{'runasdaemon'}  and $cfg{'runasdaemon'} =~ /y/i  and $MRTG_lib::OS ne 'VMS'
     	and not (defined $cfg{'nodetach'} and $cfg{'nodetach'} =~ /y/i);
     # auto restart on die if running as demon
-
-
-    # Open the graphite socket using the vars from above
-    if($sendtographite and defined $cfg{'runasdaemon'}) {
-        $graphite = Net::Graphite->new(
-        host                  => $graphitehost,
-        port                  => $graphiteport,
-        trace                 => $graphitetrace,
-        proto                 => $graphiteproto,
-        timeout               => $graphitetimeout,
-        fire_and_forget       => $graphiteff,
-        return_connect_error  => $graphiteconerr
-      );
-      if($graphite->connect) {
-        debug('log',"successfully opened graphite socket ($graphite)\n");
-      } else {
-        debug('log',"graphite connect error: $!\n");
-      }
-    }
-
-
 
     $SIG{__DIE__} = sub {
         warn $_[0];
@@ -1023,14 +989,31 @@ sub writegraphics {
 
 
         # Send a copy of the time series data to graphite
-        if($sendtographite) {
+        if(defined $$cfg{sendtographite}) {
+          my @a = split ",",$$cfg{sendtographite};
+          my $graphite = Net::Graphite->new(
+            host                  => $a[0],
+            port                  => $a[1],
+            trace                 => 0,
+            proto                 => "tcp",
+            timeout               => 1,
+            fire_and_forget       => 1,
+            return_connect_error  => 0
+          );
+          if($graphite->connect) {
+            debug('log',"successfully opened graphite socket ($graphite)\n");
+          } else {
+            debug('log',"graphite connect error: $!\n");
+          }
+
 	  # make a copy of the router name for use in the graphite namespace
-          $graphiterouter = $router;
+          my $graphiterouter = $router;
           # periods are delimiters in the graphite namespace so change them to underscores
           $graphiterouter =~ s/_/\./g;
 	  # commas are not allowed
           $graphiterouter =~ s/,//g; #remove commas
           #set up MRTG's 'in' var naming for graphite
+          my $graphitein;
           if ($$rcfg{'legendi'}{$router}) {
             $graphitein = $$rcfg{'legendi'}{$router};
 	    # if the 'in' var contains an underscore, change to a period so graphite will delimit on it
@@ -1041,6 +1024,7 @@ sub writegraphics {
           }
 
           #set up MRTG's 'out' var naming for graphite
+          my $graphiteout;
           if ($$rcfg{'legendo'}{$router}) {
             $graphiteout = $$rcfg{'legendo'}{$router};
 	    # if the 'out' var contains an underscore, change to a period so graphite will delimit on it
@@ -1050,6 +1034,8 @@ sub writegraphics {
             $graphiteout = "out";
           }
 
+          my $graphitensprefix="m2g";
+
           # send the 'in' var data to graphite, and log it appropriately
           debug('log', "graphite->send($graphitensprefix.$graphiterouter.$graphitein,$inlast,$time)\n");
           $graphite->send(
@@ -1057,6 +1043,7 @@ sub writegraphics {
             value => "$inlast",
             time => $time,
           );
+
           # send the 'out' var data to graphite, and log it appropriately
           debug('log', "graphite->send($graphitensprefix.$graphiterouter.$graphiteout,$outlast,$time)\n");
           $graphite->send(
