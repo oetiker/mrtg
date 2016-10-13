@@ -529,6 +529,7 @@ number here.
 This requires the Net::Graphite perl module which is available from CPAN.
 
 Examples:
+
  # If your Graphite receiver is running on the same host as the MRTG daemon and using the default port 
  SendToGraphite: 127.0.0.1,2003
 
@@ -544,13 +545,22 @@ target name and, if specified, the Legendi and Legendo values to Graphite namesp
 friendly values. Specifically, the following conversion rules apply:
 
 =item *
+
 Underscores in the target_name are converted to periods which are Graphite namespace delimiters.
+
 =item *
+
 Comma characters are not allowed so they are removed.
+
 =item *
+
 The string "m2g" for MRTG to Graphite is prepended onto the Graphite namespace variable.
 
+
+=back
+
 Example MRTG target to Graphite namespace conversion:
+
  # Our MRTG target name from mrtg.cfg is as follows
  Target[switch_GigabitEthernet0_5]: \GigabitEthernet0/5:public1@switch:::::2
 
@@ -561,12 +571,14 @@ After the conversion you will end up with these Graphite namespace values
 
 Next is a more complicated example because Legendi and Legendo are in use to denote min and max
 voltage values that pertain to some APC UPS SNMP OIDs
+
  # Target, Legendi, and Legendo are specified in mrtg.cfg as follows
  Target[apc_minmaxline]: 1.3.6.1.4.1.318.1.1.1.3.2.3.0&1.3.6.1.4.1.318.1.1.1.3.2.2.0:public@apc:
  LegendI[apc_minmaxline]: upsAdvInputMinLineVoltage
  LegendO[apc_minmaxline]: upsAdvInputMaxLineVoltage
 
 After the conversion you will end up with these Graphite namespace values
+
  m2g.apc.minmaxline.upsAdvInputMinLineVoltage
  m2g.apc.minmaxline.upsAdvInputMaxLineVoltage
 
