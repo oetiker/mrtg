@@ -90,6 +90,8 @@ use MRTG_lib "2.100016";
 
 my $NOW = timestamp;
 
+my $graphiteObj;
+
 # $SNMP_Session::suppress_warnings = 2;
 use locales_mrtg "0.07";
 
@@ -991,7 +993,8 @@ sub writegraphics {
         # Send a copy of the time series data to graphite
         if(defined $$cfg{sendtographite}) {
           my @a = split ",",$$cfg{sendtographite};
-          my $graphite = Net::Graphite->new(
+          if (not $graphiteObj) { 
+            $graphiteObj = Net::Graphite->new(
             host                  => $a[0],
             port                  => $a[1],
             trace                 => 0,
@@ -999,11 +1002,12 @@ sub writegraphics {
             timeout               => 1,
             fire_and_forget       => 1,
             return_connect_error  => 0
-          );
-          if($graphite->connect) {
-            debug('log',"successfully opened graphite socket ($graphite)\n");
-          } else {
-            debug('log',"graphite connect error: $!\n");
+            );
+            if($graphiteObj->connect) {
+              debug('log',"successfully opened graphite socket ($graphiteObj)\n");
+            } else {
+              debug('log',"graphite connect error: $!\n");
+            }
           }
 
 	  # make a copy of the router name for use in the graphite namespace
@@ -1038,7 +1042,7 @@ sub writegraphics {
 
           # send the 'in' var data to graphite, and log it appropriately
           debug('log', "graphite->send($graphitensprefix.$graphiterouter.$graphitein,$inlast,$time)\n");
-          $graphite->send(
+          $graphiteObj->send(
             path => "$graphitensprefix.$graphiterouter.$graphitein",
             value => "$inlast",
             time => $time,
@@ -1046,7 +1050,7 @@ sub writegraphics {
 
           # send the 'out' var data to graphite, and log it appropriately
           debug('log', "graphite->send($graphitensprefix.$graphiterouter.$graphiteout,$outlast,$time)\n");
-          $graphite->send(
+          $graphiteObj->send(
             path => "$graphitensprefix.$graphiterouter.$graphiteout",
             value => "$outlast",
             time => $time,
