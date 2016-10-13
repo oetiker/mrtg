@@ -520,6 +520,76 @@ See "Extended Host Name Syntax" below for complete target definition syntax
 information.
 
 
+=head2 SendToGraphite
+
+If you want to send a copy of the collected data into a Graphite database in addition
+to storing it in the RRDfile, you can provide your Graphite database name/ip and port
+number here. 
+
+This requires the Net::Graphite perl module which is available from CPAN.
+
+Examples:
+ # If your Graphite receiver is running on the same host as the MRTG daemon and using the default port 
+ SendToGraphite: 127.0.0.1,2003
+
+ # If your Graphite receiver is running on 192.168.100.50 port 5000
+ SendToGraphite: 192.168.100.50,5000
+
+ # If your Graphite receiver is running on graphite.mydomain.com port 2003
+ SendToGraphite: graphite.mydomain.com,2003
+
+Graphite's namespace has a number of restrictions on what characters are 
+allowed. The SendToGraphite functionality makes an attempt to convert the MRTG 
+target name and, if specified, the Legendi and Legendo values to Graphite namespace
+friendly values. Specifically, the following conversion rules apply:
+
+=item *
+Underscores in the target_name are converted to periods which are Graphite namespace delimiters.
+=item *
+Comma characters are not allowed so they are removed.
+=item *
+The string "m2g" for MRTG to Graphite is prepended onto the Graphite namespace variable.
+
+Example MRTG target to Graphite namespace conversion:
+ # Our MRTG target name from mrtg.cfg is as follows
+ Target[switch_GigabitEthernet0_5]: \GigabitEthernet0/5:public1@switch:::::2
+
+After the conversion you will end up with these Graphite namespace values
+
+ m2g.switch.gigabitethernet0.5.in
+ m2g.switch.gigabitethernet0.5.out
+
+Next is a more complicated example because Legendi and Legendo are in use to denote min and max
+voltage values that pertain to some APC UPS SNMP OIDs
+ # Target, Legendi, and Legendo are specified in mrtg.cfg as follows
+ Target[apc_minmaxline]: 1.3.6.1.4.1.318.1.1.1.3.2.3.0&1.3.6.1.4.1.318.1.1.1.3.2.2.0:public@apc:
+ LegendI[apc_minmaxline]: upsAdvInputMinLineVoltage
+ LegendO[apc_minmaxline]: upsAdvInputMaxLineVoltage
+
+After the conversion you will end up with these Graphite namespace values
+ m2g.apc.minmaxline.upsAdvInputMinLineVoltage
+ m2g.apc.minmaxline.upsAdvInputMaxLineVoltage
+
+
+If you don't see the data showing up in Graphite, chances are there are invalid characters in
+the namespace. To debug this, use the DEBUG=qw(log) directive at the top of the MRTG script 
+to find out what is happening with the MRTG to Graphite namespace conversion. 
+
+DEBUG=qw(log) will generate some output similar to what appears below
+
+ 2016-10-13 06:08:39 -- --log: RRDs::update(/var/www/mrtg/switch/switch_gigabitethernet0_5.rrd, '1476356919:2738746035:2927936327')
+ 2016-10-13 06:08:39 -- --log: graphite->send(m2g.switch.gigabitethernet0.5.in,2738746035,1476356919)
+
+ 2016-10-13 06:08:39 -- --log: graphite->send(m2g.switch.gigabitethernet0.5.out,2927936327,1476356919)
+
+ 2016-10-13 06:09:25 -- --log: RRDs::update(/var/www/mrtg/apc/apc_minmaxline.rrd, '1476356965:122:123')
+ 2016-10-13 06:09:25 -- --log: graphite->send(m2g.apc.minmaxline.upsAdvInputMinLineVoltage,122,1476356965)
+
+ 2016-10-13 06:09:25 -- --log: graphite->send(m2g.apc.minmaxline.upsAdvInputMaxLineVoltage,123,1476356965)
+
+If the MRTG log output looks reasonable, then take a look at Graphite's carbon-cache logs.
+
+
 =head1 PER TARGET CONFIGURATION
 
 Each monitoring target must be identified by a unique name. This
