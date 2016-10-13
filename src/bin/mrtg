@@ -16,7 +16,7 @@
 ###################################################################
 my @STARTARGS=($0,@ARGV);
 
-@main::DEBUG=qw(log cfg);
+@main::DEBUG=qw();
 # DEBUG TARGETS
 # cfg  - watch the config file reading
 # dir  - directory mangeling
