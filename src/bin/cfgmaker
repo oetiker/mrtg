@@ -1178,7 +1178,14 @@ sub IfType ($) {
       '140'=>'Dynamic synchronous Transfer Mode (DTM)',
       '141'=>'Data Communications Network',
       '142'=>'IP Forwarding Interface',
+      '144'=>'IEEE1394 High Performance Serial Bus',
+      '150'=>'MPLS Tunnel Virtual Interface',
+      '161'=>'IEEE 802.3ad Link Aggregate',
       '162'=>'Cisco Express Forwarding Interface',
+      '166'=>'MPLS',
+      '238'=>'Asymmetric Digital Subscriber Loop',
+      '246'=>'Pseudowire interface type',
+      '251'=>'Very high speed digital subscriber line',
    };
    return ($ift->{$id} || "Uknown Interface Type");
 } # end IfType
