@@ -1132,10 +1132,13 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
   gdImageDestroy (brush_outp);
   free (lhist);
   free (graph_label);
-  if (kMG) {
+  /* By commenting out the next 4 lines, short_si will leak exactly one copy of kMG, but
+     otherwise the kMG values for the weekly/monthly/yearly graphs are wrong.  This should
+     also fix the crash reported in GitHub issue #3. */
+  /* if (kMG) {
     free(short_si);
     short_si = short_si_def;
-  }
+  } */
 
 #ifdef WIN32
   /* got to remove the target under win32
