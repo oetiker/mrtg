@@ -156,6 +156,10 @@ $VERSION = 2.100016;
 #       [sub{(($_[0] =~ /^unix:(\S+)/)and(-w $1))}, sub{"Currently, only UNIX domain sockets are supported for RRDCached, and must exist and be writeable."}],
        [sub{1},sub{"Internal Error"}],
 
+       # Get graphite server name/ip and port
+       'sendtographite' =>
+       [sub{$_[0] =~ /^.*,\d+$/}, sub{"Invalid Graphite Destination '$_[0]'"}],
+
        # Per Router CFG
        'target[]' => 
        [sub{1}, sub{"Internal Error"}], #will test this later
@@ -364,16 +368,16 @@ $VERSION = 2.100016;
        [sub{1}, sub{"Internal Threshold Config Error"}],
 
        'threshprogi[]' =>
-       [sub{ $_[0] && ( -e $_[0] ) && ( $_[0] = ( $_[0] =~ /(.+)/ )) }, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'threshprogo[]' =>
-       [sub{$_[0] && (-e $_[0])  && ( $_[0] = ( $_[0] =~ /(.+)/ ))}, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'threshprogoki[]' =>
-       [sub{$_[0] && (-e $_[0])  && ( $_[0] = ( $_[0] =~ /(.+)/ ))}, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'threshprogoko[]' =>
-       [sub{$_[0] && (-e $_[0])  && ( $_[0] = ( $_[0] =~ /(.+)/ ))}, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'threshmailaddress[]' =>
        [sub{$_[0] && ($_[0] =~ /\S+\@\S+/)}, sub{"ThreshMailAddress $_[0] does not look like an email address at all"}],
@@ -394,16 +398,16 @@ $VERSION = 2.100016;
        [sub{1}, sub{"Internal Threshold Config Error"}],
 
        'hwthreshprogi[]' =>
-       [sub{$_[0] && (-e $_[0])  && ( $_[0] = ( $_[0] =~ /(.+)/ ))}, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'hwthreshprogo[]' =>
-       [sub{$_[0] && (-e $_[0])  && ( $_[0] = ( $_[0] =~ /(.+)/ ))}, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'hwthreshprogoki[]' =>
-       [sub{$_[0] && (-e $_[0])  && ( $_[0] = ( $_[0] =~ /(.+)/ ))}, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'hwthreshprogoko[]' =>
-       [sub{$_[0] && (-e $_[0])  && ( $_[0] = ( $_[0] =~ /(.+)/ ))}, sub{"Threshold program $_[0] cannot be executed"}],
+       [sub{$_[0] && (-e $_[0])}, sub{"Threshold program $_[0] cannot be executed"}],
 
        'hwthreshmailaddress[]' =>
        [sub{$_[0] && ($_[0] =~ /\S+\@\S+/)}, sub{"ThreshMailAddress $_[0] does not look like an email address at all"}],
@@ -684,7 +688,7 @@ sub quickcheck ($$$$$$) {
         }
     }
     die "ERROR: CFG Error Unknown Option \"$first\" in file $file on line $line or above.\n".
-      "           Check doc/mrtg-reference.txt for Help\n\n";
+      "           Check /usr/share/doc/mrtg/mrtg-reference.txt.gz for Help\n\n";
 }
 
 # complex config checks
@@ -872,6 +876,23 @@ sub cfgcheck ($$$$;$) {
     }
 
     my $thresh_error;
+
+    # sendtographite directive parsing
+    # sanity check for <ip>,<port> or <dnsname>,<port>
+    if ($cfg->{sendtographite}){
+      my @a = split ",",$cfg->{sendtographite};
+
+      # is this an IP address?
+      unless($a[0] =~ /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/) { 
+        # maybe we were passed a DNS name?
+        unless(gethostbyname($a[0])) { die "ERROR: cannot find graphite server name $a[0] in DNS\n"; }
+      }
+      
+      # if we got this far, now check the port number range
+      unless($a[1] > 0 and $a[1] < 65536) {
+        die "ERROR: invalid port number $a[1] in sendtographite directive\n";
+      }
+    }
 
     foreach $rou (@$routers) {
         # and now for the testing

@@ -90,6 +90,8 @@ use MRTG_lib "2.100016";
 
 my $NOW = timestamp;
 
+my $graphiteObj;
+
 # $SNMP_Session::suppress_warnings = 2;
 use locales_mrtg "0.07";
 
@@ -306,6 +308,11 @@ sub main {
             warn "$NOW: WARNING: IPv6 libraries not found, IPv6 disabled.\n";
             $cfg{enableipv6} =  'no';
         }
+    }
+
+    # Module invocation for sending a copy of the time series data to graphite.
+    if(defined $cfg{sendtographite}) {
+      require Net::Graphite;
     }
 
     # from our last run we kept some info about
@@ -981,6 +988,76 @@ sub writegraphics {
         }
         my $e = RRDs::error(); 
         warn "$NOW: ERROR: Cannot update $dotrrd with '$time:$inlast:$outlast' $e\n" if ($e);
+
+
+        # Send a copy of the time series data to graphite
+        if(defined $$cfg{sendtographite}) {
+          my @a = split ",",$$cfg{sendtographite};
+          if (not $graphiteObj) { 
+            $graphiteObj = Net::Graphite->new(
+            host                  => $a[0],
+            port                  => $a[1],
+            trace                 => 0,
+            proto                 => "tcp",
+            timeout               => 1,
+            fire_and_forget       => 1,
+            return_connect_error  => 0
+            );
+            if($graphiteObj->connect) {
+              debug('log',"successfully opened graphite socket ($graphiteObj)\n");
+            } else {
+              debug('log',"graphite connect error: $!\n");
+            }
+          }
+
+	  # make a copy of the router name for use in the graphite namespace
+          my $graphiterouter = $router;
+          # periods are delimiters in the graphite namespace so change them to underscores
+          $graphiterouter =~ s/_/\./g;
+	  # commas are not allowed
+          $graphiterouter =~ s/,//g; #remove commas
+          #set up MRTG's 'in' var naming for graphite
+          my $graphitein;
+          if ($$rcfg{'legendi'}{$router}) {
+            $graphitein = $$rcfg{'legendi'}{$router};
+	    # if the 'in' var contains an underscore, change to a period so graphite will delimit on it
+            $graphitein =~ s/_/\./g;
+          } else {
+	    # if legendi is not specified, just use 'in'
+            $graphitein = "in";
+          }
+
+          #set up MRTG's 'out' var naming for graphite
+          my $graphiteout;
+          if ($$rcfg{'legendo'}{$router}) {
+            $graphiteout = $$rcfg{'legendo'}{$router};
+	    # if the 'out' var contains an underscore, change to a period so graphite will delimit on it
+            $graphiteout =~ s/_/\./g;
+          } else {
+	    # if legendo is not specified, just use 'out'
+            $graphiteout = "out";
+          }
+
+          my $graphitensprefix="m2g";
+
+          # send the 'in' var data to graphite, and log it appropriately
+          debug('log', "graphite->send($graphitensprefix.$graphiterouter.$graphitein,$inlast,$time)\n");
+          $graphiteObj->send(
+            path => "$graphitensprefix.$graphiterouter.$graphitein",
+            value => "$inlast",
+            time => $time,
+          );
+
+          # send the 'out' var data to graphite, and log it appropriately
+          debug('log', "graphite->send($graphitensprefix.$graphiterouter.$graphiteout,$outlast,$time)\n");
+          $graphiteObj->send(
+            path => "$graphitensprefix.$graphiterouter.$graphiteout",
+            value => "$outlast",
+            time => $time,
+          );
+        }
+        # done sending to graphite for this iteration
+
 
 	if ( $RRDs::VERSION < 1.2 ){
              # get the rrdtool-processed values back from rrdtool
