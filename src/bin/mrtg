@@ -1040,6 +1040,7 @@ sub writegraphics {
 
           my $graphitensprefix="m2g";
 
+          # verify that the 'in' value is numeric, and send to graphite
           if($inlast =~ /\d+/) {
             # send the 'in' var data to graphite, and log it appropriately
             debug('log', "graphite->send($graphitensprefix.$graphiterouter.$graphitein,$inlast,$time)\n");
@@ -1052,7 +1053,8 @@ sub writegraphics {
             debug('log', "WARNING - skipped graphite->send($graphitensprefix.$graphiterouter.$graphitein,$inlast,$time) because value ($inlast) is non-numeric\n");
           }
 
-          if($inlast =~ /\d+/) {
+          # verify that the 'out' value is numeric, and send to graphite
+          if($outlast =~ /\d+/) { 
             # send the 'out' var data to graphite, and log it appropriately
             debug('log', "graphite->send($graphitensprefix.$graphiterouter.$graphiteout,$outlast,$time)\n");
             $graphiteObj->send(
