@@ -1040,23 +1040,34 @@ sub writegraphics {
 
           my $graphitensprefix="m2g";
 
-          # send the 'in' var data to graphite, and log it appropriately
-          debug('log', "graphite->send($graphitensprefix.$graphiterouter.$graphitein,$inlast,$time)\n");
-          $graphiteObj->send(
-            path => "$graphitensprefix.$graphiterouter.$graphitein",
-            value => "$inlast",
-            time => $time,
-          );
+          # verify that the 'in' value is numeric (ints, floats, +, -) , and send to graphite
+          if($inlast =~ /^[+-]?([0-9]*[.])?[0-9]+$/) {
+            # send the 'in' var data to graphite, and log it appropriately
+            debug('log', "graphite->send($graphitensprefix.$graphiterouter.$graphitein,$inlast,$time)\n");
+            $graphiteObj->send(
+              path => "$graphitensprefix.$graphiterouter.$graphitein",
+              value => "$inlast",
+              time => $time,
+            );
+          } else {
+            debug('log', "WARNING - skipped graphite->send($graphitensprefix.$graphiterouter.$graphitein,$inlast,$time) because value ($inlast) is non-numeric\n");
+          }
 
-          # send the 'out' var data to graphite, and log it appropriately
-          debug('log', "graphite->send($graphitensprefix.$graphiterouter.$graphiteout,$outlast,$time)\n");
-          $graphiteObj->send(
-            path => "$graphitensprefix.$graphiterouter.$graphiteout",
-            value => "$outlast",
-            time => $time,
-          );
+          # verify that the 'out' value is numeric (ints, floats, +, -) , and send to graphite
+          if($outlast =~ /^[+-]?([0-9]*[.])?[0-9]+$/) { 
+            # send the 'out' var data to graphite, and log it appropriately
+            debug('log', "graphite->send($graphitensprefix.$graphiterouter.$graphiteout,$outlast,$time)\n");
+            $graphiteObj->send(
+              path => "$graphitensprefix.$graphiterouter.$graphiteout",
+              value => "$outlast",
+              time => $time,
+            );
+          } else {
+            debug('log', "WARNING - skipped graphite->send($graphitensprefix.$graphiterouter.$graphiteout,$outlast,$time) because value ($outlast) is non-numeric\n");
+          }
         }
         # done sending to graphite for this iteration
+
 
 
 	if ( $RRDs::VERSION < 1.2 ){
