@@ -44,8 +44,6 @@
 ###      => Dinko Korunic <kreator@fly.srk.fer.hr>
 ###      Czech/�esky
 ###      => Martin Och <martin@och.cz>
-###      Czech/Česky
-###      => David Toman <david@idkfa.cz>
 ###      Danish/Dansk   
 ###      => Morten Storgaard Nielsen <msn@ipt.dtu.dk>
 ###      Dutch/Nederlands
@@ -155,7 +153,6 @@ $VERSION = '0.07';
   &cn
   &croatian
   &czech
-  &czechutf8
   &danish
   &dutch
   &estonian
@@ -213,7 +210,6 @@ $VERSION = '0.07';
   'croatian'	 => \&croatian,
   'hrvatski'       => \&croatian,
   'czech' 	 => \&czech,
-  'czechutf8' 	 => \&czechutf8,
   'danish'       => \&danish, 
   'dansk'        => \&danish,
   'dutch'        => \&dutch,
@@ -336,11 +332,6 @@ $VERSION = '0.07';
    "�esk� p�eklad p�ipravil
 				<a href=\"http://www.och.cz\">Martin Och</a>
 				<a href=\"mailto:martin\@och.cz\"> &lt;martin\@och.cz&gt;</a>",
-# Czechutf8/Česky
-   'czechutf8' =>
-		    "Český překlad do UTF-8 připravil
-				<a href=\"http://www.idkfa.cz\">David Toman</a>
-				<a href=\"mailto:david\@idkfa.cz\"> &lt;david\@idkfa.cz&gt;</a>",
 # Danish/dansk
    'danish' =>
    "Forberedt for sprog samt oversat til dansk af
@@ -530,7 +521,6 @@ $credits::LOCALE{'��������'}=$credits::LOCALE{'Chinese'};
 $credits::LOCALE{'���ĺ���'}=$credits::LOCALE{'cn'};
 $credits::LOCALE{'hrvatski'}=$credits::LOCALE{'croatian'};
 $credits::LOCALE{'czech'}=$credits::LOCALE{'czech'};
-$credits::LOCALE{'czechutf8'}=$credits::LOCALE{'czechutf8'};
 $credits::LOCALE{'dansk'}=$credits::LOCALE{'danish'};
 $credits::LOCALE{'nederlands'}=$credits::LOCALE{'dutch'};
 $credits::LOCALE{'eesti'}=$credits::LOCALE{'estonian'};
@@ -1539,115 +1529,6 @@ foreach $i (keys %translations)
  'Jul'     => '�ervenec','Aug'      => 'Srpen',     'Sep'       => 'Z���', 
  'October' => '��jen',   'November' => 'Listopad',  'December'  => 'Prosinec', 
  'Oct'     => '��jen',   'Nov'      => 'Listopad',  'Dec'       => 'Prosinec' 
-    );
-
-  @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
-  if($foo[0] && $wday{$foo[0]} && $foo[2] && $month{$foo[2]} )
-    {
-	if($foo[3]=~(/(.*)at(.*)/))
-      { 
-        @quux=split(/at/,$foo[3]);
-        $foo[3]=$quux[0].",".$quux[1]." hod."; 
-      };
-      return "$wday{$foo[0]} $foo[1]. $month{$foo[2]} $foo[3]"; 
-    };
-
-#
-# handle two different time/date formats:  
-# return "$wday, $mday $month ".($year+1900)." at $hour:$min";
-# return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
-#
-
-# handle nontranslated strings which ought to be translated
-# print STDERR "$_\n" or print DEBUG "not translated $_";
-# but then again we might not want/need to translate all strings
-
-  return $string;
-
-}
-#
-# Czechutf8
-
-sub czechutf8
-{
-  my $string = shift;
-return "" unless defined $string;
-  my(%translations,%month,%wday);
-
-  my($i,$j);
-  my(@dollar,@quux,@foo);
-
-  
-  # regexp => replacement string NOTE does not use autovars $1,$2...
-  # charset=iso-2022-jp
-
-  %translations =
-  (  
-     'iso-8859-1'                             => 'utf-8',
-     'Maximal 5 Minute Incoming Traffic'      => 'Maximální 5 minutový příchozí tok',
-     'Maximal 5 Minute Outgoing Traffic'      => 'Maximální 5 minutový odchozí tok',
-     'the device'                             => 'zařízení',
-     'The statistics were last updated(.*)'   => 'Poslední aktualizace statistiky:$1',
-     ' Average\)'                             => ' průměr)',
-     'Average'                                => 'Prům.',
-     'Max'                                    => 'Max.',
-     'Current'                                => 'Akt.',
-     'version'                                => 'verze',
-     '`Daily\' Graph \((.*) Minute'           => 'Denní graf ($1 minutový',
-     '`Weekly\' Graph \(30 Minute'            => 'Týdenní graf (30 minutový' ,
-     '`Monthly\' Graph \(2 Hour'              => 'Měsíční graf (2 hodinový',
-     '`Yearly\' Graph \(1 Day'                => 'Roční graf (1 denní', 
-     'Incoming Traffic in (\S+) per Second'   => 'Příchozí tok v $1 za sec.',
-     'Outgoing Traffic in (\S+) per Second'   => 'Odchozí tok v $1 za sec.',
-     'at which time (.*) had been up for(.*)' => 'od posledního restartu $1 uběhlo: $2',
-     #'([kMG]?)([bB])/s'                       => '\$1\$2/s',
-     #'([kMG]?)([bB])/min'     	      	      => '\$1\$2/min',
-     #'([kMG]?)([bB])/h'                       => '$1$2/h',
-     'Bits'                                   => 'bitech',
-     'Bytes'                                  => 'bajtech',
-     #'&nbsp;In:</FONT>'                       => '&nbsp;In:</FONT>',
-     #'&nbsp;Out:</FONT>'                      => '&nbsp;Out:</FONT>',
-     'Percentage'                             => 'Proc.',
-     'Ported to OpenVMS Alpha by'             => 'Na OpenVMS portoval', 
-     'Ported to WindowsNT by'                 => 'Na WindowsNT portoval',
-     'and'                                    => 'a',
-     '^GREEN'                                  => 'Zelená',
-     'BLUE'                                   => 'Modrá',
-     'DARK GREEN'                             => 'Tmavě zelená',
-     'MAGENTA'                                => 'Fialová',
-     'AMBER'                                  => 'Žlutá'
-  );
-
-# maybe expansions with replacement of whitespace would be more appropriate
-
-foreach $i (keys %translations)
-{  
-  my $trans = $translations{$i};
-  $trans =~ s/\|/\|/;  
-  return $string if eval " \$string =~ s|\${i}|${trans}| ";
-};
-
-%wday = 
-    (
-      'Sunday'    => 'Neděle',		'Sun' => 'Ne',
-      'Monday'    => 'Pondělí',		'Mon' => 'Po',
-      'Tuesday'   => 'Úterý',		'Tue' => 'Út',
-      'Wednesday' => 'Středa',		'Wed' => 'St',
-      'Thursday'  => 'Čtvrtek',		'Thu' => 'Čt',
-      'Friday'    => 'Pátek',		'Fri' => 'Pá',
-      'Saturday'  => 'Sobota',		'Sat' => 'So' 
-    );
-
-%month = 
-    (
- 'January' => 'Leden',   'February' => 'Únor',      'March'     => 'Březen',
- 'Jan'     => 'Leden',   'Feb'      => 'Únor',      'Mar'       => 'Březen',
- 'April'   => 'Duben',   'May'      => 'Květen',    'June'      => 'Červen',
- 'Apr'     => 'Duben',   'May'      => 'Květen',    'Jun'       => 'Červen',
- 'July'    => 'Červenec','August'   => 'Srpen',     'September' => 'Září',
- 'Jul'     => 'Červenec','Aug'      => 'Srpen',     'Sep'       => 'Září', 
- 'October' => 'Říjen',   'November' => 'Listopad',  'December'  => 'Prosinec', 
- 'Oct'     => 'Říjen',   'Nov'      => 'Listopad',  'Dec'       => 'Prosinec' 
     );
 
   @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
