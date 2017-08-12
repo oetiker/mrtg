@@ -544,6 +544,8 @@ allowed. The SendToGraphite functionality makes an attempt to convert the MRTG
 target name and, if specified, the Legendi and Legendo values to Graphite namespace
 friendly values. Specifically, the following conversion rules apply:
 
+=over
+
 =item *
 
 Underscores in the target_name are converted to periods which are Graphite namespace delimiters.
