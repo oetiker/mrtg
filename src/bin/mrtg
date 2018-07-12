@@ -2,7 +2,7 @@
 # -*- mode: cperl -*-
 
 ###################################################################
-# MRTG 2.17.4  Multi Router Traffic Grapher
+# MRTG 2.17.7  Multi Router Traffic Grapher
 ###################################################################
 # Created by Tobias Oetiker <tobi@oetiker.ch>
 #            and Dave Rand <dlr@bungi.com>
@@ -1592,32 +1592,31 @@ sub writehtml {
     my $dirrel = "../" x ($$rcfg{'directory_web'}{$router} =~ tr|/|/|);
 
     $Today=&$LOC(datestr(time));
-    $VERSION = "2.17.4";
+    $VERSION = "2.17.7";
     open (HTML,">$$cfg{'htmldir'}$$rcfg{'directory'}{$router}$router.$$rcfg{'extension'}{$router}") || 
       do { warn ("$NOW: WARNING: Writing $router.$$rcfg{'extension'}{$router}: $!");
       	   next };
-    # this unforutnately confuses IE greatly ... so we have to comment
+    # this unforutnately confuses old IE greatly ... so we have to comment
     # it out for now ... :-(
-    # print HTML '<?xml version="1.0" encoding="' . &$LOC('iso-8859-1') . '"?>' . "\n";
-    print HTML '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/dtd/xhtml11.dtd">' . "\n";
-    print HTML "<html>\n";
+    # print HTML '<?xml version="1.0" encoding="' . &$LOC('UTF-8') . '"?>' . "\n";
+    print HTML '<!DOCTYPE html>' . "\n";
+    print HTML '<html lang="en">' . "\n";
     my $interval =$$cfg{'interval'};
     my $expiration = &expistr($interval);
     my $refresh =  defined $$cfg{'refresh'} ? $$cfg{'refresh'} : 300;
-    my $namestring = &$LOC("the device");  
-    print HTML "<!-- Begin Head -->\n";
-    print HTML <<"TEXT";    
-	<head>
-		<title>$$rcfg{'title'}{$router}</title>
-		<meta http-equiv="refresh" content="$refresh" />
-		<meta http-equiv="pragma" content="no-cache" />
-		<meta http-equiv="cache-control" content="no-cache" />
-		<meta http-equiv="expires" content="$expiration" />
-		<meta http-equiv="generator" content="MRTG $VERSION" />
-		<meta http-equiv="date" content="$expiration" />
-TEXT
-    print HTML "\t\t" . '<meta http-equiv="content-type" content="text/html; charset='.&$LOC('iso-8859-1') . "\" />\n";
-
+    my $namestring = &$LOC("the device");
+    print HTML '<!-- MRTG ' . "$VERSION" . ' -->' . "\n";
+    print HTML '<!-- Begin Head -->' . "\n";
+    print HTML "\t" . '<head>' . "\n";
+    print HTML "\t\t" . '<meta charset="' . &$LOC('UTF-8') . '" />' . "\n";
+    print HTML "\t\t" . '<meta http-equiv="refresh" content="' . "$refresh" . '" />' . "\n";
+# Not functional in HTML file in modern web browsers - use HTTP header instead
+#		<meta http-equiv="pragma" content="no-cache" />
+#		<meta http-equiv="cache-control" content="no-cache" />
+#		<meta http-equiv="expires" content="$expiration" />
+#		<meta http-equiv="generator" content="MRTG $VERSION" />
+#		<meta http-equiv="date" content="$expiration" />
+    print HTML "\t\t" . '<title>' . "$$rcfg{'title'}{$router}" . '</title>' . "\n";
     foreach $peri (qw(d w m y)) {
         print HTML <<"TEXT";
 <!-- maxin $peri $$maxin{$peri}{$router} -->
@@ -1637,7 +1636,6 @@ TEXT
 <!-- avpercent $peri $$avpercent{$peri}{$router} -->
 TEXT
         }
-        
         print HTML "<!-- cuin $peri $$cuin{$peri}{$router} -->\n"
            if defined $$cuin{$peri}{$router};
         print HTML "<!-- cuout $peri $$cuout{$peri}{$router} -->\n"
@@ -1666,10 +1664,16 @@ TEXT
     $$rcfg{'rgb5'}{$router} = "" unless defined $$rcfg{'rgb5'}{$router};
     $$rcfg{'rgb6'}{$router} = "" unless defined $$rcfg{'rgb6'}{$router};
 
-    print HTML "
-		<style type=\"text/css\">
+    print HTML "		<style>
 			body {
 				background-color: $$rcfg{'backgc'}{$router};
+    ";
+    if($$rcfg{'backgc'}{$router} eq '#ffffff') {
+	print HTML "			color: #000000;";
+    } else {
+	print HTML "			color: #ffffff;";
+    }
+    print HTML "
 			}
 			div {
 				border-bottom: 2px solid #aaa;
@@ -1696,7 +1700,7 @@ TEXT
 				color: $$rcfg{'rgb2'}{$router};
 			}";
 
-	 print HTML "
+    print HTML "
 			div table .inpeak th {
 				color: $$rcfg{'rgb3'}{$router};
 			}
@@ -1749,11 +1753,13 @@ TEXT
 
     $$rcfg{addhead}{$router} =~ s/\\n/\n/g if defined $$rcfg{addhead}{$router};
 
-    print HTML "
-$$rcfg{'addhead'}{$router}
+    print HTML "$$rcfg{'addhead'}{$router}
 	</head>
+<!-- End Head -->";
+    print HTML "
 $$rcfg{bodytag}{$router}
-$$rcfg{'pagetop'}{$router}";
+    $$rcfg{'pagetop'}{$router}
+    ";
     print HTML "<p>";
     if (defined $$rcfg{'timezone'}{$router}){    
     print HTML     
@@ -1767,8 +1773,7 @@ $$rcfg{'pagetop'}{$router}";
           ",<br />\n".
         &$LOC("at which time $namestring had been up for <strong>$uptime</strong>.")
     }
-    print HTML "</p>\n<!-- End Head -->";
-   
+	print HTML "</p>";
     my %sample= ('d' => "`Daily' Graph (".$interval.' Minute',
                  'w' => "`Weekly' Graph (30 Minute",
                  'm' => "`Monthly' Graph (2 Hour",
@@ -1911,7 +1916,8 @@ print HTML "
         print HTML "
 			</table>
 		</div>
-<!-- End Legend -->";
+<!-- End Legend -->
+";
     }
 
     if (!(defined $$rcfg{'options'}{'nobanner'}{$router})) {
@@ -1976,7 +1982,7 @@ TEXT
     print HTML <<TEXT
 			</address>
 		</div>
-		<!-- End MRTG Block -->
+<!-- End MRTG Block -->
 TEXT
     }
 
