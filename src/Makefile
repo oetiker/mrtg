@@ -5,26 +5,26 @@ VER=2.17.7
 .SUFFIXES:
 .SUFFIXES: .c .o .pl .pm .pod .man .1 .txt
 
-prefix = @prefix@
-exec_prefix = @exec_prefix@
-bindir = @bindir@
-libdir = @libdir@
-mandir = @mandir@
-datadir = @datadir@
+prefix = /opt/mrtg-2
+exec_prefix = ${prefix}
+bindir = ${exec_prefix}/bin
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+datadir = ${prefix}/share
 
-top_srcdir = @top_srcdir@
+top_srcdir = .
 
 # Where is perl 5 on this machine
-PERL = @PERL@
-CC = @CC@
-CFLAGS = @CFLAGS@ @DEFS@
-CPPFLAGS = @CPPFLAGS@
-LDFLAGS = @LDFLAGS@
-GDFORM_EXT = @GDFORM_EXT@
-SET_LD_RUN_PATH = @SET_LD_RUN_PATH@
-LIBS = @LIBS@
+PERL = /usr/bin/perl
+CC = gcc
+CFLAGS = -g -O2 -Wall -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -Winline -W -DHAVE_CONFIG_H
+CPPFLAGS = 
+LDFLAGS = 
+GDFORM_EXT = png
+SET_LD_RUN_PATH = 
+LIBS = -lgd -lpng -lz  -lm
 
-INSTALL = @INSTALL@
+INSTALL = /usr/bin/install -c
 MKINSTALLDIRS = $(SHELL) $(top_srcdir)/mkinstalldirs
 
 all:	 bin/rateup subst
@@ -94,7 +94,7 @@ getpod:
 	pod2man --release=$(VER) --center=mrtg $<  > $@
 
 .1.txt:
-	@NROFF@ -man -Tascii $< > $@
+	/usr/bin/groff -man -Tascii $< > $@
 
 man: $(MAN)
 

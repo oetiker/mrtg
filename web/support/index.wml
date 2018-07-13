@@ -1,0 +1,154 @@
+<page page="doc_mrtg-forum"
+author="Tobias Oetiker <tobi@oetiker.ch>"/>
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#MAILING-LIST">MAILING-LIST</a>
+    <ul>
+      <li><a href="#THE-RULES">THE RULES</a></li>
+      <li><a href="#SUBSCRIBING">SUBSCRIBING</a></li>
+    </ul>
+  </li>
+  <li><a href="#NEWSGROUP">NEWSGROUP</a></li>
+  <li><a href="#IRC-Channel">IRC Channel</a></li>
+  <li><a href="#MRTG-Japan">MRTG Japan</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>mrtg-forum - Interactive Help for MRTG users</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<p>There is a lot of written documentation for mrtg, but nevertheless you may have a problem where you can&#39;t find the solution. In this case some Human Help may be necessary. With MRTG there are several ways to get Humans to help you.</p>
+
+<h1 id="MAILING-LIST">MAILING-LIST</h1>
+
+<p>There are three mailing lists for MRTG available.</p>
+
+<dl>
+
+<dt id="mrtg">mrtg</dt>
+<dd>
+
+<p>for discussion among mrtg users.</p>
+
+</dd>
+<dt id="mrtg-announce">mrtg-announce</dt>
+<dd>
+
+<p>for announcements regarding new versions of mrtg related software.</p>
+
+</dd>
+<dt id="mrtg-developers">mrtg-developers</dt>
+<dd>
+
+<p>for discussion among people who write software in connection with mrtg or who hack mrtg itself.</p>
+
+</dd>
+</dl>
+
+<h2 id="THE-RULES">THE RULES</h2>
+
+<p>Please note that the memebers of the mrtg mailinglist value politeness highly. This means behave in a way you would like others to behave towards you.</p>
+
+<ul>
+
+<li><p>No shouting. (NO CAPS)</p>
+
+</li>
+<li><p>No rude language</p>
+
+</li>
+<li><p>No demands. everybody is on the list out of their own free will. If you do not get an answer to your question, chances are high that you did not give sufficent details about the nature of your problem or that the answer to your problem is in the documentation.</p>
+
+</li>
+<li><p>If you do not follow the rules you will be unsubscribed from the list with no further questions asked.</p>
+
+</li>
+<li><p>Decisions about your unsubscription from the list will be taken by</p>
+
+<protect><pre><code> Alex van den Bogaerdt &lt;alex at ergens.op.het.net&gt;
+ Paul C. Williamson    &lt;pwilliamson at MANDTBANK.COM&gt;</code></pre></protect>
+
+<p>If you feel that you have been treated unfairly, you may send mail to me and explain the situation.</p>
+
+<protect><pre><code> Tobi Oetiker &lt;tobi@oetiker.ch&gt;</code></pre></protect>
+
+</li>
+</ul>
+
+<h2 id="SUBSCRIBING">SUBSCRIBING</h2>
+
+<p>These lists are managed by a mailing-list management program (listar). It allows you to subscribe to these lists by sending a message with the subject: <b>subscribe</b> to the following address:</p>
+
+<protect><pre><code> listname-request@lists.oetiker.ch</code></pre></protect>
+
+<p>You will then get a message asking you to confirm your subscription.</p>
+
+<p>For posting to the lists use the following address</p>
+
+<protect><pre><code> listname@lists.oetiker.ch</code></pre></protect>
+
+<p>Note that only people who are subscribed to the list can post.</p>
+
+<p>Further information about the usage of the mailing lists is available by sending a message with the subject line <b>help</b> to either one of the request addresses.</p>
+
+<p>There is also a webinterface to the lists on</p>
+
+<protect><pre><code> http://lists.oetiker.ch</code></pre></protect>
+
+<p>List archives are on</p>
+
+<protect><pre><code> http://www.mail-archive.com/index.php?hunt=mrtg</code></pre></protect>
+
+<p>and</p>
+
+<protect><pre><code> http://gmane.org/find.php?list=mrtg</code></pre></protect>
+
+<h1 id="NEWSGROUP">NEWSGROUP</h1>
+
+<p>For discussion of MRTG or related topics on the Usenet, please send your posts to:</p>
+
+<protect><pre><code> news:comp.dcom.net-management</code></pre></protect>
+
+<p>Many MRTG users are in this forum and will help you. You can also find an archive of past activity from this Newsgroup on:</p>
+
+<protect><pre><code> http://groups.google.com/group/comp.dcom.net-management</code></pre></protect>
+
+<h1 id="IRC-Channel">IRC Channel</h1>
+
+<p>For discussion of MRTG and related topics on IRC, the `#mrtg&#39; channel on EFNet has been created.</p>
+
+<p>More information can be found at</p>
+
+<protect><pre><code> http://mrtg.easymac.org</code></pre></protect>
+
+<h1 id="MRTG-Japan">MRTG Japan</h1>
+
+<p>There is a special Mailinglist for MRTG Users in Japan. It carries translations of the traffic from MRTG-ANNOUNCE as well as updates on the Japanese Translation of the MRTG documentation. Go to http://www.mrtg.jp/ for further Information.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Tobias Oetiker &lt;tobi@oetiker.ch&gt; and many contributors</p>
+
+
+</body>
+
+</html>
+
+

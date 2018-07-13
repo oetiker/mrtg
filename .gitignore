@@ -1,0 +1,11 @@
+DEADJOE
+*~
+autom4te.cache
+rateup.exe
+config.h
+config.log
+config.status
+*.1
+*.gz
+*.o
+*.zip

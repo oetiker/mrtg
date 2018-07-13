@@ -34,32 +34,6 @@
 </head>
 <body>
 <div id="page_header">
-<small>
-<A HREF="http://oss.oetiker.ch/mrtg/<where/>"><img src="$(ROOT)/images/flags/ch.gif" border=0 alt="CH"/></A>
-&nbsp;Mirrors: 
-#<A HREF="http://mrtg.planetmirror.com/<where/>">AU</a><!--jason andrade <jason@dstc.edu.au> -->
-#<A HREF="http://mirrors.bchosting.com/mrtg/<where/>">CA</a><!--Chris Phillips BChosting.com-->
-#<A HREF="http://mrtg.paracoda.com/<where/>">CA</a><!--Hossam Hossny <admin@paracoda.com> -->
-#<A HREF="http://mrtg.paracoda.com/<where/>"><img src="$(ROOT)/images/flags/ca.gif" border=0 alt="CA"/></A><!--Hossam Hossny <admin@paracoda.com>-->
-<A HREF="http://www.mrtg.cz/<where/>"><img src="$(ROOT)/images/flags/cz.gif" border=0 alt="CZ"/></a><!--Martin Och <martin@och.cz>-->
-<A HREF="http://mrtg.basemirror.de/<where/>"><img src="$(ROOT)/images/flags/de.gif" border=0 alt="DE"/></a><!--Baseportal Mirrors <mirrors@baseportal.de>-->
-<A HREF="http://ftp.heanet.ie/mirrors/oss.oetiker.ch/mrtg/"><img src="$(ROOT)/images/flags/ie.gif" border=0 alt="IE"/></A><!-- mirrors@heanet.ie> -->
-#<A HREF="http://mrtg-fr.agarik.com/<where/>"><img src="$(ROOT)/images/flags/fr.gif" border=0 alt="FR"/></a><!--Laurent SEROR seror@agarik.com-->
-#<A HREF="http://www.mrtg.it/<where/>">IT</a><!--Vicki Vinci root@power.it -->
-<A HREF="http://lebos.org/mrtg/mrtg/<where/>"><img src="$(ROOT)/images/flags/lb.gif" border=0 alt="LB"/></a><!-- Jocelyn habib <jhabib@gmail.com> -->
-#<A HREF="http://mrtg.grunn.org/<where/>">NL</a><!--Webmaster <webmaster@grunn.org>-->
-<A HREF="http://mrtg.meulie.net/<where/>"><img src="$(ROOT)/images/flags/no.gif" border=0 alt="US"/></a><!--Evert Meulie <evert@meulie.net> -->
-#<A HREF="http://mrtg.hdl.com/mrtg/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></a><!--HDL Tech Support <wildcard@hdl.com> (Steve)  -->
-<A HREF="http://mrtg.mirroraty.org/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></A><!--Hossam Hossny <hossam@trexle.com>-->
-#<A HREF="http://mrtg.mirror.nexcast.net/<where/>"><img src="$(ROOT)/images/flags/us.gif" border=0 alt="US"/></A><!--James DeVincentis <admin@nexcast.net>-->
-#<A HREF="http://mrtg.playsystems.ro/<where/>"><img src="$(ROOT)/images/flags/ro.gif" border=0 alt="RO"/></a><!--Dan Draghici <dan.draghici@ulbsibiu.ro>-->
-<A HREF="http://mrtg.cs.pu.edu.tw/<where/>"><img src="$(ROOT)/images/flags/tw.gif" border=0 alt="TW"/></a><!--Hsun-Chang Chang <hsunchang@gmail.com>-->
-<A HREF="http://mrtg.mirror.graemef.net/<where/>"><img src="$(ROOT)/images/flags/gb.gif" border=0 alt="GB"/></a><!--Graeme Fowler <graeme@graemef.net>-->
-#<A HREF="http://www.bigwebmaster.com/mrtg/<where/>">US</a><!--Brian Annas <questions@bigwebmaster.com>-->
-#<A HREF="/<where/>"></a><!---->
-#<A HREF="/<where/>"></a><!---->
-#<A HREF="/<where/>"></a><!---->
-</small>
 </div>
 
 <table id="main_container" cellspacing="0" cellpadding="0" border="0">
@@ -137,19 +111,6 @@
 <!-- Content code start -->
 <td id="content_container">
 {#H1#}
-<div id="googlead_right">
-<script type="text/javascript"><!--
-google_ad_client = "pub-8135238818549668";
-/* mrtg_top_high */
-google_ad_slot = "4631342671";
-google_ad_width = 160;
-google_ad_height = 600;
-//-->
-</script>
-<script type="text/javascript"
-src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
-</div>
 {#Body#}
 <p id="pageauthor">
 Last Update: <perl>
@@ -171,30 +132,7 @@ LINE
 </protect>
 </perl>
 </p>
-<perl>
-if ( -s "$(WML_SRC_FILENAME)" > 4000 ) {
-print <<'GOOGLEAD';
-<p>
-<script type="text/javascript"><!--
-google_ad_client = "pub-8135238818549668";
-google_ad_width = 300;
-google_ad_height = 250;
-google_ad_format = "300x250_as";
-google_ad_type = "text_image";
-google_ad_channel = "3710326600";
-google_color_border = "ffffff";
-google_color_bg = "ffffff";
-google_color_link = "345d98";
-google_color_url = "000000";
-google_color_text = "000000";
-//--></script>
-<script type="text/javascript"
-  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
-</p>
-GOOGLEAD
-}
-</perl></td>
+</td>
 </tr>
 </table>
 
@@ -232,15 +170,6 @@ are missing, then the mirror may not have picked up the contents of either the <
 #<a href="http://www.konqueror.org">Konqueror</a> aus dem KDE Projekt.
 #</de>
 </p> 
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-var pageTracker = _gat._getTracker("UA-374525-1");
-pageTracker._initData();
-pageTracker._trackPageview();
-</script>
 </body>
 </html>
 

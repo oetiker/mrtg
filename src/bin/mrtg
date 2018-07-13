@@ -2013,7 +2013,7 @@ sub printusage {
     print <<USAGEDESC;
 Usage: mrtg <config-file>
 
-mrtg-2.17.4 - Multi Router Traffic Grapher
+mrtg-2.17.7 - Multi Router Traffic Grapher
 
 Copyright 1995-2006 by Tobias Oetiker
 Licensed under the Gnu GPL.

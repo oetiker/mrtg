@@ -2,7 +2,7 @@ pod2wml (){
  base=$1
  [ -z "$descr" ] && descr=$base
  [ -z "$menu" ] && menu=$descr
- perl-5.8.8 -I/home/oetiker/checkouts/mrtg/trunk/web/bin/lib /home/oetiker/checkouts/mrtg/trunk/web/bin/pod2xhtml <$base.pod >$base.html
+ pod2html <$base.pod >$base.html
 #Thing.pod Thing.html
 # pod2html-5.8.8 --infile=$base.pod --outfile=$base.pre --noindex --htmlroot='$(ROOT)' --podroot=$SITEROOT --podpath=$PODPATH
 # $SITEROOT/bin/fix-pod2html.pl $base.pre | $SITEROOT/bin/fix-hrefs.pl >$base.html
