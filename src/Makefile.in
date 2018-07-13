@@ -124,7 +124,7 @@ tar:	doc rateupexe
 
 dist: tar
 	git commit -m 'released version $(VER)' -a
-	git tag v($VER)
+	git tag v$(VER)
 	git push --tags
 	md5sum $(ARCHIVE).tar.gz >$(ARCHIVE).tar.gz.md5
 	gpg -s $(ARCHIVE).tar.gz.md5
