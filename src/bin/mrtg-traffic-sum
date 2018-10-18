@@ -58,7 +58,7 @@ sub mailout($$);
 sub main()
 {
     # parse options
-    GetOptions(\%opt, 'min=i','help|h', 'catch=s', 'email=s','version','range=s','units=s') or exit(1);
+    GetOptions(\%opt, 'min=i','help|h', 'catch=s', 'email=s','version','range=s','units=s','man') or exit(1);
     if($opt{help})     { pod2usage(1) }
     if($opt{man})      { pod2usage(-exitstatus => 0, -verbose => 2) }
     if($opt{version})  { print "mrtg-traffic-sum $Revision\n"; exit(0) }
