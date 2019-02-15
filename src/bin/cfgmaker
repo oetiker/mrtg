@@ -1188,7 +1188,7 @@ sub IfType ($) {
       '246'=>'Pseudowire interface type',
       '251'=>'Very high speed digital subscriber line',
    };
-   return ($ift->{$id} || "Uknown Interface Type");
+   return ($ift->{$id} || "Unknown Interface Type");
 } # end IfType
 
 
