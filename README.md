@@ -4,8 +4,9 @@
 
 **What is MRTG ?**
 
-[The Multi Router Traffic Grapher (MRTG) is a tool to monitor the traffic load on network links.
-MRTG generates HTML pages containing PNG images which provide a LIVE visual representation of this traffic.](https://github.com/oetiker/mrtg/edit/master/src/doc/mrtg.pod)
+The Multi Router Traffic Grapher (MRTG) is a tool to monitor the traffic load on network links.
+MRTG generates HTML pages containing PNG images which provide a LIVE visual representation of this traffic. <br>
+*extract from [mrtg.pod](https://github.com/oetiker/mrtg/edit/master/src/doc/mrtg.pod)*
 
 Go to http://oss.oetiker.ch/mrtg for all the details about mrtg. <br>
 
