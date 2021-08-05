@@ -1121,8 +1121,7 @@ sub cfgcheck ($$$$;$) {
             # make some textcolor if not defined
             # convert backg hex to decimal rgb
             my @rgbvalue=split('',$$rcfg{'backgc'}{$rou});
-            my @rgb=(255,255,255);
-            @rgb=(hex($rgbvalue[1].$rgbvalue[2]),hex($rgbvalue[3].$rgbvalue[4]),hex($rgbvalue[5].$rgbvalue[6]));
+            my @rgb=(hex($rgbvalue[1].$rgbvalue[2]),hex($rgbvalue[3].$rgbvalue[4]),hex($rgbvalue[5].$rgbvalue[6]));
             # make contrast textcolor from backg for all backg values
             if($rgb[0]+$rgb[1]+$rgb[2]<(256*3/2)) {
                 $$rcfg{textcolor}{$rou}="#ffffff";
