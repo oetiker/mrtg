@@ -10,7 +10,8 @@ MRTG generates HTML pages containing PNG images which provide a LIVE visual repr
 
 Go to http://oss.oetiker.ch/mrtg for all the details about mrtg. <br>
 
-**Latest MRTG Release** -> [2.17.7](https://github.com/oetiker/mrtg/releases/tag/v2.17.7)
+**This is new release (a fork)** -> [2.17.8]
+**Latest original MRTG release** -> [2.17.7](https://github.com/oetiker/mrtg/releases/tag/v2.17.7)
 
 For installing on **LINUX/UNIX**, follow the instructions in
 
