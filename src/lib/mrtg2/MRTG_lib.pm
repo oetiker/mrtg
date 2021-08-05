@@ -1120,7 +1120,6 @@ sub cfgcheck ($$$$;$) {
         if (! defined $$rcfg{'textcolor'}{$rou}) {
             # make some textcolor if not defined
             # convert backg hex to decimal rgb
-            my $rgblength=length($$rcfg{'backgc'}{$rou});
             my @rgbvalue=split('',$$rcfg{'backgc'}{$rou});
             my @rgb=(255,255,255);
             @rgb=(hex($rgbvalue[1].$rgbvalue[2]),hex($rgbvalue[3].$rgbvalue[4]),hex($rgbvalue[5].$rgbvalue[6]));
