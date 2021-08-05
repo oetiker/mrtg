@@ -5,6 +5,18 @@ From: Martin Sechny, shenk.sk
 * automatic value for TextColor (if null) with good contrast for every
   Background property value (default black text on white background)
 
+From: renatocfrancisco
+* update README.md
+
+From: vcrhonek
+* fix mrtg-traffic-sum incorrectly ignores '--man' option
+
+From: leoreginin
+* add support for Alcatel and Datacom to cfgmaker
+
+From: cheese1
+* small typo
+
 Changes 2.17.7, 2018-07-12
 --------------------------
 From: Martin Sechny, shenk.sk
