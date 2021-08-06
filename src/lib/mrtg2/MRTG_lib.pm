@@ -1,7 +1,7 @@
 # -*- mode: Perl -*-
 package MRTG_lib;
 ###################################################################
-# MRTG 2.17.4  Support library MRTG_lib.pm
+# MRTG 2.17.8  Support library MRTG_lib.pm
 ###################################################################
 # Created by Tobias Oetiker <tobi@oetiker.ch>
 #            and Dave Rand <dlr@bungi.com>
@@ -275,6 +275,9 @@ $VERSION = 2.100016;
        [sub{1}, sub{"Internal Error"}],
 
        'background[]' =>
+       [sub{1}, sub{"Internal Error"}],
+
+       'textcolor[]' =>
        [sub{1}, sub{"Internal Error"}],
 
        'kilo[]' => 
@@ -1109,6 +1112,28 @@ sub cfgcheck ($$$$;$) {
         } else {
             warn "WARNING: \"background[$rou]: ".
                   "$$rcfg{'background'}{$rou}\" for colour definition\n".
+                  "       use the format: #rrggbb\n";
+            $error="yes";
+        }
+
+        # Text color, format: #rrggbb
+        if (! defined $$rcfg{'textcolor'}{$rou}) {
+            # make some textcolor if not defined
+            # convert backg hex to decimal rgb
+            my @rgbvalue=split('',$$rcfg{'backgc'}{$rou});
+            my @rgb=(hex($rgbvalue[1].$rgbvalue[2]),hex($rgbvalue[3].$rgbvalue[4]),hex($rgbvalue[5].$rgbvalue[6]));
+            # make contrast textcolor from backg for all backg values
+            if($rgb[0]+$rgb[1]+$rgb[2]<(256*3/2)) {
+                $$rcfg{textcolor}{$rou}="#ffffff";
+            } else {
+                $$rcfg{textcolor}{$rou}="#000000";
+            }
+        }
+        if ($$rcfg{'textcolor'}{$rou} =~ /^(\#[0-9a-f]{6})/i) {
+            $$rcfg{'textc'}{$rou} = "$1";
+        } else {
+            warn "WARNING: \"textcolor[$rou]: ".
+                  "$$rcfg{'textcolor'}{$rou}\" for colour definition\n".
                   "       use the format: #rrggbb\n";
             $error="yes";
         }
