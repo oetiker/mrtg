@@ -1,3 +1,22 @@
+Changes 2.17.8, 2021-08-05
+--------------------------
+From: Martin Sechny, shenk.sk
+* add missing optional textcolor property in mrtg.cfg
+* automatic value for textcolor (if null) with good contrast for every
+  Background property value (default black text on white background)
+
+From: renatocfrancisco
+* update README.md
+
+From: vcrhonek
+* fix mrtg-traffic-sum incorrectly ignores '--man' option
+
+From: leoreginin
+* add support for Alcatel and Datacom to cfgmaker
+
+From: cheese1
+* small typo
+
 Changes 2.17.7, 2018-07-12
 --------------------------
 From: Martin Sechny, shenk.sk
@@ -253,7 +272,7 @@ From: Dan.McDonald austinenergy.com
 From: Mike Mitchell Mike.Mitchell sas.com
 * Updated Net_SNMP_util module (error messages)
 
-From: Günter Knauf
+From: Gï¿½nter Knauf
 * Updated Makefiles for Win32 and Netware
 * New Netware version of rateup.nlm
 
@@ -596,7 +615,7 @@ From: alex <alex location craxor.com>
 From: Mateusz <mateusz location republika.pl>
 * support option derive is using rrdtool logging
 
-From: Ulf Härnhammar <Ulf.Harnhammar.9485 location student.uu.se>
+From: Ulf Hï¿½rnhammar <Ulf.Harnhammar.9485 location student.uu.se>
 * prevent potential buffer overflow in ratup due to 'strange' input files
 
 Changes 2.10.15, 2004-08-08
@@ -668,7 +687,7 @@ From: Quentin Dunchue <que location qnr.biz>
 * added host anchor in indexmaker
 * fixed $default filter in cfgmaker to not include everything
 
-From:  ¶ÀªF¶© <ryan location asplord.com>
+From:  ï¿½ï¿½ï¿½Fï¿½ï¿½ <ryan location asplord.com>
 * updates for chinese big5 translation
 
 From: Klaus Schmidinger <Klaus.Schmidinger location cadsoft.de>
@@ -1033,7 +1052,7 @@ From: Norbert Klasen <norbert.klasen location avinci.de>
 
 Changes 2.9.26
 --------------
-From: André Silveira <ASilveira location multirede.com.br>
+From: Andrï¿½ Silveira <ASilveira location multirede.com.br>
 * with thresholds ... have two decimals in % mode
 * give threshdesc and value as ar 4 and 5 of called threshprog
 
@@ -1356,7 +1375,7 @@ Changes 2.9.13
 --------------
 From: Damien <damien location detonate.net>
  * contrib mrtg_php_portal 
-From: HERITIER Hervé <hh location handco.org>
+From: HERITIER Hervï¿½ <hh location handco.org>
  * contrib iptables_acc_snmp
 From: Pascal Eeftinck <arcade location planet.nl>
  * snmpv2 regexp did not match in cfgmaker
@@ -1441,7 +1460,7 @@ From: Gerry Van Steerteghem <gerry.vansteerteghem location pandora.be>
 From: David Boyer <Boyer_D location glan-hafren.ac.uk>
  * contrib mrtg.php produces live index
 
-From: David A. Pérez <david location kamborio.com>
+From: David A. Pï¿½rez <david location kamborio.com>
  * contrib TTrafic a *.log analyzer in asp
 
 From: Ratko Bucic <ratko location ban.junis.ni.ac.yu>
@@ -1843,7 +1862,7 @@ From: blube location floridadigital.net
  - make cfgmaker comment out DS3 controlers ... they do not count their traffic
 From: Rainer Bawidamann <Rainer.Bawidamann location rz.uni-ulm.de>
  - made PID file name generation robust to cfg files without extenssion
-From: Mattias Lilliesköld <mattias.lillieskold location martinsson.se>
+From: Mattias Lillieskï¿½ld <mattias.lillieskold location martinsson.se>
  - make cfgmaker recognize options[^]: bits
 From: Thomas Abthorpe - Tby. * <tabthorpe location cgc.ca>
  - go for threshold checking if threshdir is defined
@@ -2237,7 +2256,7 @@ From: Oleg Krotoff <krot location tnsplus.kz>
  - contrib: mrtg-archiver-script
 From: Ladislav Mihok <laco location mrokh.shmu.sk>
  - slovak translation for mrtg
-From: Martin Røsjorde <martin.rosjorde location vestfold.eltele.no>
+From: Martin Rï¿½sjorde <martin.rosjorde location vestfold.eltele.no>
  - improved norwegian translation
 From: Michael Med <michael.med location rrz-wien.raiffeisen.at>
  - make complex TZ settings work with rateup in solaris. By copying
@@ -2245,7 +2264,7 @@ From: Michael Med <michael.med location rrz-wien.raiffeisen.at>
 From: Walery Kokarev <w.kokarev location link-ul.ru>
  - Added withzeroes option for people who want zero sample considered in their
    average transfer rate.
-From: Ù¤Âê¹û <gamago location sina.com>
+From: Ù¤ï¿½ï¿½ï¿½ <gamago location sina.com>
  - simplified chinese locale
 From: Patrick Koppen <koppen location unix-ag.uni-kl.de>
  - make -r work in indexmaker
@@ -2336,7 +2355,7 @@ From: Tobi Oetiker
  - added ThreshDesc config option. Its value is assigned to the env variable
    THRESH_DESC before and of the Thresh-Action scripts are called.
 
-From: "[big5] ¶ÀªF¶©" <donlong location mail.pouchen.com.tw> and Tate <tate location joy-tech.com.tw>
+From: "[big5] ï¿½ï¿½ï¿½Fï¿½ï¿½" <donlong location mail.pouchen.com.tw> and Tate <tate location joy-tech.com.tw>
  - bugfix for big5 locale
 From: knut.groneng location merkantildata.no
  - bugfix for norwegian.pmd
@@ -2362,7 +2381,7 @@ From: Ronald Florence <ron location 18james.com>
  - linux ip-filter integration in contrib
 From: Iulian Radu <iulian_r location starnets.ro>
  - version 2.2 of mrtgmk in contrib
-From: LLuís Gras <lluis location seccat.com>
+From: LLuï¿½s Gras <lluis location seccat.com>
  - catalan locales
 From: John Line <webadm location info.cam.ac.uk>
  - rateup.c fix for kMG override bug
@@ -2395,7 +2414,7 @@ From: Morten S. Nielsen <msn location ipt.dtu.dk>
  - Added more modular translation system
 From: Ilja Pavkovic <illsen location gumblfarz.de>
  - Added German Translation
-From: "Tate <­«¥Í>" <tate location joy-tech.com.tw>
+From: "Tate <ï¿½ï¿½ï¿½ï¿½>" <tate location joy-tech.com.tw>
  - Chinese Translation
 From: John-Mark Gurney <gurney_j location efn.org>
  - cfgmaker_ip ... keep first address and not last ..
@@ -2499,7 +2518,7 @@ From: Tobi
    is much more obvious than a line at 0.
 
 From: Fabrice Prigent <fabrice.prigent location univ-tlse1.fr>
-      & Stéphane Marzloff <secrer location le-bar.fdn.fr>
+      & Stï¿½phane Marzloff <secrer location le-bar.fdn.fr>
  - french locales
 
 Changes 2.8.3

@@ -1,7 +1,7 @@
 # things that the GNU standards document suggests all makefiles
 # should have.
 SHELL=/bin/sh
-VER=2.17.7
+VER=2.17.8
 .SUFFIXES:
 .SUFFIXES: .c .o .pl .pm .pod .man .1 .txt
 
@@ -15,7 +15,7 @@ datadir = ${prefix}/share
 top_srcdir = .
 
 # Where is perl 5 on this machine
-PERL = /usr/bin/perl
+PERL = /home/oetiker/.plenv/shims/perl
 CC = gcc
 CFLAGS = -g -O2 -Wall -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -Winline -W -DHAVE_CONFIG_H
 CPPFLAGS = 
@@ -24,7 +24,7 @@ GDFORM_EXT = png
 SET_LD_RUN_PATH = 
 LIBS = -lgd -lpng -lz  -lm
 
-INSTALL = /usr/bin/install -c
+INSTALL = /bin/install -c
 MKINSTALLDIRS = $(SHELL) $(top_srcdir)/mkinstalldirs
 
 all:	 bin/rateup subst
@@ -94,7 +94,7 @@ getpod:
 	pod2man --release=$(VER) --center=mrtg $<  > $@
 
 .1.txt:
-	/usr/bin/groff -man -Tascii $< > $@
+	/bin/groff -man -Tascii $< > $@
 
 man: $(MAN)
 
@@ -107,16 +107,16 @@ versync:
 doc:    getpod versync man txt
 
 rateupexe:
-	i386-mingw32msvc-gcc -Wall -Wno-format -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -O3 -mwindows -Ilibs-i386-mingw32msvc/zlib -Ilibs-i386-mingw32msvc/libpng -Ilibs-i386-mingw32msvc/gd -c src/strftime.c -o src/strftime.o
-	i386-mingw32msvc-gcc -Wall -Wno-format -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -O3 -mwindows -Ilibs-i386-mingw32msvc/zlib -Ilibs-i386-mingw32msvc/libpng -Ilibs-i386-mingw32msvc/gd -c src/rateup.c -o src/rateup.o -Dstrftime=strftime_
-	i386-mingw32msvc-gcc -Llibs-i386-mingw32msvc/zlib -Llibs-i386-mingw32msvc/libpng -Llibs-i386-mingw32msvc/gd  src/rateup.o src/strftime.o -o bin/rateup.exe -lgd -lpng -lz
-	i386-mingw32msvc-strip bin/rateup.exe
+	i686-w64-mingw32-gcc -Wall -Wno-format -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -O3 -mwindows -Ilibs-i386-mingw32msvc/zlib -Ilibs-i386-mingw32msvc/libpng -Ilibs-i386-mingw32msvc/gd -c src/strftime.c -o src/strftime.o
+	i686-w64-mingw32-gcc -Wall -Wno-format -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -O3 -mwindows -Ilibs-i386-mingw32msvc/zlib -Ilibs-i386-mingw32msvc/libpng -Ilibs-i386-mingw32msvc/gd -c src/rateup.c -o src/rateup.o -Dstrftime=strftime_
+	i686-w64-mingw32-gcc -Llibs-i386-mingw32msvc/zlib -Llibs-i386-mingw32msvc/libpng -Llibs-i386-mingw32msvc/gd  src/rateup.o src/strftime.o -o bin/rateup.exe -lgd -lpng -lz
+	i686-w64-mingw32-strip bin/rateup.exe
 
 tar:	doc rateupexe
 	autoconf
-	gchmod -R u=rwX,go=rX .
+	chmod -R u=rwX,go=rX .
 	(cd .. ; ln -s src $(DIRNAME))
-	(cd .. ; sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | tar -czv --files-from=- -f $(DIRNAME)/$(ARCHIVE).tar.gz --exclude='*~' --exclude="*.rej" --exclude="*.orig" --exclude=".svn")
+	(cd .. ; sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | tar  --exclude='*~' --exclude="*.rej" --exclude="*.orig" --exclude=".svn" -czv --files-from=-  -f $(DIRNAME)/$(ARCHIVE).tar.gz)
 	$(PERL) -0777 -pi -e 's@GRAPHFMT="...";@GRAPHFMT="png";@' bin/mrtg bin/indexmaker
 	# build rateup for windows ...
 	(cd .. ; touch $(DIRNAME)/contrib/a~;sed -e "s/^/$(DIRNAME)\//" $(DIRNAME)/MANIFEST | xargs zip -r $(DIRNAME)/$(ARCHIVE).zip; zip $(DIRNAME)/$(ARCHIVE).zip $(DIRNAME)/bin/rateup.exe  $(DIRNAME)/bin/rateup.nlm $(DIRNAME)/bin/rateup.nlm; zip -d $(DIRNAME)/$(ARCHIVE).zip '*~' '*.svn*')

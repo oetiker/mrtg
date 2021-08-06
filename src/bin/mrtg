@@ -1,8 +1,8 @@
-#! /usr/bin/perl -w
+#! /home/oetiker/.plenv/shims/perl -w
 # -*- mode: cperl -*-
 
 ###################################################################
-# MRTG 2.17.7  Multi Router Traffic Grapher
+# MRTG 2.17.8  Multi Router Traffic Grapher
 ###################################################################
 # Created by Tobias Oetiker <tobi@oetiker.ch>
 #            and Dave Rand <dlr@bungi.com>
@@ -1592,7 +1592,7 @@ sub writehtml {
     my $dirrel = "../" x ($$rcfg{'directory_web'}{$router} =~ tr|/|/|);
 
     $Today=&$LOC(datestr(time));
-    $VERSION = "2.17.7";
+    $VERSION = "2.17.8";
     open (HTML,">$$cfg{'htmldir'}$$rcfg{'directory'}{$router}$router.$$rcfg{'extension'}{$router}") || 
       do { warn ("$NOW: WARNING: Writing $router.$$rcfg{'extension'}{$router}: $!");
       	   next };
@@ -1655,7 +1655,8 @@ TEXT
 
     $namestring = "<strong>'$name'</strong>" if $name;
 
-    defined $$rcfg{backgc}{$router} or $$rcfg{backgc}{$router} = "#fff";
+    defined $$rcfg{backgc}{$router} or $$rcfg{backgc}{$router} = "#ffffff";
+    defined $$rcfg{textcolor}{$router} or $$rcfg{textcolor}{$router} = "#000000";
 
     $$rcfg{'rgb1'}{$router} = "" unless defined $$rcfg{'rgb1'}{$router};
     $$rcfg{'rgb2'}{$router} = "" unless defined $$rcfg{'rgb2'}{$router};
@@ -1667,13 +1668,7 @@ TEXT
     print HTML "		<style>
 			body {
 				background-color: $$rcfg{'backgc'}{$router};
-    ";
-    if($$rcfg{'backgc'}{$router} eq '#ffffff') {
-	print HTML "			color: #000000;";
-    } else {
-	print HTML "			color: #ffffff;";
-    }
-    print HTML "
+				color: $$rcfg{textcolor}{$router};
 			}
 			div {
 				border-bottom: 2px solid #aaa;
@@ -2013,7 +2008,7 @@ sub printusage {
     print <<USAGEDESC;
 Usage: mrtg <config-file>
 
-mrtg-2.17.7 - Multi Router Traffic Grapher
+mrtg-2.17.8 - Multi Router Traffic Grapher
 
 Copyright 1995-2006 by Tobias Oetiker
 Licensed under the Gnu GPL.

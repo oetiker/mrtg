@@ -1,6 +1,6 @@
 =head1 NAME
 
-mrtg-reference - MRTG 2.17.7 configuration reference
+mrtg-reference - MRTG 2.17.8 configuration reference
 
 =head1 OVERVIEW
 
@@ -1810,6 +1810,15 @@ colour of the generated HTML page.
 Example:
 
  Background[myrouter]: #a0a0a0a
+
+=head2 TextColor
+
+With the I<TextColor> tag you can configure the text
+colour of the generated HTML page.
+
+Example:
+
+ TextColor[myrouter]: #a0a0a0a
 
 =head2 YLegend, ShortLegend, Legend[1234]
 
