@@ -241,12 +241,15 @@ sub main {
     # so we lock on the cfg file. Nothing fancy, just a lockfile
 
     $lockfile = $opts{"lock-file"} || $lockfile;
+	my @cfgfile = split(/\//, $cfgfile);
 
     if (! defined $lockfile) {
-        $lockfile = $cfgfile."_l";
+#DEB        $lockfile = $cfgfile."_l";
+       $lockfile = "/var/lock/mrtg/" . join('_', @cfgfile) . "_l";
     }
     if (! defined $templock) {
         $templock = $lockfile."_" . $$ ;
+#DEB        $templock = "/var/lock/mrtg/" . join('_', @cfgfile) . "_l_" . $$ ;
     }
 
     debug('base', "Creating Lockfiles $lockfile,$templock");
@@ -323,6 +326,8 @@ sub main {
         $confcachefile = $cfgfile;
         $confcachefile  =~ s/\.[^.\/]+$//;
         $confcachefile .= ".ok";
+        my @cachefile = split(/\//, $cfgfile);
+        $confcachefile = "/var/lib/mrtg/" . join('_', @cachefile);
     }
     my $confcache = readconfcache($confcachefile);
 
