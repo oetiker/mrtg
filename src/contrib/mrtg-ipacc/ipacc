@@ -88,7 +88,7 @@ chop $dest_port;
 if($source_port.$dest_port ne '') { $prot='tcp';}
 if($mode eq 'both') 
 {
-    $exec_line="$ipfwadm -A out -a -P $prot -S $source_ip $source_port -D $dest_ip $dest_port; $ipfwadm -A in -a -P $prot -S $dest_ip $dest_port -D $source_ip $source_port";
+    $exec_line="$ipfwadm -A in -a -P $prot -S $source_ip $source_port -D $dest_ip $dest_port; $ipfwadm -A out -a -P $prot -S $dest_ip $dest_port -D $source_ip $source_port";
 }
 else {
     $exec_line="$ipfwadm -A $mode -a -P $prot -S $source_ip $source_port -D $dest_ip $dest_port";
