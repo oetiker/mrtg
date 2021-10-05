@@ -71,11 +71,11 @@
 
 #-------------------------------------------------------
 # Modify this statement to match your configuration
-@config_files = ('mrtg.cfg'); # Single config file
+@config_files = ('/etc/mrtg.cfg'); # Single config file
 
 #@config_files = ('mrtg.cfg', 'mrtg-ping.cfg'); # Two config files
 #@config_files = ('mrtg.cfg', 'yahoo.ping', 'netscape.ping', 'msn..ping', 
-                   'att.ping'); # anal retentive
+#                 'att.ping'); # anal retentive
 
 #-------------------------------------------------------
 
@@ -89,6 +89,7 @@ while(@config_files > 0){
     open(In, $cfg = shift @config_files) ||
 	die "Can't open $cfg. Check \@config_files array.\n";
     while(<In>){
+	chdir($1) if /^WorkDir:\s*(.+)$/;
 	next unless /^Title\[(.*)\]:\s*(.+)$/; # Look for a title keyword
 
 	$router = lc $1;
@@ -115,7 +116,7 @@ print header, start_html(-TITLE=>'Daily Stats', -BGCOLOR=>'#e6e6e6'),
     table({-width=>"100\%"}, TR(
 #-------------------------------------------------------
     # Uncomment the following line if you have Count.cgi installed.
-    td({-align=>left, width=>"25\%"}, img({-src=>"/cgi-bin/Count.cgi?display=clock"})),
+    #td({-align=>left, width=>"25\%"}, img({-src=>"/cgi-bin/Count.cgi?display=clock"})),
 #-------------------------------------------------------
 
     td("Click graph for more info")));
