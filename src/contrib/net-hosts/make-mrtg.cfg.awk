@@ -154,7 +154,7 @@ function myfun(f_rindex, f_index, f_name, f_olddate, f_last_state)
   print startcell imgup endcell > (mrtg_var_WorkDir "/internet.html")
   print startcell strftime("%c %Z", datew) endcell > (mrtg_var_WorkDir "/internet.html") 
   print endrow > (mrtg_var_WorkDir "/internet.html")
-  print "Target[" f_name "]: `echo | awk '{ print \"1\\n1\\n..., last changed on: " strftime("%c %Z", datew) "\\n" array[f_index, 1] "\\n\"; exit }'`" > mrtg_nethosts_cfg
+  print "Target[" f_name "]: `echo | gawk '{ print \"1\\n1\\n..., last changed on: " strftime("%c %Z", datew) "\\n" array[f_index, 1] "\\n\"; exit }'`" > mrtg_nethosts_cfg
  }
  else {
   statew = 0
@@ -190,7 +190,7 @@ function myfun(f_rindex, f_index, f_name, f_olddate, f_last_state)
   print "   <TR><TD CLASS=\"ptb\">IP:</TD><TD CLASS=\"pth\"><B>" f_name " (" array[f_index, 1] ")</B></TD></TR>" > mrtg_nethosts_cfg
   print "   <TR><TD CLASS=\"ptb\">Last Changed On:</TD><TD CLASS=\"pth\"><B>" strftime("%c %Z", datew) "</B></TD></TR>" > mrtg_nethosts_cfg
   print "  </TABLE>" > mrtg_nethosts_cfg
-  print "Supress[" f_name "]: y" > mrtg_nethosts_cfg
+  print "Suppress[" f_name "]: y" > mrtg_nethosts_cfg
   print "LegendI[" f_name "]: used" > mrtg_nethosts_cfg
   print "LegendO[" f_name "]: " > mrtg_nethosts_cfg
   print "Legend1[" f_name "]: used" > mrtg_nethosts_cfg

@@ -37,7 +37,7 @@ END{
 #
  for ( k = 1; k < lines; k++ ){
 #  print array[k, 1]"\t"array[k, 3]"\t"array[k, 4] > mrtg_mrtgrq_cfg
-   print ("Target[" array[k, 1] "]: `echo | awk '{ print \"" array[k, 3]"\\n" array[k, 4]"\\n..., last check on: " strftime("%c %Z", startdate) "\\n" array[k, 1] "@cfrcta.ro\\n\"; exit }'`") > mrtg_mrtgrq_cfg
+   print ("Target[" array[k, 1] "]: `echo | gawk '{ print \"" array[k, 3]"\\n" array[k, 4]"\\n..., last check on: " strftime("%c %Z", startdate) "\\n" array[k, 1] "@cfrcta.ro\\n\"; exit }'`") > mrtg_mrtgrq_cfg
    print ("Title[" array[k, 1] "]: Diskspace Quota Report For " array[k, 1] "@cfrcta.ro") > mrtg_mrtgrq_cfg
    print ("MaxBytes[" array[k, 1] "]: " array[k, 4]) > mrtg_mrtgrq_cfg
    print ("AbsMax[" array[k, 1] "]: " int(array[k, 4]*1.1)) > mrtg_mrtgrq_cfg
@@ -49,7 +49,7 @@ END{
    print ("   <TR><TD CLASS=\"ptb\">Maintainer:</TD><TD CLASS=\"pth\"><B>" mrtgrq_maintainer_email "</B></TD></TR>") > mrtg_mrtgrq_cfg
    print ("   <TR><TD CLASS=\"ptb\">Last Checked On:</TD><TD CLASS=\"pth\"><B>" strftime("%c %Z", startdate) "</B></TD></TR>") > mrtg_mrtgrq_cfg
    print ("  </TABLE>") > mrtg_mrtgrq_cfg
-   print ("Supress[" array[k, 1] "]: y") > mrtg_mrtgrq_cfg
+   print ("Suppress[" array[k, 1] "]: y") > mrtg_mrtgrq_cfg
    print ("LegendI[" array[k, 1] "]: used") > mrtg_mrtgrq_cfg
    print ("LegendO[" array[k, 1] "]: ") > mrtg_mrtgrq_cfg
    print ("Legend1[" array[k, 1] "]: used") > mrtg_mrtgrq_cfg
