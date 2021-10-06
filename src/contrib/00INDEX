@@ -169,12 +169,6 @@ The Equinox SST card does not provide SNMP support. Therefor I wrote a
 small perl script which reads out the byte counter from the Equinox SST
 board.
 
-
-nt-service
-----------
-From: Miroslaw.Maczka@bze.com.pl
-make mrtg a service under NT
-
 snmpping
 --------
 From: x <tomm02@yahoo.com>
@@ -228,12 +222,6 @@ From: Matthew Schumacher <schu@schu.net>
 
 A short perl script that I wrote that will monitor system and user CPU usage
 on linux and sun machines that I would like to contrib.
-
-cisco_tftp
-----------
-From: Paul E. Erkkila <pee@gblx.net>                                                               
-
-This code will ask a cisco router to tftp it's config..                                            
 
 cisco_ipaccounting
 ------------------
