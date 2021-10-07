@@ -29,7 +29,7 @@ my @STARTARGS=($0,@ARGV);
 # fork - forking view
 # time - some timing info
 # log  - logging of data via rateup or rrdtool
-# eval - trace eval experssions
+# eval - trace eval expressions
 # prof - add timeing info some interesting bits of code
 
 $main::GRAPHFMT="png";
@@ -1949,7 +1949,7 @@ TEXT
 				".&$LOC("Ported to OpenVMS Alpha by")." <a href=\"http://www.cerberus.ch/\">Werner Berger</a>
 				<a href=\"mailto:werner.berger\@cch.cerberus.ch\">&lt;werner.berger\@cch.cerberus.ch&gt;</a>";
     }
-# There is not realy any significant portion of code from Studard left and
+# There is not really any significant portion of code from Studard left and
 # none of his addresses work anymore. -- Tobi  2001-06-04
 #    if ($MRTG_lib::OS eq 'NT') {
 #        print HTML 
