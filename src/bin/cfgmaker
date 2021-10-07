@@ -953,7 +953,7 @@ sub DeviceInfo ($$$) {
     my @variables = snmpwalk(v4onlyifnecessary($router, $ipv4only),$v3opt,'1.3.6.1.2.1.1'); # walk system
     if (!(defined $variables[0])) {
         # Do we need to fall back to IPv4?
-        my ($commmunity, $host) = ($1, $2) if ($router =~ /^(.*)@([^@]+)$/);
+        my ($community, $host) = ($1, $2) if ($router =~ /^(.*)@([^@]+)$/);
         if ( ( ! $ipv4only ) && ( $host !~ /^\[(.*)\]/) ) {
             # Not using IPv4, not an IPv6 address, so a hostname
             debug ('base',"No response using IPv6 for $router, trying again using IPv4");
