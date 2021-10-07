@@ -1,5 +1,6 @@
-AC_INIT(src/rateup.c)
-AC_PREREQ(2.13)
+AC_INIT
+AC_CONFIG_SRCDIR([src/rateup.c])
+AC_PREREQ([2.69])
 
 dnl Check for programs.
 AC_PROG_CC
@@ -29,7 +30,7 @@ AC_CHECK_FUNCS(strtoll)
 AC_MSG_CHECKING([for printf long long format specifier])
 AC_CACHE_VAL(mr_cv_long_long_format_specifier,[
     for format in ll l q I64; do
-        AC_TRY_RUN([#include <stdio.h>  
+        AC_RUN_IFELSE([AC_LANG_SOURCE([[#include <stdio.h>  
             int main()
             {
                 long long b, a = -0x3AFAFAFAFAFAFAFALL;
@@ -38,10 +39,9 @@ AC_CACHE_VAL(mr_cv_long_long_format_specifier,[
                 sscanf (buffer, "%${format}u", &b);
                 exit (b!=a);
             }
-            ],
-            mr_cv_long_long_format_specifier="%${format}d"
+            ]])],[mr_cv_long_long_format_specifier="%${format}d"
             mr_cv_long_long_format="${format}d"
-            break)
+            break],[],[])
         done])
 AC_MSG_RESULT($mr_cv_long_long_format_specifier)
 AC_DEFINE_UNQUOTED(LLD, "$mr_cv_long_long_format_specifier",
@@ -177,9 +177,7 @@ if test "x$GCC" = "xyes"; then
   oCFLAGS=$CFLAGS
   CFLAGS="$CFLAGS -Wall -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -Winline -W"
   AC_CACHE_CHECK(if we can use GCC-specific compiler options, rd_cv_gcc_opt,
-                [AC_TRY_COMPILE( , return 0 ,
-                    rd_cv_gcc_opt=yes,
-                    rd_cv_gcc_opt=no )
+                [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[return 0 ]])],[rd_cv_gcc_opt=yes],[rd_cv_gcc_opt=no ])
                ]
         )
   if test $rd_cv_gcc_opt = no; then
@@ -194,7 +192,8 @@ AC_SUBST(SET_LD_RUN_PATH)
 AC_SUBST(LIBS)
 AC_SUBST(CFLAGS)
 AC_CONFIG_HEADERS(config.h)
-AC_OUTPUT(Makefile)
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
 
 
 echo $ECHO_N "ordering CD from http://tobi.oetiker.ch/wish $ECHO_C" 1>&6
