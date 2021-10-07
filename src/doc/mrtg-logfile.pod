@@ -19,7 +19,7 @@ It stores the traffic counters from the most recent run of mrtg.
 
 =item The rest of the File
 
-Stores past traffic rate averates and maxima at increassing
+Stores past traffic rate averages and maximum at increasing
 intervals.
 
 =back
@@ -93,9 +93,9 @@ measurement.
 =item D (4th column)
 
 The maximum incoming transfer rate in bytes per second for the current
-interval. This is calculated from all the updates which have occured in the
+interval. This is calculated from all the updates which have occurred in the
 current interval. If the current interval is 1 hour, and updates have
-occured every 5 minutes, it will be the biggest 5 minute transfer rate seen
+occurred every 5 minutes, it will be the biggest 5 minute transfer rate seen
 during the hour.
 
 =item E (5th column)

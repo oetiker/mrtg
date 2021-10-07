@@ -222,7 +222,7 @@ sub InterfaceInfo($$$$$) {
 #            bandwidth of the interface is greater than the maximum value
 #            reportable by this object then this object should report its
 #            maximum value (4,294,967,295) and ifHighSpeed must be used
-#            to report the interace's speed.  For a sub-layer which has
+#            to report the interface's speed.  For a sub-layer which has
 #            no concept of bandwidth, this object should be zero."
             if ( (not defined $value) || ($value == 2**32-1) ) {
                 ($if, $value) = split /:/, $ifHighSpeed[$i], 2;
@@ -252,7 +252,7 @@ sub InterfaceInfo($$$$$) {
         # We can only approximate speeds
         #
         # so we think that ppp can do 76800 bit/s, and slip 38400.
-        # (actualy, slip is a bit faster, but usualy users with newer modems
+        # (actually, slip is a bit faster, but usually users with newer modems
         # use ppp). Alternatively, you can set async speed to 115200 or
         # 230400 (the maximum speed supported by portmaster).
         #
@@ -377,7 +377,7 @@ ECHO
         my $sysname = $$router_dev{sysName};
         my $sysdescr = $$router_dev{sysDescr};
         my $comment_sysdescr = $sysdescr;
-        # make sure embeded newlines do not harm us here
+        # make sure embedded newlines do not harm us here
         $comment_sysdescr =~ s/[\n\r]+/\n\#          /g;
         my $community = $$router_ref{community};
         $community  =~ s/([@ ])/\\$1/g;
@@ -810,7 +810,7 @@ ECHO
                     . $default_pagetop_directive . "\n");
 
 
-                # If --if-filter is provided, evalutat that.  If it
+                # If --if-filter is provided, evaluate that.  If it
                 # returns true, clear @prob.  If it returns false,
                 # instead add a complaint to @prob.
 
@@ -1119,7 +1119,7 @@ sub IfType ($) {
       '75'=>'ISDN S/T Interface',
       '76'=>'ISDN U Interface',
       '77'=>'Link Access Protocol D (LAPD)',
-      '78'=>'IP Switching Opjects',
+      '78'=>'IP Switching Objects',
       '79'=>'Remote Source Route Bridging',
       '80'=>'ATM Logical Port',
       '81'=>'AT&T DS0 Point (64 Kbps)',
@@ -1135,17 +1135,17 @@ sub IfType ($) {
       '91'=>'CCITT-ITU X.3 PAD Facility',
       '92'=>'MultiProtocol Connection over Frame/Relay',
       '93'=>'CCITT-ITU X213',
-      '94'=>'Asymetric Digitial Subscriber Loop (ADSL)',
+      '94'=>'Asymmetric Digital Subscriber Loop (ADSL)',
       '95'=>'Rate-Adapt Digital Subscriber Loop (RDSL)',
-      '96'=>'Symetric Digitial Subscriber Loop (SDSL)',
-      '97'=>'Very High Speed Digitial Subscriber Loop (HDSL)',
+      '96'=>'Symmetric Digital Subscriber Loop (SDSL)',
+      '97'=>'Very High Speed Digital Subscriber Loop (HDSL)',
       '98'=>'ISO 802.5 CRFP',
       '99'=>'Myricom Myrinet',
       '100'=>'Voice recEive and transMit (voiceEM)',
       '101'=>'Voice Foreign eXchange Office (voiceFXO)',
       '102'=>'Voice Foreign eXchange Station (voiceFXS)',
-      '103'=>'Voice Encapulation',
-      '104'=>'Voice Over IP Encapulation',
+      '103'=>'Voice Encapsulation',
+      '104'=>'Voice Over IP Encapsulation',
       '105'=>'ATM DXI',
       '106'=>'ATM FUNI',
       '107'=>'ATM IMA',
@@ -1215,7 +1215,7 @@ sub options ($$) {
     #
     # This was originally created to manipulate the "bits" flag
     # so fmi should know when to use "bits" or "bytes".  It might
-    # be overkill to use such a comples solution but it makes life
+    # be overkill to use such a complex solution but it makes life
     # easier if cfgmaker in the future has to be extended to be
     # aware of other Options[] settings like gauge, growright etc.
 
@@ -1361,7 +1361,7 @@ sub addrouter() {
             $snmpopt = ':' . (join ':', @s);
         }
 
-        my $newopt={};  # Perhaps unecessary initialization but...
+        my $newopt={};  # Perhaps unnecessary initialization but...
 
         foreach my $o (keys %$opt) {
             my $ovalue = $$opt{$o};
@@ -1524,7 +1524,7 @@ sub parsev3 ($) {
     my $opt = shift;
     my %v3opt;
 	if (!exists ($$opt{username})) {
-    		die "SMNP V3 requires a --username paramter as part of the User Security Model";
+    		die "SMNP V3 requires a --username parameter as part of the User Security Model";
 	} else {
 		$v3opt{username} = $$opt{username};
 	}
@@ -1608,7 +1608,7 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
                in which case the first available one is used:
                e.g.  --ifdesc=catname,ppname,descr,alias,ip,name,nr
 
- --if-filter=f     Test every interface against filter f to decide wether
+ --if-filter=f     Test every interface against filter f to decide whether
                    or not to include that interface into the collection.
                    Currently f is being evaluated as a Perl expression
                    and it's truth value is used to reject or accept the
@@ -1699,7 +1699,7 @@ want to try this first if you do not know the community name of a
 device. If you are using the wrong community name you will get no
 response from the device.
 
-I<Router> is the DNS name or the IP number of an SNMP-managable device.
+I<Router> is the DNS name or the IP number of an SNMP-manageable device.
 Following the name you can specify 6 further options separated by
 colons.  The full syntax looks like this:
 
@@ -1755,12 +1755,12 @@ Select the interface identification method.  Default is B<nr> which
 identifies the router interfaces by their number.  Unfortunately the
 interface numbering scheme in an SNMP tree can change. Some routers
 change their numbering when new interfaces are added, others change
-thier numbering every full moon just for fun.
+their numbering every full moon just for fun.
 
 To work around this sad problem MRTG can identify interfaces by 4
 other properties. None of these works for all interfaces, but you
 should be able to find one which does fine for you. Note that
-especially ethernet addrsses can be problematic as some routers have
+especially ethernet addresses can be problematic as some routers have
 the same ethernet address on most of their interface cards.
 
 Select B<ip> to identify the interface by its IP number. Use B<eth> to
@@ -1825,7 +1825,7 @@ will be evaluated as a Perl program which generates the lines using certain
 variables for input and output.
 
 For a further discussion on how these templates work, see the section
-L<Details on Temaplates> below.
+L<Details on Templates> below.
 
 =item B<--host-template> B<template-file>
 
@@ -1843,7 +1843,7 @@ L<Details on Templates> below.
 =item B<--community> B<community-string>
 
 Use this to set the community for the routers following on the command
-line to B<community-string>.  Individual routers might overrride this
+line to B<community-string>.  Individual routers might override this
 community string by using the syntax B<community>B<@>B<router>.
 
 =item B<--enable-ipv6>
@@ -2077,7 +2077,7 @@ reject it.
 
 When working with filters, remember that Perl has it's own idea of what truth
 and false is.  The empty string "" and the string "0" are false, all other
-strings are true.  This further imples that any integer value of 0 is
+strings are true.  This further implies that any integer value of 0 is
 false as well as any undef value.  It also implies that all references
 are considered true.
 
@@ -2121,7 +2121,7 @@ used for shell variables exactly as in Perl variables) so it is important
 to ensure that the Perl expression isn't evaluated by the command line
 shell as shell code before being passed to cfgmaker as command line
 arguments.  In shells like Bourne shell, ksh shell or bash shell, placing
-the entire expression within single qoutes will avoid such accidental
+the entire expression within single quotes will avoid such accidental
 evaluation:
 
  '--if-filter=($default_iftype && $if_admin)'
@@ -2133,8 +2133,8 @@ evaluation:
 This is an integer specifying the interface type as
 per the SNMP standards and as reported by the polled device.  A complete list
 of interface types would be impractical for this document , but there are
-a number predefined varables below.  Normally, cfgmaker puts in the target's
-PageTop this iftype value within paranthesis after the name of the interface
+a number predefined variables below.  Normally, cfgmaker puts in the target's
+PageTop this iftype value within parenthesis after the name of the interface
 type. (e.g "propPointToPointSerial (22)").
 
 Here's a list of some of the most common interface types by number:
@@ -2161,7 +2161,7 @@ Here's a list of some of the most common interface types by number:
   62 Fast Ethernet (100BaseT)
   63 ISDN & X.25
   69 Full Duplex Fast Ethernet (100BaseFX)
-  94 Asymetric Digital Subscriber Loop (ADSL)
+  94 Asymmetric Digital Subscriber Loop (ADSL)
  117 Gigabit Ethernet
  134 ATM Sub Interface
 
@@ -2185,7 +2185,7 @@ interface based on it's type (and a few type specific details in addition).
 
 =item B<$if_admin>
 
-True if and only if the interface is in an adminstrative up
+True if and only if the interface is in an administrative up
 state.
 
 =item B<$if_oper>
@@ -2196,7 +2196,7 @@ state.
 =back
 
 A number of variables are also predefined to easily decide if an interface
-belong to a certain cathegory or not.  Below is all those variables listed
+belong to a certain category or not.  Below is all those variables listed
 together with which if_type numbers each variable will be true for.  Note
 that some variables refer to other variables as well.
 
@@ -2518,7 +2518,7 @@ HTML escaped variant available)
 =item B<$if_speed_str>
 
 This variable is a cooked speed description which is either in bits or
-bytes depending on wether or not the bits option is active and also with
+bytes depending on whether or not the bits option is active and also with
 the proper prefix for the speed (k, M, G etc).  (No HTML escaped variant
 available)
 
@@ -2544,7 +2544,7 @@ This is the DNS name for the interface.  (No HTML escaped variant available)
 It might seem confusing with both I<Name>, I<Description> and I<Alias> in
 this context and to some extent it is.  I<Name> and I<Description> are
 usually supported on most equipment but how they are used varies, both
-between manufacturers as well as between different cathegories of equipment
+between manufacturers as well as between different categories of equipment
 from the same manufacturer.  The I<Alias> is at least supported by Cisco
 IOS, and that variable contains whatever is used in the IOS statement
 called "description" for the interface (not to be confused with the SNMP
@@ -2614,7 +2614,7 @@ the "Title[]" directive and in the H1 section of the "PageTop[]".  Default is
 
 This is the description of the interface normally used by cfgmaker as part
 of the variable B<$if_title>.  The latter is used as the full string in the
-"Title[]" directove and the H1 section in the PageTop[].
+"Title[]" directive and the H1 section in the PageTop[].
 
 B<$if_title_desc> is controlled by the command line option B<--if-descr>
 which indirectly controls the contents of B<$if_title>
@@ -2734,14 +2734,14 @@ interface happens to be rejected.
    $separator_lines="";
  }
 
-=head3 Template Example 2: Simplier Version of Example 1
+=head3 Template Example 2: Simpler Version of Example 1
 
 Example 1 was partly intended to demonstrate how to customize the generation
 of interface targets but also to provide a hint of how the variables are
 used in the "default" template which one could consider that cfgmaker
 normally uses.
 
-If you're only intrested in the easiest way of entirely eliminating those
+If you're only interested in the easiest way of entirely eliminating those
 reject interfaces, the template below would do the job as well by using
 B<$default_target_lines>.
 
