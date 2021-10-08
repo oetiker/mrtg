@@ -29,7 +29,7 @@ my @STARTARGS=($0,@ARGV);
 # fork - forking view
 # time - some timing info
 # log  - logging of data via rateup or rrdtool
-# eval - trace eval experssions
+# eval - trace eval expressions
 # prof - add timeing info some interesting bits of code
 
 $main::GRAPHFMT="png";
@@ -478,7 +478,7 @@ sub main {
                 ($maxin, $maxout ,$avin, $avout, $cuin, $cuout, $avmxin, $avmxout) =
                   writegraphics($router, \%cfg, \%rcfg, $inlast, $outlast, $time,$LOC, \%opts);
             }
-            # skip this update if we did not get anything usefull out of
+            # skip this update if we did not get anything useful out of
             # writegraphics
             next if not defined $maxin;
 
@@ -535,7 +535,7 @@ sub main {
 
     if ( ! $cfg{'runasdaemon'} or $cfg{'runasdaemon'} !~ /y/i ) {
       if ( ($EXITCODE & 1) and ($EXITCODE & 2) ) {
-        # At least one target was sucessful
+        # At least one target was successful
         exit 91;
       }
       elsif ( not ($EXITCODE & 1) and ($EXITCODE & 2) ) {
@@ -742,7 +742,7 @@ sub clonedirectory {
 
         die "$NOW: ERROR: Destination dir: $fullpathdstdir not found for cloning process\n" unless ( -e $fullpathdstdir );
         die "$NOW: ERROR: Destination dir: $fullpathdstdir is not a directory destination for cloning process\n" unless ( -d $fullpathdstdir );
-        die "$NOW: ERROR: Destination dir: $fullpathdstdir is not writeable for cloning process\n" unless ( -w $fullpathdstdir );
+        die "$NOW: ERROR: Destination dir: $fullpathdstdir is not writable for cloning process\n" unless ( -w $fullpathdstdir );
 
         if ( defined $clonedsttarget ) {
         	debug('base', "Clone directory $fullpathsrcdir to $fullpathdstdir " . 
@@ -1596,7 +1596,7 @@ sub writehtml {
     open (HTML,">$$cfg{'htmldir'}$$rcfg{'directory'}{$router}$router.$$rcfg{'extension'}{$router}") || 
       do { warn ("$NOW: WARNING: Writing $router.$$rcfg{'extension'}{$router}: $!");
       	   next };
-    # this unforutnately confuses old IE greatly ... so we have to comment
+    # this unfortunately confuses old IE greatly ... so we have to comment
     # it out for now ... :-(
     # print HTML '<?xml version="1.0" encoding="' . &$LOC('UTF-8') . '"?>' . "\n";
     print HTML '<!DOCTYPE html>' . "\n";
@@ -1949,7 +1949,7 @@ TEXT
 				".&$LOC("Ported to OpenVMS Alpha by")." <a href=\"http://www.cerberus.ch/\">Werner Berger</a>
 				<a href=\"mailto:werner.berger\@cch.cerberus.ch\">&lt;werner.berger\@cch.cerberus.ch&gt;</a>";
     }
-# There is not realy any significant portion of code from Studard left and
+# There is not really any significant portion of code from Studard left and
 # none of his addresses work anymore. -- Tobi  2001-06-04
 #    if ($MRTG_lib::OS eq 'NT') {
 #        print HTML 
@@ -2059,7 +2059,7 @@ sub lockit {
                 link($templock,$lockfile) 
                   || do{ unlink $templock; 
                          die "$NOW: ERROR: Can't create lockfile ($lockfile).\n".
-                           "Permission problem or another mrtg locking succesfully?\n"};
+                           "Permission problem or another mrtg locking successfully?\n"};
             } else {
                 unlink $templock;
                 die "$NOW: ERROR: It looks as if you are running two copies of mrtg in parallel on\n".
@@ -2338,7 +2338,7 @@ sub getsnmparg ($$$$){
   RETRY:
     my @ifnum = ();
     my @OID = ();
-    # Find apropriate Interface to poll from
+    # Find appropriate Interface to poll from
     for my $i (0..1) {
 	if ($$target{IfSel}[$i] eq 'If') {
 	    $ifnum[$i] = ".".$$target{Key}[$i];
@@ -2346,7 +2346,7 @@ sub getsnmparg ($$$$){
 	} elsif($$target{IfSel}[$i] eq 'None') {
             $ifnum[$i] = "";
         } else {
-            $$target{Key}[$i] =~ s/\s+$//; # no trainling whitespace in keys ...
+            $$target{Key}[$i] =~ s/\s+$//; # no trailing whitespace in keys ...
 
 	    if (not defined readfromcache($confcache,$hostkey,$$target{IfSel}[$i],$$target{Key}[$i])) {
 		debug('snpo',"($i) Populate ConfCache for $$target{Host}$$target{SnmpOpt}");
@@ -2368,7 +2368,7 @@ sub getsnmparg ($$$$){
 	}
     }
     for my $i (0..1) {
-	# add ifget methodes call for a cross check;
+	# add ifget methods call for a cross check;
 	for ($$target{IfSel}[$i]) {
 	    /^Eth$/ && do {
 		push @OID, "ifPhysAddress".$ifnum[$i]; last
@@ -2442,7 +2442,7 @@ sub getsnmparg ($$$$){
     my @final;
     # lets do some reality check
     for my $i (0..1) {
-	# some ifget methodes call for a cross check;
+	# some ifget methods call for a cross check;
 	for ($$target{IfSel}[$i]) {
 	    /^Eth$/ && do {
 		my $bin = shift @ret || 0xff;

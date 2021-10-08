@@ -153,7 +153,7 @@ $VERSION = 2.100016;
        # Check for an environment setting for RRDCACHED_ADDRESS
        # Steve Shipway, Sep 2010
        'rrdcached' =>
-#       [sub{(($_[0] =~ /^unix:(\S+)/)and(-w $1))}, sub{"Currently, only UNIX domain sockets are supported for RRDCached, and must exist and be writeable."}],
+#       [sub{(($_[0] =~ /^unix:(\S+)/)and(-w $1))}, sub{"Currently, only UNIX domain sockets are supported for RRDCached, and must exist and be writable."}],
        [sub{1},sub{"Internal Error"}],
 
        # Get graphite server name/ip and port
@@ -577,7 +577,7 @@ sub readcfg ($$$$;$$) {
                     $routerhash{$second} = 1;
             }
       
-            # make sure that default tags spring into existance upon first 
+            # make sure that default tags spring into existence upon first 
             # call of a router
 
             foreach $key (keys %deflt) {
@@ -587,7 +587,7 @@ sub readcfg ($$$$;$$) {
                 }
             }
 
-            # make sure that prefix-only tags spring into existance upon first 
+            # make sure that prefix-only tags spring into existence upon first 
             # call of a router
 
             foreach $key (keys %pre) {
@@ -924,7 +924,7 @@ sub cfgcheck ($$$$;$) {
         }
         if (defined $$rcfg{'directory'}{$rou} and $$rcfg{'directory'}{$rou} ne "") {
             # They specified a directory for this router.  Append the
-            # pathname seperator to it (so that it can either be present or
+            # pathname separator to it (so that it can either be present or
             # absent, and the rules for including it are the same).
 	    ensureSL(\$$rcfg{'directory'}{$rou});
             for my $x (qw(imagedir logdir htmldir)) {
@@ -1358,7 +1358,7 @@ sub newSnmpTarg( $$ ) {
 # Walk amd analyze the target string $string. $target is a reference to the
 # array of targets being built. $targIndex is a reference to a hash of targets
 # previously encountered indexed by target string. When $ipv4only is nonzero,
-# only IPv4 is in use. Returns the modifed target string and the index of the
+# only IPv4 is in use. Returns the modified target string and the index of the
 # @$target array to which the target refers if that index is unique. If the
 # index is not unique, i.e. the target definition is a calculation involving
 # two or more different targets, then the value -1 is returned for $unique.
@@ -1660,7 +1660,7 @@ sub readconfcache ($) {
             next unless /\t/; #ignore odd lines
 	    next if /^\S+:/; #ignore legacy lines
             my ($host,$method,$key,$if) = split (/\t/, $_);
-            $key =~ s/[\0- ]+$//; # no trailing whitespace in keys realy !
+            $key =~ s/[\0- ]+$//; # no trailing whitespace in keys really !
             $key =~ s/[\0- ]/ /g; # all else becomes a normal space ... get a life
             $confcache{$host}{$method}{$key} = $if;
         }
@@ -2173,7 +2173,7 @@ MRTG_lib.pm - Library for MRTG and support scripts
 
 MRTG_lib is part of MRTG, the Multi Router Traffic Grapher. It was separated
 from MRTG to allow other programs to easily use the same config files. The
-main part of MRTG_lib is the config file parser but some other funcions are
+main part of MRTG_lib is the config file parser but some other functions are
 there too.
 
 =over 4
@@ -2256,7 +2256,7 @@ C<cfgcheck(\@target_names, \%globalcfg, \%targetcfg, \@parsed_targets)>
 
 Checks the configuration read by C<readcfg>. Checks the values in the config
 for syntactical and/or semantical errors. Sets defaults for some options.
-Parses the "target[...]" options and filles the array @parsed_targets ready
+Parses the "target[...]" options and files the array @parsed_targets ready
 for mrtg functions.
 
 The first three arguments are the same as for C<readcfg>. The fourth argument
@@ -2293,7 +2293,7 @@ Convert log file to rrd format. Needs rrdtool.
 
 C<datestr(time)>
 
-Returns the time given in the argument as a nicely formated date string.
+Returns the time given in the argument as a nicely formatted date string.
 The argument has to be in UNIX time format (seconds since 1970-1-1).
 
 =item C<timestamp>
@@ -2343,7 +2343,7 @@ the I<host> and stores the values in I<%confcache> as follows:
  $confcache{$host}{'Type'}{ifType}{oid} = (ifType or 'Dup')
 
 The value (at the right side of =) is 'Dup' if a value was retrieved
-muliple times, the retrieved value else.
+multiple times, the retrieved value else.
 
 =item C<readconfcache>
 

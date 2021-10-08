@@ -4,7 +4,7 @@
 
 # Added an option for --range, which may be "current" for month-to-date or "previous" for last month
 # Changed default date range to 00:00:00 on 1st of month to 23:59:59 at end of month
-# Changed the default units to MB, more relevant to non-datacentre users :-)
+# Changed the default units to MB, more relevant to non-datacenter users :-)
 # Added the option for units=GB, to allow for previous behaviour of this script
 # Changed default minimum to 0, to report any info that is available by default 
 # Updated help section with the above changes, fixed a couple of typos

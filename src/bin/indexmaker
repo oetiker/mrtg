@@ -678,7 +678,7 @@ indexmaker [options] mrtg.cfg [other.cfg ...]
 
  --filter title=~regexp  select targets by matching regexp against titles
  --filter pagetop=~regexp  select targets by matching regexp against pagetop
- --filter name=~regexp  select targets by matchin regexp against name
+ --filter name=~regexp  select targets by matching regexp against name
 
  --addhead=text      insert this text between </TITLE> and </HEAD>
  --title=text        set title of generated index file
@@ -744,7 +744,7 @@ set output filename (default: stdout)
 
 =item B<--filter> (B<title>|B<pagetop>|B<name>)(B<=~>|B<!~>)I<regexp>
 
-Several filters may get set.  Each filter can match agains the contents
+Several filters may get set.  Each filter can match against the contents
 of a specific section of the mrtg config file. B<Name> refers to the
 bit in square brackets (option[name]: bla).
 
@@ -789,7 +789,7 @@ Set the height of the graphs
 
 =item B<--show> B<day>|B<week>|B<month>|B<year>|B<none>
 
-Select which graph to show in the index page. You can supress images
+Select which graph to show in the index page. You can suppress images
 completely with B<--show=none>.
 
 =item B<--section> B<h1>|B<title>|B<name>|B<description>|B<portname>
@@ -804,7 +804,7 @@ interface description). B<portname> is the C<Port Name:> from pagetop.
 =item B<--sectionhost>
 
 Extract the hostname from the target line (this does not work if the 
-target is a mathematial expression). Prepend the hostname (and a colon)
+target is a mathematical expression). Prepend the hostname (and a colon)
 to the section if not already present.
 
 =item B<--rrdviewer> I<path>
@@ -824,9 +824,9 @@ you can even enter a whole url.
 =item B<--autoprefix> I<path>
 
 Requires --output.
-Try to generate the prefix automatically by comparision of the path to the
+Try to generate the prefix automatically by comparison of the path to the
 output file set with --output and the Htmldir set in the configuration files.
-Particulary useful when multiple configuration files are specified, with
+Particularly useful when multiple configuration files are specified, with
 different Htmldir settings.
 
 =item B<--optlog>
