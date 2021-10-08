@@ -9,7 +9,7 @@ apart from the documentation where you can find help for mrtg.
 
 =head1 FAQ
 
-In the following sections you'll find some additonal Frequently Asked Questions, with Answers.
+In the following sections you'll find some additional Frequently Asked Questions, with Answers.
 
 =head2 Why is there no "@#$%" (my native language) version of MRTG?
 

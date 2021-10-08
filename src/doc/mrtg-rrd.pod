@@ -78,7 +78,7 @@ The idea behind this is that it is more efficient to create
 graphs and webpages on demand by using a cgi script.
 
 At the moment there is no B<official> script to do this, but two
-contributers have created such scripts:
+contributors have created such scripts:
 
 =over
 

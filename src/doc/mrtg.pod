@@ -155,7 +155,7 @@ which will send all error to the windows event log.
 
 B<NOTE:>Note, there is no Message DLL for mrtg. This has the side effect
 that the windows event logger will display a nice message with every entry
-in the event log, complaing about the fact that mrtg has no message dll. If
+in the event log, complaining about the fact that mrtg has no message dll. If
 any of the Windows folks want to contribute one, they are welcome.
 
 =item B<--daemon>

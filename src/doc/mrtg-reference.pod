@@ -317,7 +317,7 @@ Example:
 =head2 LoadMIBs
 
 Load the MIB file(s) specified and make its OIDs available as
-symbolic names. For better efficiancy, a cache of MIBs is maintained
+symbolic names. For better efficiency, a cache of MIBs is maintained
 in the WorkDir.
 
 Example:
@@ -330,7 +330,7 @@ Switch output format to the selected Language (Check the F<translate> directory
 to see which languages are supported at the moment. In this directory you
 can also find instructions on how to create new translations).
 
-Currently the following laguages are supported: 
+Currently the following languages are supported: 
 
 big5 
 brazilian 
@@ -425,20 +425,20 @@ Examples:
 
 The RunAsDaemon keyword enables daemon mode operation. The purpose of daemon
 mode is that MRTG is launched once and not repeatedly (as it is with cron). 
-This behavior saves computing resourses as loading and parsing
+This behavior saves computing resources as loading and parsing
 of configuration files happens only once on startup, and if the configuration 
 file is modified.
 
-Using daemon mode MRTG itself is responible for timing the measurement
-intervals. Therfore its important to set the Interval keyword to an
-apropiate value.
+Using daemon mode MRTG itself is responsible for timing the measurement
+intervals. Therefore its important to set the Interval keyword to an
+appropriate value.
 
 Note that when using daemon mode MRTG should no longer be started from cron
 as each new process runs forever. Instead MRTG should be
 started from the command prompt or by a system startup script.
 
 If you want mrtg to run under a particular user and group (it is not
-recomended to run MRTG as root) then you can use the B<--user=>I<user_name>
+recommended to run MRTG as root) then you can use the B<--user=>I<user_name>
 and B<--group=>I<group_name> options on the mrtg commandline.
 
  mrtg --user=mrtg_user --group=mrtg_group mrtg.cfg
@@ -641,7 +641,7 @@ must be escaped with a "\".
 If you have a fast router you might want to try to poll the ifHC* counters.
 This feature gets activated by switching to SNMPv2c. Unfortunately not all
 devices support SNMPv2c yet. If it works, this will prevent your counters
-from wraping within the 5 minute polling interval, since we now use 64 bit
+from wrapping within the 5 minute polling interval, since we now use 64 bit
 instead of the normal 32 bit.
 
 Example:
@@ -777,7 +777,7 @@ Example:
 =item Interface by Description
 
 If you can not use IP addresses you might want to use
-the interface names. This works similar to the IP address aproach
+the interface names. This works similar to the IP address approach
 except that the prefix to use is a \ instead of a /
 
 You can tell cfgmaker to generate such references with the option
@@ -1026,7 +1026,7 @@ but you must escape it with a backslash ...
 
 If your script does not have any data to return but does not want mrtg to
 complain about invalid data, it can return 'UNKNOWN' instead of a number.
-Note though that only rrdtool is realy equipped to handle unknown data well.
+Note though that only rrdtool is really equipped to handle unknown data well.
 
 =item Multi Target Syntax
 
@@ -1688,7 +1688,7 @@ PNGTitle if one is given
 
 When using rateup for graph generation, this option will print a
 timestamp in the graph it generates, including a timezone if one is specified
-by the 'Timezone' parameter. This is aequivalent to setting TimeStrPost[x]: RU
+by the 'Timezone' parameter. This is equivalent to setting TimeStrPost[x]: RU
 
 =item logscale
 
@@ -1716,7 +1716,7 @@ The B<secondmean> option sets the maximum value on the graph to the mean
 of the data greater than the mean of all data.  This produces a graph
 that focuses more on the typical data, while clipping large peaks.
 
-Using B<secondmean> will give a more intutive linearly
+Using B<secondmean> will give a more intuitive linearly
 scaled graph, but can result in a uselessly high or low scale in some
 rare situations (specifically, when the data includes a large portion
 of values far from the actual mean)
@@ -1995,7 +1995,7 @@ Example:
 If a threshold is broken, and you have a threshdir defined, then mrtg will
 send mail once the threshold becomes 'unborken' to avoid situations where
 broken and unbroken messages get sent in close succession, we only send an
-unbroken message once the curent value is 0.1 (10%) away from the threshold.
+unbroken message once the current value is 0.1 (10%) away from the threshold.
 using the ThreshHyst config variable you can customize this value.
 
 Example for 5%:
@@ -2004,7 +2004,7 @@ Example for 5%:
 
 =head2 ThreshMailServer (GLOBAL)
 
-Adderss of an SMTP server which is going to accept mail about Thresholds being broken and unbroken.
+Address of an SMTP server which is going to accept mail about Thresholds being broken and unbroken.
 
 =head2 ThreshMailSender (GLOBAL)
 
@@ -2023,7 +2023,7 @@ Example:
  ThreshMailAddress[_]: admin@example.com
  ThreshMailAddress[router]:
 
-This would bring threshold releaed mail to all but the target called 'router'.
+This would bring threshold released mail to all but the target called 'router'.
 
 =head2 ThreshMinI  (PER TARGET)
 
@@ -2074,7 +2074,7 @@ Example:
  SetEnv[myrouter]:  EMAIL="contact_email@someplace.net"
                     HOST="www.some_server.net"
 
-=head2 HW Failure Bassed Threshold Checking
+=head2 HW Failure Based Threshold Checking
 
 When using rrd based logging with HW RRAs defined. You can use the
 confidence bounds violations stored in the FAILURES RRA for threshold based
@@ -2128,7 +2128,7 @@ With PREPEND and APPEND (see below) there is normally a space inserted
 between the local value and the PRE- or APPEND value. Sometimes this is not
 desirable. You can use the global option I<NoSpaceChar> to
 define a character which can be mentioned at the end of a $ or ^ definition
-in order to supress the space.
+in order to suppress the space.
 
 Example:
 
@@ -2205,7 +2205,7 @@ the windows event log.
 
 B<NOTE:> Note, there is no Message DLL for mrtg included with mrtg. This has
 the side effect that the windows event logger will display a nice message
-with every entry in the event log, complaing about the fact that mrtg has no
+with every entry in the event log, complaining about the fact that mrtg has no
 message dll. If you go to the mrtg contrib download area (on the website)
 you will find the mrtg-message-dll.zip which does contain such a thing.
 
@@ -2242,7 +2242,7 @@ list of debug values:
  fork - forking view 
  time - some timing info
  log  - logging of data via rateup or rrdtool
- eval - print eval strings before evaluting them
+ eval - print eval strings before evaluating them
  prof - add hires timing info the rrd calls
 
 Example:
@@ -2258,13 +2258,13 @@ speaking, most codes greater than 0 indicate that there was an unrecoverable
 problem.  One exception to this is code 91, which indicates that at least
 one of the targets was successful.  A partial listing of the codes follows:
 
-  0: All targets sucessful
+  0: All targets successful
 
   2: Config error (can't read, fatal error in config, etc)
  17: Another MRTG process is processing config
 
- 91: At least one target sucessful
- 92: No targets were sucessful
+ 91: At least one target successful
+ 92: No targets were successful
 
 =head1 EXAMPLES
 
