@@ -14,6 +14,7 @@ jobs:
     - name: build_and_install
       run: |
            cd src
+           ./bootstrap
            ./configure
            make
            make doc

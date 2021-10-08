@@ -27,7 +27,7 @@ LIBS = @LIBS@
 INSTALL = @INSTALL@
 MKINSTALLDIRS = $(SHELL) $(top_srcdir)/mkinstalldirs
 
-all:	 bin/rateup subst
+all:	 configure bin/rateup subst
 
 bin/rateup: bin/rateup.o
 	$(SET_LD_RUN_PATH) $(CC) bin/rateup.o -o bin/rateup $(LDFLAGS)  $(LIBS)
@@ -40,6 +40,9 @@ subst:
 	$(PERL) -0777 -p -i~ -e "s'^#!\s*/\S*perl'#! $(PERL)'" $(top_srcdir)/bin/cfgmaker $(top_srcdir)/bin/indexmaker $(top_srcdir)/bin/mrtg
 	$(PERL) -0777 -p -i~ -e 's@GRAPHFMT="...";@GRAPHFMT="$(GDFORM_EXT)";@' $(top_srcdir)/bin/mrtg $(top_srcdir)/bin/indexmaker
 
+configure: configure.ac
+	autoreconf --make
+	
 clean:
 	-rm -f bin/rateup
 	-rm -f config.cache

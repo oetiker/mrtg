@@ -11,7 +11,7 @@ get_ver.awk
 configure
 config.h.in
 mkinstalldirs
-configure.in
+configure.ac
 install-sh
 images/
 lib/mrtg2/BER.pm
