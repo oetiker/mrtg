@@ -6,6 +6,7 @@ VER=2.17.8
 .SUFFIXES: .c .o .pl .pm .pod .man .1 .txt
 
 prefix = @prefix@
+datarootdir = @datarootdir@
 exec_prefix = @exec_prefix@
 bindir = @bindir@
 libdir = @libdir@
