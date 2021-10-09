@@ -103,5 +103,5 @@ A sample config for squid:
 =head1 AUTHOR
 
 Andreas Papst E<lt>andreas.papst@univie.ac.atE<gt>
-Dirk-Lüder Kreie E<lt>deelkar@gmx.deE<gt>
+Dirk-LÃ¼der Kreie E<lt>deelkar@gmx.deE<gt>
 Chris Chiappa E<lt>chris+debian@chiappa.netE<gt>
