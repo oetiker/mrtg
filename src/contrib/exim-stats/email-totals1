@@ -1,0 +1,12 @@
+#! /bin/sh
+
+finger @$1 > /tmp/$1
+
+IN=`grep "Number of messages received so far today:" /tmp/$1 | awk '{print $8}'`
+OUT=`grep "Number of messages delivered so far today:" /tmp/$1 | awk '{print $8}'`
+
+echo $IN
+echo $OUT
+date "+%H hours and %M minutes"
+echo $1-email-totals
+

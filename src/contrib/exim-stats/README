@@ -1,0 +1,70 @@
+Here are the scripts I put together to gather EXIM processing information
+for MRTG to display. 
+
+Please excuse the lack of elegance this whole thing has. It was thrown
+together in about an hour and I haven't had time to go back and make it
+pretty.  There are a couple of ways I can easily think of to make this
+better. One would be to not use 'finger' for the gathering of information. 
+The other would be to make one call every five minutes and use the output
+from it for all three items being graphed (rather than three calls every 5
+minutes). One of these days I'll get around to incorporating these
+enhancements... 
+
+The scripts that are called from MRTG (email-cout1, email-queue1, and
+email-totals1) get their information by 'fingering' the remote hosts. On
+the remote hosts, the 'fingerd' process is replaced with the check-email
+script. This is usually done by replacing the INETD entry on the mail host
+from something that looks like this:
+
+finger	stream	tcp	nowait	nobody	/usr/sbin/in.fingerd	in.fingerd
+
+to something that looks like this:
+
+finger	stream	tcp	nowait	nobody	/usr/local/bin/check-email check-email
+                                       
+(Note the path is where ever you decide to put the check-email script)
+Also, the path to GNU grep is hardcoded in the 'check-email' script. I use
+GNU grep for the counts which is alot faster than the normal system grep's
+out there.
+
+The output of check-email is:
+
+Working.
+======================================================================
+E-mail status information for mercury.csc.com
+ 
+Current Date/Time is: Monday, 01/04/99 07:07 EST 
+ 
+Number of messages currently in the queue: 54
+ 
+Number of messages received so far today: 3465
+Number of messages delivered so far today: 3945
+
+END OF OUTPUT
+
+
+Now then for what the scripts do. email-count1 takes the count of messages
+received and delivered so far today and subtracts the prior values from
+the current values obtained from 'check-email'. This gives you the number 
+of messages received and delivered in the last five minutes  (since MRTG
+is called every five minutes). email-count1 has two files it tries to read
+without checking to see if they exist. Yes this is bad. To make it work,
+create files called 'HOST-NAME.infile' and 'HOST-NAME.outfile' in a
+directory (see the script) and put just the number 0 in there before you
+run the scripts. 
+
+email-queue1 simply takes the queue information from 'check-email' and
+returns something that MRTG wants.
+
+Lastly email-totals1 takes the same count information and does a running
+total of the amount received and delivered since the last time the log was
+cleaned (for us that is every day at midnight).
+
+The file 'email.cfg' is the MRTG config file for a single host to get all
+three stats going. If you don't want a particular bit of information,
+remove the section. You will have to globally replace the TAG 'MAIL-HOST' 
+with the name of the host you want to check. You will also probably want
+to change the verbage around each bit of information. That is entirely up
+to you :-)
+
+
