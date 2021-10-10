@@ -73,6 +73,9 @@ install: all
 	$(MKINSTALLDIRS) $(DESTDIR)$(mandir)/man1
 	for x in $(top_srcdir)/doc/*.1; do \
 	  $(INSTALL) -m 644 $$x $(DESTDIR)$(mandir)/man1; done
+	$(MKINSTALLDIRS) $(DESTDIR)$(mandir)/man3
+	for x in $(top_srcdir)/doc/*.3; do \
+	  $(INSTALL) -m 644 $$x $(DESTDIR)$(mandir)/man3; done
 
 ########### Distribution Tools
 
