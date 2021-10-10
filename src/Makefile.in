@@ -6,6 +6,7 @@ VER=2.17.8
 .SUFFIXES: .c .o .pl .pm .pod .man .1 .txt
 
 prefix = @prefix@
+datarootdir = @datarootdir@
 exec_prefix = @exec_prefix@
 bindir = @bindir@
 libdir = @libdir@
@@ -45,8 +46,12 @@ configure: configure.ac
 	
 clean:
 	-rm -f bin/rateup
-	-rm -f config.cache
 	-rm -f bin/rateup.o
+	-rm -f config.cache
+	-rm -f config.h
+	-rm -f config.log
+	-rm -f config.status
+	-rm -f Makefile
 
 install: all
 	$(MKINSTALLDIRS) $(DESTDIR)$(bindir)
