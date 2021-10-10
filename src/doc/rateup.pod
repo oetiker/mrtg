@@ -32,7 +32,7 @@ will fix that for you.
 
 =head1 AUTHOR
 
-Dave Rand <dlr@bungi.com>, Alexandre Steinberg <steinberg@base.com.br>
+Dave Rand <dlr@bungi.com>, Tobias Oetiker <tobi@oetiker.ch>, Alexandre Steinberg <steinberg@base.com.br>
 
 =head1 SEE ALSO
 
