@@ -24,5 +24,4 @@ jobs:
            ./configure
            make
            make doc
-           make dist
            sudo make install
