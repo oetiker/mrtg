@@ -35,8 +35,7 @@
 # edit for your system
 
 $iptables='/usr/local/sbin/iptables';   # path to iptables
-$host=`/bin/hostname --fqdn`;  # local hostname (for information
-only)
+$host=`/bin/hostname --fqdn`;  # local hostname (for information only)
 
 $table = $ARGV[0];
 
@@ -58,8 +57,7 @@ if ( $table =~ /^filter/i ) {
 }
 
 # What should we graph? packet counters = 4, bytes = 6
-# If you used the ipchainacc script before and you want to keep
-counting
+# If you used the ipchainacc script before and you want to keep counting
 # packets, then set this to 4. If you would rather do the
 # sensible thing and count bytes, then set this to 6. If you change
 # from one to the other, then you should delete all the previous

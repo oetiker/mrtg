@@ -1,4 +1,5 @@
 =encoding utf8
+
 =head1 NAME
 
 mrtg-squid - using mrtg to monitor Squid
