@@ -498,3 +498,9 @@ It wakes up at 23:54 every night and copies all the current daily gifs
 for the given list of routers to a directory named with the current date
 (e.g. 970717). The Perl code is extremely straightforward so there
 should be no problem in understanding it.
+
+exim-stats
+----------
+From: Ray Smith <rcsmith@csc.com>
+
+Set of scripts to extract data from exim (MTA) and plot it with mrtg.
