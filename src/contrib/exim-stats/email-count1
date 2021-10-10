@@ -1,0 +1,28 @@
+#! /bin/sh
+
+INFILE=/home/rcsmith/mrtg/aux/$1.infile
+OUTFILE=/home/rcsmith/mrtg/aux/$1.outfile
+
+finger @$1 > /tmp/$1
+
+NEWIN=`grep "Number of messages received so far today:" /tmp/$1 | awk '{print $8}'`
+NEWOUT=`grep "Number of messages delivered so far today:" /tmp/$1 | awk '{print $8}'`
+OLDIN=`cat $INFILE`
+OLDOUT=`cat $OUTFILE`
+
+
+if [ $NEWIN -lt $OLDIN ] ; then
+IN=$NEWIN
+OUT=$NEWOUT
+else
+IN=`expr $NEWIN - $OLDIN` 
+OUT=`expr $NEWOUT - $OLDOUT`
+fi
+ 
+echo $IN
+echo $OUT
+date "+%H hours and %M minutes"
+echo $1-email-count
+
+echo $NEWIN > $INFILE
+echo $NEWOUT > $OUTFILE

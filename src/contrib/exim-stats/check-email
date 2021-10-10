@@ -1,0 +1,22 @@
+#!/bin/sh
+#/usr/local/bin/mailq -v
+echo "Working."
+LOGFILE=/var/spool/exim/log/mainlog
+
+DAY=`date "+19%y-%m-%d"`
+
+QUE=`ls /var/spool/exim/input/*-H | wc -l | sed -e "s/ //g"`
+DAYDEL=`/usr/local/bin/grep -c " [=-]> " $LOGFILE`
+DAYREC=`/usr/local/bin/grep -c " <= " $LOGFILE`
+
+cat << EOM
+======================================================================
+E-mail status information for `hostname`
+
+Current Date/Time is: `date "+%A, %D %R %Z"`
+
+Number of messages currently in the queue: $QUE
+
+Number of messages received so far today: $DAYREC
+Number of messages delivered so far today: $DAYDEL
+EOM

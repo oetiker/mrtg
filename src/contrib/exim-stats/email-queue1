@@ -1,0 +1,8 @@
+#! /bin/sh
+
+QUEUELEN=`finger @$1 | grep 'Number of messages currently in the queue:' | awk '{print $8}'`
+echo $QUEUELEN
+echo 0
+echo sometime
+echo $1-email-queue
+
