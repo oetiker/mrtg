@@ -3,8 +3,8 @@ rsh x.x.x.x sh access-list 102 | grep icmp | grep matches | grep x.x.x.x | awk '
 echo "0"
 
 #The first line will rsh into the router and display access-list number 102 (this will change
-depending on your config), it will grep the access-list entry type in this case 'icmp', it
-will also grep the ip of the machine in question, and output the relevant information.
+#depending on your config), it will grep the access-list entry type in this case 'icmp', it
+#will also grep the ip of the machine in question, and output the relevant information.
 
 Eg:
 
