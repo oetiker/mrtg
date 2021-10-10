@@ -1,0 +1,39 @@
+=head1 NAME
+
+rateup - tool to generate images for MRTG
+
+=head1 SYNOPSIS
+
+rateup -f <parameter file>
+
+rateup directory basename [sampletime] [t sampletime]
+       [-(t)ransparent] [-(b)order]
+       [u|a|g|h|m in out abs_max]
+       [i/p file maxvi maxvo maxx maxy growright step bits]
+
+=head1 DESCRIPTION
+
+rateup is a fast add-on to the great MRTG Traffic monitor. It makes
+the database file updates much faster, and creates the graphic image
+files, ready for processing by PPMTOGIF.  It also reduces memory
+requirements by a factor of 10, and increases the speed of updates
+by a factor of at least 10.  This makes it feasible to run mrtg
+every 5 minutes.
+
+rateup attempts to compensate for missed updates by repeating the last
+sample, and also tries to catch bad update times.  The .log file stores
+real history every five minutes for 31 hours, then 'compresses' the
+history into 30 minute samples for a week, then 2-hour samples for
+31 days, then daily samples for two years.  This ensures that the
+log files don't grow in size.
+
+The log files are a slightly different format, but convert.perl
+will fix that for you.
+
+=head1 AUTHOR
+
+Dave Rand <dlr@bungi.com>, Tobias Oetiker <tobi@oetiker.ch>, Alexandre Steinberg <steinberg@base.com.br>
+
+=head1 SEE ALSO
+
+L<mrtg(1)>, L<mrtg-reference(1)>, L<mrtg-logfile(1)>, L<mrtg-traffic-sum(1)>, L<cfgmaker(1)>, L<indexmaker(1)>

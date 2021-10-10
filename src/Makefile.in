@@ -87,7 +87,8 @@ POD = doc/mrtg-faq.pod      doc/mrtg-logfile.pod  doc/mrtg-nt-guide.pod      doc
       doc/mrtg-unix-guide.pod   \
       doc/mrtg-forum.pod    doc/mrtg-mibhelp.pod  doc/mrtg-reference.pod     doc/mrtg-webserver.pod    \
       doc/mrtg-rrd.pod      doc/mrtg-squid.pod    doc/mrtg.pod       doc/mrtg-contrib.pod \
-      doc/cfgmaker.pod      doc/indexmaker.pod    doc/mrtglib.pod    doc/mrtg-ipv6.pod doc/mrtg-traffic-sum.pod
+      doc/cfgmaker.pod      doc/indexmaker.pod    doc/mrtglib.pod    doc/mrtg-ipv6.pod doc/mrtg-traffic-sum.pod \
+      doc/rateup.pod
 
 MAN = $(POD:.pod=.1)
 TXT = $(POD:.pod=.txt)
