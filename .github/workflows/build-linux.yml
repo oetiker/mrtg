@@ -1,0 +1,21 @@
+name: full-check
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: install_dependencies
+      run: sudo apt install libgd-dev libpng-dev zlib1g-dev
+    - name: build_and_install
+      run: |
+           cd src
+           ./bootstrap
+           ./configure
+           make
+           make doc
+           sudo make install

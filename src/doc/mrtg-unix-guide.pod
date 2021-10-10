@@ -19,7 +19,7 @@ a detailed run through the whole compilation process.
 
 =item GCC
 
-The GNU C compiler comes preinstalled on most of the free Unicies out
+The GNU C compiler comes preinstalled on most of the free Unices out
 there.  For commercial derivatives you may have to download and compile
 it first. If you have no compiler at all there is a chicken and egg
 problem, but there are also precompiled versions of gcc available for
@@ -229,7 +229,7 @@ Once you have created a configuration file, try the following:
 
  /usr/local/mrtg-2/bin/mrtg /home/mrtg/cfg/mrtg.cfg
 
-This will query your router and also create your first mrtg trafic
+This will query your router and also create your first mrtg traffic
 graphs and webpages. When you run mrtg for the first time there will
 be a lot of complaints about missing log files. Don't worry, this is
 normal for the first 2 times you start mrtg. If it keeps complaining

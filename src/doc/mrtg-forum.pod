@@ -32,7 +32,7 @@ who hack mrtg itself.
 
 =head2 THE RULES
 
-Please note that the memebers of the mrtg mailinglist value politeness
+Please note that the members of the mrtg mailinglist value politeness
 highly. This means behave in a way you would like others to behave
 towards you.
 
@@ -50,7 +50,7 @@ No rude language
 
 No demands. everybody is on the list out of their own free will. If
 you do not get an answer to your question, chances are high that you
-did not give sufficent details about the nature of your problem or
+did not give sufficient details about the nature of your problem or
 that the answer to your problem is in the documentation.
 
 =item *

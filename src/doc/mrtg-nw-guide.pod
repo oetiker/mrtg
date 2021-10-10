@@ -37,7 +37,7 @@ Problems with NetWare's implementation of Perl.
 
 Support for the NetWare OS has now been fully added into MRTG, beginning with MRTG release 2.12.2.
 
-Liberallly minded operating systems support a commandline length approaching 1000 characters. In such environments it
+Liberally minded operating systems support a commandline length approaching 1000 characters. In such environments it
 was an easy matter to pass the sometimes high number of parameters used by MRTG's Rateup executable directly on the
 commandline. Until NetWare 6.5, NetWare had a commandline limit of 512 characters. This limitation was also removed
 for NetWare 6.0 by Service Pack 5. For other NetWare versions and earlier Service Packs, this limitation remains. To
@@ -70,7 +70,7 @@ NetWare 5.1 w/ SP8, NetWare 6.0 w/ SP5 or NetWare 6.5 w/ SP2.
 
 =item *
 
-A copy of the MRTG Package (v2.12.2 at time of writting)
+A copy of the MRTG Package (v2.12.2 at time of writing)
 
 =item *
 
@@ -246,7 +246,7 @@ match the value entered for (HtmlDir).
 
 =item *
 
-Create an index.html page linking the seperate device HTML page(s). At the server console, run:
+Create an index.html page linking the separate device HTML page(s). At the server console, run:
 
  sys:/mrtg/bin/MakeMrtgIndex.ncf
 

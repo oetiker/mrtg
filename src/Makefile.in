@@ -6,6 +6,7 @@ VER=2.17.8
 .SUFFIXES: .c .o .pl .pm .pod .man .1 .txt
 
 prefix = @prefix@
+datarootdir = @datarootdir@
 exec_prefix = @exec_prefix@
 bindir = @bindir@
 libdir = @libdir@
@@ -27,7 +28,7 @@ LIBS = @LIBS@
 INSTALL = @INSTALL@
 MKINSTALLDIRS = $(SHELL) $(top_srcdir)/mkinstalldirs
 
-all:	 bin/rateup subst
+all:	 configure bin/rateup subst
 
 bin/rateup: bin/rateup.o
 	$(SET_LD_RUN_PATH) $(CC) bin/rateup.o -o bin/rateup $(LDFLAGS)  $(LIBS)
@@ -40,10 +41,17 @@ subst:
 	$(PERL) -0777 -p -i~ -e "s'^#!\s*/\S*perl'#! $(PERL)'" $(top_srcdir)/bin/cfgmaker $(top_srcdir)/bin/indexmaker $(top_srcdir)/bin/mrtg
 	$(PERL) -0777 -p -i~ -e 's@GRAPHFMT="...";@GRAPHFMT="$(GDFORM_EXT)";@' $(top_srcdir)/bin/mrtg $(top_srcdir)/bin/indexmaker
 
+configure: configure.ac
+	autoreconf --make
+	
 clean:
 	-rm -f bin/rateup
-	-rm -f config.cache
 	-rm -f bin/rateup.o
+	-rm -f config.cache
+	-rm -f config.h
+	-rm -f config.log
+	-rm -f config.status
+	-rm -f Makefile
 
 install: all
 	$(MKINSTALLDIRS) $(DESTDIR)$(bindir)

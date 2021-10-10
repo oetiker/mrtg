@@ -40,6 +40,9 @@ subst:
 	$(PERL) -0777 -p -i~ -e "s'^#!\s*/\S*perl'#! $(PERL)'" $(top_srcdir)/bin/cfgmaker $(top_srcdir)/bin/indexmaker $(top_srcdir)/bin/mrtg
 	$(PERL) -0777 -p -i~ -e 's@GRAPHFMT="...";@GRAPHFMT="$(GDFORM_EXT)";@' $(top_srcdir)/bin/mrtg $(top_srcdir)/bin/indexmaker
 
+configure: configure.ac
+	autoreconf
+	
 clean:
 	-rm -f bin/rateup
 	-rm -f config.cache
@@ -112,7 +115,7 @@ rateupexe:
 	i686-w64-mingw32-gcc -Llibs-i386-mingw32msvc/zlib -Llibs-i386-mingw32msvc/libpng -Llibs-i386-mingw32msvc/gd  src/rateup.o src/strftime.o -o bin/rateup.exe -lgd -lpng -lz
 	i686-w64-mingw32-strip bin/rateup.exe
 
-tar:	doc rateupexe
+tar:	doc rateupexe configure
 	autoconf
 	chmod -R u=rwX,go=rX .
 	(cd .. ; ln -s src $(DIRNAME))
