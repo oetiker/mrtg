@@ -1823,7 +1823,7 @@ sub populateconfcache ($$$$$) {
      push @{$$confcache{___updated}}, $hostkey;
 
     $SNMP_Session::suppress_warnings = $snmp_errlevel;    
-    $Net_SNMP_util::supress_warnings = $net_snmp_errlevel;
+    $Net_SNMP_util::suppress_warnings = $net_snmp_errlevel;
 }
 
 sub log2rrd ($$$) {
