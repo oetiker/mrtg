@@ -3,7 +3,7 @@
 SHELL=/bin/sh
 VER=2.17.8
 .SUFFIXES:
-.SUFFIXES: .c .o .pl .pm .pod .man .1 .txt
+.SUFFIXES: .c .o .pl .pm .pod .man .1 .3 .txt
 
 prefix = @prefix@
 datarootdir = @datarootdir@
@@ -73,6 +73,9 @@ install: all
 	$(MKINSTALLDIRS) $(DESTDIR)$(mandir)/man1
 	for x in $(top_srcdir)/doc/*.1; do \
 	  $(INSTALL) -m 644 $$x $(DESTDIR)$(mandir)/man1; done
+	$(MKINSTALLDIRS) $(DESTDIR)$(mandir)/man3
+	for x in $(top_srcdir)/doc/*.3; do \
+	  $(INSTALL) -m 644 $$x $(DESTDIR)$(mandir)/man3; done
 
 ########### Distribution Tools
 
@@ -83,18 +86,20 @@ install: all
 ARCHIVE = mrtg-$(VER)
 DIRNAME = mrtg-$(VER)
 
-POD = doc/mrtg-faq.pod      doc/mrtg-logfile.pod  doc/mrtg-nt-guide.pod      doc/mrtg-nw-guide.pod \
-      doc/mrtg-unix-guide.pod   \
-      doc/mrtg-forum.pod    doc/mrtg-mibhelp.pod  doc/mrtg-reference.pod     doc/mrtg-webserver.pod    \
-      doc/mrtg-rrd.pod      doc/mrtg-squid.pod    doc/mrtg.pod       doc/mrtg-contrib.pod \
-      doc/cfgmaker.pod      doc/indexmaker.pod    doc/mrtglib.pod    doc/mrtg-ipv6.pod doc/mrtg-traffic-sum.pod \
-      doc/rateup.pod
+POD1 = doc/mrtg-faq.pod      doc/mrtg-logfile.pod  doc/mrtg-nt-guide.pod      doc/mrtg-nw-guide.pod \
+       doc/mrtg-unix-guide.pod \
+       doc/mrtg-forum.pod    doc/mrtg-mibhelp.pod  doc/mrtg-reference.pod     doc/mrtg-webserver.pod \
+       doc/mrtg-rrd.pod      doc/mrtg-squid.pod    doc/mrtg.pod       doc/mrtg-contrib.pod \
+       doc/cfgmaker.pod      doc/indexmaker.pod    doc/mrtg-ipv6.pod  doc/mrtg-traffic-sum.pod \
+       doc/rateup.pod
+POD3 = doc/mrtglib.pod
 
-MAN = $(POD:.pod=.1)
-TXT = $(POD:.pod=.txt)
+MAN1 = $(POD1:.pod=.1)
+MAN3 = $(POD3:.pod=.3)
+TXT = $(POD1:.pod=.txt) $(POD3:.pod=.txt)
 
 getpod:
-	-rm $(MAN) $(TXT)
+	-rm $(MAN1) $(MAN3) $(TXT)
 	-for x in cfgmaker indexmaker mrtg-mailer mrtg-traffic-sum; do \
            rm doc/$$x.pod; ln -s ../bin/$$x doc/$$x.pod; done
 	-rm doc/mrtglib.pod;ln -s ../lib/mrtg2/MRTG_lib.pm doc/mrtglib.pod
@@ -102,10 +107,16 @@ getpod:
 .pod.1:
 	pod2man --release=$(VER) --center=mrtg $<  > $@
 
+.pod.3:
+	pod2man --release=$(VER) --center=mrtg --section=3 $<  > $@
+
 .1.txt:
 	@NROFF@ -man -Tascii $< > $@
 
-man: $(MAN)
+.3.txt:
+	@NROFF@ -man -Tascii $< > $@
+
+man: $(MAN1) $(MAN3)
 
 txt: $(TXT)
 
