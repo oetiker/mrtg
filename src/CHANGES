@@ -1,3 +1,8 @@
+Changes 2.17.9, 2021-??-??
+--------------------------
+From: Leo Iannacone <l3on@ubuntu.com>
+* make ifref default to name in cfgmaker
+
 Changes 2.17.8, 2021-08-05
 --------------------------
 From: Martin Sechny, shenk.sk
