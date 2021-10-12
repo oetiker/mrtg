@@ -672,7 +672,11 @@ ECHO
                         $if_ok = 0;
                     }
                 } else {
-                    $if_ref = $ifindex;
+                    if ($$i{Name}) {
+                        $if_ref = "#".$$i{Name};
+                    } else {
+                        $if_ref = $ifindex;
+                    }
                 }
 
                 # generate Target name
@@ -1585,11 +1589,11 @@ cfgmaker [options] [community@]router [[options] [community@]router ...]
 
 =head1 OPTIONS
 
- --ifref=nr    interface references by Interface Number (default)
- --ifref=ip                     ... by Ip Address
+ --ifref=name      interface references by Interface Name (default)
+ --ifref=ip                         ... by Ip Address
  --ifref=eth                        ... by Ethernet Number
  --ifref=descr                      ... by Interface Description
- --ifref=name                       ... by Interface Name
+ --ifref=nr                         ... by Interface Number
  --ifref=type                       ... by Interface Type
                 You may also use multiple options separated by commas,
                in which case the first available one is used:
