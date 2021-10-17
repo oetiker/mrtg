@@ -331,8 +331,14 @@ sub GenConf ($$$$) {
 #  for UNIX
 # WorkDir: /home/http/mrtg
 
-#  or for NT
+#  for NT
 # WorkDir: c:\\mrtgdata
+
+#  for several Linux, like Debian, RHEL and it's derivatives
+# WorkDir: /var/www/html
+
+#  for others Linux
+# WorkDir: /srv/http
 
 ### Global Defaults
 
