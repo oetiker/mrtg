@@ -335,10 +335,10 @@ sub GenConf ($$$$) {
 # WorkDir: c:\\mrtgdata
 
 #  for several Linux, like Debian, RHEL and it's derivatives
-# WorkDir: /var/www/html
+# WorkDir: /var/www/html/mrtg
 
 #  for others Linux
-# WorkDir: /srv/http
+# WorkDir: /srv/http/mrtg
 
 ### Global Defaults
 
