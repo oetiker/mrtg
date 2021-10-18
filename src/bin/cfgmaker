@@ -331,8 +331,14 @@ sub GenConf ($$$$) {
 #  for UNIX
 # WorkDir: /home/http/mrtg
 
-#  or for NT
+#  for NT
 # WorkDir: c:\\mrtgdata
+
+#  for several Linux, like Debian, RHEL and it's derivatives
+# WorkDir: /var/www/html/mrtg
+
+#  for others Linux
+# WorkDir: /srv/http/mrtg
 
 ### Global Defaults
 
@@ -1715,7 +1721,7 @@ allows you to poll the 64 bit traffic counters in the device and will thus work
 much better with fast interfaces (no more counter overrun).  Note that the
 order in which the routers are specified on the command line do matter as
 the same order is used when the configuration file is generated.  The first
-specified router has it's configuration lines genrated first, followed by
+specified router has it's configuration lines generated first, followed by
 the lines belonging to the next router and so on.
 
 Note that the first line of the generated cfg file will contain all the
@@ -2272,7 +2278,7 @@ form of variables and functions will be made available in the future instead.
 
 =head3 Examples on Filters
 
-The following filter will not affect which interfaces get's included or
+The following filter will not affect which interfaces gets included or
 excluded, it will make cfgmaker behave as normally.
 
  '--if-filter=$default'
