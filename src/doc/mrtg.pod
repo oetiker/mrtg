@@ -169,10 +169,10 @@ the config file option, but the switch is required for proper FHS operation
 Configure all mrtg paths to conform to the FHS specification
 L<http://www.pathname.com/fhs/>. The following default values are assumed:
 
- confcachefile - /var/cache/mrtg/mrtg.ok
- pid-file      - /var/run/mrtg.pid
- lock-file     - /var/cache/mrtg/mrtg.lck
- log-file      - /var/log/mrtg.log 
+ confcachefile - /var/lib/mrtg/mrtg.ok
+ pid-file      - /run/mrtg/mrtg.pid
+ lock-file     - /var/lock/mrtg/mrtg.lck
+ log-file      - /var/log/mrtg/mrtg.log
  
 
 
