@@ -25,3 +25,12 @@ jobs:
            make
            make doc
            sudo make install
+    - name: basic_test_mrtg
+      run: |
+           mkdir test-mrtg
+           cd test-mrtg
+           echo "WorkDir: $GITHUB_WORKSPACE/test-mrtg" > mrtg.cfg
+           LANG=C /opt/mrtg-2/bin/mrtg mrtg.cfg
+           ls
+           ls | egrep mrtg-r.png
+           ls | egrep mrtg.ok

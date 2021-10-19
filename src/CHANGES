@@ -18,8 +18,10 @@ From: Hilko Bengen <bengen@vdst-ka.inka.de>
 * avoid to include global options by default
 
 From: Joao Eriberto Mota Filho <eriberto@debian.org>
-* add manpage for rateup
+* add examples for WorkDir in Linux in cfgmaker
 * add a trivial CI test for GitHub
+* add manpage for rateup
+* create directory /run/mrtg/ if it not exists when using --fhs option
 * fix a warning about datarootdir in Makefile.in
 * fix some spelling errors in manuals and executables
 * fix some uncommented lines breaking contrib/accesslistmon/examplescript
@@ -30,6 +32,9 @@ From: Joao Eriberto Mota Filho <eriberto@debian.org>
 * remove non-free files in contrib/ (nt-service and cisco_tftp)
 * remove some extra blank spaces in EOL in changelog
 * rename mrtglib.1 to mrtglib.3
+* update GPL-2 text in src/contrib/TTrafic to break very long lines and fix a
+  wrong address for FSF
+* update src/bin/mrtg and its manpage to use FHS version 3.0 in --fhs option
 
 From: Leo Iannacone <l3on@ubuntu.com>
 * make ifref default to name to cfgmaker
