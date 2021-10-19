@@ -2061,7 +2061,7 @@ sub lockit {
         }
         open(LOCK,">$templock") or die "$NOW: ERROR: Creating templock $templock: $!";
         print LOCK $$;
-        close LOCK
+        close LOCK;
         if (!link($templock,$lockfile)) { # Lock file exists - deal with it.
             my($nlink,$lockage) = (stat($lockfile))[3,9]; 
             $lockage = time() - $lockage;
