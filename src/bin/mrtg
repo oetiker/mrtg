@@ -189,26 +189,29 @@ sub main {
         die "$NOW: ERROR: Unknown User: $opts{user})\n" if not defined $uid;
     }
 
-    # If we've specified using FHS (http://www.pathname.com/fhs/) on the command line,
-    # use the relevant path definitions (can be overridden later):
+    # If we've specified using FHS
+    # (https://refspecs.linuxfoundation.org/FHS_3.0/index.html) on the command
+    # line, use the relevant path definitions (can be overridden later):
 
     my $confcachefile;
+    my $pidpath;
     my $pidfile;
     my $lockfile;
     my $templock;
     my $logfile;
 
     if (defined $opts{"fhs"}) {
-	$confcachefile = "/var/cache/mrtg/mrtg.ok";
-	$pidfile = "/var/run/mrtg.pid";
-	$lockfile = "/var/cache/mrtg/mrtg.lck";
-	$templock = "/var/cache/mrtg/mrtg.lck.$$";
-	$logfile = "/var/log/mrtg.log";
+	$confcachefile = "/var/lib/mrtg/mrtg.ok";
+	$pidpath = "/run/mrtg";
+	$pidfile = "$pidpath/mrtg.pid";
+	$lockfile = "/var/lock/mrtg/mrtg.lck";
+	$templock = "/var/lock/mrtg/mrtg.lck.$$";
+	$logfile = "/var/log/mrtg/mrtg.log";
     }	
 
     my $cfgfile = shift @ARGV;
 
-    if ( !defined $cfgfile and -r "/etc/mrtg.cfg" ) { $cfgfile = "/etc/mrtg.cfg"; }
+    if ( !defined $cfgfile and -r "/etc/mrtg/mrtg.cfg" ) { $cfgfile = "/etc/mrtg/mrtg.cfg"; }
 
     printusage() unless defined $cfgfile;
 
@@ -219,6 +222,13 @@ sub main {
         $pidfile .= '.pid';
     }
     $pidfile =  $opts{"pid-file"} || $pidfile;
+
+	if (defined $opts{"fhs"}) {
+	    unless(-e $pidpath or mkdir ($pidpath, 0755)) {
+		die "Unable to create $pidpath\n";
+	    }
+	    chown $uid, $gid, $pidpath;
+	}
 
     # Run as a daemon, specified on command line (required for FHS compliant daemon)
     if (defined $opts{"daemon"}) {
