@@ -504,3 +504,9 @@ exim-stats
 From: Ray Smith <rcsmith@csc.com>
 
 Set of scripts to extract data from exim (MTA) and plot it with mrtg.
+
+mrtg-systemd
+------------
+From: Joao Eriberto Mota Filho <eriberto@debian.org>
+
+systemd config file for MRTG.
