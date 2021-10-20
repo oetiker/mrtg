@@ -1,0 +1,14 @@
+# Systemd config for MRTG on Debian
+# 2021 Joao Eriberto Mota Filho <eriberto@debian.org>
+
+[Unit]
+Description=Multi Router Traffic Grapher
+After=syslog.target
+
+[Service]
+Environment=LANG=C
+ExecStart=/usr/bin/mrtg --fhs
+Type=forking
+
+[Install]
+WantedBy=multi-user.target
