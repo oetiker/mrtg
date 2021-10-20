@@ -45,6 +45,10 @@ From: Michael-John Turner <mj@debian.org>
 From: Ray Smith <rcsmith@csc.com>
 * add new contrib: exim-stats
 
+From: Ryan Murray <rmurray@cyberhqz.com>
+* fix a comment error causing doesn't chdir to workdir in
+  src/contrib/mrtgindex.cgi/mrtgindx.cgi
+
 From: Theodore Alexandrov <theo@pdmi.ras.ru>
 * use gawk because mawk doesn't have strftime
 

@@ -194,20 +194,24 @@ sub main {
     # (https://refspecs.linuxfoundation.org/FHS_3.0/index.html) on the command
     # line, use the relevant path definitions (can be overridden later):
 
+    my $confcachepath;
     my $confcachefile;
     my $pidpath;
     my $pidfile;
     my $lockfile;
     my $templock;
+    my $logpath;
     my $logfile;
 
     if (defined $opts{"fhs"}) {
-	$confcachefile = "/var/lib/mrtg/mrtg.ok";
+	$confcachepath = "/var/lib/mrtg";
+	$confcachefile = "$confcachepath/mrtg.ok";
 	$pidpath = "/run/mrtg";
 	$pidfile = "$pidpath/mrtg.pid";
 	$lockfile = "/var/lock/mrtg/mrtg.lck";
 	$templock = "/var/lock/mrtg/mrtg.lck.$$";
-	$logfile = "/var/log/mrtg/mrtg.log";
+	$logpath = "/var/log/mrtg";
+	$logfile = "$logpath/mrtg.log";
     }	
 
     my $cfgfile = shift @ARGV;
@@ -224,11 +228,20 @@ sub main {
     }
     $pidfile =  $opts{"pid-file"} || $pidfile;
 
+    # Create directories needed for --fhs
 	if (defined $opts{"fhs"}) {
 	    unless(-e $pidpath or mkdir ($pidpath, 0755)) {
 		die "Unable to create $pidpath\n";
 	    }
+	    unless(-e $confcachepath or mkdir ($confcachepath, 0750)) {
+		die "Unable to create $confcachepath\n";
+	    }
+	    unless(-e $logpath or mkdir ($logpath, 0750)) {
+		die "Unable to create $logpath\n";
+	    }
 	    chown $uid, $gid, $pidpath;
+	    chown $uid, $gid, $confcachepath;
+	    chown $uid, $gid, $logpath;
 	}
 
     # Run as a daemon, specified on command line (required for FHS compliant daemon)
