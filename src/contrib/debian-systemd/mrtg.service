@@ -3,11 +3,14 @@
 
 [Unit]
 Description=Multi Router Traffic Grapher
-After=syslog.target
+Documentation=https://oss.oetiker.ch/mrtg/doc/index.en.html
 
 [Service]
 Environment=LANG=C
-ExecStart=/usr/bin/mrtg --fhs
+ExecStart=/usr/bin/mrtg --daemon --fhs --user=mrtg
+KillMode=process
+PrivateTmp=yes
+ReadOnlyDirectories=/etc
 Type=forking
 
 [Install]

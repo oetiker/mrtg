@@ -1,0 +1,19 @@
+systemd and init.d config files for MRTG
+----------------------------------------
+
+Hello everyone,
+
+These are the systemd and init scripts that I will provide for Debian as of
+October 2021. Debian usually provides these two files to help to start and
+stop services.
+
+These config files are using some new features released in MRTG 2.17.9, as
+the option --fhs updated from FHS 2.3 to 3.0, the new location for default
+mrtg.cfg (/etc/mrtg/mrtg.cfg) and the dynamic creation for main directories,
+as /run/mrtg/.
+
+The init script (/etc/init.d/mrtg) was originally written by
+Stefan SF <stefan@sf-net.com> for Fedora Project and updated by me to be used
+in Debian. The original init is being provided in contrib/mrtg-start-script/
+
+ -- Joao Eriberto Mota Filho <eriberto@debian.org>  Wed, 20 Oct 2021 22:15:51 -0300

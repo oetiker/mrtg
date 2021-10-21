@@ -1,0 +1,77 @@
+#!/bin/sh
+# Start/stop the MRTG
+# Original author:    Stefan SF <stefan@sf-net.com> (for Fedora Project)
+# Updates for Debian: Joao Eriberto Mota Filho <eriberto@debian.org>
+#
+### BEGIN INIT INFO
+# Provides: mrtg
+# Required-Start: $network
+# Required-Stop: $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Starts the The Multi Router Traffic Grapher
+# Description: The Multi Router Traffic Grapher is a tool primarily used to
+#              monitor the traffic load on network links (typically by using
+#              SNMP). MRTG generates HTML pages containing PNG images which
+#              provide a LIVE visual representation of this traffic. MRTG
+#              typically produces daily, weekly, monthly, and yearly graphs.
+### END INIT INFO
+
+# source function library
+. /lib/lsb/init-functions
+
+MRTG="/usr/bin/mrtg"
+CONFIG="/etc/mrtg/mrtg.cfg"
+PIDFILE="/run/mrtg/mrtg.pid"
+#LOCKFILE="/var/lock/mrtg/mrtg"
+OPTIONS="--daemon --fhs --user=mrtg"
+
+RETVAL=0
+
+start() {
+	echo -n $"Enabling MRTG: "
+#	rm -f ${LOCKFILE} 2> /dev/null
+#	env LANG=C ${MRTG} --pid-file=${PIDFILE} --lock-file=${LOCKFILE} ${OPTIONS} ${CONFIG}
+	env LANG=C ${MRTG} --pid-file=${PIDFILE} ${OPTIONS} ${CONFIG}
+	RETVAL=$?
+	echo
+}
+
+stop() {
+	echo -n $"Disabling MRTG: "
+	kill `cat ${PIDFILE}` #&& rm -f ${LOCKFILE}
+	RETVAL=$?
+	echo
+}
+
+restart() {
+	stop
+	sleep 1
+	start
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop) 
+	stop
+	;;
+  restart|force-reload)
+	restart
+	;;
+  status)
+	if [ -f $LOCKFILE ]; then
+		echo $"MRTG is enabled."
+		RETVAL=0
+	else
+		echo $"MRTG is disabled."
+		RETVAL=3
+	fi
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|status|restart|force-reload}"
+	exit 1
+esac
+
+exit $RETVAL
