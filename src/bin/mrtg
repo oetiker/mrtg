@@ -197,6 +197,7 @@ sub main {
     my $confcachefile;
     my $pidpath;
     my $pidfile;
+    my $lockpath;
     my $lockfile;
     my $templock;
     my $logpath;
@@ -207,8 +208,9 @@ sub main {
 	$confcachefile = "$confcachepath/mrtg.ok";
 	$pidpath = "/run/mrtg";
 	$pidfile = "$pidpath/mrtg.pid";
-	$lockfile = "/var/lock/mrtg/mrtg.lck";
-	$templock = "/var/lock/mrtg/mrtg.lck.$$";
+	$lockpath = "/var/lock/mrtg";
+	$lockfile = "$lockpath/mrtg.lck";
+	$templock = "$lockpath/mrtg.lck.$$";
 	$logpath = "/var/log/mrtg";
 	$logfile = "$logpath/mrtg.log";
     }	
@@ -238,9 +240,13 @@ sub main {
 	    unless(-e $logpath or mkdir ($logpath, 0750)) {
 		die "Unable to create $logpath\n";
 	    }
+	    unless(-e $lockpath or mkdir ($lockpath, 0755)) {
+		die "Unable to create $lockpath\n";
+	    }
 	    chown $uid, $gid, $pidpath;
 	    chown $uid, $gid, $confcachepath;
 	    chown $uid, $gid, $logpath;
+	    chown $uid, $gid, $lockpath;
 	}
 
     # Run as a daemon, specified on command line (required for FHS compliant daemon)
