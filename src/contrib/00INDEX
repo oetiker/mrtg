@@ -510,8 +510,8 @@ From: Stefan <stefan@sf-net.com>
 
 Example of startup script (/etc/init.d/mrtg) for the MRTG daemon.
 
-mrtg-systemd
-------------
+debian-systemd
+--------------
 From: Joao Eriberto Mota Filho <eriberto@debian.org>
 
-systemd config file for MRTG.
+systemd and init config files for MRTG.
