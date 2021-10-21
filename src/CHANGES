@@ -18,10 +18,14 @@ From: Hilko Bengen <bengen@vdst-ka.inka.de>
 * avoid to include global options by default
 
 From: Joao Eriberto Mota Filho <eriberto@debian.org>
+* add absent mrtg-startup-script and remove extra blank spaces from
+  contrib/00INDEX
+* add example of systemd and init scripts from Debian (contrib/debian-systemd/)
 * add examples for WorkDir in Linux in cfgmaker
 * add a trivial CI test for GitHub
 * add manpage for rateup
-* create directory /run/mrtg/ if it not exists when using --fhs option
+* create directories /run/mrtg/, /var/lib/mrtg and /var/log/mrtg automatically
+  if they not exist when using --fhs option
 * fix a warning about datarootdir in Makefile.in
 * fix some spelling errors in manuals and executables
 * fix some uncommented lines breaking contrib/accesslistmon/examplescript
