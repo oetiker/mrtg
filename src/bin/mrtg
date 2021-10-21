@@ -140,6 +140,7 @@ END {
     local($?, $!);
     unlink ${main::Cleanfile} if defined $main::Cleanfile;
     unlink ${main::Cleanfile2} if defined $main::Cleanfile2;
+    unlink ${main::Cleanfile3} if defined $main::Cleanfile3;
 }
 
 &main;
@@ -193,20 +194,26 @@ sub main {
     # (https://refspecs.linuxfoundation.org/FHS_3.0/index.html) on the command
     # line, use the relevant path definitions (can be overridden later):
 
+    my $confcachepath;
     my $confcachefile;
     my $pidpath;
     my $pidfile;
+    my $lockpath;
     my $lockfile;
     my $templock;
+    my $logpath;
     my $logfile;
 
     if (defined $opts{"fhs"}) {
-	$confcachefile = "/var/lib/mrtg/mrtg.ok";
+	$confcachepath = "/var/lib/mrtg";
+	$confcachefile = "$confcachepath/mrtg.ok";
 	$pidpath = "/run/mrtg";
 	$pidfile = "$pidpath/mrtg.pid";
-	$lockfile = "/var/lock/mrtg/mrtg.lck";
-	$templock = "/var/lock/mrtg/mrtg.lck.$$";
-	$logfile = "/var/log/mrtg/mrtg.log";
+	$lockpath = "/var/lock/mrtg";
+	$lockfile = "$lockpath/mrtg.lck";
+	$templock = "$lockpath/mrtg.lck.$$";
+	$logpath = "/var/log/mrtg";
+	$logfile = "$logpath/mrtg.log";
     }	
 
     my $cfgfile = shift @ARGV;
@@ -223,11 +230,24 @@ sub main {
     }
     $pidfile =  $opts{"pid-file"} || $pidfile;
 
+    # Create directories needed for --fhs
 	if (defined $opts{"fhs"}) {
 	    unless(-e $pidpath or mkdir ($pidpath, 0755)) {
 		die "Unable to create $pidpath\n";
 	    }
+	    unless(-e $confcachepath or mkdir ($confcachepath, 0750)) {
+		die "Unable to create $confcachepath\n";
+	    }
+	    unless(-e $logpath or mkdir ($logpath, 0750)) {
+		die "Unable to create $logpath\n";
+	    }
+	    unless(-e $lockpath or mkdir ($lockpath, 0755)) {
+		die "Unable to create $lockpath\n";
+	    }
 	    chown $uid, $gid, $pidpath;
+	    chown $uid, $gid, $confcachepath;
+	    chown $uid, $gid, $logpath;
+	    chown $uid, $gid, $lockpath;
 	}
 
     # Run as a daemon, specified on command line (required for FHS compliant daemon)
@@ -2036,6 +2056,8 @@ USAGEDESC
 
 sub lockit {
     my ($lockfile,$templock) = @_;
+    $main::Cleanfile = $templock;
+    $main::Cleanfile2 = $lockfile;
     if ($MRTG_lib::OS eq 'VMS' or $MRTG_lib::OS eq 'NT'  or $MRTG_lib::OS eq 'OS2') {
         # too sad NT and VMS can't do links we'll do the diletants lock
         if (-e $lockfile and not unlink $lockfile) {
@@ -2057,8 +2079,18 @@ sub lockit {
           unless  $$ == $read;
     } else {
         # now, lets do it the UNIX way ... Daves work ...
+        if (open my $olf, "<$lockfile"){
+            my $oldpid = <$olf>;
+            chomp $oldpid;
+            if ($oldpid and not -d '/proc/'.$oldpid){
+               debug('base', "Remove stale lockfile $lockfile since pid $oldpid seems not to be around anymore");
+               unlink $lockfile;
+            }
+            close $olf;
+        }
         open(LOCK,">$templock") or die "$NOW: ERROR: Creating templock $templock: $!";
-        $main::Cleanfile = $templock;
+        print LOCK $$;
+        close LOCK;
         if (!link($templock,$lockfile)) { # Lock file exists - deal with it.
             my($nlink,$lockage) = (stat($lockfile))[3,9]; 
             $lockage = time() - $lockage;
