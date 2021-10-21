@@ -18,7 +18,7 @@ From: Hilko Bengen <bengen@vdst-ka.inka.de>
 From: Joao Eriberto Mota Filho <eriberto@debian.org>
 * add absent mrtg-startup-script and remove extra blank spaces from
   contrib/00INDEX
-* add example of systemd script
+* add example of systemd and init scripts from Debian (contrib/debian-systemd/)
 * add examples for WorkDir in Linux in cfgmaker
 * add a trivial CI test for GitHub
 * add manpage for rateup
