@@ -140,6 +140,7 @@ END {
     local($?, $!);
     unlink ${main::Cleanfile} if defined $main::Cleanfile;
     unlink ${main::Cleanfile2} if defined $main::Cleanfile2;
+    unlink ${main::Cleanfile3} if defined $main::Cleanfile3;
 }
 
 &main;
@@ -2049,6 +2050,8 @@ USAGEDESC
 
 sub lockit {
     my ($lockfile,$templock) = @_;
+    $main::Cleanfile = $templock;
+    $main::Cleanfile2 = $lockfile;
     if ($MRTG_lib::OS eq 'VMS' or $MRTG_lib::OS eq 'NT'  or $MRTG_lib::OS eq 'OS2') {
         # too sad NT and VMS can't do links we'll do the diletants lock
         if (-e $lockfile and not unlink $lockfile) {
@@ -2070,8 +2073,18 @@ sub lockit {
           unless  $$ == $read;
     } else {
         # now, lets do it the UNIX way ... Daves work ...
+        if (open my $olf, "<$lockfile"){
+            my $oldpid = <$olf>;
+            chomp $oldpid;
+            if ($oldpid and not -d '/proc/'.$oldpid){
+               debug('base', "Remove stale lockfile $lockfile since pid $oldpid seems not to be around anymore");
+               unlink $lockfile;
+            }
+            close $olf;
+        }
         open(LOCK,">$templock") or die "$NOW: ERROR: Creating templock $templock: $!";
-        $main::Cleanfile = $templock;
+        print LOCK $$;
+        close LOCK;
         if (!link($templock,$lockfile)) { # Lock file exists - deal with it.
             my($nlink,$lockage) = (stat($lockfile))[3,9]; 
             $lockage = time() - $lockage;
