@@ -32,7 +32,7 @@ start() {
 	echo -n $"Enabling MRTG: "
 #	rm -f ${LOCKFILE} 2> /dev/null
 #	env LANG=C ${MRTG} --pid-file=${PIDFILE} --lock-file=${LOCKFILE} ${OPTIONS} ${CONFIG}
-	env LANG=C ${MRTG} --pid-file=${PIDFILE} ${OPTIONS} ${CONFIG}
+	LANG=C ${MRTG} --pid-file=${PIDFILE} ${OPTIONS} ${CONFIG}
 	RETVAL=$?
 	echo
 }
