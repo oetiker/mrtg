@@ -18,7 +18,7 @@ adding/removing Mrtg polled hosts
 
 iptables_acc_snmp
 ----------------
-From: HERITIER Hervé <hh@handco.org>
+From: HERITIER HervÃ© <hh@handco.org>
 
 simple script to capture iptables counter on Linux 2.4 for use with snmpd
 
@@ -45,7 +45,7 @@ Live Index of all log files
 
 TTrafic
 -------
-From: David A. Pérez <david@kamborio.com>
+From: David A. PÃ©rez <david@kamborio.com>
 
 "TTrafic is a small VBScript to analyse MRTG (http://www.mrtg.org/) log
 files. By using this script, you will be able to know which amount of
