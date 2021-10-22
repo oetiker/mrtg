@@ -18,7 +18,7 @@ adding/removing Mrtg polled hosts
 
 iptables_acc_snmp
 ----------------
-From: HERITIER Hervé <hh@handco.org>
+From: HERITIER HervÃ© <hh@handco.org>
 
 simple script to capture iptables counter on Linux 2.4 for use with snmpd
 
@@ -40,12 +40,12 @@ Here is an howto on monitoring Cisco BPX and MGX switches with MRTG.
 mrtg.php
 --------
 From: David Boyer <Boyer_D@glan-hafren.ac.uk>
- 
+
 Live Index of all log files
 
 TTrafic
 -------
-From: David A. Pérez <david@kamborio.com>
+From: David A. PÃ©rez <david@kamborio.com>
 
 "TTrafic is a small VBScript to analyse MRTG (http://www.mrtg.org/) log
 files. By using this script, you will be able to know which amount of
@@ -67,7 +67,7 @@ config sample for Control Modem Racks (3Com) to do user monitoring.
 
 routers
 -------
-From: Steven Shipway <Steven_Shipway@adsweu.com>                                
+From: Steven Shipway <Steven_Shipway@adsweu.com>
 
 check out http://www.cheshire.demon.co.uk/pub/
 for about 1000 neat tools for mrtg & rrdtool
@@ -77,14 +77,14 @@ stfc
 
 From: Mihai Claudiu Capatina <mihai.capatina@aignet.ro>
 
-This is a small script that I use on FreeBSD machines running ALTQ 
-This machines acts like a traffic management system and I need to see 
-the traffic for each class ( CBQ ) 
+This is a small script that I use on FreeBSD machines running ALTQ
+This machines acts like a traffic management system and I need to see
+the traffic for each class ( CBQ )
 
 gentgucci
---------- 
-From: Kevin Benton <s1kevin@sotatech.net>   
- 
+---------
+From: Kevin Benton <s1kevin@sotatech.net>
+
 generate configs for 3com total control chassis
 
 procmem
@@ -117,7 +117,7 @@ mrtgrq
 From: Adrian Turcu <adi@cfrcta.ro>
 
 This script helps to monitor the amount of disk-space
-quota for each e-Mail user on the system. It allows to 
+quota for each e-Mail user on the system. It allows to
 acquire statistical data for each of user.
 
 
@@ -225,7 +225,7 @@ on linux and sun machines that I would like to contrib.
 
 cisco_ipaccounting
 ------------------
-From: cramer@dolphins.ch      
+From: cramer@dolphins.ch
 
 gets IP-accounting data from a Cisco Router
 
@@ -233,7 +233,7 @@ NSI (Network Status Imager for MRTG)
 ------------------------------------
 From: "Kloberg Mac (LAM)" <mac.kloberg@lam.liebherr.com>
 
-Present network status on a map ... 
+Present network status on a map ...
 
 14all
 -----
@@ -280,7 +280,7 @@ OVmrtg
 ------
 From: "Gellatly, Laurie (x8864)" <laurie.gellatly@vodafone.com.au>
 
-HP OpenView integration for MRTG ... 
+HP OpenView integration for MRTG ...
 
 CiscoIndex
 ----------
@@ -307,8 +307,8 @@ whodo
 -----
 From: "Tony-Farr (Canberra)" <Tony.Farr@austrade.gov.au>
 
-Whodo is a set of Perl scripts to analyse IP accounting data from a cisco 
-router. The stats for each traffic source are fed into mrtg. Whodo also 
+Whodo is a set of Perl scripts to analyse IP accounting data from a cisco
+router. The stats for each traffic source are fed into mrtg. Whodo also
 generates pie graphs showing traffic split by source or destination.
 
 xlsummary
@@ -359,7 +359,6 @@ interface traffic graphs for various hosts which do not provide a
 consistent interface name for physical interfaces, such as in a dynamic IP
 environment.
 
-
 ircstats
 --------
 From: Matt Ramsey (MR227) mjr@geeks.org, mjr@nin.com
@@ -392,8 +391,8 @@ distrib
 -------
 From: Philippe Simonet <sip00@vg.swissptt.ch>
 
-'distrib' read mrtg log files and computes traffic distribution in 
-  the time. It ouputs a graph with : 
+'distrib' read mrtg log files and computes traffic distribution in
+  the time. It ouputs a graph with :
     - in x the percentage of trafic utilisation (% bandwith)
     - in y how many times the utilization was reached (% time)
 
@@ -432,7 +431,7 @@ get-multiserial
 ---------------
 From: T. Pospisek <tpo@spin.ch>
 
-SHELL scripts to get active tty(-dial-in modem-) lines localy and remotely. 
+SHELL scripts to get active tty(-dial-in modem-) lines localy and remotely.
 I'm using them with a cyclades board but they can be adapted at wish to
 different tasks.
 
@@ -442,8 +441,8 @@ ping-probe
 ----------
 From: "Peter W. Osel" <pwo@hl.siemens.de>
 
-A perl script to get roundtrip delays to hosts by sending a ping 
-to them. 
+A perl script to get roundtrip delays to hosts by sending a ping
+to them.
 
 rumb-stat
 ---------
@@ -467,7 +466,7 @@ From: "Balthasar T. Indermuehle" <bi@inside.ch>
 This is a tcpblast interface available for MRTG 2.1. It works much like
 the famed ping-probe, instead of ping it uses tcpblast to estimate
 network bandwidth.
- 
+
 GetSNMPLinesUP
 --------------
 From: Carlos Canau <canau@dawn.EUnet.pt>
@@ -492,7 +491,7 @@ there is a second version bz rick horowitz in the directory as well
 mrtg-archiver
 -------------
 From: Emanuele Leonardi <Emanuele.Leonardi@roma1.infn.it>
-From: Rawlin Blake <blake@nevada.edu>                                           
+From: Rawlin Blake <blake@nevada.edu>
 
 It wakes up at 23:54 every night and copies all the current daily gifs
 for the given list of routers to a directory named with the current date
@@ -504,6 +503,12 @@ exim-stats
 From: Ray Smith <rcsmith@csc.com>
 
 Set of scripts to extract data from exim (MTA) and plot it with mrtg.
+
+mrtg-startup-script
+-------------------
+From: Stefan <stefan@sf-net.com>
+
+Example of startup script (/etc/init.d/mrtg) for the MRTG daemon.
 
 debian-systemd
 --------------
