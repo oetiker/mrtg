@@ -14,6 +14,9 @@ From: David Bristel <targon@targonia.com>
 From: gpancot <gpancot@users.noreply.github.com>
 * add mikrotik vendor to cfgmaker
 
+From: Andrey Tarasov <kochen@vk.com>
+* add Huawei and Eltex vendors to cfgmaker
+
 From: Hilko Bengen <bengen@vdst-ka.inka.de>
 * avoid to include global options by default
 
