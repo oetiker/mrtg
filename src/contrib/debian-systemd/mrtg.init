@@ -21,27 +21,52 @@
 . /lib/lsb/init-functions
 
 MRTG="/usr/bin/mrtg"
+USERMRTG="mrtg"
 CONFIG="/etc/mrtg/mrtg.cfg"
 PIDFILE="/run/mrtg/mrtg.pid"
-#LOCKFILE="/var/lock/mrtg/mrtg"
-OPTIONS="--daemon --fhs --user=mrtg"
+OPTIONS="--daemon --fhs --user=${USERMRTG}"
 
 RETVAL=0
 
 start() {
-	echo -n $"Enabling MRTG: "
-#	rm -f ${LOCKFILE} 2> /dev/null
-#	env LANG=C ${MRTG} --pid-file=${PIDFILE} --lock-file=${LOCKFILE} ${OPTIONS} ${CONFIG}
-	LANG=C ${MRTG} ${OPTIONS} ${CONFIG}
-	RETVAL=$?
-	echo
+	if [ ! -e $PIDFILE ]
+	then
+	    WORKDIR=$(cat ${CONFIG} | grep WorkDir | cut -d: -f2 | tr -d " ")
+	    if [ -z ${WORKDIR} ]
+	    then
+		echo "ERROR: WorkDir not defined in config file"
+		exit 1
+	    fi
+	    if [ ! -d ${WORKDIR} ]
+	    then
+		echo "ERROR: no such directory: ${WORKDIR}"
+		exit 1
+	    fi
+	    OWNERWORKDIR=$(stat -c '%U' ${WORKDIR})
+	    if [ ${OWNERWORKDIR} != ${USERMRTG} ]
+	    then
+		echo "ERROR: ${WORKDIR} is not owned by ${USERMRTG}"
+		exit 1
+	    fi
+	    echo "Starting MRTG"
+	    LANG=C ${MRTG} ${OPTIONS} ${CONFIG}
+	    RETVAL=$?
+	else
+	    echo "MRTG is already running"
+	    RETVAL=$?
+	fi
 }
 
 stop() {
-	echo -n $"Disabling MRTG: "
-	kill `cat ${PIDFILE}` #&& rm -f ${LOCKFILE}
-	RETVAL=$?
-	echo
+	if [  -e $PIDFILE ]
+	then
+	    echo "Stopping MRTG"
+	    kill `cat ${PIDFILE}`
+	    RETVAL=$?
+	else
+	    echo "MRTG is not running"
+	    RETVAL=$?
+	fi
 }
 
 restart() {
@@ -54,23 +79,23 @@ case "$1" in
   start)
 	start
 	;;
-  stop) 
+  stop)
 	stop
 	;;
   restart|force-reload)
 	restart
 	;;
   status)
-	if [ -f $LOCKFILE ]; then
-		echo $"MRTG is enabled."
+	if [ -e $PIDFILE ]; then
+		echo "MRTG is enabled"
 		RETVAL=0
 	else
-		echo $"MRTG is disabled."
+		echo "MRTG is disabled"
 		RETVAL=3
 	fi
 	;;
   *)
-	echo $"Usage: $0 {start|stop|status|restart|force-reload}"
+	echo "Usage: $0 {start|stop|status|restart|force-reload}"
 	exit 1
 esac
 
