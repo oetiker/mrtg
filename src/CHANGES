@@ -32,6 +32,8 @@ From: Joao Eriberto Mota Filho <eriberto@debian.org>
 * fix a warning about datarootdir in Makefile.in
 * fix some spelling errors in manuals and executables
 * fix some uncommented lines breaking contrib/accesslistmon/examplescript
+* fix translation files for some languages (Brazilian, Catalan, French, German,
+  Portuguese and Spanish)
 * fix whatis in manpage mrtg-squid.pod
 * modernize configure.in, removing warnings
 * remove an orphan symlink (mrtg-mailer.pod)
