@@ -27,7 +27,7 @@
 ###      => Ryan Huang ¶ÀªF¶© <ryan@asplord.com>
 ###      Brazil/Brazilian Portuguese
 ###      => Luiz Felipe R E <luizfelipe@encarnacao.com>
-###      => Gleydson Mazoli da Silva <gleydson@debian.org> (Atualização)
+###      => Gleydson Mazoli da Silva <gleydson@debian.org> (Atualiza&ccedil;&atilde;o)
 ###      Bulgarian/Áúëãàðñêè
 ###      => Yovko Lambrev <yovko@sdf.lonestar.org>
 ###      catalan/Català
@@ -303,7 +303,7 @@ $VERSION = '0.07';
    "Localiza&ccedil;&atilde;o efetuada por
 				<a href=\"http://www.encarnacao.com\">Luiz Felipe R E</a>
 				<a href=\"mailto:luizfelipe\@encarnacao.com\">&lt;luizfelipe\@encarnacao.com&gt;</a><br />
-				atualização por Gleydson Mazioli da Silva
+				atualiza&ccedil;&atilde;o por Gleydson Mazioli da Silva
 				<a href=\"mailto:gleydson\@debian.org\">&lt;gleydson\@debian.org&gt;</a>",
 # Bulgarian/Áúëãàðñêè
    'bulgarian' =>
