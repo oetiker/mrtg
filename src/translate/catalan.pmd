@@ -1,6 +1,6 @@
 ###### PATCHTAG00 ####################################################
-###      catalan/Català
-###      => LLuís Gras <lluis@seccat.com>
+###      catalan/CatalÃ 
+###      => LLuÃ­s Gras <lluis@seccat.com>
 ###### PATCHTAG10 ####################################################
   &catalan
 ###### PATCHTAG20 ####################################################
@@ -9,8 +9,8 @@
 ###### PATCHTAG30 ####################################################
 # catalan/catalan
     'catalan' =>
-    "Preparat per a localització per:
-				<a hre=\"mailto:lluis\@seccat.com\">LLuís Gras</a>",
+    "Preparat per a localitzaci&oacute; per:
+				<a hre=\"mailto:lluis\@seccat.com\">Llu&iacute;s Gras</a>",
 ###### PATCHTAG40 ####################################################
 $credits::LOCALE{'catalan'}=$credits::LOCALE{'catalan'};
 ###### PATCHTAG50 ####################################################
@@ -87,7 +87,7 @@ foreach $i (keys %translations)
 
 %month = 
     (
-      'January'   => 'Gener',     'February' => 'Febrer' ,    'March'     => 'Març',
+      'January'   => 'Gener',     'February' => 'Febrer' ,    'March'     => 'Mar&ccedil;',
       'Jan'       => 'Gen',       'Feb'      => 'Feb',        'Mar'       => 'Mar',
       'April'     => 'Abril',     'May'      => 'Maig',       'June'      => 'Juny', 
       'Apr'       => 'Abr',       'May'      => 'Mai',        'Jun'       => 'Jun',
