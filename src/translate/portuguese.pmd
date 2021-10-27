@@ -1,12 +1,12 @@
 ###### PATCHTAG 00 ###################################################
-###      Portuguese/Português   
+###      Portuguese/PortuguÃªs   
 ###      => Diogo Gomes <etdgomes@ua.pt> 
 ###### PATCHTAG 10 ###################################################
   &portuguese
 ###### PATCHTAG 20 ###################################################
   'portuguese'     => \&portuguese,
 ###### PATCHTAG 30 ###################################################
-# Português/portuguese 
+# PortuguÃªs/portuguese 
    'portuguese' =>
    "Traduzido por 
 				<a href=\"http://sweet.ua.pt/~etdgomes\">Diogo Gomes</>
@@ -14,7 +14,7 @@
 ###### PATCHTAG 40 ###################################################
 $credits::LOCALE{'portuguese'}=$credits::LOCALE{'portuguese'};
 ###### PATCHTAG 50 ###################################################
-# Português 
+# PortuguÃªs 
 
 sub portuguese 
 {

@@ -35,7 +35,7 @@ sub german
      #'charset=iso-8859-1'                     => 'charset=iso-8859-1',
      'Maximal 5 Minute Incoming Traffic'      => 'Maximaler hereinkommender Traffic in 5 Minuten',
      'Maximal 5 Minute Outgoing Traffic'      => 'Maximaler hinausgehender Traffic in 5 Minuten',
-     'the device'                             => 'das Gerät',
+     'the device'                             => 'das Ger&auml;t',
      'The statistics were last updated(.*)'   => 'Die Statistiken wurden am $1 zuletzt aktualisiert',
      ' Average\)'                             => '',
      'Average'                                => 'Mittel',

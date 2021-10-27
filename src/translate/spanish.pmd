@@ -1,5 +1,5 @@
 ###### PATCHTAG00 ####################################################
-###      Spanish/Español
+###      Spanish/EspaÃ±ol
 ###      => Marcelo Roccasalva <marcelo@linuxfan.com>
 ###### PATCHTAG10 ####################################################
   &spanish
@@ -7,9 +7,9 @@
   'spanish'	 => \&spanish,
   'espanol'	 => \&spanish,
 ###### PATCHTAG30 ####################################################
-# Spanish/español
+# Spanish/espaÃ±ol
     'spanish' =>
-    "Preparado para localización por
+    "Preparado para localizaci&oacute;n por
 				<a href=\"mailto:marcelo\@linuxfan.com\">Marcelo Roccasalva</a>",
 ###### PATCHTAG40 ####################################################
 $credits::LOCALE{'espanol'}=$credits::LOCALE{'spanish'};
