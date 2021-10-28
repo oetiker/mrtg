@@ -326,8 +326,7 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
   /* Declare the image */
   gdImagePtr graph, brush_out, brush_outm, brush_outp;
   /* Declare color indexes */
-  int i_light, i_dark, i_blank, i_major, i_in, i_out, i_grid, i_inm, i_outm;
-  int i_outp, i_outpg;
+  int i_light, i_dark, i_blank, i_major, i_in, i_grid, i_inm, i_outpg;
   /* Dotted style */
   int styleDotted[3];
   if ((graph_label = (char **) calloc (1, sizeof (char *) * maxx)) == NULL)
@@ -870,13 +869,10 @@ image (file, maxvi, maxvo, maxx, maxy, xscale, yscale, growright, step, bits,
      allocation for the brush is essential */
   i_major = gdImageColorAllocate (graph, c_major);
   i_in = gdImageColorAllocate (graph, col_in[0], col_in[1], col_in[2]);
-  i_out =
     gdImageColorAllocate (brush_out, col_out[0], col_out[1], col_out[2]);
   i_grid = gdImageColorAllocate (graph, c_grid);
   i_inm = gdImageColorAllocate (graph, col_inm[0], col_inm[1], col_inm[2]);
-  i_outm =
     gdImageColorAllocate (brush_outm, col_outm[0], col_outm[1], col_outm[2]);
-  i_outp =
     gdImageColorAllocate (brush_outp, col_outp[0], col_outp[1], col_outp[2]);
   i_outpg =
     gdImageColorAllocate (graph, col_outp[0], col_outp[1], col_outp[2]);
