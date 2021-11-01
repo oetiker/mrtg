@@ -31,7 +31,7 @@ RETVAL=0
 start() {
 	if [ ! -e $PIDFILE ]
 	then
-	    WORKDIR=$(cat ${CONFIG} | grep WorkDir | cut -d: -f2 | tr -d " ")
+	    WORKDIR=$(cat ${CONFIG} | grep -i WorkDir | cut -d: -f2 | tr -d " ")
 	    if [ -z ${WORKDIR} ]
 	    then
 		echo "ERROR: WorkDir not defined in config file"
