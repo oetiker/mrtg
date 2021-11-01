@@ -17,6 +17,9 @@ From: gpancot <gpancot@users.noreply.github.com>
 From: Andrey Tarasov <kochen@vk.com>
 * add Huawei and Eltex vendors to cfgmaker
 
+From: youpong
+* remove unused variables from rateup.c
+
 From: Hilko Bengen <bengen@vdst-ka.inka.de>
 * avoid to include global options by default
 
