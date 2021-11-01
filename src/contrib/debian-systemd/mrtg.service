@@ -9,10 +9,14 @@ Documentation=https://oss.oetiker.ch/mrtg/doc/index.en.html
 Environment=LANG=C
 ExecStart=/usr/bin/mrtg --daemon --fhs --user=mrtg
 KillMode=process
+LogsDirectory=mrtg
+LogsDirectoryMode=0750
 PIDFile=/run/mrtg/mrtg.pid
 PrivateTmp=yes
 ReadOnlyDirectories=/etc
 RuntimeDirectory=mrtg
+StateDirectory=mrtg
+StateDirectoryMode=0750
 Type=forking
 User=mrtg
 
