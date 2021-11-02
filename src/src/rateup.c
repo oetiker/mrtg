@@ -1247,9 +1247,8 @@ readhist (file)
       cur = last.time;
       x = histvalid = 0;
       hist = history;
-      while (!feof (fi))
+      while (fgets (buf, 256, fi) != NULL)
 	{
-	  fgets (buf, 256, fi);
 	  if (sscanf (buf, "" LLD " " LLD " " LLD " " LLD " " LLD "",
 		      &rd[0], &rd[1], &rd[2], &rd[3], &rd[4]) < 5)
 	    {
