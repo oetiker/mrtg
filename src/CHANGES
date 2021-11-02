@@ -19,6 +19,7 @@ From: Andrey Tarasov <kochen@vk.com>
 
 From: youpong
 * remove unused variables from rateup.c
+* stop ignoring return value of function fgets
 
 From: Hilko Bengen <bengen@vdst-ka.inka.de>
 * avoid to include global options by default
