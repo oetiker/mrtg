@@ -1275,8 +1275,8 @@ readhist (file)
 	  if (hist->time > cur)
 	    {
 	      fprintf (stderr,
-		       "%s, Rateup ERROR: %s found %s's log file was corrupt\n          or not in sorted order:\ntime: %lu.",
-		       bufftime, program, router, (unsigned long) hist->time);
+		       "%s, Rateup ERROR: %s found %s's log file was corrupt or not in sorted order: time: %ld.\n",
+		       bufftime, program, router, (long) hist->time);
 	      retcode = 2;
 	      break;
 	    }
@@ -1396,9 +1396,8 @@ update (in, out, abs_max, absupdate)
   if (now < last.time)
     {
       fprintf (stderr,
-	       "%s, Rateup ERROR: %s found that %s's log file time of %lu was greater than now (%lu)\nERROR: Let's not do the time warp, again. Logfile unchanged.\n",
-	       bufftime, program, router, (unsigned long) last.time,
-	       (unsigned long) now);
+	       "%s, Rateup ERROR: %s found that %s's log file time of %ld was greater than now (%ld)\nERROR: Let's not do the time warp, again. Logfile unchanged.\n",
+	       bufftime, program, router, (long) last.time, (long) now);
       return;
     }
   sprintf (buf, "%s.tmp_%lu", router,(unsigned long)getpid());
@@ -1551,7 +1550,7 @@ update (in, out, abs_max, absupdate)
     }
   if ((fo = fopen (buf, "w")) != NULL)
     {
-      fprintf (fo, "%lu %s %s\n", (unsigned long) now, in, out);
+      fprintf (fo, "%ld %s %s\n", (long) now, in, out);
       last.time = now;
       /* what is this good for? */
       /* gauge und absolute */
@@ -1567,8 +1566,8 @@ update (in, out, abs_max, absupdate)
 	  strncpy (last.out, out,MAXL);
           last.out[MAXL-1]='\0';
 	}
-      fprintf (fo, "%lu " LLD " " LLD " " LLD " " LLD "\n",
-	       (unsigned long) now, inrate, outrate, inrate, outrate);
+      fprintf (fo, "%ld " LLD " " LLD " " LLD " " LLD "\n",
+	       (long) now, inrate, outrate, inrate, outrate);
       nout = 1;
       hist->time = now;
       hist->in = inrate;
@@ -1588,9 +1587,9 @@ update (in, out, abs_max, absupdate)
       /* gobble up every shred of data we can get ... */
       if (plannow < now)
 	{
-	  NEXT ((unsigned long) (now - plannow));
-	  fprintf (fo, "%lu " LLD " " LLD " " LLD " " LLD "\n",
-		   (unsigned long) now, (long long) inr, (long long) outr,
+	  NEXT ((long) (now - plannow));
+	  fprintf (fo, "%ld " LLD " " LLD " " LLD " " LLD "\n",
+		   (long) now, (long long) inr, (long long) outr,
 		   (long long) inmax, (long long) outmax);
 	  hist->time = now;
 	  hist->in = inr;
@@ -1606,8 +1605,8 @@ update (in, out, abs_max, absupdate)
       for (x = 1; x < DAY_COUNT; x++)
 	{
 	  NEXT (DAY_SAMPLE);
-	  fprintf (fo, "%lu " LLD " " LLD " " LLD " " LLD "\n",
-		   (unsigned long) now, (long long) inr, (long long) outr,
+	  fprintf (fo, "%ld " LLD " " LLD " " LLD " " LLD "\n",
+		   (long) now, (long long) inr, (long long) outr,
 		   (long long) inmax, (long long) outmax);
 	  hist->time = now;
 	  hist->in = inr;
@@ -1625,9 +1624,9 @@ update (in, out, abs_max, absupdate)
 
       if (plannow < now)
 	{
-	  NEXT ((unsigned long) (now - plannow));
-	  fprintf (fo, "%lu " LLD " " LLD " " LLD " " LLD "\n",
-		   (unsigned long) now, (long long) inr, (long long) outr,
+	  NEXT ((long) (now - plannow));
+	  fprintf (fo, "%ld " LLD " " LLD " " LLD " " LLD "\n",
+		   (long) now, (long long) inr, (long long) outr,
 		   inmax, outmax);
 	  hist->time = now;
 	  hist->in = inr;
@@ -1643,8 +1642,8 @@ update (in, out, abs_max, absupdate)
       for (x = 0; x < WEEK_COUNT; x++)
 	{
 	  NEXT (WEEK_SAMPLE);
-	  fprintf (fo, "%lu " LLD " " LLD " " LLD " " LLD "\n",
-		   (unsigned long) now, (long long) inr, (long long) outr,
+	  fprintf (fo, "%ld " LLD " " LLD " " LLD " " LLD "\n",
+		   (long) now, (long long) inr, (long long) outr,
 		   inmax, outmax);
 	  hist->time = now;
 	  hist->in = inr;
@@ -1662,9 +1661,9 @@ update (in, out, abs_max, absupdate)
 
       if (plannow < now)
 	{
-	  NEXT ((unsigned long) (now - plannow));
-	  fprintf (fo, "%lu " LLD " " LLD " " LLD " " LLD "\n",
-		   (unsigned long) now, (long long) inr, (long long) outr,
+	  NEXT ((long) (now - plannow));
+	  fprintf (fo, "%ld " LLD " " LLD " " LLD " " LLD "\n",
+		   (long) now, (long long) inr, (long long) outr,
 		   inmax, outmax);
 	  hist->time = now;
 	  hist->in = inr;
@@ -1680,8 +1679,8 @@ update (in, out, abs_max, absupdate)
       for (x = 0; x < MONTH_COUNT; x++)
 	{
 	  NEXT (MONTH_SAMPLE);
-	  fprintf (fo, "%lu " LLD " " LLD " " LLD " " LLD "\n",
-		   (unsigned long) now, (long long) inr, (long long) outr,
+	  fprintf (fo, "%ld " LLD " " LLD " " LLD " " LLD "\n",
+		   (long) now, (long long) inr, (long long) outr,
 		   inmax, outmax);
 	  hist->time = now;
 	  hist->in = inr;
@@ -1699,9 +1698,9 @@ update (in, out, abs_max, absupdate)
 
       if (plannow < now)
 	{
-	  NEXT ((unsigned long) (now - plannow));
-	  fprintf (fo, "%lu " LLD " " LLD " " LLD " " LLD "\n",
-		   (unsigned long) now, (long long) inr, (long long) outr,
+	  NEXT ((long) (now - plannow));
+	  fprintf (fo, "%ld " LLD " " LLD " " LLD " " LLD "\n",
+		   (long) now, (long long) inr, (long long) outr,
 		   inmax, outmax);
 	  hist->time = now;
 	  hist->in = inr;
@@ -1717,8 +1716,8 @@ update (in, out, abs_max, absupdate)
       for (x = 0; x < YEAR_COUNT; x++)
 	{
 	  NEXT (YEAR_SAMPLE);
-	  fprintf (fo, "%lu " LLD " " LLD " " LLD " " LLD "\n",
-		   (unsigned long) now, (long long) inr, (long long) outr,
+	  fprintf (fo, "%ld " LLD " " LLD " " LLD " " LLD "\n",
+		   (long) now, (long long) inr, (long long) outr,
 		   inmax, outmax);
 	  hist->time = now;
 	  hist->in = inr;
