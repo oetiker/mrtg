@@ -5,6 +5,7 @@ rateup.exe
 config.h
 config.log
 config.status
+install-sh
 *.1
 *.gz
 *.o
