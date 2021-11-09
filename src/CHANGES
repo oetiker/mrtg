@@ -21,6 +21,7 @@ From: youpong
 * remove unused variables from rateup.c
 * stop ignoring return value of function fgets
 * fix signedness of time_t
+* fix left shift of negative value
 
 From: Hilko Bengen <bengen@vdst-ka.inka.de>
 * avoid to include global options by default
