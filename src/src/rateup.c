@@ -1450,7 +1450,7 @@ update (in, out, abs_max, absupdate)
 	    {
 	      inr = diff (in, last.in);
 	      if (inr < 0) {
-                if (inr > - (long long) 1 << 32) { 	/* wrapped 32-bit counter? */
+                if (inr > - ((long long) 1 << 32)) { 	/* wrapped 32-bit counter? */
   		    inr += (long long) 1 << 32;
                 }
                 else {
@@ -1497,7 +1497,7 @@ update (in, out, abs_max, absupdate)
 	    {
 	      outr = diff (out, last.out);
 	      if (outr < 0) {	/* wrapped  counter? */
-                if (outr > - (long long) 1 << 32) {
+                if (outr > - ((long long) 1 << 32)) {
   		    outr += (long long) 1 << 32;
                 }
                 else {
