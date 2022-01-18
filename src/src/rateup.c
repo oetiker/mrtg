@@ -37,9 +37,9 @@
 #ifndef NETWARE
 #include "../config.h"
 #endif
+#endif
 #include <unistd.h>
 #include <sys/types.h>
-#endif
 #include <limits.h>
 #include <stdio.h>
 #include <time.h>
