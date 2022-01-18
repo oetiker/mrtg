@@ -1,7 +1,7 @@
 # things that the GNU standards document suggests all makefiles
 # should have.
 SHELL=/bin/sh
-VER=2.17.8
+VER=2.17.9
 .SUFFIXES:
 .SUFFIXES: .c .o .pl .pm .pod .man .1 .3 .txt
 
@@ -147,8 +147,8 @@ dist: tar
 	git tag v$(VER)
 	git push --tags
 	md5sum $(ARCHIVE).tar.gz >$(ARCHIVE).tar.gz.md5
-	gpg -s $(ARCHIVE).tar.gz.md5
-	chmod 644  $(ARCHIVE).tar.gz.md5*
+#	gpg -s $(ARCHIVE).tar.gz.md5
+#	chmod 644  $(ARCHIVE).tar.gz.md5*
 	scp CHANGES $(ARCHIVE).* oposs@freddie:public_html/mrtg/pub/
 	ssh oposs@freddie "cd  public_html/mrtg/pub; rm mrtg.tar.gz;ln -s $(ARCHIVE).tar.gz mrtg.tar.gz"
 
