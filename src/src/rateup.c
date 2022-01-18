@@ -38,6 +38,7 @@
 #include "../config.h"
 #endif
 #include <unistd.h>
+#include <sys/types.h>
 #endif
 #include <limits.h>
 #include <stdio.h>
