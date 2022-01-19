@@ -59,7 +59,7 @@ doc/mrtg-contrib.1
 doc/mrtg-faq.1
 doc/mrtg-forum.1
 doc/mrtg-ipv6.1
-doc/mrtglib.1
+doc/mrtglib.3
 doc/mrtg-logfile.1
 doc/mrtg-mibhelp.1
 doc/mrtg-nt-guide.1
