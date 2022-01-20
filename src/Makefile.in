@@ -100,7 +100,7 @@ TXT = $(POD1:.pod=.txt) $(POD3:.pod=.txt)
 
 getpod:
 	-rm $(MAN1) $(MAN3) $(TXT)
-	-for x in cfgmaker indexmaker mrtg-mailer mrtg-traffic-sum; do \
+	-for x in cfgmaker indexmaker mrtg-traffic-sum; do \
            rm doc/$$x.pod; ln -s ../bin/$$x doc/$$x.pod; done
 	-rm doc/mrtglib.pod;ln -s ../lib/mrtg2/MRTG_lib.pm doc/mrtglib.pod
 
