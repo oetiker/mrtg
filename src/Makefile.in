@@ -43,7 +43,7 @@ subst:
 
 configure: configure.ac
 	autoreconf --make
-	
+
 clean:
 	-rm -f bin/rateup
 	-rm -f bin/rateup.o
