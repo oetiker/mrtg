@@ -93,7 +93,7 @@ my $NOW = timestamp;
 my $graphiteObj;
 
 # $SNMP_Session::suppress_warnings = 2;
-use locales_mrtg "0.07";
+use locales_mrtg "0.08";
 
 # Do not Flash Console Windows for the forked rateup process 
 BEGIN {

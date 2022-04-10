@@ -2,6 +2,7 @@ Changes 2.17.11, 2022-??-??
 ---------------------------
 From: youpong
 * stop making an orphan symlink (mrtg-mailer.pod)
+* fix Brazilian translation(Issue #74)
 
 Changes 2.17.10, 2022-01-19
 ---------------------------
