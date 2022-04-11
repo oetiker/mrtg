@@ -26,7 +26,11 @@ jobs:
            make
            make doc
            sudo make install
-    - name: basic_test_mrtg
+    - name: unit_test
+      run: |
+           cd src
+           prove
+    - name: functional_test
       run: |
            mkdir test-mrtg
            cd test-mrtg

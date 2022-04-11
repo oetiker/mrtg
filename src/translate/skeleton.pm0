@@ -43,7 +43,7 @@ use strict;
 use vars qw(@ISA @EXPORT $VERSION);
 use Exporter;
 
-$VERSION = '0.07';
+$VERSION = '0.08';
 
 @ISA = qw(Exporter);
 

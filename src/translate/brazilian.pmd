@@ -31,43 +31,36 @@ return "" unless defined $string;
 
   
   # regexp => replacement string NOTE does not use autovars $1,$2...
-  # charset=iso-2022-jp
 
   %translations =
-  (  
-     #'charset=iso-8859-1'                     => 'charset=iso-8859-1',
-     'Maximal 5 Minute Incoming Traffic'      => 'Tr&aacute;fego M&aacute;ximo de Entrada em 5 minutos',
-     'Maximal 5 Minute Outgoing Traffic'      => 'Tr&aacute;fego M&aacute;ximo de Sa&iacute;da em 5 minutos',
-     'the device'                             => 'dispositivo',
-     'The statistics were last updated (.*)'  => '&Uacute;ltima atualiza&ccedil;&atilde;o das estat&iacute;sticas: $1',
-     ' Average\)'                             => ' - m&eacute;dia)',
-     'Average'                                => 'M&eacute;dia',
-     'Max'                                    => 'M&aacute;x',
-     'Current'                                => 'Atual',
-     'version'                                => 'vers&atilde;o',
-     '`Daily\' Graph \((.*) Minute'           => 'Gr&aacute;fico `Di&aacute;rio\' ($1 minutos',
-     '`Weekly\' Graph \(30 Minute'            => 'Gr&aacute;fico `Semanal\' (30 minutos' ,
-     '`Monthly\' Graph \(2 Hour'              => 'Gr&aacute;fico `Mensal\' (2 horas',
-     '`Yearly\' Graph \(1 Day'                => 'Gr&aacute;fico `Anual\' (1 dia', 
-     'Incoming Traffic in (\S+) per Second'   => 'Tr&aacute;fego de Entrada em $1 por segundo',
-     'Outgoing Traffic in (\S+) per Second'   => 'Tr&aacute;fego de Sa&iacute;da em $1 por segundo',
-     'at which time (.*) had been up for(.*)' => 'nesta hora $1 estava ativo por $2',
-     # '([kMG]?)([bB])/s'                     => '\$1\$2/s',
-     # '([kMG]?)([bB])/min'                   => '\$1\$2/min',
-     # '([kMG]?)([bB])/h'                     => '$1$2/t',
-     # 'Bits'                                 => 'Bits',
-     # 'Bytes'                                => 'Bytes'
-     'In'                                     => 'Entr.',
-     'Out'                                    => 'Sa&iacute;',
-     'Percentage'                             => 'Porc.',
-     'Ported to OpenVMS Alpha by'             => 'Adaptado para o Alpha OpenVMS por', 
-     'Ported to WindowsNT by'                 => 'Adaptado para o WindowsNT por',
-     'and'                                    => 'e',
+  (
+     '^Maximal 5 Minute Incoming Traffic'      => 'Tr&aacute;fego M&aacute;ximo de Entrada em 5 minutos',
+     '^Maximal 5 Minute Outgoing Traffic'      => 'Tr&aacute;fego M&aacute;ximo de Sa&iacute;da em 5 minutos',
+     '^the device'                             => 'dispositivo',
+     '^The statistics were last updated (.*)'  => '&Uacute;ltima atualiza&ccedil;&atilde;o das estat&iacute;sticas: $1',
+     '^ Average\)'                             => ' - m&eacute;dia)',
+     '^Average$'                               => 'M&eacute;dia',
+     '^Max$'                                   => 'M&aacute;x',
+     '^Current'                                => 'Atual',
+     '^version'                                => 'vers&atilde;o', #
+     '^`Daily\' Graph \((.*) Minute'           => 'Gr&aacute;fico `Di&aacute;rio\' ($1 minutos',
+     '^`Weekly\' Graph \(30 Minute'            => 'Gr&aacute;fico `Semanal\' (30 minutos' ,
+     '^`Monthly\' Graph \(2 Hour'              => 'Gr&aacute;fico `Mensal\' (2 horas',
+     '^`Yearly\' Graph \(1 Day'                => 'Gr&aacute;fico `Anual\' (1 dia', 
+     '^Incoming Traffic in (\S+) per Second'   => 'Tr&aacute;fego de Entrada em $1 por segundo',
+     '^Outgoing Traffic in (\S+) per Second'   => 'Tr&aacute;fego de Sa&iacute;da em $1 por segundo',
+     '^at which time (.*) had been up for(.*)' => 'nesta hora $1 estava ativo por $2',
+     '^In$'                                    => 'Entr.',
+     '^Out$'                                   => 'Sa&iacute;',
+     '^Percentage'                             => 'Porc.',
+     '^Ported to OpenVMS Alpha by'             => 'Adaptado para o Alpha OpenVMS por', 
+     '^Ported to WindowsNT by'                 => 'Adaptado para o WindowsNT por',
+     '^and'                                    => 'e',
      '^GREEN'                                  => 'VERDE',
-     'BLUE'                                   => 'AZUL',
-     'DARK GREEN'                             => 'VERDE ESCURO',
-     'MAGENTA'                                => 'LIL&Aacute;S',
-     'AMBER'                                  => 'AMBAR'
+     '^BLUE'                                   => 'AZUL',
+     '^DARK GREEN'                             => 'VERDE ESCURO',
+     '^MAGENTA'                                => 'LIL&Aacute;S',
+     '^AMBER'                                  => 'AMBAR'
   );
 
 # maybe expansions with replacement of whitespace would be more appropriate
