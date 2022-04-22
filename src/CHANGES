@@ -3,7 +3,8 @@ Changes 2.17.11, 2022-??-??
 From: youpong
 * stop making an orphan symlink (mrtg-mailer.pod)
 * fix Brazilian translation(Issue #74)
-* drop locales_mrtg.pm
+* drop locales_mrtg.pm, mrtglib.3 and symlinks.
+* 'make clean' removes all generated files.
 
 Changes 2.17.10, 2022-01-19
 ---------------------------
