@@ -4,6 +4,7 @@ SHELL=/bin/sh
 VER=2.17.10
 .SUFFIXES:
 .SUFFIXES: .c .o .pl .pm .pod .man .1 .3 .txt
+.PHONY: all subst distclean clean install cleanpodlink getpod versync cleandoc doc rateupexe tar dist betadist
 
 prefix = @prefix@
 datarootdir = @datarootdir@
@@ -44,14 +45,12 @@ subst:
 configure: configure.ac
 	autoreconf --make
 
-clean:
-	-rm -f bin/rateup
-	-rm -f bin/rateup.o
-	-rm -f config.cache
-	-rm -f config.h
-	-rm -f config.log
-	-rm -f config.status
-	-rm -f Makefile
+distclean: clean
+	rm -f configure config.cache config.h config.log config.status
+	rm -f Makefile
+
+clean: cleandoc 
+	rm -f bin/rateup bin/rateup.o
 
 install: all
 	$(MKINSTALLDIRS) $(DESTDIR)$(bindir)
@@ -98,11 +97,14 @@ MAN1 = $(POD1:.pod=.1)
 MAN3 = $(POD3:.pod=.3)
 TXT = $(POD1:.pod=.txt) $(POD3:.pod=.txt)
 
-getpod:
-	-rm $(MAN1) $(MAN3) $(TXT)
-	-for x in cfgmaker indexmaker mrtg-traffic-sum; do \
-           rm doc/$$x.pod; ln -s ../bin/$$x doc/$$x.pod; done
-	-rm doc/mrtglib.pod;ln -s ../lib/mrtg2/MRTG_lib.pm doc/mrtglib.pod
+cleanpodlink:
+	rm -f doc/cfgmaker.pod doc/indexmaker.pod doc/mrtg-traffic-sum.pod doc/mrtglib.pod
+
+podlink:
+	for x in cfgmaker indexmaker mrtg-traffic-sum; do \
+	  test -e doc/$$x.pod || ln -s ../bin/$$x doc/$$x.pod; \
+	done
+	test -e doc/mrtglib.pod || ln -s ../lib/mrtg2/MRTG_lib.pm doc/mrtglib.pod
 
 .pod.1:
 	pod2man --release=$(VER) --center=mrtg $<  > $@
@@ -124,7 +126,11 @@ versync:
 	$(PERL) -i -p -e 's|VERSION\s*=\s*"\d+\.\d+\.\d+([a-z0-9]+)?"|VERSION = "$(VER)"|gi; s|mrtg-\d+\.\d+\.\d+([a-z0-9]+)?|mrtg-$(VER)|gi; s|MRTG\s\d+\.\d+\.\d+([a-z0-9]+)?|MRTG $(VER)|gi' bin/mrtg bin/cfgmaker bin/indexmaker lib/mrtg2/*.pm src/*.c `find doc/ -name \*.pod -type f` 
 	cd translate && $(PERL) mergelocale.pl skeleton.pm0 *.pmd && cp locales_mrtg.pm ../lib/mrtg2
 
-doc:    getpod versync man txt
+cleandoc: cleanpodlink
+	rm -f $(MAN1) $(MAN3) $(TXT)
+	rm -f translate/locales_mrtg.pm lib/mrtg2/locales_mrtg.pm
+
+doc:    podlink versync man txt
 
 rateupexe:
 	i686-w64-mingw32-gcc -Wall -Wno-format -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -O3 -mwindows -Ilibs-i386-mingw32msvc/zlib -Ilibs-i386-mingw32msvc/libpng -Ilibs-i386-mingw32msvc/gd -c src/strftime.c -o src/strftime.o
