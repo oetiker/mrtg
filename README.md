@@ -1,6 +1,7 @@
 # mrtg
 
 [![Gitter](https://badges.gitter.im/oetiker/mrtg.svg)](https://gitter.im/oetiker/mrtg?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![full-check](https://github.com/oetiker/mrtg/actions/workflows/build-linux.yml/badge.svg)](https://github.com/oetiker/mrtg/actions/workflows/build-linux.yml)
 
 **What is MRTG ?**
 
