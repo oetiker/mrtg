@@ -1,6 +1,7 @@
 # mrtg
 
 [![Gitter](https://badges.gitter.im/oetiker/mrtg.svg)](https://gitter.im/oetiker/mrtg?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![full-check](https://github.com/oetiker/mrtg/actions/workflows/build-linux.yml/badge.svg)](https://github.com/oetiker/mrtg/actions/workflows/build-linux.yml)
 
 **What is MRTG ?**
 
@@ -10,7 +11,7 @@ MRTG generates HTML pages containing PNG images which provide a LIVE visual repr
 
 Go to http://oss.oetiker.ch/mrtg for all the details about mrtg. <br>
 
-**Latest MRTG release** -> [2.17.8](https://github.com/oetiker/mrtg/releases/tag/v2.17.8)
+**Latest MRTG release** -> [2.17.10](https://github.com/oetiker/mrtg/releases/tag/v2.17.10)
 
 For installing on **LINUX/UNIX**, follow the instructions in
 
