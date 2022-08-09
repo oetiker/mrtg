@@ -170,11 +170,8 @@ sub InterfaceInfo($$$$$) {
 
     my $snmphost = v4onlyifnecessary($router, $routers->{$router}{ipv4only});
 
-    if ($routers->{$router}{deviceinfo}{Vendor} eq 'cisco' &&
-        $routers->{$router}{deviceinfo}{sysDescr} =~ m/Version\s+(\d+\.\d+)/) {
-        push @Variables,  ($1 > 11.0 or $1 < 10.0 ) ? "ifAlias" : "CiscolocIfDescr";
-        if ($1 > 11.2) {push @Variables, "vmVlan";};
-       if ($1 > 11.3) {push @Variables, "vlanTrunkPortDynamicStatus";};
+    if ($routers->{$router}{deviceinfo}{Vendor} eq 'cisco') {
+        push @Variables,  ("ifAlias", "vmVlan", "vlanTrunkPortDynamicStatus");
     } elsif ( $routers->{$router}{deviceinfo}{Vendor} =~ /(?:hp|juniper|dlink|wwp|foundry|dellLan|force10|3com|extremenetworks|openBSD|arista|enterasys|zyxel|vyatta|dcn|brocade|datacom|alcatel|mikrotik|huawei|eltex)/i) {
         push @Variables, "ifAlias";
     }
