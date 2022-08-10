@@ -17,7 +17,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install_dependencies
-      run: sudo apt install libgd-dev libpng-dev zlib1g-dev
+      run: |
+           sudo apt-get update
+           sudo apt-get install libgd-dev libpng-dev zlib1g-dev
     - name: build_and_install
       run: |
            cd src
