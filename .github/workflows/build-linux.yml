@@ -12,12 +12,15 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v2
     - name: install_dependencies
-      run: sudo apt install libgd-dev libpng-dev zlib1g-dev
+      run: |
+           sudo apt-get update
+           sudo apt-get remove -yq libgd3 nginx
+           sudo apt-get install -yq libgd-dev libpng-dev zlib1g-dev
     - name: build_and_install
       run: |
            cd src
