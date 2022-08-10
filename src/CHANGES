@@ -6,6 +6,10 @@ From: youpong
 * drop locales_mrtg.pm, mrtglib.3 and symlinks.
 * 'make clean' removes all generated files.
 
+From: nistorj
+* Removed checks for Cisco IOS versions 10.x and 11.x which conflicts with NXOS checking.
+  We automatically push variables: ifAlias, vmVlan, vlanTrunkPortDynamicStatus if vendor is Cisco. (issue #93)
+
 Changes 2.17.10, 2022-01-19
 ---------------------------
 From: tobi
