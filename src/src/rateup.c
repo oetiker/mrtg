@@ -32,12 +32,14 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
 /* VC++ does not have unistd.h */
 #ifndef WIN32
 #ifndef NETWARE
 #include "../config.h"
 #endif
+#endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
 #endif
 #include <unistd.h>
 #include <sys/types.h>
