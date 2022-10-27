@@ -5,6 +5,9 @@ From: youpong
 * fix Brazilian translation(Issue #74)
 * drop locales_mrtg.pm, mrtglib.3 and symlinks.
 * 'make clean' removes all generated files.
+* update compiler option(-Wextra, -Wpedantic)
+* fix implicit declaration of function ‘strncasecmp’(Issue #99)
+* fix format ‘%x’ expects argument of type ‘unsigned int *’(Issue #100)
 
 From: nistorj
 * Removed checks for Cisco IOS versions 10.x and 11.x which conflicts with NXOS checking.
