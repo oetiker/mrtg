@@ -175,7 +175,7 @@ AC_MSG_RESULT((cached) it's fine)
 dnl Does the compiler like -Wall and
 if test "x$GCC" = "xyes"; then
   oCFLAGS=$CFLAGS
-  CFLAGS="$CFLAGS -Wall -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -Winline -W"
+  CFLAGS="$CFLAGS -Wall -Wextra -Wpedantic -Wpointer-arith -Wcast-align -Wmissing-declarations -Wnested-externs -Winline"
   AC_CACHE_CHECK(if we can use GCC-specific compiler options, rd_cv_gcc_opt,
                 [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[return 0 ]])],[rd_cv_gcc_opt=yes],[rd_cv_gcc_opt=no ])
                ]
