@@ -37,7 +37,7 @@ AC_CACHE_VAL(mr_cv_long_long_format_specifier,[
                 char buffer[1000];
                 sprintf (buffer, "%${format}u", a);
                 sscanf (buffer, "%${format}u", &b);
-                exit (b!=a);
+                return b!=a;
             }
             ]])],[mr_cv_long_long_format_specifier="%${format}d"
             mr_cv_long_long_format="${format}d"
