@@ -1,7 +1,9 @@
+From: fweimer-rh
 * Future C compilers are likely to reject implicit function declarations by default. This language feature was officially removed in 1999. @ffwmeier-rh
 
-Changes 2.17.11, 2022-??-??
----------------------------
+From: lukerg
+* RouterUpTime accepts & uses colon options
+
 From: youpong
 * stop making an orphan symlink (mrtg-mailer.pod)
 * fix Brazilian translation(Issue #74)

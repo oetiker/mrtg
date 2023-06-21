@@ -675,17 +675,19 @@ sub getcurrent {
 	# (OID:community@host or OID) that may have been specified with the RouterUptime
 	# target keyword
 	if( defined $rcfg->{ routeruptime }{ $rou } ) {
-		my( $noid, $nloc ) = split( /:/, $rcfg->{ routeruptime }{ $rou }, 2 );
-		# If only location (community@host) was specified then
-		# move the location details into the right place
-		if( $noid =~ /@/ ) {
-			$nloc = $noid;
-			$noid = undef;
-		}
-		# If no OID (community@host) was specified use the hardcoded default
-		if( not $noid ) {
-			$noid = 'sysUptime';
-		}
+                my ( $noid, $comm );
+                #break apart at the right most at symbol
+		my( $noidcomm, $nloc ) = $rcfg->{ routeruptime }{ $rou } =~ /^(.*)@([^@]+)$/;
+		debug("base","noidcom $noidcomm and nloc $nloc");
+                #now assess for presence of custom OID for uptime
+                if ($noidcomm =~ /:/ ) {
+                    ( $noid, $comm ) = split( /:/, $noidcomm, 2);
+                 }
+                else {
+                    $noid='sysUptime';
+                    $comm=$noidcomm;
+                }
+                debug("base","noid is $noid and comm is $comm");
 		# If no location (community@host) was specified use values from the
 		# unique target referred to in the monitored data calculation
 		if( not $nloc ){
@@ -699,10 +701,10 @@ sub getcurrent {
                         }
                 }
         
-		$uploc = $nloc;
+		$uploc = "$comm\@$nloc";
 		# Get the device uptime if $noid(OID) and $nloc (community@host) have been specified
 		# one way or the other
-		debug('base', "Fetching sysUptime and sysName from: $noid:$nloc");
+		debug('base', "Fetching sysUptime and sysName from: $noid:$uploc");
 		( $uptime, $name ) = snmpget( $uploc, $rcfg->{ snmpoptions }{ $rou }, $noid, 'sysName');
 	}
 
