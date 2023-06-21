@@ -38,6 +38,9 @@
 #include "../config.h"
 #endif
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 #include <unistd.h>
 #include <sys/types.h>
 #include <limits.h>
@@ -146,11 +149,11 @@ char weekformat = 'V';		/* strftime() fmt char for week #  */
 #define c_outm  255,0,255
 #define c_outp  239,159,79
 
-int col_in[3];
-int col_out[3];
-int col_inm[3];
-int col_outm[3];
-int col_outp[3];
+unsigned int col_in[3];
+unsigned int col_out[3];
+unsigned int col_inm[3];
+unsigned int col_outm[3];
+unsigned int col_outp[3];
 
 long long kilo = (long long) 1000;
 char *kMG = (char *) NULL;
@@ -1772,7 +1775,7 @@ update (in, out, abs_max, absupdate)
 }
 
 static void
-init_colour (int *colmap, int c0, int c1, int c2)
+init_colour (unsigned int *colmap, int c0, int c1, int c2)
 {
   *colmap++ = c0;
   *colmap++ = c1;
