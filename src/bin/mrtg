@@ -675,19 +675,19 @@ sub getcurrent {
 	# (OID:community@host or OID) that may have been specified with the RouterUptime
 	# target keyword
 	if( defined $rcfg->{ routeruptime }{ $rou } ) {
-        my ( $noid, $comm );
-        #break apart at the right most at symbol
+                my ( $noid, $comm );
+                #break apart at the right most at symbol
 		my( $noidcomm, $nloc ) = $rcfg->{ routeruptime }{ $rou } =~ /^(.*)@([^@]+)$/;
 		debug("base","noidcom $noidcomm and nloc $nloc");
-        #now assess for presence of custom OID for uptime
-        if ($noidcomm =~ /:/ ) {
-            ( $noid, $comm ) = split( /:/, $noidcomm, 2);
-        }
-        else {
-            $noid='sysUptime';
-            $comm=$noidcomm;
-        }
-        debug("base","noid is $noid and comm is $comm");
+                #now assess for presence of custom OID for uptime
+                if ($noidcomm =~ /:/ ) {
+                    ( $noid, $comm ) = split( /:/, $noidcomm, 2);
+                 }
+                else {
+                    $noid='sysUptime';
+                    $comm=$noidcomm;
+                }
+                debug("base","noid is $noid and comm is $comm");
 		# If no location (community@host) was specified use values from the
 		# unique target referred to in the monitored data calculation
 		if( not $nloc ){
