@@ -1,3 +1,6 @@
+From: tobi
+* fix noHC detection in cfgmaker (interfaces with traffic counter = 0 could still be valid)
+
 From: fweimer-rh
 * Future C compilers are likely to reject implicit function declarations by default. This language feature was officially removed in 1999. @ffwmeier-rh
 
