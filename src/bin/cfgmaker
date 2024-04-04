@@ -172,7 +172,7 @@ sub InterfaceInfo($$$$$) {
 
     if ($routers->{$router}{deviceinfo}{Vendor} eq 'cisco') {
         push @Variables,  ("ifAlias", "vmVlan", "vlanTrunkPortDynamicStatus");
-    } elsif ( $routers->{$router}{deviceinfo}{Vendor} =~ /(?:hp|juniper|dlink|wwp|foundry|dellLan|force10|3com|extremenetworks|openBSD|arista|enterasys|zyxel|vyatta|dcn|brocade|datacom|alcatel|mikrotik|huawei|eltex)/i) {
+    } elsif ( $routers->{$router}{deviceinfo}{Vendor} =~ /(?:hp|juniper|dlink|wwp|foundry|dellLan|force10|3com|extremenetworks|openBSD|arista|enterasys|zyxel|vyatta|dcn|brocade|datacom|alcatel|mikrotik|huawei|eltex|ubiquiti)/i) {
         push @Variables, "ifAlias";
     }
 
@@ -1015,7 +1015,11 @@ sub DeviceInfo ($$$) {
             '1.3.6.1.4.1.14988.' =>     'mikrotik',
             '1.3.6.1.4.1.6486.' =>      'alcatel',
             '1.3.6.1.4.1.2011.' =>      'huawei',
-            '1.3.6.1.4.1.35265.' =>     'eltex'
+            '1.3.6.1.4.1.35265.' =>     'eltex',
+            '1.3.6.1.4.1.4413' =>       'ubiquiti',
+            '1.3.6.1.4.1.41112' =>      'ubiquiti'
+
+
         );
         $DevInfo{Vendor} = 'Unknown Vendor - '.$DevInfo{sysObjectID};
         foreach (keys %vendorIDs) {
