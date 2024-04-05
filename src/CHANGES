@@ -1,3 +1,5 @@
+From: @BaptisteRichard
+* add ubiquity oids to cfgmake
 From: tobi
 * fix noHC detection in cfgmaker (interfaces with traffic counter = 0 could still be valid)
 
