@@ -1,3 +1,6 @@
+From: balwierz
+* change encoding of polish translation to utf8
+
 From: tobi
 * fix noHC detection in cfgmaker (interfaces with traffic counter = 0 could still be valid)
 
