@@ -32,23 +32,23 @@ return "" unless defined $string;
 
   %translations =
   (  
-     'iso-8859-1'                             => 'iso-8859-2',
-     'Maximal 5 Minute Incoming Traffic'      => 'Maksymalny ruch przychodz±cy w ci±gu 5 minut',
-     'Maximal 5 Minute Outgoing Traffic'      => 'Maksymalny ruch wychodz±cy w ci±gu 5 minut',
-     'the device'                             => 'urz±dzenie',
+     'iso-8859-1'                             => 'utf-8',
+     'Maximal 5 Minute Incoming Traffic'      => 'Maksymalny ruch przychodzÄ…cy w ciÄ…gu 5 minut',
+     'Maximal 5 Minute Outgoing Traffic'      => 'Maksymalny ruch wychodzÄ…cy w ciÄ…gu 5 minut',
+     'the device'                             => 'urzÄ…dzenie',
      'The statistics were last updated(.*)'   => 'Ostatnie uaktualnienie statystyki $1',
-     ' Average\)'                             => ' ¦rednia)',
-     'Average'                                => '¦rednio',
+     ' Average\)'                             => ' Åšrednia)',
+     'Average'                                => 'Åšrednio',
      'Max'                                    => 'Maksymalnie',
      'Current'                                => 'Aktualnie',
      'version'                                => 'wersja',
-     '`Daily\' Graph \((.*) Minute'           => '`Dzienny\' Graf w ci±gu ($1 Minut/y - ',
-     '`Weekly\' Graph \(30 Minute'            => '`Tygodniowy\' Graf w ci±gu (30 minut - ' ,
-     '`Monthly\' Graph \(2 Hour'              => '`Miesiêczny\' Graf w ci±gu (2 Godzin - ',
-     '`Yearly\' Graph \(1 Day'                => '`Roczny\' Graf w  ci±gu (1 Dnia - ', 
-     'Incoming Traffic in (\S+) per Second'   => 'Ruch przychodz±cy - $1 na sekundê',
-     'Outgoing Traffic in (\S+) per Second'   => 'Ruch wychodz±cy - $1 na sekundê',
-     'at which time (.*) had been up for(.*)' => 'gdy $1 by³ w³±czony przez $2',
+     '`Daily\' Graph \((.*) Minute'           => '`Dzienny\' Graf w ciÄ…gu ($1 Minut/y - ',
+     '`Weekly\' Graph \(30 Minute'            => '`Tygodniowy\' Graf w ciÄ…gu (30 minut - ' ,
+     '`Monthly\' Graph \(2 Hour'              => '`MiesiÄ™czny\' Graf w ciÄ…gu (2 Godzin - ',
+     '`Yearly\' Graph \(1 Day'                => '`Roczny\' Graf w  ciÄ…gu (1 Dnia - ', 
+     'Incoming Traffic in (\S+) per Second'   => 'Ruch przychodzÄ…cy - $1 na sekundÄ™',
+     'Outgoing Traffic in (\S+) per Second'   => 'Ruch wychodzÄ…cy - $1 na sekundÄ™',
+     'at which time (.*) had been up for(.*)' => 'gdy $1 byÅ‚ wÅ‚Ä…czony przez $2',
      # '([kMG]?)([bB])/s'                 => '\$1\$2/s',
      # '([kMG]?)([bB])/min'              => '\$1\$2/min',
      '([kMG]?)([bB])/h'                       => '$1$2/g',
@@ -57,8 +57,8 @@ return "" unless defined $string;
      'In'                                     => 'Do',
      'Out'                                    => 'Z',
      'Percentage'                             => 'Procent',
-     'Ported to OpenVMS Alpha by'             => 'Port dla OpenVMS Alpha dziêki', 
-     'Ported to WindowsNT by'                 => 'Port dla WindowsNT dziêki',
+     'Ported to OpenVMS Alpha by'             => 'Port dla OpenVMS Alpha dziÄ™ki', 
+     'Ported to WindowsNT by'                 => 'Port dla WindowsNT dziÄ™ki',
      'and'                                    => 'i',
      '^GREEN'                                  => 'ZIELONY',
      'BLUE'                                   => 'NIEBIESKI',
@@ -79,11 +79,11 @@ foreach $i (keys %translations)
 %wday = 
     (
       'Sunday'    => 'Niedziela',     'Sun' => 'Nie',
-      'Monday'    => 'Poniedzia³ek',  'Mon' => 'Pon',
+      'Monday'    => 'PoniedziaÅ‚ek',  'Mon' => 'Pon',
       'Tuesday'   => 'Wtorek',        'Tue' => 'Wto',
-      'Wednesday' => '¦roda',         'Wed' => '¦ro',
+      'Wednesday' => 'Åšroda',         'Wed' => 'Åšro',
       'Thursday'  => 'Czwartek',      'Thu' => 'Czw',
-      'Friday'    => 'Pi±tek',        'Fri' => 'Pi±',
+      'Friday'    => 'PiÄ…tek',        'Fri' => 'PiÄ…',
       'Saturday'  => 'Sobota',        'Sat' => 'Sob' 
 
     );
@@ -94,10 +94,10 @@ foreach $i (keys %translations)
       'Jan'       => 'Sty',          'Feb'       => 'Lut',         'Mar'       => 'Mar',
       'April'     => 'Kwietnia',     'May'       => 'Maja',        'June'      => 'Czerwca', 
       'Apr'       => 'Kwi',          'May'       => 'Maj',         'Jun'       => 'Cze',
-      'July'      => 'Lipca',        'August'    => 'Sierpnia',    'September' => 'Wrze¶nia', 
+      'July'      => 'Lipca',        'August'    => 'Sierpnia',    'September' => 'WrzeÅ›nia', 
       'Jul'       => 'Lip',          'Aug'       => 'Sie',         'Sep'       => 'Wrz', 
-      'October'   => 'Pa¼dziernika', 'November'  => 'Listopada',   'December'  => 'Grudnia', 
-      'Oct'       => 'Pa¼',          'Nov'       => 'Lis',         'Dec'       => 'Gru' 
+      'October'   => 'PaÅºdziernika', 'November'  => 'Listopada',   'December'  => 'Grudnia', 
+      'Oct'       => 'PaÅº',          'Nov'       => 'Lis',         'Dec'       => 'Gru' 
     );
 
   @foo=($string=~/(\S+),\s+(\S+)\s+(\S+)(.*)/);
@@ -108,7 +108,7 @@ foreach $i (keys %translations)
         @quux=split(/at/,$foo[3]);
         $foo[3]=$quux[0]." o godzinie".$quux[1]; 
       };
-      return "$wday{$foo[0]} dzieñ $foo[1]. $month{$foo[2]} $foo[3]"; 
+      return "$wday{$foo[0]} dzieÅ„ $foo[1]. $month{$foo[2]} $foo[3]"; 
     };
 
 #
