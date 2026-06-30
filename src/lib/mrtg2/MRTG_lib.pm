@@ -16,6 +16,7 @@ package MRTG_lib;
 
 require 5.005;
 use strict;
+use Fcntl qw(O_WRONLY O_CREAT O_EXCL);
 use vars qw($OS $SL $PS @EXPORT @ISA $VERSION %timestrpospattern);
 
 
@@ -1233,14 +1234,31 @@ sub expistr ($) {
     return "$wday, $mday $month ".($year+1900)." $hour:$min:$sec GMT";
 }
 
-sub create_pid ($) {
-    my $pidfile = shift;
+sub create_pid ($;$$) {
+    my ($pidfile, $uid, $gid) = @_;
     return if ($OS eq 'NT' );
+
+    # Security: refuse to operate on a symlink. When mrtg is started as root
+    # in daemon mode with a writable pid path, an attacker who pre-places a
+    # symlink here could otherwise make us create or chown an arbitrary file
+    # (CWE-59). A plain stat/-e on the path would follow the link, so check
+    # the link itself first.
+    if (-l $pidfile) {
+        warn "refusing to use pid file $pidfile: it is a symbolic link\n";
+        return;
+    }
     return if -e $pidfile;
-    if ( open(PIDFILE,">$pidfile")) {
-         close PIDFILE;
+
+    # O_CREAT|O_EXCL creates the file atomically and fails if anything
+    # (including a symlink that was raced in after the check above) already
+    # exists at the path, closing the symlink-follow / TOCTOU window.
+    if ( sysopen(my $fh, $pidfile, O_WRONLY|O_CREAT|O_EXCL, 0644) ) {
+         # chown the open handle (fchown) rather than the path, so the
+         # ownership change cannot be redirected through a swapped-in symlink.
+         chown $uid, $gid, $fh if defined $uid and defined $gid;
+         close $fh;
     } else {
-         warn "cannot write to $pidfile: $!\n";
+         warn "cannot create pid file $pidfile: $!\n";
     }
 }
 
@@ -1286,7 +1304,9 @@ sub demonize_me ($) {
             } else {
                 if (defined $pidfile){
                    $main::Cleanfile3 = $pidfile;
-                   if (open(PIDFILE,">$pidfile")) {
+                   if (-l $pidfile) {
+                        warn "refusing to write pid file $pidfile: it is a symbolic link\n";
+                   } elsif (open(PIDFILE,">$pidfile")) {
                         print PIDFILE "$$\n";
                         close PIDFILE;
                    } else {
