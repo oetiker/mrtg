@@ -1,3 +1,11 @@
+From: Vitezslav Crhonek (reported by Aisle Research)
+* security: fix symlink-following pid file handling. When started as root
+  in daemon mode (--daemon --user), mrtg created and chown'ed the pid file
+  before dropping privileges; a local attacker able to pre-place a symlink
+  at the pid path could make root chown an arbitrary file to the daemon
+  user. create_pid now refuses symlinks, creates the file with
+  O_CREAT|O_EXCL, and chowns the open handle instead of the path (CWE-59).
+
 From: eriberomota
 * fix function signatures
 

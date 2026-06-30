@@ -252,9 +252,11 @@ sub main {
 
     # Run as a daemon, specified on command line (required for FHS compliant daemon)
     if (defined $opts{"daemon"}) {
-	# Create a pidfile, then chown it so we can use it once we change user
-	&create_pid($pidfile);
-	chown $uid, $gid, $pidfile;
+	# Create the pidfile securely and, while still privileged, hand it to
+	# the user we are about to become so the daemon can update it later.
+	# create_pid refuses symlinks and chowns the open handle (not the path),
+	# so a hostile pid path cannot be used to chown an arbitrary file.
+	&create_pid($pidfile, $uid, $gid);
     }
 
     ($(,$)) = ($gid,$gid) ;
