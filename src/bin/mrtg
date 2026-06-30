@@ -121,8 +121,8 @@ if ($MRTG_lib::OS eq 'UNIX') {
                        if defined $main::Cleanfile2;
                    unlink ${main::Cleanfile3}
                        if defined $main::Cleanfile3;
-                   warn "$NOW: ERROR: Bailout after SIG $_[0]\n";
-                   exit 1;
+                   warn "$NOW: Shutting down on SIG $_[0]\n";
+                   exit 0;
                 };
   $SIG{HUP} = sub {
                    unlink ${main::Cleanfile} 
